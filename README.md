@@ -58,3 +58,5 @@ The index in `00_index_query/output/` is pre-computed, so the whole thesis is
 reproducible without re-indexing. The minimum path is: add an API key in
 `00_index_query/.env`, run the two notebooks, then run the two evaluation
 harnesses over the resulting answers. See each folder's README for the details.
+
+Due to GitHub’s storage limitations, the results are available at the following link: [Download the results](https://drive.google.com/drive/folders/1wN_3HZ7UGgBhLzLSZDjeA3VG8nR9QWmn?usp=sharing).
