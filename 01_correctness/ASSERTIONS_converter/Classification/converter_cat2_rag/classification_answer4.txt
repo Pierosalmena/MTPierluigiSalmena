@@ -1,0 +1,17 @@
+Recommendation: second_level_support
+
+Summary reasoning
+- The ticket describes multiple distinct failures that map closely to prior incidents which required engineer-level troubleshooting and remediation: internal browser certificate trust errors after a PKI renewal (TI-1700005), VPN authentication breaks tied to a changed VPN/server certificate template (TI-1700006), and Wi‑Fi profile not deploying due to Intune/dynamic-group assignment scope (TI-1700010). Each of those past cases was handled by infrastructure/PKI/network/endpoint engineers rather than being resolved by first‑line helpdesk procedures [Data: Sources (55, 104, 87, 13)].
+- Because at least two of your described symptoms (internal TLS trust failures and VPN server identity validation failures) in the knowledge base were caused by PKI/template changes and required coordination between PKI and network teams, the consolidated symptom set in your ticket is consistent with an issue set that needs second‑level (engineer/escalation) involvement rather than routine first‑line fixes [Data: Sources (55, 104)].
+
+What the records explicitly document (relevant parallels)
+- Internal-only sites showing browser trust warnings after an issuing CA renewal; resolution required publishing the intermediate CA correctly to AIA/CRL distribution points and validation by infrastructure engineers (KF80 TI-1700005) [Data: Sources (55)].
+- VPN clients failing to authenticate after a PKI change because the new server certificate template omitted a required EKU; resolution required reissuing or adjusting certificates/templates and deploying corrected certs (KF80 TI-1700006) [Data: Sources (104)].
+- Corporate Wi‑Fi not appearing on certain devices because the Wi‑Fi profile was targeted via a dynamic Intune group tied to device compliance state; the assignment scope was adjusted by endpoint engineers to restore connectivity (KF90 TI-1700010) [Data: Sources (87)].
+- Certificate/Identity issues on domain controllers and LDAP-S failures have previously required PKI or DC certificate re-enrollment actions by infrastructure teams (KF80 TI-1700008) [Data: Sources (13)].
+
+Recommended next steps (these are recommendations and are not directly documented in the cited records)
+- Escalate this ticket to your PKI/identity and network/endpoint engineering teams for joint investigation (recommended).
+- Provide the engineers with timelines of the maintenance/changes, samples of browser certificate chains from affected internal sites, a VPN negotiation log for a failing connection, and representative device names showing missing Wi‑Fi profiles (recommended).
+
+If you want, I can draft a short escalation note that summarizes the parallels to the past incidents and lists the specific artifacts to collect for the engineers.

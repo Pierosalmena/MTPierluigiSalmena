@@ -1,0 +1,98 @@
+Below I give (A) a short classification (1st vs 2nd level), (B) the specific, step‑by‑step actions you should perform now (separated into what the indexed records show was actually done in prior incidents vs what I recommend because the records do not contain that exact action), (C) the precise artifacts to collect and attach to the ticket (so responders can reproduce what helped in prior cases), and (D) an explicit statement where the indexed knowledge is insufficient and what you must provide or run. Every factual step cites the indexed incident records used as precedent.
+
+Short summary / classification
+- Recommended classification: second_level_support. Rationale: your report hits three distinct subsystems at once (SharePoint / sensitivity‑label + directory/group effects; external file transfer to a server; Teams device/media problems). Similar multi‑domain outages after org/group/label changes were escalated to Identity / System Engineers and Core Engineering in the indexed cases [Data: Sources (13, 20, 30)].
+
+A. Evidence‑backed steps — what the indexed records say was done in similar incidents
+(These are steps that prior tickets show were effective and were actually performed. Follow them first, and attach the cited outputs.)
+
+1) Verify and fix group/nesting mis‑membership for the project resource group (SP_Project_IT)  
+- What to do (documented precedent): temporarily add a test user to the new SP_Project_IT resource group as a direct membership test to prove access can be restored, correct any incorrect nesting (move IT‑Projekte out of SP_Project_IT_v1 into SP_Project_IT), then wait for propagation / sync and validate access [Documented: nesting correction + test user used in ticket TI‑1569482].  
+  - Evidence citation: this nesting‑correction + direct‑assign test approach is shown in the SP_Project_IT remediation record [Data: Sources (20)].
+
+2) If the folder has a Sensitivity Label applied, align the label’s allowed group and reapply the label; force token refresh (sign‑out / sign‑in) for affected users  
+- What to do (documented precedent): remove/reapply the sensitivity label only after confirming the label’s allowed/decryption group matches the SharePoint ACL (or add the user to the label’s allowed group temporarily to confirm) and then invalidate cached tokens (force users to sign out and back in) so fresh claims include corrected group membership [Documented: label removal/reapply, group realignment, token invalidation].  
+  - Evidence citation: sensitivity‑label + ACL misalignment remediation (remove/reapply label, realign groups, invalidate tokens) is recorded in the label incident notes [Data: Sources (30)].
+
+3) If a cloud vs on‑prem group name collision is suspected, consolidate the correct group and run a full Azure AD Connect sync  
+- What to do (documented precedent): identify same‑display‑name group objects (cloud vs on‑prem), consolidate/cleanup so the intended object contains the guests, then perform a full Azure AD Connect sync to restore intended membership before re‑validating SharePoint access [Documented: consolidation + full sync].  
+  - Evidence citation: cloud vs on‑prem COMPLIANCE_TEAM collision and remediation by consolidation + full Azure AD Connect sync (restored guest access) [Data: Sources (13)].
+
+4) For the external uploader / secure‑drop that now times out, reproduce with the same client and capture server‑side connection logs; prior investigators ran WinSCP tests and also reviewed firewall and server share settings  
+- What to do (documented precedent): run the same SFTP/FTP tests from support (WinSCP was used in the FileZilla case), collect the server logs and firewall/edge-change notes, and verify whether an external firewall rule or share exposure was changed — prior closure included decommissioning external FTP access after reproducing the issue [Documented: WinSCP tests and firewall/policy actions].  
+  - Evidence citation: WinSCP/FTP test and subsequent firewall/decommission action are recorded in the KF14 FileZilla ticket [Data: Sources (34)].
+
+5) For Teams device problems, run the Teams client test sequences and gather Teams Admin Center diagnostics / client logs  
+- What to do (documented precedent): use Teams Test Call and Teams client diagnostics to separate endpoint from network/identity problems; collect Teams client logs and Admin Center traces to show whether the camera/mic are enumerated or whether policy/driver issues are present [Documented: Teams Test Call and Admin Center used in prior device/AV cases].  
+  - Evidence citation: Teams client/diagnostic practices and Admin Center traces are referenced in device‑and‑call investigations [Data: Sources (37, 19)].
+
+B. Recommended (not explicitly recorded, but consistent with prior cases) step‑by‑step playbook you should execute now
+(These are recommended actions — they are not verbatim items from a single record, but they match the investigative artifacts and remediations used in the indexed incidents. I mark them as RECOMMENDED.)
+
+1) Immediate triage and containment (recommended)
+- RECOMMENDED: Assemble a short bridge with Identity (Entra/Azure AD), SharePoint/Collab owner, and Network/Security. This mirrors the cross‑team escalations in similar incidents [Data: Sources (13, 30)].  
+- RECOMMENDED: Do NOT broadly relax Conditional Access or apply broad exceptions; if any geolocation/firewall exceptions were applied as emergency containment, capture the exact exception list and make them time‑boxed (prior incidents warned about governance exposure) [Data: Sources (4) cited in other phishing/containment records].
+
+2) SharePoint / Access remediation (recommended, supported by prior steps)
+- RECOMMENDED step: Collect SharePoint permission view screenshot for the affected folder (Manage access → Advanced) and the exact folder URL. Then:  
+  a) Add a known‑good TEST USER as direct member of SP_Project_IT to prove membership restores access (use the same test pattern recorded in TI‑1569482).  
+  b) If that restores access, correct group nesting (move IT‑Projekte into SP_Project_IT) and document the change; await sync/propagation and verify with affected users. [Data: Sources (20)].
+
+3) Label / encryption remediation (recommended)
+- RECOMMENDED step: Export Purview label configuration for “Confidential – Internal” and confirm which Azure AD group(s) are allowed to decrypt (Compliance_Core). If Compliance_Core ≠ the ACL group, either align the ACL or reapply the label using the “preserve custom permissions” approach after testing; force sign‑in (invalidate tokens) for at least one affected user to confirm new claims. These actions mirror remediation steps recorded in the sensitivity‑label incident [Data: Sources (30)].
+
+4) Identity / sync remediation (recommended)
+- RECOMMENDED step: Export the Azure AD group object(s) for COMPLIANCE_TEAM and SP_Project_IT (objectId, onPremisesSyncEnabled, members). If two objects share the same displayName with different objectIds, perform consolidation then run a full Azure AD Connect sync; include the sync run history export (sync job timestamps) when you escalate to Identity. This is the documented remediation used in the COMPLIANCE_TEAM case [Data: Sources (13)].
+
+5) External uploader / secure drop remediation (recommended)
+- RECOMMENDED step: From the server side, collect the SFTP/FTP server logs for the failed timestamps, the OS-level SSH logs (if SFTP) or web/API logs (if HTTPS upload), and the firewall edge allow/deny logs for the uploader’s source IP. Prior FileZilla troubleshooting used WinSCP and firewall analysis and culminated in firewall/policy changes recorded in the ticket [Data: Sources (34)]. If the server is a Windows/FileZilla endpoint, check whether a network share was toggled in prior fixes — disabling/re‑enabling shares fixed queued SAP jobs in a prior print incident and is a documented remediation pattern for server‑side queue exposure problems [Data: Sources (28, 7, 34)].
+
+6) Teams camera / mic remediation (recommended)
+- RECOMMENDED step (device): Collect the affected user’s Teams desktop client logs and run a Teams Test Call. If Teams Admin Center shows no camera device or mic input in the service telemetry, escalate to Desktop/Endpoint engineering to check driver, privacy permissions, and vendor USB driver reinstallation. The indexed records show Teams Test Call + client logs were the diagnostic artifacts used in prior AV issues [Data: Sources (37, 19)].  
+- RECOMMENDED: For the mic stuck at zero with a USB headset, also capture a short Windows Sound control test result and check whether other apps capture microphone input — that helps determine driver/Windows privacy vs Teams‑only failure (this diagnostic pattern appears in past endpoint tickets) [Data: Sources (37)].
+
+C. Artifacts to collect and attach to the ticket (these are the exact items prior incidents used — collect before escalating)
+(These items match the evidence used in the records; hand them to the identity/engineer owner.)
+
+1) SharePoint items (used in prior cases) [collect immediately]  
+- Folder full URL and a full‑window screenshot of the error (address bar + timestamp).  
+- The folder’s Permission → Advanced screenshot showing SP_Compliance_Main and the listed groups.  
+- Which users are affected (UPNs) and a single working user sample who can access (to compare).  
+  - Evidence these were decisive: Permission view and screenshots were used in SharePoint access tickets [Data: Sources (20, 30)].
+
+2) Identity / directory exports (used in prior cases)  
+- Azure AD group exports for SP_Project_IT, SP_Project_IT_v1, COMPLIANCE_TEAM, Compliance_Core (objectId, displayName, onPremisesSyncEnabled, members); Azure AD Connect sync run history covering the time of the org change.  
+  - Evidence: Microsoft Graph / Azure AD Connect exports and full sync were used to diagnose and fix collisions [Data: Sources (13)].
+
+3) Purview/Label data (used in prior cases)  
+- Purview/AIP label config for “Confidential – Internal” (which group is authorized to decrypt), and timestamp when the label was applied to the folder.  
+  - Evidence: label application timing and allowed group mattered in the label incident [Data: Sources (30)].
+
+4) External uploader / server logs (used in prior cases)  
+- Server SFTP/FTP logs for the failure interval; firewall/edge allow/deny logs for uploader IP; WinSCP client log output from your reproduction attempt.  
+  - Evidence: WinSCP tests + firewall changes were used in the FileZilla case [Data: Sources (34)].
+
+5) Teams / endpoint traces (used in prior cases)  
+- Teams Admin Center call/device diagnostics for affected users, Teams desktop client logs collected immediately after reproduction, and a short statement of steps already tried (reboots, USB port swaps, browser variants).  
+  - Evidence: Teams client diagnostics and Admin Center traces were used in Teams device investigations [Data: Sources (37, 19)].
+
+D. Where the indexed knowledge is insufficient / what you must provide
+- The indexed records do NOT contain your tenant’s raw Azure AD sign‑in log rows, Azure AD Connect run timestamps for your overnight window, nor your server SFTP logs. I cannot confirm the concrete objectId GUIDs, the exact group membership diffs, nor the uploader’s server‑side error lines from here — you must export those artifacts and attach them to the ticket for engineers to reproduce the identical evidence chain [Data: Sources (13, 30, 34)].  
+- Please provide (minimum) the SharePoint folder URL + permission screenshot, the list of affected UPNs, the Azure AD group export (objectId + members) for SP_Project_IT and COMPLIANCE_TEAM, Purview label config for “Confidential – Internal”, the server SFTP logs for the uploader’s failure timestamps, and the Teams client/Admin traces for the two Teams device problems. Prior investigations explicitly used those artifacts to conclude root cause and fix [Data: Sources (13, 30, 34, 37)].
+
+E. One‑page recommended immediate action checklist to paste into your ticket (marked RECOMMENDED where not already documented)
+- RECOMMENDED: Escalate to BU Infrastructure – Identity and Core Engineering now (ticket owners in prior cases handed off to Identity/System Engineers for identical multi‑domain failures) [Data: Sources (13, 20, 30)].  
+- Documented action: Add TEST USER to SP_Project_IT and confirm whether that restores access; cite TI‑1569482 as precedent [Data: Sources (20)].  
+- RECOMMENDED: Export Azure AD group listings and Azure AD Connect sync history for the change window and attach to ticket (System Engineer 14 used these in the COMPLIANCE_TEAM case) [Data: Sources (13)].  
+- Documented action: Remove/reapply the label only after aligning Compliance_Core with ACL, then force token refresh for one affected user (documented label remediation pattern) [Data: Sources (30)].  
+- RECOMMENDED: Provide server SFTP logs + WinSCP client logs + firewall allow/deny logs for the uploader’s IP/time window (FileZilla case used WinSCP & firewall analysis) [Data: Sources (34)].  
+- RECOMMENDED: Attach Teams Admin Center diagnostics and client logs for the camera/mic cases; run Teams Test Call and attach results (Teams test flows used in prior AV tickets) [Data: Sources (37, 19)].
+
+F. Closing — what I will not invent and what I need from you
+- I cannot assert a single root cause from the indexed records alone because the symptoms span identity / label / sync, server/file‑transfer, and endpoint AV domains and the records show remediation required evidence from multiple artifacts (Azure AD Connect runs, Purview label config, server logs, Teams traces) that are not present here. To reach a definitive single root cause and apply the exact fixes used in prior incidents, please attach the artifacts listed above. The indexed precedents show the exact investigative sequence and remediation once those artifacts were present [Data: Sources (13, 30, 34, 37)].  
+
+If you want, I will now:
+- (A) produce the exact Azure AD / Graph query strings and the exact fields to export for the groups (objectId, onPremisesSyncEnabled, members) so your Identity admin can run them, and/or  
+- (B) draft the minimal email text to send to the network/security team requesting the SFTP/server + firewall logs for the uploader’s IP/time window.  
+
+Tell me which you want me to generate and I will prepare it (these are recommended, actionable templates — not items extracted as already performed from the records).

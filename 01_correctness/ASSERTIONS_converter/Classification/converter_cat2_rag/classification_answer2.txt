@@ -1,0 +1,16 @@
+Recommendation: second_level_support
+
+Reasoning (records-based):
+- The SharePoint/permissions symptom (freelancers locked out of shared workspaces after an org change) closely matches a documented incident where a reorganization and new AD/group structure caused partial access loss and inconsistent behavior. That case required escalation to the M365/Identity engineering team for in‑depth analysis (unique permissions vs. sensitivity labels, direct group membership tests, and System Engineer involvement) [Data: Sources (30)].
+- The printer symptom (invoices for Zurich printing in Basel) mirrors a documented incident where an organizational/group change caused incorrect default-printer assignments via GPOs. The root cause was inconsistent AD group membership after a reorganization; resolution required correcting group membership and updating GPO assignment (gpupdate/test/login) according to the Print & Scanning Infrastructure Standard [Data: Sources (2)].
+- The current ticket reports multiple, different subsystems failing (collaboration permissions, telephony/dialer, and printing). Past multi-domain incidents (printing outages that required infrastructure or OS/VM restores and coordination across teams, or network/VLAN/firewall fixes for printers) involved specialist teams (network, core engineering, or system engineers) rather than only first-line fixes [Data: Sources (28, 22)].
+
+What the records explicitly document
+- Reorg/group changes can cause SharePoint access issues that were not resolved by first-line steps and were escalated to M365/Identity system engineers for detailed analysis (ticket TI-1578891) [Data: Sources (30)].
+- Incorrect default printer assignment after organizational changes was traced to AD group membership and fixed by adjusting group membership and GPOs (ticket TI-1623017) [Data: Sources (2)].
+- Print outages have required network/firewall adjustments or VM/OS restores and coordination with network/core teams (tickets TI-1622483 and TI-931293) [Data: Sources (22, 28)].
+
+Recommended (not documented in the records; my recommendation)
+- Escalate to second-level teams immediately: Identity/M365 (for workspace access), Telephony/UC engineering (for dialer), and Print/Core Infrastructure (for cross-site printing). This recommendation is based on the multi-domain nature of the failures and the precedent that similar incidents required engineer involvement.
+
+If you want, I can list the most relevant prior ticket numbers and their documented root causes and remediation actions to attach to your escalation.

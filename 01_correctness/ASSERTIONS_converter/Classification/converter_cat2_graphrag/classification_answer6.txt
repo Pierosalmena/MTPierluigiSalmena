@@ -1,0 +1,25 @@
+Recommendation: second_level_support
+
+Reasoning (concise)
+- The four symptom classes in your ticket — (1) cloud sign-in OK while on‑prem/internal apps report “account not recognized”, (2) on‑prem vs cloud group membership divergence, (3) built‑in mobile mail apps looping on passwords while Outlook Mobile works, and (4) scheduled tasks using service accounts failing with auth errors — map directly to multiple documented hybrid‑identity migration incidents that required identity/AAD‑Connect and Conditional Access engineering rather than routine helpdesk fixes. This mapping is recorded in the indexed incident corpus. [Data: Sources (22); Sources (53); Reports (5); Sources (4)]
+
+What the records explicitly document (relevant examples)
+- UPN / provisioning template overwrite during a second migration wave produced exactly the “cloud sign‑in OK but on‑prem app failing” symptom; the recorded remediation was: revert on‑prem userPrincipalName values and run delta → full Azure AD Connect sync. This was handled by identity engineers (TI‑1700001). [Data: Sources (22)]
+- AAD Connect OU‑filter omissions (Migration_Phase2 OU excluded) produced group membership divergence (cloud still showing old groups while on‑prem showed new groups). Remediation required updating the OU filter and running delta/full syncs (TI‑1700002). [Data: Sources (53)]
+- Built‑in mobile mail clients were documented repeatedly to fail when they attempted legacy Basic EAS after tenant modern‑auth enforcement; Outlook Mobile (OAuth) worked and engineers resolved affected phones by re‑adding accounts/forcing OAuth or re‑enrolling in Intune in prior KF70 cases. [Data: Sources (4)]
+- Scheduled tasks run by service accounts began failing after those accounts were inadvertently synced to the cloud and evaluated by a baseline Conditional Access policy; recorded remediation required correcting AAD Connect scope and creating an exclusion group (KF70‑SERVICEACCOUNTS‑NOMFA) so non‑interactive service accounts would not be blocked — this was executed by identity engineers (TI‑1700004). [Data: Reports (5)]
+
+Why this should be escalated
+- The prior incidents above were not resolved by routine front‑line steps; they required Azure AD Connect configuration inspection/change, full syncs, UPN reversion, Conditional Access policy edits (and creation/population of a service‑account exclusion group), and coordination between identity, app owners and endpoint teams. Those are engineer‑level actions and match the pattern and remediation ownership in the cited tickets. [Data: Sources (22); Sources (53); Reports (5)]
+
+Recommended next actions (labelled as recommendations — not asserted as previously performed)
+- Escalate to BU Infrastructure — Identity / AAD‑Connect engineering and collect: representative affected UPNs, Azure AD Connect sync run history and current OU filter, cloud vs on‑prem group ObjectIDs and memberships, Conditional Access policy change history, and Task Scheduler logs for failing jobs. (This recommendation follows the investigative artifacts used in the cited incidents; the indexed records show teams requested and used these artifacts during remediation.) [Data: Sources (22); Sources (53); Reports (5)]
+- Treat the ticket as a multi‑team investigation (Identity + App owners + Endpoint/Intune + Security/CA). (Recommended — consistent with cross‑team remediation recorded in the incidents.) [Data: Reports (5); Sources (4)]
+
+Primary supporting records referenced
+- TI‑1700001 — UPN suffix / on‑prem sign‑in failures; remediation: revert on‑prem UPNs + full AAD Connect sync [Data: Sources (22)].  
+- TI‑1700002 — Migration_Phase2 OU excluded from AAD Connect → group sync divergence; remediation: update OU filter, delta/full sync [Data: Sources (53)].  
+- TI‑1700004 / KF70 scheduled‑task outages — service accounts synced → CA evaluated → created KF70‑SERVICEACCOUNTS‑NOMFA exclusion and corrected AAD Connect scope (identity engineer involvement) [Data: Reports (5)].  
+- KF70 mobile client incidents — built‑in iOS/Android Mail (EAS/BasicAuth) looping; Outlook Mobile/OAuth worked; device re‑add or Intune re‑enroll used as remediation in prior cases [Data: Sources (4)].
+
+If you want, I can now (recommended) draft the exact list of artifacts to collect for handoff to identity engineers (UPNs, AAD Connect logs/OU filter, Azure AD sign‑in slices, CA policy exports, Task Scheduler event snippets) and produce a short incident‑handover text referencing the cited tickets.

@@ -1,0 +1,2393 @@
+dataset,question,answer,context,is_recommendation,is_rec_reason,groundedness,groundedness_reason
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,"For S/MIME: performed key-archive recovery and re-imported the private keys to executive devices (and/or issued new S/MIME certs), then validated signed/decrypted mail operations","=== CITED SOURCES ===
+SOURCE 36:
+Ticket summary:
+Ticket name: KF80: Email signing/encryption no longer working for executives
+Ticket number: TI-1700007
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 12.02.25 14:08
+
+Closure
+Closure date: 24.02.25 16:00
+Closure text: New S/MIME certificates issued and key archive recovery performed; private keys re-imported on executive devices; signed emails validated.
+
+Activities
+Emails:
+
+12.02.25 14:08 KF80: S/MIME signing failing for the executive group Contact Person 31 Helpdesk
+Hello,
+Our executive team uses S/MIME signing for sensitive emails (board communications, M&A correspondence). Today they reported that Outlook can no longer sign or decrypt emails. Existing signed emails received from external partners cannot be opened either.
+Outlook shows: ""The signing certificate is not valid"" / ""Cannot decrypt message because the certificate is not available.""
+This affects 12 executives and is highly visible. They are bypassing signing temporarily but want this fixed urgently.
+Best regards
+Contact Person 31
+
+12.02.25 14:10 Ticket created: TI-1700007. Priority High - executive impact.
+
+12.02.25 14:30 Ticket assigned | TI-1700007
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 09:50 Re: KF80: S/MIME signing failing Employee 32 Contact Person 31
+Hello,
+Thank you. To narrow down:
+- Did the executives receive new S/MIME certificates as part of last weekend's PKI work?
+- When attempting to sign in Outlook, is the new cert visible in Trust Center → Email Security → Settings? Or does it not appear at all?
+- For decrypting received signed mail: this requires the recipient's PRIVATE key. Did the PKI work include any key archival / key recovery operations?
+
+14.02.25 11:25 Re: KF80: S/MIME signing failing Contact Person 31 Employee 32
+Hi,
+- The PKI team auto-renewed S/MIME certs for all executives when their old certs were close to expiry; this happened over the weekend
+- New cert appears in Trust Center but Outlook says ""you do not have the private key""
+- Key archive: the PKI team said they enabled it but I am not sure of the details
+
+24.02.25 16:00 Ticket closed | TI-1700007
+Closure description:
+Root cause: When executive S/MIME certificates were auto-renewed over the weekend, the new certificates were issued correctly and pushed to the affected user accounts in Active Directory (userCertificate attribute populated). However, the corresponding private keys were generated on the CA side as",no,"The sentence describes actions that were performed (past-tense reporting of key recovery, re-import, and validation) and does not propose or recommend any future action.",supported,"The ticket closure explicitly states new S/MIME certificates were issued, key archive recovery was performed, private keys were re-imported on executive devices, and signed emails were validated, matching the ANSWER."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,"Published intermediate (issuing) CA certificate to the AIA/CRL distribution points so client TLS chains could be validated, then validated affected HTTPS services","=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+",no,The sentence describes actions that were performed in the past (publishing a certificate and validating services) and does not propose or recommend any future action.,supported,"The ticket closure states: 'Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated,' which directly matches the ANSWER's claims."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,"If client/user certificates were required or need reissuance/deployment (SCEP/GPO), ensure they are reissued or available; the prior case redeployed client certs as needed via GPO and validated users","=== CITED SOURCES ===
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now",yes,"The statement contains conditional advice and an explicit directive ('If ... ensure they are reissued or available'), which is a recommendation to take action.",supported,"The ticket closure states client certificates were reissued from a corrected template, new certificates were deployed via GPO, and affected users were validated, directly matching the ANSWER's recommendation and its claim about the prior case."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,Publish the issuing (intermediate) CA certificate correctly to the AIA and CRL distribution points so clients can build a complete chain to a trusted root. Prior case: intermediate CA certificate published to AIA/CRL distribution points; affected services were validated afterwards,"=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+",yes,"The statement uses an imperative directive ('Publish ...') that explicitly advises an action to ensure clients can build a complete chain, so it is a recommendation.",supported,"The ticket closure explicitly states ‘Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated,’ and earlier notes describe the chain breaking at the issuing CA and resulting browser trust errors, directly supporting the recommendation."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,VPN: affected remote users can establish IKEv2/certificate-based VPN connections,"=== CITED SOURCES ===
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now",no,This is a factual statement about users' ability to establish a VPN and does not propose or recommend any action.,supported,"The context states the VPN uses IKEv2 with certificate-based authentication, and the closure notes certificates were reissued/deployed and affected users validated, indicating affected remote users can now establish IKEv2/certificate-based VPN connections."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,(Note: prior tickets show the issuing CA was renewed and templates refreshed during the weekend PKI work),"=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+
+
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now
+
+SOURCE 36:
+Ticket summary:
+Ticket name: KF80: Email signing/encryption no longer working for executives
+Ticket number: TI-1700007
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 12.02.25 14:08
+
+Closure
+Closure date: 24.02.25 16:00
+Closure text: New S/MIME certificates issued and key archive recovery performed; private keys re-imported on executive devices; signed emails validated.
+
+Activities
+Emails:
+
+12.02.25 14:08 KF80: S/MIME signing failing for the executive group Contact Person 31 Helpdesk
+Hello,
+Our executive team uses S/MIME signing for sensitive emails (board communications, M&A correspondence). Today they reported that Outlook can no longer sign or decrypt emails. Existing signed emails received from external partners cannot be opened either.
+Outlook shows: ""The signing certificate is not valid"" / ""Cannot decrypt message because the certificate is not available.""
+This affects 12 executives and is highly visible. They are bypassing signing temporarily but want this fixed urgently.
+Best regards
+Contact Person 31
+
+12.02.25 14:10 Ticket created: TI-1700007. Priority High - executive impact.
+
+12.02.25 14:30 Ticket assigned | TI-1700007
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 09:50 Re: KF80: S/MIME signing failing Employee 32 Contact Person 31
+Hello,
+Thank you. To narrow down:
+- Did the executives receive new S/MIME certificates as part of last weekend's PKI work?
+- When attempting to sign in Outlook, is the new cert visible in Trust Center → Email Security → Settings? Or does it not appear at all?
+- For decrypting received signed mail: this requires the recipient's PRIVATE key. Did the PKI work include any key archival / key recovery operations?
+
+14.02.25 11:25 Re: KF80: S/MIME signing failing Contact Person 31 Employee 32
+Hi,
+- The PKI team auto-renewed S/MIME certs for all executives when their old certs were close to expiry; this happened over the weekend
+- New cert appears in Trust Center but Outlook says ""you do not have the private key""
+- Key archive: the PKI team said they enabled it but I am not sure of the details
+
+24.02.25 16:00 Ticket closed | TI-1700007
+Closure description:
+Root cause: When executive S/MIME certificates were auto-renewed over the weekend, the new certificates were issued correctly and pushed to the affected user accounts in Active Directory (userCertificate attribute populated). However, the corresponding private keys were generated on the CA side as",no,This is a factual note about past events (CA renewal and template refresh) and does not propose or recommend any action.,supported,"TI-1700005 states the issuing CA (KF80-Issuing-CA-01) was renewed on Saturday, and TI-1700006 closure notes a new server certificate was issued from a refreshed certificate template after the weekend PKI work, which supports the claim."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,"Confirm whether the VPN server certificate was reissued from a refreshed template that omitted the required EKU. In a documented case the template omitted the ""IP security IKE intermediate"" EKU and caused IKEv2 authentication failures","=== CITED SOURCES ===
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now",yes,"Uses the imperative 'Confirm whether' directing the reader to perform a check about certificate reissuance, so it is recommending an action.",supported,"Ticket TI-1700006 closure states the server certificate was reissued from a refreshed template that omitted the 'IP security IKE intermediate' EKU, and earlier logs/notes show EKU mismatch and IKEv2 authentication failures."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,LDAP-S: applications can bind over LDAPS (port 636) to DCs without TLS handshake errors,"=== CITED SOURCES ===
+SOURCE 13:
+Ticket summary:
+Ticket name: KF80: LDAP-S queries to DCs failing for some applications
+Ticket number: TI-1700008
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 13.02.25 10:20
+
+Closure
+Closure date: 21.02.25 13:55
+Closure text: Domain Controller certificates re-enrolled from internal CA after auto-enrollment template fix; LDAP-S queries restored.
+
+Activities
+Emails:
+
+13.02.25 10:20 KF80: Internal applications cannot bind to AD over LDAP-S Contact Person 31 Helpdesk
+Hello,
+Our identity team reported that several internal applications which use LDAP-S (LDAP over TLS port 636) to authenticate against Active Directory have been failing since this morning. Examples include our HR system's user provisioning, the on-prem SharePoint for user lookup, and the network access control (NAC) system.
+The affected applications report ""could not establish secure connection to LDAP server"" or ""TLS handshake failed against domain controller"". Plain LDAP (port 389) still works but our security policy requires LDAP-S.
+We suspect this is related to the PKI work last weekend.
+Thanks
+Contact Person 31
+
+13.02.25 10:25 Ticket created: TI-1700008. Priority High - identity infrastructure impact.
+
+13.02.25 10:35 Ticket assigned | TI-1700008
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 14:00 Re: KF80: LDAP-S queries failing Employee 32 Contact Person 31
+Hello,
+Thanks. Could you please confirm:
+- Whether ALL DCs are affected or only some
+- The output from a DC of: certutil -store MY (look for the ""Domain Controller"" or ""Kerberos Authentication"" certificates and check expiry/issuer)
+- When the symptom started exactly (yesterday, today morning?)
+
+13.02.25 17:50 Re: KF80: LDAP-S queries failing Contact Person 31 Employee 32
+Hi,
+- All 4 DCs in the main site are affected; the secondary site DCs were not yet checked
+- Sample DC: cert in MY store shows the DC cert ISSUED 14.02.2024 (so almost a year ago) by the OLD issuing CA. It hasn't expired yet but applications complain about it
+- Started overnight - applications worked yesterday afternoon, failed by morning
+
+21.02.25 13:55 Ticket closed | TI-1700008
+Closure description:
+Root cause: The Domain Controllers were configured to auto-enroll for the ""Domain Controller Authentication"" certificate template via Group Policy. Last year's certificate had not yet expired but auto-enrollment normally triggers renewal at the 60%",no,This is a factual observation about LDAP/LDAPS behavior and does not propose or recommend any action.,unsupported,"The CITED SOURCES show internal applications were failing to bind over LDAP‑S with 'TLS handshake failed' (TI-1700008); LDAP-S was only restored after DC certificates were re-enrolled, so the claim that applications can bind without TLS errors is not supported."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,"Correct the auto-enrollment/template settings via Group Policy (fix the template configuration), then re-enroll the DC certificates from the issuing CA so the DCs present valid domain controller authentication certificates. Prior remediation: DC certificates re-enrolled after auto-enrollment template fix and LDAP-S restored","=== CITED SOURCES ===
+SOURCE 13:
+Ticket summary:
+Ticket name: KF80: LDAP-S queries to DCs failing for some applications
+Ticket number: TI-1700008
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 13.02.25 10:20
+
+Closure
+Closure date: 21.02.25 13:55
+Closure text: Domain Controller certificates re-enrolled from internal CA after auto-enrollment template fix; LDAP-S queries restored.
+
+Activities
+Emails:
+
+13.02.25 10:20 KF80: Internal applications cannot bind to AD over LDAP-S Contact Person 31 Helpdesk
+Hello,
+Our identity team reported that several internal applications which use LDAP-S (LDAP over TLS port 636) to authenticate against Active Directory have been failing since this morning. Examples include our HR system's user provisioning, the on-prem SharePoint for user lookup, and the network access control (NAC) system.
+The affected applications report ""could not establish secure connection to LDAP server"" or ""TLS handshake failed against domain controller"". Plain LDAP (port 389) still works but our security policy requires LDAP-S.
+We suspect this is related to the PKI work last weekend.
+Thanks
+Contact Person 31
+
+13.02.25 10:25 Ticket created: TI-1700008. Priority High - identity infrastructure impact.
+
+13.02.25 10:35 Ticket assigned | TI-1700008
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 14:00 Re: KF80: LDAP-S queries failing Employee 32 Contact Person 31
+Hello,
+Thanks. Could you please confirm:
+- Whether ALL DCs are affected or only some
+- The output from a DC of: certutil -store MY (look for the ""Domain Controller"" or ""Kerberos Authentication"" certificates and check expiry/issuer)
+- When the symptom started exactly (yesterday, today morning?)
+
+13.02.25 17:50 Re: KF80: LDAP-S queries failing Contact Person 31 Employee 32
+Hi,
+- All 4 DCs in the main site are affected; the secondary site DCs were not yet checked
+- Sample DC: cert in MY store shows the DC cert ISSUED 14.02.2024 (so almost a year ago) by the OLD issuing CA. It hasn't expired yet but applications complain about it
+- Started overnight - applications worked yesterday afternoon, failed by morning
+
+21.02.25 13:55 Ticket closed | TI-1700008
+Closure description:
+Root cause: The Domain Controllers were configured to auto-enroll for the ""Domain Controller Authentication"" certificate template via Group Policy. Last year's certificate had not yet expired but auto-enrollment normally triggers renewal at the 60%",yes,"The statement uses directive verbs and stepwise instructions to correct Group Policy/template settings and re-enroll DC certificates, which constitute actionable recommendations.",supported,"The ticket closure states the auto-enrollment template was fixed via Group Policy and 'Domain Controller certificates re-enrolled from internal CA after auto-enrollment template fix; LDAP-S queries restored,' directly supporting all claims."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,"The pattern you describe (browser TLS trust errors for internal HTTPS sites, VPN mutual-authentication failures, executive S/MIME signing/decryption failure, and LDAP-S binds failing for applications) matches a set of incidents that all began after an internal PKI/CA renewal or certificate-template change over a weekend. The prior incidents attribute these symptoms to CA/template changes and related side effects, not to application code changes","=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+
+
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now
+
+SOURCE 36:
+Ticket summary:
+Ticket name: KF80: Email signing/encryption no longer working for executives
+Ticket number: TI-1700007
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 12.02.25 14:08
+
+Closure
+Closure date: 24.02.25 16:00
+Closure text: New S/MIME certificates issued and key archive recovery performed; private keys re-imported on executive devices; signed emails validated.
+
+Activities
+Emails:
+
+12.02.25 14:08 KF80: S/MIME signing failing for the executive group Contact Person 31 Helpdesk
+Hello,
+Our executive team uses S/MIME signing for sensitive emails (board communications, M&A correspondence). Today they reported that Outlook can no longer sign or decrypt emails. Existing signed emails received from external partners cannot be opened either.
+Outlook shows: ""The signing certificate is not valid"" / ""Cannot decrypt message because the certificate is not available.""
+This affects 12 executives and is highly visible. They are bypassing signing temporarily but want this fixed urgently.
+Best regards
+Contact Person 31
+
+12.02.25 14:10 Ticket created: TI-1700007. Priority High - executive impact.
+
+12.02.25 14:30 Ticket assigned | TI-1700007
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 09:50 Re: KF80: S/MIME signing failing Employee 32 Contact Person 31
+Hello,
+Thank you. To narrow down:
+- Did the executives receive new S/MIME certificates as part of last weekend's PKI work?
+- When attempting to sign in Outlook, is the new cert visible in Trust Center → Email Security → Settings? Or does it not appear at all?
+- For decrypting received signed mail: this requires the recipient's PRIVATE key. Did the PKI work include any key archival / key recovery operations?
+
+14.02.25 11:25 Re: KF80: S/MIME signing failing Contact Person 31 Employee 32
+Hi,
+- The PKI team auto-renewed S/MIME certs for all executives when their old certs were close to expiry; this happened over the weekend
+- New cert appears in Trust Center but Outlook says ""you do not have the private key""
+- Key archive: the PKI team said they enabled it but I am not sure of the details
+
+24.02.25 16:00 Ticket closed | TI-1700007
+Closure description:
+Root cause: When executive S/MIME certificates were auto-renewed over the weekend, the new certificates were issued correctly and pushed to the affected user accounts in Active Directory (userCertificate attribute populated). However, the corresponding private keys were generated on the CA side as
+
+SOURCE 13:
+Ticket summary:
+Ticket name: KF80: LDAP-S queries to DCs failing for some applications
+Ticket number: TI-1700008
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 13.02.25 10:20
+
+Closure
+Closure date: 21.02.25 13:55
+Closure text: Domain Controller certificates re-enrolled from internal CA after auto-enrollment template fix; LDAP-S queries restored.
+
+Activities
+Emails:
+
+13.02.25 10:20 KF80: Internal applications cannot bind to AD over LDAP-S Contact Person 31 Helpdesk
+Hello,
+Our identity team reported that several internal applications which use LDAP-S (LDAP over TLS port 636) to authenticate against Active Directory have been failing since this morning. Examples include our HR system's user provisioning, the on-prem SharePoint for user lookup, and the network access control (NAC) system.
+The affected applications report ""could not establish secure connection to LDAP server"" or ""TLS handshake failed against domain controller"". Plain LDAP (port 389) still works but our security policy requires LDAP-S.
+We suspect this is related to the PKI work last weekend.
+Thanks
+Contact Person 31
+
+13.02.25 10:25 Ticket created: TI-1700008. Priority High - identity infrastructure impact.
+
+13.02.25 10:35 Ticket assigned | TI-1700008
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 14:00 Re: KF80: LDAP-S queries failing Employee 32 Contact Person 31
+Hello,
+Thanks. Could you please confirm:
+- Whether ALL DCs are affected or only some
+- The output from a DC of: certutil -store MY (look for the ""Domain Controller"" or ""Kerberos Authentication"" certificates and check expiry/issuer)
+- When the symptom started exactly (yesterday, today morning?)
+
+13.02.25 17:50 Re: KF80: LDAP-S queries failing Contact Person 31 Employee 32
+Hi,
+- All 4 DCs in the main site are affected; the secondary site DCs were not yet checked
+- Sample DC: cert in MY store shows the DC cert ISSUED 14.02.2024 (so almost a year ago) by the OLD issuing CA. It hasn't expired yet but applications complain about it
+- Started overnight - applications worked yesterday afternoon, failed by morning
+
+21.02.25 13:55 Ticket closed | TI-1700008
+Closure description:
+Root cause: The Domain Controllers were configured to auto-enroll for the ""Domain Controller Authentication"" certificate template via Group Policy. Last year's certificate had not yet expired but auto-enrollment normally triggers renewal at the 60%",no,"The statement describes observed correlations and past attributions to CA/template changes without proposing any action, recommendation, or directive.",supported,Each cited ticket links the symptoms to weekend PKI work: TI-1700005 notes the issuing CA was renewed and chain broke; TI-1700006 blames a refreshed VPN cert template that dropped the IKE EKU; TI-1700007 reports auto-renewed S/MIME certs with private-key issues after the weekend; TI-1700008 ties LDAP-S failures to DC certificate auto-enrollment/renewal—none attribute the issues to application code changes.
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,Browsers: no more certificate trust warnings against internal sites,"=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+",no,"This is a declarative statement about browser behavior/desired state and contains no directive language, recommendation phrases, or explicit instruction to take action.",supported,"The ticket closure states the intermediate CA certificate was published to AIA/CRL distribution points and affected services were validated, which indicates the certificate-chain trust issue causing browser warnings for internal sites was resolved."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,The records do not show any single-runbook that covers all four problems as a coordinated remediation plan for a multi-symptom outage in one customer; they are separate tickets that were resolved individually but with similar PKI-rooted causes,"=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+
+
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now
+
+SOURCE 36:
+Ticket summary:
+Ticket name: KF80: Email signing/encryption no longer working for executives
+Ticket number: TI-1700007
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 12.02.25 14:08
+
+Closure
+Closure date: 24.02.25 16:00
+Closure text: New S/MIME certificates issued and key archive recovery performed; private keys re-imported on executive devices; signed emails validated.
+
+Activities
+Emails:
+
+12.02.25 14:08 KF80: S/MIME signing failing for the executive group Contact Person 31 Helpdesk
+Hello,
+Our executive team uses S/MIME signing for sensitive emails (board communications, M&A correspondence). Today they reported that Outlook can no longer sign or decrypt emails. Existing signed emails received from external partners cannot be opened either.
+Outlook shows: ""The signing certificate is not valid"" / ""Cannot decrypt message because the certificate is not available.""
+This affects 12 executives and is highly visible. They are bypassing signing temporarily but want this fixed urgently.
+Best regards
+Contact Person 31
+
+12.02.25 14:10 Ticket created: TI-1700007. Priority High - executive impact.
+
+12.02.25 14:30 Ticket assigned | TI-1700007
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 09:50 Re: KF80: S/MIME signing failing Employee 32 Contact Person 31
+Hello,
+Thank you. To narrow down:
+- Did the executives receive new S/MIME certificates as part of last weekend's PKI work?
+- When attempting to sign in Outlook, is the new cert visible in Trust Center → Email Security → Settings? Or does it not appear at all?
+- For decrypting received signed mail: this requires the recipient's PRIVATE key. Did the PKI work include any key archival / key recovery operations?
+
+14.02.25 11:25 Re: KF80: S/MIME signing failing Contact Person 31 Employee 32
+Hi,
+- The PKI team auto-renewed S/MIME certs for all executives when their old certs were close to expiry; this happened over the weekend
+- New cert appears in Trust Center but Outlook says ""you do not have the private key""
+- Key archive: the PKI team said they enabled it but I am not sure of the details
+
+24.02.25 16:00 Ticket closed | TI-1700007
+Closure description:
+Root cause: When executive S/MIME certificates were auto-renewed over the weekend, the new certificates were issued correctly and pushed to the affected user accounts in Active Directory (userCertificate attribute populated). However, the corresponding private keys were generated on the CA side as
+
+SOURCE 13:
+Ticket summary:
+Ticket name: KF80: LDAP-S queries to DCs failing for some applications
+Ticket number: TI-1700008
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 13.02.25 10:20
+
+Closure
+Closure date: 21.02.25 13:55
+Closure text: Domain Controller certificates re-enrolled from internal CA after auto-enrollment template fix; LDAP-S queries restored.
+
+Activities
+Emails:
+
+13.02.25 10:20 KF80: Internal applications cannot bind to AD over LDAP-S Contact Person 31 Helpdesk
+Hello,
+Our identity team reported that several internal applications which use LDAP-S (LDAP over TLS port 636) to authenticate against Active Directory have been failing since this morning. Examples include our HR system's user provisioning, the on-prem SharePoint for user lookup, and the network access control (NAC) system.
+The affected applications report ""could not establish secure connection to LDAP server"" or ""TLS handshake failed against domain controller"". Plain LDAP (port 389) still works but our security policy requires LDAP-S.
+We suspect this is related to the PKI work last weekend.
+Thanks
+Contact Person 31
+
+13.02.25 10:25 Ticket created: TI-1700008. Priority High - identity infrastructure impact.
+
+13.02.25 10:35 Ticket assigned | TI-1700008
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 14:00 Re: KF80: LDAP-S queries failing Employee 32 Contact Person 31
+Hello,
+Thanks. Could you please confirm:
+- Whether ALL DCs are affected or only some
+- The output from a DC of: certutil -store MY (look for the ""Domain Controller"" or ""Kerberos Authentication"" certificates and check expiry/issuer)
+- When the symptom started exactly (yesterday, today morning?)
+
+13.02.25 17:50 Re: KF80: LDAP-S queries failing Contact Person 31 Employee 32
+Hi,
+- All 4 DCs in the main site are affected; the secondary site DCs were not yet checked
+- Sample DC: cert in MY store shows the DC cert ISSUED 14.02.2024 (so almost a year ago) by the OLD issuing CA. It hasn't expired yet but applications complain about it
+- Started overnight - applications worked yesterday afternoon, failed by morning
+
+21.02.25 13:55 Ticket closed | TI-1700008
+Closure description:
+Root cause: The Domain Controllers were configured to auto-enroll for the ""Domain Controller Authentication"" certificate template via Group Policy. Last year's certificate had not yet expired but auto-enrollment normally triggers renewal at the 60%",no,"This is an observational report about what the records show (separate tickets and no single runbook), not offering any recommendation, directive, or forward-looking advice.",supported,"The CONTEXT lists four distinct tickets (TI-1700005, TI-1700006, TI-1700007, TI-1700008), each handled and closed separately with PKI-related root causes; there is no indication in the records of a single runbook or unified remediation plan covering all four incidents."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,"After publishing, validate from representative clients that the browser chain is complete and warnings are gone (the prior ticket documents ""affected services validated"" after publishing)","=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+",yes,"Uses an imperative recommendation ('After publishing, validate...') instructing action to check that the browser chain is complete and warnings are gone.",supported,"The ticket closure explicitly states: 'Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated', which supports validating from representative clients that the browser chain is complete and warnings are gone. The ANSWER's citation of 'affected services validated' matches this closure text in the CONTEXT."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,"For LDAP-S: fixed the Group Policy / auto-enrollment template behavior and re-enrolled Domain Controller ""Domain Controller Authentication"" certificates from the issuing CA; applications could again bind over LDAPS (636)","=== CITED SOURCES ===
+SOURCE 13:
+Ticket summary:
+Ticket name: KF80: LDAP-S queries to DCs failing for some applications
+Ticket number: TI-1700008
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 13.02.25 10:20
+
+Closure
+Closure date: 21.02.25 13:55
+Closure text: Domain Controller certificates re-enrolled from internal CA after auto-enrollment template fix; LDAP-S queries restored.
+
+Activities
+Emails:
+
+13.02.25 10:20 KF80: Internal applications cannot bind to AD over LDAP-S Contact Person 31 Helpdesk
+Hello,
+Our identity team reported that several internal applications which use LDAP-S (LDAP over TLS port 636) to authenticate against Active Directory have been failing since this morning. Examples include our HR system's user provisioning, the on-prem SharePoint for user lookup, and the network access control (NAC) system.
+The affected applications report ""could not establish secure connection to LDAP server"" or ""TLS handshake failed against domain controller"". Plain LDAP (port 389) still works but our security policy requires LDAP-S.
+We suspect this is related to the PKI work last weekend.
+Thanks
+Contact Person 31
+
+13.02.25 10:25 Ticket created: TI-1700008. Priority High - identity infrastructure impact.
+
+13.02.25 10:35 Ticket assigned | TI-1700008
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 14:00 Re: KF80: LDAP-S queries failing Employee 32 Contact Person 31
+Hello,
+Thanks. Could you please confirm:
+- Whether ALL DCs are affected or only some
+- The output from a DC of: certutil -store MY (look for the ""Domain Controller"" or ""Kerberos Authentication"" certificates and check expiry/issuer)
+- When the symptom started exactly (yesterday, today morning?)
+
+13.02.25 17:50 Re: KF80: LDAP-S queries failing Contact Person 31 Employee 32
+Hi,
+- All 4 DCs in the main site are affected; the secondary site DCs were not yet checked
+- Sample DC: cert in MY store shows the DC cert ISSUED 14.02.2024 (so almost a year ago) by the OLD issuing CA. It hasn't expired yet but applications complain about it
+- Started overnight - applications worked yesterday afternoon, failed by morning
+
+21.02.25 13:55 Ticket closed | TI-1700008
+Closure description:
+Root cause: The Domain Controllers were configured to auto-enroll for the ""Domain Controller Authentication"" certificate template via Group Policy. Last year's certificate had not yet expired but auto-enrollment normally triggers renewal at the 60%",no,This is a past-tense report of actions taken and their outcome (fix and re-enrollment) and does not propose or recommend any future action.,supported,"The ticket closure explicitly states the auto-enrollment template/Group Policy was fixed, Domain Controller certificates were re-enrolled from the internal (issuing) CA, and LDAP-S queries (LDAPS/636) were restored; the context also names the 'Domain Controller Authentication' template as what DCs auto-enroll for."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,The prior tickets explicitly record validation steps and note services/users were validated after remediation,"=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+
+
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now
+
+SOURCE 36:
+Ticket summary:
+Ticket name: KF80: Email signing/encryption no longer working for executives
+Ticket number: TI-1700007
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 12.02.25 14:08
+
+Closure
+Closure date: 24.02.25 16:00
+Closure text: New S/MIME certificates issued and key archive recovery performed; private keys re-imported on executive devices; signed emails validated.
+
+Activities
+Emails:
+
+12.02.25 14:08 KF80: S/MIME signing failing for the executive group Contact Person 31 Helpdesk
+Hello,
+Our executive team uses S/MIME signing for sensitive emails (board communications, M&A correspondence). Today they reported that Outlook can no longer sign or decrypt emails. Existing signed emails received from external partners cannot be opened either.
+Outlook shows: ""The signing certificate is not valid"" / ""Cannot decrypt message because the certificate is not available.""
+This affects 12 executives and is highly visible. They are bypassing signing temporarily but want this fixed urgently.
+Best regards
+Contact Person 31
+
+12.02.25 14:10 Ticket created: TI-1700007. Priority High - executive impact.
+
+12.02.25 14:30 Ticket assigned | TI-1700007
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 09:50 Re: KF80: S/MIME signing failing Employee 32 Contact Person 31
+Hello,
+Thank you. To narrow down:
+- Did the executives receive new S/MIME certificates as part of last weekend's PKI work?
+- When attempting to sign in Outlook, is the new cert visible in Trust Center → Email Security → Settings? Or does it not appear at all?
+- For decrypting received signed mail: this requires the recipient's PRIVATE key. Did the PKI work include any key archival / key recovery operations?
+
+14.02.25 11:25 Re: KF80: S/MIME signing failing Contact Person 31 Employee 32
+Hi,
+- The PKI team auto-renewed S/MIME certs for all executives when their old certs were close to expiry; this happened over the weekend
+- New cert appears in Trust Center but Outlook says ""you do not have the private key""
+- Key archive: the PKI team said they enabled it but I am not sure of the details
+
+24.02.25 16:00 Ticket closed | TI-1700007
+Closure description:
+Root cause: When executive S/MIME certificates were auto-renewed over the weekend, the new certificates were issued correctly and pushed to the affected user accounts in Active Directory (userCertificate attribute populated). However, the corresponding private keys were generated on the CA side as
+
+SOURCE 13:
+Ticket summary:
+Ticket name: KF80: LDAP-S queries to DCs failing for some applications
+Ticket number: TI-1700008
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 13.02.25 10:20
+
+Closure
+Closure date: 21.02.25 13:55
+Closure text: Domain Controller certificates re-enrolled from internal CA after auto-enrollment template fix; LDAP-S queries restored.
+
+Activities
+Emails:
+
+13.02.25 10:20 KF80: Internal applications cannot bind to AD over LDAP-S Contact Person 31 Helpdesk
+Hello,
+Our identity team reported that several internal applications which use LDAP-S (LDAP over TLS port 636) to authenticate against Active Directory have been failing since this morning. Examples include our HR system's user provisioning, the on-prem SharePoint for user lookup, and the network access control (NAC) system.
+The affected applications report ""could not establish secure connection to LDAP server"" or ""TLS handshake failed against domain controller"". Plain LDAP (port 389) still works but our security policy requires LDAP-S.
+We suspect this is related to the PKI work last weekend.
+Thanks
+Contact Person 31
+
+13.02.25 10:25 Ticket created: TI-1700008. Priority High - identity infrastructure impact.
+
+13.02.25 10:35 Ticket assigned | TI-1700008
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 14:00 Re: KF80: LDAP-S queries failing Employee 32 Contact Person 31
+Hello,
+Thanks. Could you please confirm:
+- Whether ALL DCs are affected or only some
+- The output from a DC of: certutil -store MY (look for the ""Domain Controller"" or ""Kerberos Authentication"" certificates and check expiry/issuer)
+- When the symptom started exactly (yesterday, today morning?)
+
+13.02.25 17:50 Re: KF80: LDAP-S queries failing Contact Person 31 Employee 32
+Hi,
+- All 4 DCs in the main site are affected; the secondary site DCs were not yet checked
+- Sample DC: cert in MY store shows the DC cert ISSUED 14.02.2024 (so almost a year ago) by the OLD issuing CA. It hasn't expired yet but applications complain about it
+- Started overnight - applications worked yesterday afternoon, failed by morning
+
+21.02.25 13:55 Ticket closed | TI-1700008
+Closure description:
+Root cause: The Domain Controllers were configured to auto-enroll for the ""Domain Controller Authentication"" certificate template via Group Policy. Last year's certificate had not yet expired but auto-enrollment normally triggers renewal at the 60%",no,"This is a factual statement describing past ticket records and validations after remediation, not offering any recommendation or forward-looking advice.",supported,"Multiple ticket closures explicitly state validation occurred (TI-1700005: “affected services validated”; TI-1700006: “affected users validated”; TI-1700007: “signed emails validated”), and investigative steps (e.g., certutil -urlfetch -verify) are recorded in the ticket activities."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,S/MIME: executives can sign outgoing mail and decrypt received sealed mail; previously-signed messages can be opened,"=== CITED SOURCES ===
+SOURCE 36:
+Ticket summary:
+Ticket name: KF80: Email signing/encryption no longer working for executives
+Ticket number: TI-1700007
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 12.02.25 14:08
+
+Closure
+Closure date: 24.02.25 16:00
+Closure text: New S/MIME certificates issued and key archive recovery performed; private keys re-imported on executive devices; signed emails validated.
+
+Activities
+Emails:
+
+12.02.25 14:08 KF80: S/MIME signing failing for the executive group Contact Person 31 Helpdesk
+Hello,
+Our executive team uses S/MIME signing for sensitive emails (board communications, M&A correspondence). Today they reported that Outlook can no longer sign or decrypt emails. Existing signed emails received from external partners cannot be opened either.
+Outlook shows: ""The signing certificate is not valid"" / ""Cannot decrypt message because the certificate is not available.""
+This affects 12 executives and is highly visible. They are bypassing signing temporarily but want this fixed urgently.
+Best regards
+Contact Person 31
+
+12.02.25 14:10 Ticket created: TI-1700007. Priority High - executive impact.
+
+12.02.25 14:30 Ticket assigned | TI-1700007
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 09:50 Re: KF80: S/MIME signing failing Employee 32 Contact Person 31
+Hello,
+Thank you. To narrow down:
+- Did the executives receive new S/MIME certificates as part of last weekend's PKI work?
+- When attempting to sign in Outlook, is the new cert visible in Trust Center → Email Security → Settings? Or does it not appear at all?
+- For decrypting received signed mail: this requires the recipient's PRIVATE key. Did the PKI work include any key archival / key recovery operations?
+
+14.02.25 11:25 Re: KF80: S/MIME signing failing Contact Person 31 Employee 32
+Hi,
+- The PKI team auto-renewed S/MIME certs for all executives when their old certs were close to expiry; this happened over the weekend
+- New cert appears in Trust Center but Outlook says ""you do not have the private key""
+- Key archive: the PKI team said they enabled it but I am not sure of the details
+
+24.02.25 16:00 Ticket closed | TI-1700007
+Closure description:
+Root cause: When executive S/MIME certificates were auto-renewed over the weekend, the new certificates were issued correctly and pushed to the affected user accounts in Active Directory (userCertificate attribute populated). However, the corresponding private keys were generated on the CA side as",no,"This is a descriptive statement about S/MIME capabilities (what can be done), not a recommendation or advice to take action.",supported,"The ticket states executives used S/MIME for signing and could not sign or decrypt and could not open existing signed messages; closure notes new S/MIME certificates issued, private keys re-imported to executive devices and signed emails validated, which supports that they can now sign outgoing mail, decrypt sealed mail, and open previously-signed messages."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,Use key-archive / recovery to obtain the private keys or issue new S/MIME certificates with private keys that are properly provisioned to user devices. The recorded remediation was: new S/MIME certificates issued and key-archive recovery performed; private keys re-imported on executive devices; signed emails validated,"=== CITED SOURCES ===
+SOURCE 36:
+Ticket summary:
+Ticket name: KF80: Email signing/encryption no longer working for executives
+Ticket number: TI-1700007
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 12.02.25 14:08
+
+Closure
+Closure date: 24.02.25 16:00
+Closure text: New S/MIME certificates issued and key archive recovery performed; private keys re-imported on executive devices; signed emails validated.
+
+Activities
+Emails:
+
+12.02.25 14:08 KF80: S/MIME signing failing for the executive group Contact Person 31 Helpdesk
+Hello,
+Our executive team uses S/MIME signing for sensitive emails (board communications, M&A correspondence). Today they reported that Outlook can no longer sign or decrypt emails. Existing signed emails received from external partners cannot be opened either.
+Outlook shows: ""The signing certificate is not valid"" / ""Cannot decrypt message because the certificate is not available.""
+This affects 12 executives and is highly visible. They are bypassing signing temporarily but want this fixed urgently.
+Best regards
+Contact Person 31
+
+12.02.25 14:10 Ticket created: TI-1700007. Priority High - executive impact.
+
+12.02.25 14:30 Ticket assigned | TI-1700007
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 09:50 Re: KF80: S/MIME signing failing Employee 32 Contact Person 31
+Hello,
+Thank you. To narrow down:
+- Did the executives receive new S/MIME certificates as part of last weekend's PKI work?
+- When attempting to sign in Outlook, is the new cert visible in Trust Center → Email Security → Settings? Or does it not appear at all?
+- For decrypting received signed mail: this requires the recipient's PRIVATE key. Did the PKI work include any key archival / key recovery operations?
+
+14.02.25 11:25 Re: KF80: S/MIME signing failing Contact Person 31 Employee 32
+Hi,
+- The PKI team auto-renewed S/MIME certs for all executives when their old certs were close to expiry; this happened over the weekend
+- New cert appears in Trust Center but Outlook says ""you do not have the private key""
+- Key archive: the PKI team said they enabled it but I am not sure of the details
+
+24.02.25 16:00 Ticket closed | TI-1700007
+Closure description:
+Root cause: When executive S/MIME certificates were auto-renewed over the weekend, the new certificates were issued correctly and pushed to the affected user accounts in Active Directory (userCertificate attribute populated). However, the corresponding private keys were generated on the CA side as",yes,Contains direct imperative instruction ('Use key-archive / recovery' and 'issue new S/MIME certificates') proposing actions rather than just reporting remediation.,supported,"The ticket closure explicitly states new S/MIME certificates were issued and key archive recovery was performed; private keys were re-imported on executive devices and signed emails validated, supporting both the recommended actions and the recorded remediation."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,Internal HTTPS services showed broken chains because the issuing (intermediate) CA certificate was not presented / published to distribution points; remediation was to publish the issuing CA into AIA/CRL distribution points and validate services,"=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+",yes,"The statement contains explicit remediation instructions—publishing the issuing CA to AIA/CRL distribution points and validating services—i.e., forward-looking advice.",supported,"Browser inspection reported the chain breaks with 'Issuer's certificate not found' for the issuing CA, and the ticket closure states the intermediate CA certificate was published to AIA/CRL distribution points and affected services were validated, directly supporting both the cause and the remediation."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,"Check whether the Domain Controllers’ ""Domain Controller Authentication"" certs were auto-enrolled/renewed from the CA/template change and whether the renewed certs are trusted by the application clients. The prior ticket shows auto-enrollment renewal behaviour triggered renewals and that auto-enrollment/template configuration needed correction","=== CITED SOURCES ===
+SOURCE 13:
+Ticket summary:
+Ticket name: KF80: LDAP-S queries to DCs failing for some applications
+Ticket number: TI-1700008
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 13.02.25 10:20
+
+Closure
+Closure date: 21.02.25 13:55
+Closure text: Domain Controller certificates re-enrolled from internal CA after auto-enrollment template fix; LDAP-S queries restored.
+
+Activities
+Emails:
+
+13.02.25 10:20 KF80: Internal applications cannot bind to AD over LDAP-S Contact Person 31 Helpdesk
+Hello,
+Our identity team reported that several internal applications which use LDAP-S (LDAP over TLS port 636) to authenticate against Active Directory have been failing since this morning. Examples include our HR system's user provisioning, the on-prem SharePoint for user lookup, and the network access control (NAC) system.
+The affected applications report ""could not establish secure connection to LDAP server"" or ""TLS handshake failed against domain controller"". Plain LDAP (port 389) still works but our security policy requires LDAP-S.
+We suspect this is related to the PKI work last weekend.
+Thanks
+Contact Person 31
+
+13.02.25 10:25 Ticket created: TI-1700008. Priority High - identity infrastructure impact.
+
+13.02.25 10:35 Ticket assigned | TI-1700008
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 14:00 Re: KF80: LDAP-S queries failing Employee 32 Contact Person 31
+Hello,
+Thanks. Could you please confirm:
+- Whether ALL DCs are affected or only some
+- The output from a DC of: certutil -store MY (look for the ""Domain Controller"" or ""Kerberos Authentication"" certificates and check expiry/issuer)
+- When the symptom started exactly (yesterday, today morning?)
+
+13.02.25 17:50 Re: KF80: LDAP-S queries failing Contact Person 31 Employee 32
+Hi,
+- All 4 DCs in the main site are affected; the secondary site DCs were not yet checked
+- Sample DC: cert in MY store shows the DC cert ISSUED 14.02.2024 (so almost a year ago) by the OLD issuing CA. It hasn't expired yet but applications complain about it
+- Started overnight - applications worked yesterday afternoon, failed by morning
+
+21.02.25 13:55 Ticket closed | TI-1700008
+Closure description:
+Root cause: The Domain Controllers were configured to auto-enroll for the ""Domain Controller Authentication"" certificate template via Group Policy. Last year's certificate had not yet expired but auto-enrollment normally triggers renewal at the 60%",yes,"Contains a directive ('Check whether') asking to verify auto-enrollment/renewal and trust by clients, which is actionable advice.",supported,"The ticket states DCs were configured to auto-enroll for the 'Domain Controller Authentication' template and that DC certificates were re-enrolled from the internal CA after an auto-enrollment/template fix, and that LDAP-S queries were restored, which supports checking for auto-renewal and client trust of the renewed certs."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,"The records document the types of corrective actions and their successful results, but they do not contain your environment-specific details (which exact CA was renewed in your environment, the precise certificate template names/settings you use, or the exact commands/scripts used to publish or re-enroll certificates). The tickets show the corrective actions but not the low-level procedure text that would be executed in your environment","=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+
+
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now
+
+SOURCE 36:
+Ticket summary:
+Ticket name: KF80: Email signing/encryption no longer working for executives
+Ticket number: TI-1700007
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 12.02.25 14:08
+
+Closure
+Closure date: 24.02.25 16:00
+Closure text: New S/MIME certificates issued and key archive recovery performed; private keys re-imported on executive devices; signed emails validated.
+
+Activities
+Emails:
+
+12.02.25 14:08 KF80: S/MIME signing failing for the executive group Contact Person 31 Helpdesk
+Hello,
+Our executive team uses S/MIME signing for sensitive emails (board communications, M&A correspondence). Today they reported that Outlook can no longer sign or decrypt emails. Existing signed emails received from external partners cannot be opened either.
+Outlook shows: ""The signing certificate is not valid"" / ""Cannot decrypt message because the certificate is not available.""
+This affects 12 executives and is highly visible. They are bypassing signing temporarily but want this fixed urgently.
+Best regards
+Contact Person 31
+
+12.02.25 14:10 Ticket created: TI-1700007. Priority High - executive impact.
+
+12.02.25 14:30 Ticket assigned | TI-1700007
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 09:50 Re: KF80: S/MIME signing failing Employee 32 Contact Person 31
+Hello,
+Thank you. To narrow down:
+- Did the executives receive new S/MIME certificates as part of last weekend's PKI work?
+- When attempting to sign in Outlook, is the new cert visible in Trust Center → Email Security → Settings? Or does it not appear at all?
+- For decrypting received signed mail: this requires the recipient's PRIVATE key. Did the PKI work include any key archival / key recovery operations?
+
+14.02.25 11:25 Re: KF80: S/MIME signing failing Contact Person 31 Employee 32
+Hi,
+- The PKI team auto-renewed S/MIME certs for all executives when their old certs were close to expiry; this happened over the weekend
+- New cert appears in Trust Center but Outlook says ""you do not have the private key""
+- Key archive: the PKI team said they enabled it but I am not sure of the details
+
+24.02.25 16:00 Ticket closed | TI-1700007
+Closure description:
+Root cause: When executive S/MIME certificates were auto-renewed over the weekend, the new certificates were issued correctly and pushed to the affected user accounts in Active Directory (userCertificate attribute populated). However, the corresponding private keys were generated on the CA side as
+
+SOURCE 13:
+Ticket summary:
+Ticket name: KF80: LDAP-S queries to DCs failing for some applications
+Ticket number: TI-1700008
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 13.02.25 10:20
+
+Closure
+Closure date: 21.02.25 13:55
+Closure text: Domain Controller certificates re-enrolled from internal CA after auto-enrollment template fix; LDAP-S queries restored.
+
+Activities
+Emails:
+
+13.02.25 10:20 KF80: Internal applications cannot bind to AD over LDAP-S Contact Person 31 Helpdesk
+Hello,
+Our identity team reported that several internal applications which use LDAP-S (LDAP over TLS port 636) to authenticate against Active Directory have been failing since this morning. Examples include our HR system's user provisioning, the on-prem SharePoint for user lookup, and the network access control (NAC) system.
+The affected applications report ""could not establish secure connection to LDAP server"" or ""TLS handshake failed against domain controller"". Plain LDAP (port 389) still works but our security policy requires LDAP-S.
+We suspect this is related to the PKI work last weekend.
+Thanks
+Contact Person 31
+
+13.02.25 10:25 Ticket created: TI-1700008. Priority High - identity infrastructure impact.
+
+13.02.25 10:35 Ticket assigned | TI-1700008
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 14:00 Re: KF80: LDAP-S queries failing Employee 32 Contact Person 31
+Hello,
+Thanks. Could you please confirm:
+- Whether ALL DCs are affected or only some
+- The output from a DC of: certutil -store MY (look for the ""Domain Controller"" or ""Kerberos Authentication"" certificates and check expiry/issuer)
+- When the symptom started exactly (yesterday, today morning?)
+
+13.02.25 17:50 Re: KF80: LDAP-S queries failing Contact Person 31 Employee 32
+Hi,
+- All 4 DCs in the main site are affected; the secondary site DCs were not yet checked
+- Sample DC: cert in MY store shows the DC cert ISSUED 14.02.2024 (so almost a year ago) by the OLD issuing CA. It hasn't expired yet but applications complain about it
+- Started overnight - applications worked yesterday afternoon, failed by morning
+
+21.02.25 13:55 Ticket closed | TI-1700008
+Closure description:
+Root cause: The Domain Controllers were configured to auto-enroll for the ""Domain Controller Authentication"" certificate template via Group Policy. Last year's certificate had not yet expired but auto-enrollment normally triggers renewal at the 60%",no,"No — the text only describes what the records contain and omit, without offering directives, suggestions, or forward-looking recommendations.",partially_supported,"The tickets and closures clearly document corrective actions and their successful results (e.g., AIA/CRL publication, reissued VPN certs deployed via GPO, S/MIME reissues). However the answer's claim that environment-specific details are absent is incorrect—the context includes specifics like the issuing CA name (KF80-Issuing-CA-01), template names/settings (e.g., ""Domain Controller Authentication"", EKU changes for the VPN template), though it does not show low-level commands/scripts."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,"Confirm whether the executives’ S/MIME certificates were auto-renewed and whether the private keys are present on the client. The recorded incident showed new certs were present but Outlook reported ""you do not have the private key"" because the private key material was not on the devices","=== CITED SOURCES ===
+SOURCE 36:
+Ticket summary:
+Ticket name: KF80: Email signing/encryption no longer working for executives
+Ticket number: TI-1700007
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 12.02.25 14:08
+
+Closure
+Closure date: 24.02.25 16:00
+Closure text: New S/MIME certificates issued and key archive recovery performed; private keys re-imported on executive devices; signed emails validated.
+
+Activities
+Emails:
+
+12.02.25 14:08 KF80: S/MIME signing failing for the executive group Contact Person 31 Helpdesk
+Hello,
+Our executive team uses S/MIME signing for sensitive emails (board communications, M&A correspondence). Today they reported that Outlook can no longer sign or decrypt emails. Existing signed emails received from external partners cannot be opened either.
+Outlook shows: ""The signing certificate is not valid"" / ""Cannot decrypt message because the certificate is not available.""
+This affects 12 executives and is highly visible. They are bypassing signing temporarily but want this fixed urgently.
+Best regards
+Contact Person 31
+
+12.02.25 14:10 Ticket created: TI-1700007. Priority High - executive impact.
+
+12.02.25 14:30 Ticket assigned | TI-1700007
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 09:50 Re: KF80: S/MIME signing failing Employee 32 Contact Person 31
+Hello,
+Thank you. To narrow down:
+- Did the executives receive new S/MIME certificates as part of last weekend's PKI work?
+- When attempting to sign in Outlook, is the new cert visible in Trust Center → Email Security → Settings? Or does it not appear at all?
+- For decrypting received signed mail: this requires the recipient's PRIVATE key. Did the PKI work include any key archival / key recovery operations?
+
+14.02.25 11:25 Re: KF80: S/MIME signing failing Contact Person 31 Employee 32
+Hi,
+- The PKI team auto-renewed S/MIME certs for all executives when their old certs were close to expiry; this happened over the weekend
+- New cert appears in Trust Center but Outlook says ""you do not have the private key""
+- Key archive: the PKI team said they enabled it but I am not sure of the details
+
+24.02.25 16:00 Ticket closed | TI-1700007
+Closure description:
+Root cause: When executive S/MIME certificates were auto-renewed over the weekend, the new certificates were issued correctly and pushed to the affected user accounts in Active Directory (userCertificate attribute populated). However, the corresponding private keys were generated on the CA side as",yes,"The statement issues a directive ('Confirm whether...') asking someone to verify certificate auto-renewal and private key presence, which is a recommendation/action request.",supported,"The ticket notes the PKI team auto-renewed S/MIME certs over the weekend and the user reported Outlook showing ""you do not have the private key""; closure describes new certs pushed to AD and private keys being generated on the CA and later re-imported to devices, supporting the claim that private key material was not on the clients."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,"Execute the validation checks listed in step 6. These coordination and environment-specific execution steps are recommended because the tickets show these exact fixes worked, but your environment specifics are required to perform them","=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+
+
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now
+
+SOURCE 36:
+Ticket summary:
+Ticket name: KF80: Email signing/encryption no longer working for executives
+Ticket number: TI-1700007
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 12.02.25 14:08
+
+Closure
+Closure date: 24.02.25 16:00
+Closure text: New S/MIME certificates issued and key archive recovery performed; private keys re-imported on executive devices; signed emails validated.
+
+Activities
+Emails:
+
+12.02.25 14:08 KF80: S/MIME signing failing for the executive group Contact Person 31 Helpdesk
+Hello,
+Our executive team uses S/MIME signing for sensitive emails (board communications, M&A correspondence). Today they reported that Outlook can no longer sign or decrypt emails. Existing signed emails received from external partners cannot be opened either.
+Outlook shows: ""The signing certificate is not valid"" / ""Cannot decrypt message because the certificate is not available.""
+This affects 12 executives and is highly visible. They are bypassing signing temporarily but want this fixed urgently.
+Best regards
+Contact Person 31
+
+12.02.25 14:10 Ticket created: TI-1700007. Priority High - executive impact.
+
+12.02.25 14:30 Ticket assigned | TI-1700007
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 09:50 Re: KF80: S/MIME signing failing Employee 32 Contact Person 31
+Hello,
+Thank you. To narrow down:
+- Did the executives receive new S/MIME certificates as part of last weekend's PKI work?
+- When attempting to sign in Outlook, is the new cert visible in Trust Center → Email Security → Settings? Or does it not appear at all?
+- For decrypting received signed mail: this requires the recipient's PRIVATE key. Did the PKI work include any key archival / key recovery operations?
+
+14.02.25 11:25 Re: KF80: S/MIME signing failing Contact Person 31 Employee 32
+Hi,
+- The PKI team auto-renewed S/MIME certs for all executives when their old certs were close to expiry; this happened over the weekend
+- New cert appears in Trust Center but Outlook says ""you do not have the private key""
+- Key archive: the PKI team said they enabled it but I am not sure of the details
+
+24.02.25 16:00 Ticket closed | TI-1700007
+Closure description:
+Root cause: When executive S/MIME certificates were auto-renewed over the weekend, the new certificates were issued correctly and pushed to the affected user accounts in Active Directory (userCertificate attribute populated). However, the corresponding private keys were generated on the CA side as
+
+SOURCE 13:
+Ticket summary:
+Ticket name: KF80: LDAP-S queries to DCs failing for some applications
+Ticket number: TI-1700008
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 13.02.25 10:20
+
+Closure
+Closure date: 21.02.25 13:55
+Closure text: Domain Controller certificates re-enrolled from internal CA after auto-enrollment template fix; LDAP-S queries restored.
+
+Activities
+Emails:
+
+13.02.25 10:20 KF80: Internal applications cannot bind to AD over LDAP-S Contact Person 31 Helpdesk
+Hello,
+Our identity team reported that several internal applications which use LDAP-S (LDAP over TLS port 636) to authenticate against Active Directory have been failing since this morning. Examples include our HR system's user provisioning, the on-prem SharePoint for user lookup, and the network access control (NAC) system.
+The affected applications report ""could not establish secure connection to LDAP server"" or ""TLS handshake failed against domain controller"". Plain LDAP (port 389) still works but our security policy requires LDAP-S.
+We suspect this is related to the PKI work last weekend.
+Thanks
+Contact Person 31
+
+13.02.25 10:25 Ticket created: TI-1700008. Priority High - identity infrastructure impact.
+
+13.02.25 10:35 Ticket assigned | TI-1700008
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 14:00 Re: KF80: LDAP-S queries failing Employee 32 Contact Person 31
+Hello,
+Thanks. Could you please confirm:
+- Whether ALL DCs are affected or only some
+- The output from a DC of: certutil -store MY (look for the ""Domain Controller"" or ""Kerberos Authentication"" certificates and check expiry/issuer)
+- When the symptom started exactly (yesterday, today morning?)
+
+13.02.25 17:50 Re: KF80: LDAP-S queries failing Contact Person 31 Employee 32
+Hi,
+- All 4 DCs in the main site are affected; the secondary site DCs were not yet checked
+- Sample DC: cert in MY store shows the DC cert ISSUED 14.02.2024 (so almost a year ago) by the OLD issuing CA. It hasn't expired yet but applications complain about it
+- Started overnight - applications worked yesterday afternoon, failed by morning
+
+21.02.25 13:55 Ticket closed | TI-1700008
+Closure description:
+Root cause: The Domain Controllers were configured to auto-enroll for the ""Domain Controller Authentication"" certificate template via Group Policy. Last year's certificate had not yet expired but auto-enrollment normally triggers renewal at the 60%",yes,"Contains an explicit directive ('Execute the validation checks') and explicitly states these steps 'are recommended', i.e., forward-looking advice.",partially_supported,"The tickets in the CONTEXT show the specific fixes were applied and validated (e.g., publishing intermediate CA, reissuing VPN certs with corrected EKU, re-enrolling DC certs, reissuing S/MIME and recovering keys), supporting the recommendation to run validation/coordination steps; however the ANSWER refers to 'validation checks listed in step 6', and no 'step 6' or corresponding checklist is present in the provided CONTEXT."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,LDAP-S (LDAPS) binds failed because Domain Controller certificates were auto-enrolled/renewed from the old issuing CA / template behavior; a fix to the auto-enrollment/template and re-enrollment of DC certificates restored LDAP-S connectivity,"=== CITED SOURCES ===
+SOURCE 13:
+Ticket summary:
+Ticket name: KF80: LDAP-S queries to DCs failing for some applications
+Ticket number: TI-1700008
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 13.02.25 10:20
+
+Closure
+Closure date: 21.02.25 13:55
+Closure text: Domain Controller certificates re-enrolled from internal CA after auto-enrollment template fix; LDAP-S queries restored.
+
+Activities
+Emails:
+
+13.02.25 10:20 KF80: Internal applications cannot bind to AD over LDAP-S Contact Person 31 Helpdesk
+Hello,
+Our identity team reported that several internal applications which use LDAP-S (LDAP over TLS port 636) to authenticate against Active Directory have been failing since this morning. Examples include our HR system's user provisioning, the on-prem SharePoint for user lookup, and the network access control (NAC) system.
+The affected applications report ""could not establish secure connection to LDAP server"" or ""TLS handshake failed against domain controller"". Plain LDAP (port 389) still works but our security policy requires LDAP-S.
+We suspect this is related to the PKI work last weekend.
+Thanks
+Contact Person 31
+
+13.02.25 10:25 Ticket created: TI-1700008. Priority High - identity infrastructure impact.
+
+13.02.25 10:35 Ticket assigned | TI-1700008
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 14:00 Re: KF80: LDAP-S queries failing Employee 32 Contact Person 31
+Hello,
+Thanks. Could you please confirm:
+- Whether ALL DCs are affected or only some
+- The output from a DC of: certutil -store MY (look for the ""Domain Controller"" or ""Kerberos Authentication"" certificates and check expiry/issuer)
+- When the symptom started exactly (yesterday, today morning?)
+
+13.02.25 17:50 Re: KF80: LDAP-S queries failing Contact Person 31 Employee 32
+Hi,
+- All 4 DCs in the main site are affected; the secondary site DCs were not yet checked
+- Sample DC: cert in MY store shows the DC cert ISSUED 14.02.2024 (so almost a year ago) by the OLD issuing CA. It hasn't expired yet but applications complain about it
+- Started overnight - applications worked yesterday afternoon, failed by morning
+
+21.02.25 13:55 Ticket closed | TI-1700008
+Closure description:
+Root cause: The Domain Controllers were configured to auto-enroll for the ""Domain Controller Authentication"" certificate template via Group Policy. Last year's certificate had not yet expired but auto-enrollment normally triggers renewal at the 60%",no,The statement reports a past cause and remediation that restored connectivity (fixing auto-enrollment/template and re-enrolling DC certificates) rather than issuing a recommendation or instruction.,supported,"The ticket describes LDAP-S/TLS handshake failures and a DC cert issued by the OLD issuing CA with auto-enrollment configured via Group Policy; closure states the auto-enrollment template was fixed, DC certificates were re-enrolled from the internal CA, and LDAP-S queries were restored."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,Verify whether the issuing CA (intermediate) and/or certificate templates were changed or renewed in the maintenance window. This is the common trigger in the records,"=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+
+
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now
+
+SOURCE 36:
+Ticket summary:
+Ticket name: KF80: Email signing/encryption no longer working for executives
+Ticket number: TI-1700007
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 12.02.25 14:08
+
+Closure
+Closure date: 24.02.25 16:00
+Closure text: New S/MIME certificates issued and key archive recovery performed; private keys re-imported on executive devices; signed emails validated.
+
+Activities
+Emails:
+
+12.02.25 14:08 KF80: S/MIME signing failing for the executive group Contact Person 31 Helpdesk
+Hello,
+Our executive team uses S/MIME signing for sensitive emails (board communications, M&A correspondence). Today they reported that Outlook can no longer sign or decrypt emails. Existing signed emails received from external partners cannot be opened either.
+Outlook shows: ""The signing certificate is not valid"" / ""Cannot decrypt message because the certificate is not available.""
+This affects 12 executives and is highly visible. They are bypassing signing temporarily but want this fixed urgently.
+Best regards
+Contact Person 31
+
+12.02.25 14:10 Ticket created: TI-1700007. Priority High - executive impact.
+
+12.02.25 14:30 Ticket assigned | TI-1700007
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 09:50 Re: KF80: S/MIME signing failing Employee 32 Contact Person 31
+Hello,
+Thank you. To narrow down:
+- Did the executives receive new S/MIME certificates as part of last weekend's PKI work?
+- When attempting to sign in Outlook, is the new cert visible in Trust Center → Email Security → Settings? Or does it not appear at all?
+- For decrypting received signed mail: this requires the recipient's PRIVATE key. Did the PKI work include any key archival / key recovery operations?
+
+14.02.25 11:25 Re: KF80: S/MIME signing failing Contact Person 31 Employee 32
+Hi,
+- The PKI team auto-renewed S/MIME certs for all executives when their old certs were close to expiry; this happened over the weekend
+- New cert appears in Trust Center but Outlook says ""you do not have the private key""
+- Key archive: the PKI team said they enabled it but I am not sure of the details
+
+24.02.25 16:00 Ticket closed | TI-1700007
+Closure description:
+Root cause: When executive S/MIME certificates were auto-renewed over the weekend, the new certificates were issued correctly and pushed to the affected user accounts in Active Directory (userCertificate attribute populated). However, the corresponding private keys were generated on the CA side as
+
+SOURCE 13:
+Ticket summary:
+Ticket name: KF80: LDAP-S queries to DCs failing for some applications
+Ticket number: TI-1700008
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 13.02.25 10:20
+
+Closure
+Closure date: 21.02.25 13:55
+Closure text: Domain Controller certificates re-enrolled from internal CA after auto-enrollment template fix; LDAP-S queries restored.
+
+Activities
+Emails:
+
+13.02.25 10:20 KF80: Internal applications cannot bind to AD over LDAP-S Contact Person 31 Helpdesk
+Hello,
+Our identity team reported that several internal applications which use LDAP-S (LDAP over TLS port 636) to authenticate against Active Directory have been failing since this morning. Examples include our HR system's user provisioning, the on-prem SharePoint for user lookup, and the network access control (NAC) system.
+The affected applications report ""could not establish secure connection to LDAP server"" or ""TLS handshake failed against domain controller"". Plain LDAP (port 389) still works but our security policy requires LDAP-S.
+We suspect this is related to the PKI work last weekend.
+Thanks
+Contact Person 31
+
+13.02.25 10:25 Ticket created: TI-1700008. Priority High - identity infrastructure impact.
+
+13.02.25 10:35 Ticket assigned | TI-1700008
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 14:00 Re: KF80: LDAP-S queries failing Employee 32 Contact Person 31
+Hello,
+Thanks. Could you please confirm:
+- Whether ALL DCs are affected or only some
+- The output from a DC of: certutil -store MY (look for the ""Domain Controller"" or ""Kerberos Authentication"" certificates and check expiry/issuer)
+- When the symptom started exactly (yesterday, today morning?)
+
+13.02.25 17:50 Re: KF80: LDAP-S queries failing Contact Person 31 Employee 32
+Hi,
+- All 4 DCs in the main site are affected; the secondary site DCs were not yet checked
+- Sample DC: cert in MY store shows the DC cert ISSUED 14.02.2024 (so almost a year ago) by the OLD issuing CA. It hasn't expired yet but applications complain about it
+- Started overnight - applications worked yesterday afternoon, failed by morning
+
+21.02.25 13:55 Ticket closed | TI-1700008
+Closure description:
+Root cause: The Domain Controllers were configured to auto-enroll for the ""Domain Controller Authentication"" certificate template via Group Policy. Last year's certificate had not yet expired but auto-enrollment normally triggers renewal at the 60%",yes,"Uses a directive verb ('Verify whether...') instructing an action to check for CA or template changes during the maintenance window, so it is a recommendation.",supported,Multiple tickets in the context identify issuing CA renewals or certificate/template renewals as the root cause (TI-1700005: issuing CA renewed; TI-1700006: refreshed certificate template changed EKU; TI-1700007: auto-renewed S/MIME certs; TI-1700008: auto-enrollment/template renewal). Verifying CA or template changes in the maintenance window matches the documented common trigger.
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,"Reissued the VPN server certificate from a corrected template including the required IPsec/IKE EKU, deployed the corrected certificate to the VPN servers, and reissued/deployed or validated client certificates where needed; affected remote users regained VPN access","=== CITED SOURCES ===
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now",no,"The statement is a past-tense report of actions taken and the outcome, not proposing or recommending any future action.",partially_supported,"The context states client certificates were reissued from a corrected template, deployed via GPO, and affected users validated (restoring access), but it does not show that the VPN server certificate was reissued or redeployed from a corrected template."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,Executive S/MIME stopped working because new user certificates were issued without the corresponding private keys being available on the client: private keys had been generated on the CA side and key-archive/recovery plus local private-key import were required; remediation was new S/MIME cert issuance and private-key recovery/import on executive devices,"=== CITED SOURCES ===
+SOURCE 36:
+Ticket summary:
+Ticket name: KF80: Email signing/encryption no longer working for executives
+Ticket number: TI-1700007
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 12.02.25 14:08
+
+Closure
+Closure date: 24.02.25 16:00
+Closure text: New S/MIME certificates issued and key archive recovery performed; private keys re-imported on executive devices; signed emails validated.
+
+Activities
+Emails:
+
+12.02.25 14:08 KF80: S/MIME signing failing for the executive group Contact Person 31 Helpdesk
+Hello,
+Our executive team uses S/MIME signing for sensitive emails (board communications, M&A correspondence). Today they reported that Outlook can no longer sign or decrypt emails. Existing signed emails received from external partners cannot be opened either.
+Outlook shows: ""The signing certificate is not valid"" / ""Cannot decrypt message because the certificate is not available.""
+This affects 12 executives and is highly visible. They are bypassing signing temporarily but want this fixed urgently.
+Best regards
+Contact Person 31
+
+12.02.25 14:10 Ticket created: TI-1700007. Priority High - executive impact.
+
+12.02.25 14:30 Ticket assigned | TI-1700007
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 09:50 Re: KF80: S/MIME signing failing Employee 32 Contact Person 31
+Hello,
+Thank you. To narrow down:
+- Did the executives receive new S/MIME certificates as part of last weekend's PKI work?
+- When attempting to sign in Outlook, is the new cert visible in Trust Center → Email Security → Settings? Or does it not appear at all?
+- For decrypting received signed mail: this requires the recipient's PRIVATE key. Did the PKI work include any key archival / key recovery operations?
+
+14.02.25 11:25 Re: KF80: S/MIME signing failing Contact Person 31 Employee 32
+Hi,
+- The PKI team auto-renewed S/MIME certs for all executives when their old certs were close to expiry; this happened over the weekend
+- New cert appears in Trust Center but Outlook says ""you do not have the private key""
+- Key archive: the PKI team said they enabled it but I am not sure of the details
+
+24.02.25 16:00 Ticket closed | TI-1700007
+Closure description:
+Root cause: When executive S/MIME certificates were auto-renewed over the weekend, the new certificates were issued correctly and pushed to the affected user accounts in Active Directory (userCertificate attribute populated). However, the corresponding private keys were generated on the CA side as",no,"This is a description of a past incident and the remediation performed, not a recommendation or advice for future action.",supported,"The ticket notes new S/MIME certs were auto-renewed and pushed to AD while Outlook reported 'you do not have the private key', the closure states private keys were generated on the CA side, and remediation records show new S/MIME cert issuance, key-archive recovery, and private-key re-import on executive devices."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,"Reissue the VPN server certificate from a template that includes the correct EKU(s) required by your VPN concentrator. Deploy the corrected certificate to the VPN server(s). In the prior incident, the new certificate with corrected EKU was deployed and clients were validated","=== CITED SOURCES ===
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now",yes,"The text uses direct imperative verbs ('Reissue', 'Deploy') that instruct specific corrective actions (reissuing and deploying certificates), although the final clause merely documents the prior deployment.",partially_supported,"The CONTEXT shows the problem was a server cert missing the IKE EKU and that new certificates with the corrected EKU were deployed and affected users validated, but it does not document reissuing or redeploying the VPN server certificate itself (the closure text describes client certificates being reissued via GPO), so the recommendation to reissue/deploy the server cert is not explicitly supported."
+traceability_ragas_resolution_answer5,Is the statement supported by the evidence?,VPN server certificate was reissued from a refreshed template that dropped a required EKU; remediation was to reissue the server certificate from a template including the correct EKU and deploy new certs to VPN servers and clients (deployed via GPO/SCEP),"=== CITED SOURCES ===
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now",yes,The statement contains explicit remediation instructions — reissue the server certificate from a template with the correct EKU and deploy new certs to VPN servers and clients.,partially_supported,"The context explicitly states the new server certificate was issued from a refreshed template that dropped the required IKE EKU and that client certificates were reissued from a corrected template and deployed via GPO; however, the context does not explicitly state that the server certificate was reissued as part of remediation or that deployment used SCEP/GPO for both servers and clients, so those specific remediation details are not fully supported."

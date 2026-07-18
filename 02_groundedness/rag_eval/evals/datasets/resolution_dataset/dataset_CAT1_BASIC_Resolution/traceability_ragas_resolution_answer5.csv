@@ -1,0 +1,4030 @@
+﻿question,answer,context
+Is the statement supported by the evidence?,The Zurich “silent on external Teams calls” scenario in prior incidents was caused by a firewall rule that restricted outbound media (RTP) ports while the location used Media Bypass. Allowing the full media port range per the Direct Routing architecture immediately restored two‑way audio; the fix was implemented by the Unified Communications / Network team and the ticket was handled at System Engineer level and above,"=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 23:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls without audio (only silence)
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05S
+Closure text: Analysis completed. Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Phone notification.
+Several employees report:
+• External calls can be established
+• The other party can hear them
+• They themselves hear nothing (complete silence)
+Internal Teams-to-Teams calls function.
+Chat and video also function.
+Affected: approx. 12 users at the Zurich location.
+08.07.25 08:21
+Ticket created
+Assigned to: Employee 33
+Status: In Progress
+Notes
+08.07.25 09:05
+Helpdesk asks:
+• Does it affect only external PSTN calls?
+• Only incoming or also outgoing?
+• Headset or speaker?
+• WLAN or LAN?
+08.07.25 09:30
+Customer responds:
+• Only external calls affected
+• Incoming and outgoing
+• Various headsets
+• LAN connection
+• Other locations not affected
+08.07.25 10:15
+Helpdesk tests with affected user:
+Test 1 – Internal Teams call → OK
+Test 2 – External mobile call → No audio
+Test 3 – External landline call → No audio
+Notable:
+Call status shows “Connected”.
+08.07.25 11:40
+Initial hypothesis: Client issue
+Measures:
+• Teams cache cleared
+• Teams reinstalled
+• Drivers checked
+Result: No change.
+09.07.25 08:55
+Customer adds:
+A new firewall rule was implemented at the location over the weekend (Security Hardening).
+Unclear whether there is a correlation.
+09.07.25 10:10
+Helpdesk checks:
+• Internet stable
+• No packet loss visible
+• Microsoft 365 status normal
+Suspicion: Network / VoIP layer
+Ticket forwarded to: BU Unified Communications
+09.07.25 10:22
+Ticket taken over by: System Engineer 18
+In-depth analysis
+09.07.25 11:15
+Analysis in Teams Admin Center:
+• Direct Routing active
+• SBC status: Online
+• PSTN calls are signaled
+• No errors in SIP signaling
+Notable:
+• RTP stream appears not to run bidirectionally
+10.07.25 08:40
+SBC log analysis:
+• SIP INVITE correct
+• 200 OK correct
+• Media negotiation (SDP) successful
+RTP stream from Microsoft IP visible
+RTP stream from internal client not consistently visible
+10.07.25 10:50
+Firewall logs reviewed.
+New rule implemented:
+Outbound traffic restricted
+Only defined port ranges allowed
+Documentation shows:
+Teams media ports UDP 3478–3481
+and dynamic RTP ports 49152–53247
+Firewall rule allows only 3478–3481.
+11.07.25 09:15
+Test:
+Temporary opening of wider UDP port range
+→ Audio works immediately.
+Port restricted again
+→ No audio.
+11.07.25 13:20
+Comparison with internal architecture documentation:
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Section 3 describes:
+• Media Bypass behavior
+• RTP port range requirements
+• Location-specific firewall rules
+• NAT traversal
+14.07.25
+Comparison shows:
+Zurich location uses Media Bypass
+Other locations do not.
+With Media Bypass, RTP runs directly from client to SBC.
+Firewall rule was designed only for signaling.
+16.07.25
+Configuration adjustment carried out according to architecture specification.
+Details not documented in the ticket for security reasons.
+18.07.25 15:30
+Multiple external test calls successful.
+Audio stable in both directions.
+Monitoring 48h without anomalies.
+Ticket closure
+18.07.25 16:05
+Dear Contact Person 14
+The root cause was a restriction of media port communication following a firewall adjustment at the Zurich location.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Voice transmission is stable again.
+Kind regards
+Consulting Sample Company
+
+
+"
+Is the statement supported by the evidence?,Basel printing incidents in the record set were resolved by three different root‑cause actions depending on the symptom: (a) missing network routing/allowance between print server and printer VLAN — adjusted by the Network team so the print server could reach the printers,"=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,; (b) an explicit “Deny” ACE on a printer queue for one user — removed on the print server so the user could print again,"=== CITED SOURCES ===
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,; and (c) a paused printer queue — reactivated and jobs restarted to clear blocked jobs,"=== CITED SOURCES ===
+SOURCE 27:
+﻿
+Ticket summary:
+Ticket name: KF60: Print job remains stuck in queue
+Ticket number: TI-1621044
+Company: Customer Company 60 AG
+Contact person: Contact Person 04
+Owner: Employee 12
+Origin: Phone
+Type: Incident
+Created on: 21.10.25 09:11
+Closure
+Closure date: 21.10.25 09:38
+Closure text: Printer queue paused. Queue activated and print jobs restarted.
+Activities
+21.10.25 09:05 – Phone report
+Ms. Contact Person 04 reports that documents are not printing.
+In Windows, the print job is displayed, but nothing happens.
+Other colleagues using the same printer are also unable to print.
+21.10.25 09:11
+Ticket created and assigned to Employee 12.
+21.10.25 09:20 – Remote check
+Connection established with affected user.
+Print job is located in the queue.
+Queue status shows “Paused”.
+Queue activated and all print jobs restarted.
+Test print performed → successful.
+21.10.25 09:32 – Customer feedback
+Printing is working again for all affected employees.
+21.10.25 09:38 – Ticket closure
+Dear Contact Person 04
+The printer queue was paused.
+After activating the queue and restarting the print jobs, printing is functioning properly again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,The Teams external-silence issue required Unified Communications and Network team involvement and was worked by System Engineers (2nd‑level) in the documented case,"=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 23:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls without audio (only silence)
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05S
+Closure text: Analysis completed. Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Phone notification.
+Several employees report:
+• External calls can be established
+• The other party can hear them
+• They themselves hear nothing (complete silence)
+Internal Teams-to-Teams calls function.
+Chat and video also function.
+Affected: approx. 12 users at the Zurich location.
+08.07.25 08:21
+Ticket created
+Assigned to: Employee 33
+Status: In Progress
+Notes
+08.07.25 09:05
+Helpdesk asks:
+• Does it affect only external PSTN calls?
+• Only incoming or also outgoing?
+• Headset or speaker?
+• WLAN or LAN?
+08.07.25 09:30
+Customer responds:
+• Only external calls affected
+• Incoming and outgoing
+• Various headsets
+• LAN connection
+• Other locations not affected
+08.07.25 10:15
+Helpdesk tests with affected user:
+Test 1 – Internal Teams call → OK
+Test 2 – External mobile call → No audio
+Test 3 – External landline call → No audio
+Notable:
+Call status shows “Connected”.
+08.07.25 11:40
+Initial hypothesis: Client issue
+Measures:
+• Teams cache cleared
+• Teams reinstalled
+• Drivers checked
+Result: No change.
+09.07.25 08:55
+Customer adds:
+A new firewall rule was implemented at the location over the weekend (Security Hardening).
+Unclear whether there is a correlation.
+09.07.25 10:10
+Helpdesk checks:
+• Internet stable
+• No packet loss visible
+• Microsoft 365 status normal
+Suspicion: Network / VoIP layer
+Ticket forwarded to: BU Unified Communications
+09.07.25 10:22
+Ticket taken over by: System Engineer 18
+In-depth analysis
+09.07.25 11:15
+Analysis in Teams Admin Center:
+• Direct Routing active
+• SBC status: Online
+• PSTN calls are signaled
+• No errors in SIP signaling
+Notable:
+• RTP stream appears not to run bidirectionally
+10.07.25 08:40
+SBC log analysis:
+• SIP INVITE correct
+• 200 OK correct
+• Media negotiation (SDP) successful
+RTP stream from Microsoft IP visible
+RTP stream from internal client not consistently visible
+10.07.25 10:50
+Firewall logs reviewed.
+New rule implemented:
+Outbound traffic restricted
+Only defined port ranges allowed
+Documentation shows:
+Teams media ports UDP 3478–3481
+and dynamic RTP ports 49152–53247
+Firewall rule allows only 3478–3481.
+11.07.25 09:15
+Test:
+Temporary opening of wider UDP port range
+→ Audio works immediately.
+Port restricted again
+→ No audio.
+11.07.25 13:20
+Comparison with internal architecture documentation:
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Section 3 describes:
+• Media Bypass behavior
+• RTP port range requirements
+• Location-specific firewall rules
+• NAT traversal
+14.07.25
+Comparison shows:
+Zurich location uses Media Bypass
+Other locations do not.
+With Media Bypass, RTP runs directly from client to SBC.
+Firewall rule was designed only for signaling.
+16.07.25
+Configuration adjustment carried out according to architecture specification.
+Details not documented in the ticket for security reasons.
+18.07.25 15:30
+Multiple external test calls successful.
+Audio stable in both directions.
+Monitoring 48h without anomalies.
+Ticket closure
+18.07.25 16:05
+Dear Contact Person 14
+The root cause was a restriction of media port communication following a firewall adjustment at the Zurich location.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Voice transmission is stable again.
+Kind regards
+Consulting Sample Company
+
+
+"
+Is the statement supported by the evidence?,"The Basel printing problems in the records were resolved by print‑server and network changes (print server/queue permissions, network routing/firewall rules) — these actions were performed by System Engineers / Network teams (2nd‑level). Individual simple fixes (e.g., unpausing a queue or removing an explicit Deny) were done by Service/Run teams but still on server side","=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 27:
+﻿
+Ticket summary:
+Ticket name: KF60: Print job remains stuck in queue
+Ticket number: TI-1621044
+Company: Customer Company 60 AG
+Contact person: Contact Person 04
+Owner: Employee 12
+Origin: Phone
+Type: Incident
+Created on: 21.10.25 09:11
+Closure
+Closure date: 21.10.25 09:38
+Closure text: Printer queue paused. Queue activated and print jobs restarted.
+Activities
+21.10.25 09:05 – Phone report
+Ms. Contact Person 04 reports that documents are not printing.
+In Windows, the print job is displayed, but nothing happens.
+Other colleagues using the same printer are also unable to print.
+21.10.25 09:11
+Ticket created and assigned to Employee 12.
+21.10.25 09:20 – Remote check
+Connection established with affected user.
+Print job is located in the queue.
+Queue status shows “Paused”.
+Queue activated and all print jobs restarted.
+Test print performed → successful.
+21.10.25 09:32 – Customer feedback
+Printing is working again for all affected employees.
+21.10.25 09:38 – Ticket closure
+Dear Contact Person 04
+The printer queue was paused.
+After activating the queue and restarting the print jobs, printing is functioning properly again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,"Conclusion: per the documented precedent, treat both problems as 2nd‑level (escalate to Unified Communications + Network for Teams; Print/Server + Network for printing) rather than pure 1st‑level end‑user support","=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 23:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls without audio (only silence)
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05S
+Closure text: Analysis completed. Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Phone notification.
+Several employees report:
+• External calls can be established
+• The other party can hear them
+• They themselves hear nothing (complete silence)
+Internal Teams-to-Teams calls function.
+Chat and video also function.
+Affected: approx. 12 users at the Zurich location.
+08.07.25 08:21
+Ticket created
+Assigned to: Employee 33
+Status: In Progress
+Notes
+08.07.25 09:05
+Helpdesk asks:
+• Does it affect only external PSTN calls?
+• Only incoming or also outgoing?
+• Headset or speaker?
+• WLAN or LAN?
+08.07.25 09:30
+Customer responds:
+• Only external calls affected
+• Incoming and outgoing
+• Various headsets
+• LAN connection
+• Other locations not affected
+08.07.25 10:15
+Helpdesk tests with affected user:
+Test 1 – Internal Teams call → OK
+Test 2 – External mobile call → No audio
+Test 3 – External landline call → No audio
+Notable:
+Call status shows “Connected”.
+08.07.25 11:40
+Initial hypothesis: Client issue
+Measures:
+• Teams cache cleared
+• Teams reinstalled
+• Drivers checked
+Result: No change.
+09.07.25 08:55
+Customer adds:
+A new firewall rule was implemented at the location over the weekend (Security Hardening).
+Unclear whether there is a correlation.
+09.07.25 10:10
+Helpdesk checks:
+• Internet stable
+• No packet loss visible
+• Microsoft 365 status normal
+Suspicion: Network / VoIP layer
+Ticket forwarded to: BU Unified Communications
+09.07.25 10:22
+Ticket taken over by: System Engineer 18
+In-depth analysis
+09.07.25 11:15
+Analysis in Teams Admin Center:
+• Direct Routing active
+• SBC status: Online
+• PSTN calls are signaled
+• No errors in SIP signaling
+Notable:
+• RTP stream appears not to run bidirectionally
+10.07.25 08:40
+SBC log analysis:
+• SIP INVITE correct
+• 200 OK correct
+• Media negotiation (SDP) successful
+RTP stream from Microsoft IP visible
+RTP stream from internal client not consistently visible
+10.07.25 10:50
+Firewall logs reviewed.
+New rule implemented:
+Outbound traffic restricted
+Only defined port ranges allowed
+Documentation shows:
+Teams media ports UDP 3478–3481
+and dynamic RTP ports 49152–53247
+Firewall rule allows only 3478–3481.
+11.07.25 09:15
+Test:
+Temporary opening of wider UDP port range
+→ Audio works immediately.
+Port restricted again
+→ No audio.
+11.07.25 13:20
+Comparison with internal architecture documentation:
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Section 3 describes:
+• Media Bypass behavior
+• RTP port range requirements
+• Location-specific firewall rules
+• NAT traversal
+14.07.25
+Comparison shows:
+Zurich location uses Media Bypass
+Other locations do not.
+With Media Bypass, RTP runs directly from client to SBC.
+Firewall rule was designed only for signaling.
+16.07.25
+Configuration adjustment carried out according to architecture specification.
+Details not documented in the ticket for security reasons.
+18.07.25 15:30
+Multiple external test calls successful.
+Audio stable in both directions.
+Monitoring 48h without anomalies.
+Ticket closure
+18.07.25 16:05
+Dear Contact Person 14
+The root cause was a restriction of media port communication following a firewall adjustment at the Zurich location.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Voice transmission is stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 27:
+﻿
+Ticket summary:
+Ticket name: KF60: Print job remains stuck in queue
+Ticket number: TI-1621044
+Company: Customer Company 60 AG
+Contact person: Contact Person 04
+Owner: Employee 12
+Origin: Phone
+Type: Incident
+Created on: 21.10.25 09:11
+Closure
+Closure date: 21.10.25 09:38
+Closure text: Printer queue paused. Queue activated and print jobs restarted.
+Activities
+21.10.25 09:05 – Phone report
+Ms. Contact Person 04 reports that documents are not printing.
+In Windows, the print job is displayed, but nothing happens.
+Other colleagues using the same printer are also unable to print.
+21.10.25 09:11
+Ticket created and assigned to Employee 12.
+21.10.25 09:20 – Remote check
+Connection established with affected user.
+Print job is located in the queue.
+Queue status shows “Paused”.
+Queue activated and all print jobs restarted.
+Test print performed → successful.
+21.10.25 09:32 – Customer feedback
+Printing is working again for all affected employees.
+21.10.25 09:38 – Ticket closure
+Dear Contact Person 04
+The printer queue was paused.
+After activating the queue and restarting the print jobs, printing is functioning properly again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,"Confirm scope (who/where/only external?) — do the same quick checks used in the prior incident: verify it is only external PSTN calls, which locations/users are affected, and whether internal Teams calls work","=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 23:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls without audio (only silence)
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05S
+Closure text: Analysis completed. Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Phone notification.
+Several employees report:
+• External calls can be established
+• The other party can hear them
+• They themselves hear nothing (complete silence)
+Internal Teams-to-Teams calls function.
+Chat and video also function.
+Affected: approx. 12 users at the Zurich location.
+08.07.25 08:21
+Ticket created
+Assigned to: Employee 33
+Status: In Progress
+Notes
+08.07.25 09:05
+Helpdesk asks:
+• Does it affect only external PSTN calls?
+• Only incoming or also outgoing?
+• Headset or speaker?
+• WLAN or LAN?
+08.07.25 09:30
+Customer responds:
+• Only external calls affected
+• Incoming and outgoing
+• Various headsets
+• LAN connection
+• Other locations not affected
+08.07.25 10:15
+Helpdesk tests with affected user:
+Test 1 – Internal Teams call → OK
+Test 2 – External mobile call → No audio
+Test 3 – External landline call → No audio
+Notable:
+Call status shows “Connected”.
+08.07.25 11:40
+Initial hypothesis: Client issue
+Measures:
+• Teams cache cleared
+• Teams reinstalled
+• Drivers checked
+Result: No change.
+09.07.25 08:55
+Customer adds:
+A new firewall rule was implemented at the location over the weekend (Security Hardening).
+Unclear whether there is a correlation.
+09.07.25 10:10
+Helpdesk checks:
+• Internet stable
+• No packet loss visible
+• Microsoft 365 status normal
+Suspicion: Network / VoIP layer
+Ticket forwarded to: BU Unified Communications
+09.07.25 10:22
+Ticket taken over by: System Engineer 18
+In-depth analysis
+09.07.25 11:15
+Analysis in Teams Admin Center:
+• Direct Routing active
+• SBC status: Online
+• PSTN calls are signaled
+• No errors in SIP signaling
+Notable:
+• RTP stream appears not to run bidirectionally
+10.07.25 08:40
+SBC log analysis:
+• SIP INVITE correct
+• 200 OK correct
+• Media negotiation (SDP) successful
+RTP stream from Microsoft IP visible
+RTP stream from internal client not consistently visible
+10.07.25 10:50
+Firewall logs reviewed.
+New rule implemented:
+Outbound traffic restricted
+Only defined port ranges allowed
+Documentation shows:
+Teams media ports UDP 3478–3481
+and dynamic RTP ports 49152–53247
+Firewall rule allows only 3478–3481.
+11.07.25 09:15
+Test:
+Temporary opening of wider UDP port range
+→ Audio works immediately.
+Port restricted again
+→ No audio.
+11.07.25 13:20
+Comparison with internal architecture documentation:
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Section 3 describes:
+• Media Bypass behavior
+• RTP port range requirements
+• Location-specific firewall rules
+• NAT traversal
+14.07.25
+Comparison shows:
+Zurich location uses Media Bypass
+Other locations do not.
+With Media Bypass, RTP runs directly from client to SBC.
+Firewall rule was designed only for signaling.
+16.07.25
+Configuration adjustment carried out according to architecture specification.
+Details not documented in the ticket for security reasons.
+18.07.25 15:30
+Multiple external test calls successful.
+Audio stable in both directions.
+Monitoring 48h without anomalies.
+Ticket closure
+18.07.25 16:05
+Dear Contact Person 14
+The root cause was a restriction of media port communication following a firewall adjustment at the Zurich location.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Voice transmission is stable again.
+Kind regards
+Consulting Sample Company
+
+
+"
+Is the statement supported by the evidence?,"Reproduce and basic client checks (first‑line steps that were performed in the record): perform an internal Teams call (should work), perform an external PSTN test call, clear Teams cache / reinstall client and verify drivers (these were attempted and did not resolve the historic case)","=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 23:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls without audio (only silence)
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05S
+Closure text: Analysis completed. Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Phone notification.
+Several employees report:
+• External calls can be established
+• The other party can hear them
+• They themselves hear nothing (complete silence)
+Internal Teams-to-Teams calls function.
+Chat and video also function.
+Affected: approx. 12 users at the Zurich location.
+08.07.25 08:21
+Ticket created
+Assigned to: Employee 33
+Status: In Progress
+Notes
+08.07.25 09:05
+Helpdesk asks:
+• Does it affect only external PSTN calls?
+• Only incoming or also outgoing?
+• Headset or speaker?
+• WLAN or LAN?
+08.07.25 09:30
+Customer responds:
+• Only external calls affected
+• Incoming and outgoing
+• Various headsets
+• LAN connection
+• Other locations not affected
+08.07.25 10:15
+Helpdesk tests with affected user:
+Test 1 – Internal Teams call → OK
+Test 2 – External mobile call → No audio
+Test 3 – External landline call → No audio
+Notable:
+Call status shows “Connected”.
+08.07.25 11:40
+Initial hypothesis: Client issue
+Measures:
+• Teams cache cleared
+• Teams reinstalled
+• Drivers checked
+Result: No change.
+09.07.25 08:55
+Customer adds:
+A new firewall rule was implemented at the location over the weekend (Security Hardening).
+Unclear whether there is a correlation.
+09.07.25 10:10
+Helpdesk checks:
+• Internet stable
+• No packet loss visible
+• Microsoft 365 status normal
+Suspicion: Network / VoIP layer
+Ticket forwarded to: BU Unified Communications
+09.07.25 10:22
+Ticket taken over by: System Engineer 18
+In-depth analysis
+09.07.25 11:15
+Analysis in Teams Admin Center:
+• Direct Routing active
+• SBC status: Online
+• PSTN calls are signaled
+• No errors in SIP signaling
+Notable:
+• RTP stream appears not to run bidirectionally
+10.07.25 08:40
+SBC log analysis:
+• SIP INVITE correct
+• 200 OK correct
+• Media negotiation (SDP) successful
+RTP stream from Microsoft IP visible
+RTP stream from internal client not consistently visible
+10.07.25 10:50
+Firewall logs reviewed.
+New rule implemented:
+Outbound traffic restricted
+Only defined port ranges allowed
+Documentation shows:
+Teams media ports UDP 3478–3481
+and dynamic RTP ports 49152–53247
+Firewall rule allows only 3478–3481.
+11.07.25 09:15
+Test:
+Temporary opening of wider UDP port range
+→ Audio works immediately.
+Port restricted again
+→ No audio.
+11.07.25 13:20
+Comparison with internal architecture documentation:
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Section 3 describes:
+• Media Bypass behavior
+• RTP port range requirements
+• Location-specific firewall rules
+• NAT traversal
+14.07.25
+Comparison shows:
+Zurich location uses Media Bypass
+Other locations do not.
+With Media Bypass, RTP runs directly from client to SBC.
+Firewall rule was designed only for signaling.
+16.07.25
+Configuration adjustment carried out according to architecture specification.
+Details not documented in the ticket for security reasons.
+18.07.25 15:30
+Multiple external test calls successful.
+Audio stable in both directions.
+Monitoring 48h without anomalies.
+Ticket closure
+18.07.25 16:05
+Dear Contact Person 14
+The root cause was a restriction of media port communication following a firewall adjustment at the Zurich location.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Voice transmission is stable again.
+Kind regards
+Consulting Sample Company
+
+
+"
+Is the statement supported by the evidence?,Capture signaling and media diagnostics: check Teams Admin Center / SBC logs to confirm SIP signaling and whether RTP is bidirectional. In the documented case SIP/SDP were OK but RTP from clients was not consistently visible to the SBC,"=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 23:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls without audio (only silence)
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05S
+Closure text: Analysis completed. Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Phone notification.
+Several employees report:
+• External calls can be established
+• The other party can hear them
+• They themselves hear nothing (complete silence)
+Internal Teams-to-Teams calls function.
+Chat and video also function.
+Affected: approx. 12 users at the Zurich location.
+08.07.25 08:21
+Ticket created
+Assigned to: Employee 33
+Status: In Progress
+Notes
+08.07.25 09:05
+Helpdesk asks:
+• Does it affect only external PSTN calls?
+• Only incoming or also outgoing?
+• Headset or speaker?
+• WLAN or LAN?
+08.07.25 09:30
+Customer responds:
+• Only external calls affected
+• Incoming and outgoing
+• Various headsets
+• LAN connection
+• Other locations not affected
+08.07.25 10:15
+Helpdesk tests with affected user:
+Test 1 – Internal Teams call → OK
+Test 2 – External mobile call → No audio
+Test 3 – External landline call → No audio
+Notable:
+Call status shows “Connected”.
+08.07.25 11:40
+Initial hypothesis: Client issue
+Measures:
+• Teams cache cleared
+• Teams reinstalled
+• Drivers checked
+Result: No change.
+09.07.25 08:55
+Customer adds:
+A new firewall rule was implemented at the location over the weekend (Security Hardening).
+Unclear whether there is a correlation.
+09.07.25 10:10
+Helpdesk checks:
+• Internet stable
+• No packet loss visible
+• Microsoft 365 status normal
+Suspicion: Network / VoIP layer
+Ticket forwarded to: BU Unified Communications
+09.07.25 10:22
+Ticket taken over by: System Engineer 18
+In-depth analysis
+09.07.25 11:15
+Analysis in Teams Admin Center:
+• Direct Routing active
+• SBC status: Online
+• PSTN calls are signaled
+• No errors in SIP signaling
+Notable:
+• RTP stream appears not to run bidirectionally
+10.07.25 08:40
+SBC log analysis:
+• SIP INVITE correct
+• 200 OK correct
+• Media negotiation (SDP) successful
+RTP stream from Microsoft IP visible
+RTP stream from internal client not consistently visible
+10.07.25 10:50
+Firewall logs reviewed.
+New rule implemented:
+Outbound traffic restricted
+Only defined port ranges allowed
+Documentation shows:
+Teams media ports UDP 3478–3481
+and dynamic RTP ports 49152–53247
+Firewall rule allows only 3478–3481.
+11.07.25 09:15
+Test:
+Temporary opening of wider UDP port range
+→ Audio works immediately.
+Port restricted again
+→ No audio.
+11.07.25 13:20
+Comparison with internal architecture documentation:
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Section 3 describes:
+• Media Bypass behavior
+• RTP port range requirements
+• Location-specific firewall rules
+• NAT traversal
+14.07.25
+Comparison shows:
+Zurich location uses Media Bypass
+Other locations do not.
+With Media Bypass, RTP runs directly from client to SBC.
+Firewall rule was designed only for signaling.
+16.07.25
+Configuration adjustment carried out according to architecture specification.
+Details not documented in the ticket for security reasons.
+18.07.25 15:30
+Multiple external test calls successful.
+Audio stable in both directions.
+Monitoring 48h without anomalies.
+Ticket closure
+18.07.25 16:05
+Dear Contact Person 14
+The root cause was a restriction of media port communication following a firewall adjustment at the Zurich location.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Voice transmission is stable again.
+Kind regards
+Consulting Sample Company
+
+
+"
+Is the statement supported by the evidence?,"Check firewall rules for media ports and Media Bypass behavior: compare the Zurich firewall rules to the Direct Routing / media flow specification. The historic failure was that the firewall allowed only STUN/TURN (UDP 3478–3481) but not the dynamic RTP port range, while the location used Media Bypass (so client→SBC RTP must be allowed)","=== CITED SOURCES ===
+SOURCE 23:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls without audio (only silence)
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05S
+Closure text: Analysis completed. Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Phone notification.
+Several employees report:
+• External calls can be established
+• The other party can hear them
+• They themselves hear nothing (complete silence)
+Internal Teams-to-Teams calls function.
+Chat and video also function.
+Affected: approx. 12 users at the Zurich location.
+08.07.25 08:21
+Ticket created
+Assigned to: Employee 33
+Status: In Progress
+Notes
+08.07.25 09:05
+Helpdesk asks:
+• Does it affect only external PSTN calls?
+• Only incoming or also outgoing?
+• Headset or speaker?
+• WLAN or LAN?
+08.07.25 09:30
+Customer responds:
+• Only external calls affected
+• Incoming and outgoing
+• Various headsets
+• LAN connection
+• Other locations not affected
+08.07.25 10:15
+Helpdesk tests with affected user:
+Test 1 – Internal Teams call → OK
+Test 2 – External mobile call → No audio
+Test 3 – External landline call → No audio
+Notable:
+Call status shows “Connected”.
+08.07.25 11:40
+Initial hypothesis: Client issue
+Measures:
+• Teams cache cleared
+• Teams reinstalled
+• Drivers checked
+Result: No change.
+09.07.25 08:55
+Customer adds:
+A new firewall rule was implemented at the location over the weekend (Security Hardening).
+Unclear whether there is a correlation.
+09.07.25 10:10
+Helpdesk checks:
+• Internet stable
+• No packet loss visible
+• Microsoft 365 status normal
+Suspicion: Network / VoIP layer
+Ticket forwarded to: BU Unified Communications
+09.07.25 10:22
+Ticket taken over by: System Engineer 18
+In-depth analysis
+09.07.25 11:15
+Analysis in Teams Admin Center:
+• Direct Routing active
+• SBC status: Online
+• PSTN calls are signaled
+• No errors in SIP signaling
+Notable:
+• RTP stream appears not to run bidirectionally
+10.07.25 08:40
+SBC log analysis:
+• SIP INVITE correct
+• 200 OK correct
+• Media negotiation (SDP) successful
+RTP stream from Microsoft IP visible
+RTP stream from internal client not consistently visible
+10.07.25 10:50
+Firewall logs reviewed.
+New rule implemented:
+Outbound traffic restricted
+Only defined port ranges allowed
+Documentation shows:
+Teams media ports UDP 3478–3481
+and dynamic RTP ports 49152–53247
+Firewall rule allows only 3478–3481.
+11.07.25 09:15
+Test:
+Temporary opening of wider UDP port range
+→ Audio works immediately.
+Port restricted again
+→ No audio.
+11.07.25 13:20
+Comparison with internal architecture documentation:
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Section 3 describes:
+• Media Bypass behavior
+• RTP port range requirements
+• Location-specific firewall rules
+• NAT traversal
+14.07.25
+Comparison shows:
+Zurich location uses Media Bypass
+Other locations do not.
+With Media Bypass, RTP runs directly from client to SBC.
+Firewall rule was designed only for signaling.
+16.07.25
+Configuration adjustment carried out according to architecture specification.
+Details not documented in the ticket for security reasons.
+18.07.25 15:30
+Multiple external test calls successful.
+Audio stable in both directions.
+Monitoring 48h without anomalies.
+Ticket closure
+18.07.25 16:05
+Dear Contact Person 14
+The root cause was a restriction of media port communication following a firewall adjustment at the Zurich location.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Voice transmission is stable again.
+Kind regards
+Consulting Sample Company
+
+
+"
+Is the statement supported by the evidence?,Test by temporarily opening the wider UDP port range for media (temporary test): in the record a temporary opening of the wider UDP RTP port range restored audio immediately — use this as a diagnostic step to prove the firewall is the cause,"=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 23:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls without audio (only silence)
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05S
+Closure text: Analysis completed. Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Phone notification.
+Several employees report:
+• External calls can be established
+• The other party can hear them
+• They themselves hear nothing (complete silence)
+Internal Teams-to-Teams calls function.
+Chat and video also function.
+Affected: approx. 12 users at the Zurich location.
+08.07.25 08:21
+Ticket created
+Assigned to: Employee 33
+Status: In Progress
+Notes
+08.07.25 09:05
+Helpdesk asks:
+• Does it affect only external PSTN calls?
+• Only incoming or also outgoing?
+• Headset or speaker?
+• WLAN or LAN?
+08.07.25 09:30
+Customer responds:
+• Only external calls affected
+• Incoming and outgoing
+• Various headsets
+• LAN connection
+• Other locations not affected
+08.07.25 10:15
+Helpdesk tests with affected user:
+Test 1 – Internal Teams call → OK
+Test 2 – External mobile call → No audio
+Test 3 – External landline call → No audio
+Notable:
+Call status shows “Connected”.
+08.07.25 11:40
+Initial hypothesis: Client issue
+Measures:
+• Teams cache cleared
+• Teams reinstalled
+• Drivers checked
+Result: No change.
+09.07.25 08:55
+Customer adds:
+A new firewall rule was implemented at the location over the weekend (Security Hardening).
+Unclear whether there is a correlation.
+09.07.25 10:10
+Helpdesk checks:
+• Internet stable
+• No packet loss visible
+• Microsoft 365 status normal
+Suspicion: Network / VoIP layer
+Ticket forwarded to: BU Unified Communications
+09.07.25 10:22
+Ticket taken over by: System Engineer 18
+In-depth analysis
+09.07.25 11:15
+Analysis in Teams Admin Center:
+• Direct Routing active
+• SBC status: Online
+• PSTN calls are signaled
+• No errors in SIP signaling
+Notable:
+• RTP stream appears not to run bidirectionally
+10.07.25 08:40
+SBC log analysis:
+• SIP INVITE correct
+• 200 OK correct
+• Media negotiation (SDP) successful
+RTP stream from Microsoft IP visible
+RTP stream from internal client not consistently visible
+10.07.25 10:50
+Firewall logs reviewed.
+New rule implemented:
+Outbound traffic restricted
+Only defined port ranges allowed
+Documentation shows:
+Teams media ports UDP 3478–3481
+and dynamic RTP ports 49152–53247
+Firewall rule allows only 3478–3481.
+11.07.25 09:15
+Test:
+Temporary opening of wider UDP port range
+→ Audio works immediately.
+Port restricted again
+→ No audio.
+11.07.25 13:20
+Comparison with internal architecture documentation:
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Section 3 describes:
+• Media Bypass behavior
+• RTP port range requirements
+• Location-specific firewall rules
+• NAT traversal
+14.07.25
+Comparison shows:
+Zurich location uses Media Bypass
+Other locations do not.
+With Media Bypass, RTP runs directly from client to SBC.
+Firewall rule was designed only for signaling.
+16.07.25
+Configuration adjustment carried out according to architecture specification.
+Details not documented in the ticket for security reasons.
+18.07.25 15:30
+Multiple external test calls successful.
+Audio stable in both directions.
+Monitoring 48h without anomalies.
+Ticket closure
+18.07.25 16:05
+Dear Contact Person 14
+The root cause was a restriction of media port communication following a firewall adjustment at the Zurich location.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Voice transmission is stable again.
+Kind regards
+Consulting Sample Company
+
+
+"
+Is the statement supported by the evidence?,Implement permanent firewall change per the Direct Routing architecture (apply documented media port ranges and location‑specific rules). After implementation the team monitored and confirmed stable two‑way audio and closed the ticket,"=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 23:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls without audio (only silence)
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05S
+Closure text: Analysis completed. Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Phone notification.
+Several employees report:
+• External calls can be established
+• The other party can hear them
+• They themselves hear nothing (complete silence)
+Internal Teams-to-Teams calls function.
+Chat and video also function.
+Affected: approx. 12 users at the Zurich location.
+08.07.25 08:21
+Ticket created
+Assigned to: Employee 33
+Status: In Progress
+Notes
+08.07.25 09:05
+Helpdesk asks:
+• Does it affect only external PSTN calls?
+• Only incoming or also outgoing?
+• Headset or speaker?
+• WLAN or LAN?
+08.07.25 09:30
+Customer responds:
+• Only external calls affected
+• Incoming and outgoing
+• Various headsets
+• LAN connection
+• Other locations not affected
+08.07.25 10:15
+Helpdesk tests with affected user:
+Test 1 – Internal Teams call → OK
+Test 2 – External mobile call → No audio
+Test 3 – External landline call → No audio
+Notable:
+Call status shows “Connected”.
+08.07.25 11:40
+Initial hypothesis: Client issue
+Measures:
+• Teams cache cleared
+• Teams reinstalled
+• Drivers checked
+Result: No change.
+09.07.25 08:55
+Customer adds:
+A new firewall rule was implemented at the location over the weekend (Security Hardening).
+Unclear whether there is a correlation.
+09.07.25 10:10
+Helpdesk checks:
+• Internet stable
+• No packet loss visible
+• Microsoft 365 status normal
+Suspicion: Network / VoIP layer
+Ticket forwarded to: BU Unified Communications
+09.07.25 10:22
+Ticket taken over by: System Engineer 18
+In-depth analysis
+09.07.25 11:15
+Analysis in Teams Admin Center:
+• Direct Routing active
+• SBC status: Online
+• PSTN calls are signaled
+• No errors in SIP signaling
+Notable:
+• RTP stream appears not to run bidirectionally
+10.07.25 08:40
+SBC log analysis:
+• SIP INVITE correct
+• 200 OK correct
+• Media negotiation (SDP) successful
+RTP stream from Microsoft IP visible
+RTP stream from internal client not consistently visible
+10.07.25 10:50
+Firewall logs reviewed.
+New rule implemented:
+Outbound traffic restricted
+Only defined port ranges allowed
+Documentation shows:
+Teams media ports UDP 3478–3481
+and dynamic RTP ports 49152–53247
+Firewall rule allows only 3478–3481.
+11.07.25 09:15
+Test:
+Temporary opening of wider UDP port range
+→ Audio works immediately.
+Port restricted again
+→ No audio.
+11.07.25 13:20
+Comparison with internal architecture documentation:
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Section 3 describes:
+• Media Bypass behavior
+• RTP port range requirements
+• Location-specific firewall rules
+• NAT traversal
+14.07.25
+Comparison shows:
+Zurich location uses Media Bypass
+Other locations do not.
+With Media Bypass, RTP runs directly from client to SBC.
+Firewall rule was designed only for signaling.
+16.07.25
+Configuration adjustment carried out according to architecture specification.
+Details not documented in the ticket for security reasons.
+18.07.25 15:30
+Multiple external test calls successful.
+Audio stable in both directions.
+Monitoring 48h without anomalies.
+Ticket closure
+18.07.25 16:05
+Dear Contact Person 14
+The root cause was a restriction of media port communication following a firewall adjustment at the Zurich location.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Voice transmission is stable again.
+Kind regards
+Consulting Sample Company
+
+
+"
+Is the statement supported by the evidence?,"If print jobs appear in the queue but nothing prints: check the print server queue state (Paused?), check Print Spooler service, and try printing directly from the print server to the printer. In a recorded case the queue was paused and reactivating it plus restarting jobs fixed the issue","=== CITED SOURCES ===
+SOURCE 27:
+﻿
+Ticket summary:
+Ticket name: KF60: Print job remains stuck in queue
+Ticket number: TI-1621044
+Company: Customer Company 60 AG
+Contact person: Contact Person 04
+Owner: Employee 12
+Origin: Phone
+Type: Incident
+Created on: 21.10.25 09:11
+Closure
+Closure date: 21.10.25 09:38
+Closure text: Printer queue paused. Queue activated and print jobs restarted.
+Activities
+21.10.25 09:05 – Phone report
+Ms. Contact Person 04 reports that documents are not printing.
+In Windows, the print job is displayed, but nothing happens.
+Other colleagues using the same printer are also unable to print.
+21.10.25 09:11
+Ticket created and assigned to Employee 12.
+21.10.25 09:20 – Remote check
+Connection established with affected user.
+Print job is located in the queue.
+Queue status shows “Paused”.
+Queue activated and all print jobs restarted.
+Test print performed → successful.
+21.10.25 09:32 – Customer feedback
+Printing is working again for all affected employees.
+21.10.25 09:38 – Ticket closure
+Dear Contact Person 04
+The printer queue was paused.
+After activating the queue and restarting the print jobs, printing is functioning properly again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,"If printers are not reachable from the print server (print jobs appear then disappear, server cannot ping the printer): verify network reachability between the print server and the printer. In the Basel case a new device VLAN had been created and the print server lacked routing/allowance to the printer VLAN; adjusting the network rule restored function","=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,If a single user gets “Access denied” while colleagues can print: check the printer queue permissions on the print server for explicit Deny entries and AD group membership. In the recorded single‑user case the user had an explicit Deny ACE on the queue which was removed and printing was restored,"=== CITED SOURCES ===
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,For network segmentation: coordinate with Network team to open routing/firewall rules between print server and printer VLAN per the “Print & Scanning Infrastructure Standard” (this was the resolution in the record),"=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,For per‑user permission errors: on the print server remove the explicit Deny and ensure permissions are assigned via the AD group according to the Print & Scanning standard,"=== CITED SOURCES ===
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,For paused queues: reactivate the queue and restart jobs,"=== CITED SOURCES ===
+SOURCE 27:
+﻿
+Ticket summary:
+Ticket name: KF60: Print job remains stuck in queue
+Ticket number: TI-1621044
+Company: Customer Company 60 AG
+Contact person: Contact Person 04
+Owner: Employee 12
+Origin: Phone
+Type: Incident
+Created on: 21.10.25 09:11
+Closure
+Closure date: 21.10.25 09:38
+Closure text: Printer queue paused. Queue activated and print jobs restarted.
+Activities
+21.10.25 09:05 – Phone report
+Ms. Contact Person 04 reports that documents are not printing.
+In Windows, the print job is displayed, but nothing happens.
+Other colleagues using the same printer are also unable to print.
+21.10.25 09:11
+Ticket created and assigned to Employee 12.
+21.10.25 09:20 – Remote check
+Connection established with affected user.
+Print job is located in the queue.
+Queue status shows “Paused”.
+Queue activated and all print jobs restarted.
+Test print performed → successful.
+21.10.25 09:32 – Customer feedback
+Printing is working again for all affected employees.
+21.10.25 09:38 – Ticket closure
+Dear Contact Person 04
+The printer queue was paused.
+After activating the queue and restarting the print jobs, printing is functioning properly again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,"After changes, run test prints from server and multiple user workstations and monitor for successful completion; in the records these tests validated the fixes before ticket closure","=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 27:
+﻿
+Ticket summary:
+Ticket name: KF60: Print job remains stuck in queue
+Ticket number: TI-1621044
+Company: Customer Company 60 AG
+Contact person: Contact Person 04
+Owner: Employee 12
+Origin: Phone
+Type: Incident
+Created on: 21.10.25 09:11
+Closure
+Closure date: 21.10.25 09:38
+Closure text: Printer queue paused. Queue activated and print jobs restarted.
+Activities
+21.10.25 09:05 – Phone report
+Ms. Contact Person 04 reports that documents are not printing.
+In Windows, the print job is displayed, but nothing happens.
+Other colleagues using the same printer are also unable to print.
+21.10.25 09:11
+Ticket created and assigned to Employee 12.
+21.10.25 09:20 – Remote check
+Connection established with affected user.
+Print job is located in the queue.
+Queue status shows “Paused”.
+Queue activated and all print jobs restarted.
+Test print performed → successful.
+21.10.25 09:32 – Customer feedback
+Printing is working again for all affected employees.
+21.10.25 09:38 – Ticket closure
+Dear Contact Person 04
+The printer queue was paused.
+After activating the queue and restarting the print jobs, printing is functioning properly again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,Teams silence (Zurich): escalate to Unified Communications (Direct Routing / SBC team) and Network team / firewall admins — these were the teams involved and effected the fix in the documented case,"=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 23:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls without audio (only silence)
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05S
+Closure text: Analysis completed. Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Phone notification.
+Several employees report:
+• External calls can be established
+• The other party can hear them
+• They themselves hear nothing (complete silence)
+Internal Teams-to-Teams calls function.
+Chat and video also function.
+Affected: approx. 12 users at the Zurich location.
+08.07.25 08:21
+Ticket created
+Assigned to: Employee 33
+Status: In Progress
+Notes
+08.07.25 09:05
+Helpdesk asks:
+• Does it affect only external PSTN calls?
+• Only incoming or also outgoing?
+• Headset or speaker?
+• WLAN or LAN?
+08.07.25 09:30
+Customer responds:
+• Only external calls affected
+• Incoming and outgoing
+• Various headsets
+• LAN connection
+• Other locations not affected
+08.07.25 10:15
+Helpdesk tests with affected user:
+Test 1 – Internal Teams call → OK
+Test 2 – External mobile call → No audio
+Test 3 – External landline call → No audio
+Notable:
+Call status shows “Connected”.
+08.07.25 11:40
+Initial hypothesis: Client issue
+Measures:
+• Teams cache cleared
+• Teams reinstalled
+• Drivers checked
+Result: No change.
+09.07.25 08:55
+Customer adds:
+A new firewall rule was implemented at the location over the weekend (Security Hardening).
+Unclear whether there is a correlation.
+09.07.25 10:10
+Helpdesk checks:
+• Internet stable
+• No packet loss visible
+• Microsoft 365 status normal
+Suspicion: Network / VoIP layer
+Ticket forwarded to: BU Unified Communications
+09.07.25 10:22
+Ticket taken over by: System Engineer 18
+In-depth analysis
+09.07.25 11:15
+Analysis in Teams Admin Center:
+• Direct Routing active
+• SBC status: Online
+• PSTN calls are signaled
+• No errors in SIP signaling
+Notable:
+• RTP stream appears not to run bidirectionally
+10.07.25 08:40
+SBC log analysis:
+• SIP INVITE correct
+• 200 OK correct
+• Media negotiation (SDP) successful
+RTP stream from Microsoft IP visible
+RTP stream from internal client not consistently visible
+10.07.25 10:50
+Firewall logs reviewed.
+New rule implemented:
+Outbound traffic restricted
+Only defined port ranges allowed
+Documentation shows:
+Teams media ports UDP 3478–3481
+and dynamic RTP ports 49152–53247
+Firewall rule allows only 3478–3481.
+11.07.25 09:15
+Test:
+Temporary opening of wider UDP port range
+→ Audio works immediately.
+Port restricted again
+→ No audio.
+11.07.25 13:20
+Comparison with internal architecture documentation:
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Section 3 describes:
+• Media Bypass behavior
+• RTP port range requirements
+• Location-specific firewall rules
+• NAT traversal
+14.07.25
+Comparison shows:
+Zurich location uses Media Bypass
+Other locations do not.
+With Media Bypass, RTP runs directly from client to SBC.
+Firewall rule was designed only for signaling.
+16.07.25
+Configuration adjustment carried out according to architecture specification.
+Details not documented in the ticket for security reasons.
+18.07.25 15:30
+Multiple external test calls successful.
+Audio stable in both directions.
+Monitoring 48h without anomalies.
+Ticket closure
+18.07.25 16:05
+Dear Contact Person 14
+The root cause was a restriction of media port communication following a firewall adjustment at the Zurich location.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Voice transmission is stable again.
+Kind regards
+Consulting Sample Company
+
+
+"
+Is the statement supported by the evidence?,Printing (Basel): involve Print/Server team (to inspect queues and permissions) and Network team (if printers are unreachable due to VLAN/routing) — both roles were required across the documented Basel tickets,"=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 27:
+﻿
+Ticket summary:
+Ticket name: KF60: Print job remains stuck in queue
+Ticket number: TI-1621044
+Company: Customer Company 60 AG
+Contact person: Contact Person 04
+Owner: Employee 12
+Origin: Phone
+Type: Incident
+Created on: 21.10.25 09:11
+Closure
+Closure date: 21.10.25 09:38
+Closure text: Printer queue paused. Queue activated and print jobs restarted.
+Activities
+21.10.25 09:05 – Phone report
+Ms. Contact Person 04 reports that documents are not printing.
+In Windows, the print job is displayed, but nothing happens.
+Other colleagues using the same printer are also unable to print.
+21.10.25 09:11
+Ticket created and assigned to Employee 12.
+21.10.25 09:20 – Remote check
+Connection established with affected user.
+Print job is located in the queue.
+Queue status shows “Paused”.
+Queue activated and all print jobs restarted.
+Test print performed → successful.
+21.10.25 09:32 – Customer feedback
+Printing is working again for all affected employees.
+21.10.25 09:38 – Ticket closure
+Dear Contact Person 04
+The printer queue was paused.
+After activating the queue and restarting the print jobs, printing is functioning properly again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,The record set does not explicitly document a step‑by‑step procedure for the exact symptom “a new colleague has no printers showing up at all while others in same room can print.” The closest relevant records show (a) network reachability issues between print server and printer VLAN and (b) per‑user permission deny cases,"=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,"Prepare an exact escalation packet to Unified Communications + Network (for Zurich) and to Print/Server + Network (for Basel) containing the reproductions, times, and sample logs to accelerate their work (this would be a recommended action; the records show escalation to those teams worked previously)","=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 23:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls without audio (only silence)
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05S
+Closure text: Analysis completed. Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Phone notification.
+Several employees report:
+• External calls can be established
+• The other party can hear them
+• They themselves hear nothing (complete silence)
+Internal Teams-to-Teams calls function.
+Chat and video also function.
+Affected: approx. 12 users at the Zurich location.
+08.07.25 08:21
+Ticket created
+Assigned to: Employee 33
+Status: In Progress
+Notes
+08.07.25 09:05
+Helpdesk asks:
+• Does it affect only external PSTN calls?
+• Only incoming or also outgoing?
+• Headset or speaker?
+• WLAN or LAN?
+08.07.25 09:30
+Customer responds:
+• Only external calls affected
+• Incoming and outgoing
+• Various headsets
+• LAN connection
+• Other locations not affected
+08.07.25 10:15
+Helpdesk tests with affected user:
+Test 1 – Internal Teams call → OK
+Test 2 – External mobile call → No audio
+Test 3 – External landline call → No audio
+Notable:
+Call status shows “Connected”.
+08.07.25 11:40
+Initial hypothesis: Client issue
+Measures:
+• Teams cache cleared
+• Teams reinstalled
+• Drivers checked
+Result: No change.
+09.07.25 08:55
+Customer adds:
+A new firewall rule was implemented at the location over the weekend (Security Hardening).
+Unclear whether there is a correlation.
+09.07.25 10:10
+Helpdesk checks:
+• Internet stable
+• No packet loss visible
+• Microsoft 365 status normal
+Suspicion: Network / VoIP layer
+Ticket forwarded to: BU Unified Communications
+09.07.25 10:22
+Ticket taken over by: System Engineer 18
+In-depth analysis
+09.07.25 11:15
+Analysis in Teams Admin Center:
+• Direct Routing active
+• SBC status: Online
+• PSTN calls are signaled
+• No errors in SIP signaling
+Notable:
+• RTP stream appears not to run bidirectionally
+10.07.25 08:40
+SBC log analysis:
+• SIP INVITE correct
+• 200 OK correct
+• Media negotiation (SDP) successful
+RTP stream from Microsoft IP visible
+RTP stream from internal client not consistently visible
+10.07.25 10:50
+Firewall logs reviewed.
+New rule implemented:
+Outbound traffic restricted
+Only defined port ranges allowed
+Documentation shows:
+Teams media ports UDP 3478–3481
+and dynamic RTP ports 49152–53247
+Firewall rule allows only 3478–3481.
+11.07.25 09:15
+Test:
+Temporary opening of wider UDP port range
+→ Audio works immediately.
+Port restricted again
+→ No audio.
+11.07.25 13:20
+Comparison with internal architecture documentation:
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Section 3 describes:
+• Media Bypass behavior
+• RTP port range requirements
+• Location-specific firewall rules
+• NAT traversal
+14.07.25
+Comparison shows:
+Zurich location uses Media Bypass
+Other locations do not.
+With Media Bypass, RTP runs directly from client to SBC.
+Firewall rule was designed only for signaling.
+16.07.25
+Configuration adjustment carried out according to architecture specification.
+Details not documented in the ticket for security reasons.
+18.07.25 15:30
+Multiple external test calls successful.
+Audio stable in both directions.
+Monitoring 48h without anomalies.
+Ticket closure
+18.07.25 16:05
+Dear Contact Person 14
+The root cause was a restriction of media port communication following a firewall adjustment at the Zurich location.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Voice transmission is stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 27:
+﻿
+Ticket summary:
+Ticket name: KF60: Print job remains stuck in queue
+Ticket number: TI-1621044
+Company: Customer Company 60 AG
+Contact person: Contact Person 04
+Owner: Employee 12
+Origin: Phone
+Type: Incident
+Created on: 21.10.25 09:11
+Closure
+Closure date: 21.10.25 09:38
+Closure text: Printer queue paused. Queue activated and print jobs restarted.
+Activities
+21.10.25 09:05 – Phone report
+Ms. Contact Person 04 reports that documents are not printing.
+In Windows, the print job is displayed, but nothing happens.
+Other colleagues using the same printer are also unable to print.
+21.10.25 09:11
+Ticket created and assigned to Employee 12.
+21.10.25 09:20 – Remote check
+Connection established with affected user.
+Print job is located in the queue.
+Queue status shows “Paused”.
+Queue activated and all print jobs restarted.
+Test print performed → successful.
+21.10.25 09:32 – Customer feedback
+Printing is working again for all affected employees.
+21.10.25 09:38 – Ticket closure
+Dear Contact Person 04
+The printer queue was paused.
+After activating the queue and restarting the print jobs, printing is functioning properly again.
+Kind regards
+Consulting Sample Company
+
+"

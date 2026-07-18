@@ -1,0 +1,25 @@
+Classification: second_level_support
+
+What the indexed records explicitly document (evidence from past incidents)
+- Internal-only browser TLS trust warnings like your HR portal symptom were recorded in TI-1700005; root cause there was a renewed issuing/intermediate CA not being published to the internal AIA distribution point. Remediation recorded: publish the intermediate to AIA/CRL and force client refresh (gpupdate / certutil -pulse) which cleared client warnings [Data: Sources (55)].
+- VPN authentication failures where clients “could not verify the server identity” match TI-1700006: CheckPoint IKEv2 logs showed an EKU mismatch because the post‑renewal VPN server certificate was issued from a template that omitted the required IPsec/IKE EKU. Remediation recorded: fix the template, re‑issue the server cert, deploy to the concentrator and restart — affected users recovered [Data: Sources (104)].
+- Office Wi‑Fi missing on new/replacement devices was documented as an Intune/profile scoping issue in prior cases: Wi‑Fi profiles assigned to a compliance‑based dynamic group were “not applicable” for devices flagged non‑compliant (e.g., after a tightened BitLocker escrow policy); resolving actions included changing assignment scope so new devices received the profile [Data: Sources (87)].
+- Outlook on iOS setup loops tied to device-approval were recorded where App‑Protection/MAM required device compliance; affected iPhones were non‑compliant under a tightened device evaluation policy and onboarding looped until policy rescoping or remediation was applied (TI-1700011) [Data: Sources (20)].
+- Related incidents show SCEP/NDES and on‑prem PKI dependencies and connector issues were part of the same maintenance / PKI-change impact set; NDES connector logs and connector reinstall actions were recorded as part of other remediation efforts [Data: Sources (93)].
+
+Why this supports second_level_support (brief reasoning)
+- The ticket’s combination of (a) internal TLS chain trust failures, (b) VPN server‑identity/EKU failures, (c) Intune/profile delivery issues for new devices, and (d) mobile App‑Protection onboarding loops maps directly to multiple prior incidents that required PKI, VPN/network, Endpoint/Intune and Mobile/App‑Protection engineering actions — not routine helpdesk steps. The indexed cases above were handled by infrastructure/PKI and endpoint teams and involved certificate/template fixes, CA/AIA publication, re‑issuance/deployment of server certs, and Intune policy/assignment changes [Data: Sources (55, 104, 87, 20, 93)].
+- Because those prior tickets required cross‑team engineering coordination (PKI + Network/VPN + Endpoint + Mobile), the same symptoms in this ticket indicate it should be escalated to second_level_support.
+
+Recommended immediate triage (these are recommendations, not verbatim facts from the tickets)
+- Collect representative artifacts used successfully in the past: browser certificate‑chain screenshots and certutil -urlfetch -verify outputs for affected internal sites; VPN/CheckPoint IKE logs showing EKU/chain errors; per‑device Intune compliance‑evaluation history and Wi‑Fi/profile assignment applicability; iOS device enrollment/App‑Protection failure traces; and NDES connector logs if SCEP is in use. These are the same classes of diagnostics the prior incidents used to reach root cause [Recommended; based on practices recorded in the tickets] [Data: Sources (55, 104, 87, 20, 93)].
+- Escalate to PKI (issuing CA / AIA/CRL), Network/VPN (CheckPoint), Endpoint/Intune and Mobile/App‑Protection owners for coordinated triage (documented owner roles in prior cases).
+
+Primary source records relied on
+- TI-1700005 (HR portal TLS chain / missing AIA publish) [Data: Sources (55)].  
+- TI-1700006 (CheckPoint VPN IKEv2 EKU mismatch and remediation) [Data: Sources (104)].  
+- Intune / Wi‑Fi / profile assignment incidents (replacement laptops / compliance‑scoping) [Data: Sources (87)].  
+- Outlook-on‑iOS / App‑Protection setup‑loop incident (device approval loop) [Data: Sources (20)].  
+- NDES/NDES‑connector related log/remediation examples (connector logs, reinstall) [Data: Sources (93)].
+
+If you want, I can (as a recommended next step) produce a short list of the exact artifact types and the single representative devices/accounts to collect first so the engineering teams can begin evidence review immediately. (Marked recommended — not claimed as present in the indexed records.)

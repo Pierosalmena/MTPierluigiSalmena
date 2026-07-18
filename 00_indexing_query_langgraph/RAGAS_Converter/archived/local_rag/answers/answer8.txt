@@ -1,0 +1,28 @@
+Summary of what the ticket data shows
+- Customer reported external users cannot upload to the FileZilla server (external uploads hang then time out), while internally the server appears reachable [Data: Sources (34,33)].  
+- Troubleshooting already done: login tests from the customer workstation (FTP, SFTP and WinSCP), client settings checks, a firewall analysis by Network, and checks of FileZilla Server site/settings by the Core team. The case remained in troubleshooting while these checks were performed [Data: Sources (34,33)].  
+- A later entry shows an explicit decommissioning of external FTP access / firewall policy removal was recorded on 17.12.24 (i.e., external FTP access was removed) [Data: Sources (34)].
+
+Likely diagnosis category
+- Primary (most likely): Network / Perimeter access block (firewall / NAT / deliberate decommissioning of external FTP). The ticket history shows a firewall analysis was performed and there is an explicit record that external FTP access was decommissioned / firewall policy removed — this points strongly at an external connectivity / firewall change as the root cause rather than FileZilla server software alone [Data: Sources (34,33)].  
+- Secondary possibilities to keep in mind (less supported by the logs but typical for FTP incidents): misconfigured passive port ranges or NAT/port forwarding issues, or server-side binding/listening problems — however the Core team already checked FileZilla site settings [Data: Sources (34)].
+
+Recommended next checks (ordered)
+Immediate quick checks you can ask/perform now
+1. Confirm whether external FTP access was intentionally disabled or decommissioned (policy change) — the ticket contains a note that external FTP access was decommissioned / firewall policy removed on 17.12.24 and that should be validated with Network/Security [Data: Sources (34)].  
+2. From an external (internet) location attempt a basic TCP connect to the FTP control port (for example: telnet 10.10.10.10 21 or use nc) to confirm whether the TCP connection is reaching the server from outside. If the TCP connect fails (no SYN/ACK), this points to a network/firewall/NAT block. (Note: 10.10.10.10 / port 21 is recorded in the ticket) [Data: Sources (34)].  
+3. Check firewall / perimeter logs for blocked/dropped packets to the server IP and port for the times the external uploads were attempted — look specifically for rules denying port 21 or the FTP data ports. Ask Network to correlate external source IPs/timestamps to firewall drops [Data: Sources (34,33)].
+
+Deeper checks (if TCP control connection succeeds)
+4. Check FileZilla Server logs for accepted control connections and for subsequent failure during data channel negotiation (PASV/PORT). If the control connection appears but the data transfer never starts, that indicates a data-channel (passive/active) or NAT problem. Core already checked FileZilla site settings, but request logs around the failed attempts [Data: Sources (34)].  
+5. Verify passive mode data-port range on FileZilla and ensure the same ports are allowed/forwarded on firewall/NAT. (If the server is behind NAT, confirm port forwarding/pinhole for the passive range.)  
+6. If SFTP is offered via SSH, confirm whether SFTP attempts behave differently from FTP (SFTP uses a single SSH TCP connection, so differing behaviour helps isolate data-channel vs control-channel problems). The ticket shows SFTP tests were attempted already; record results and timestamps for correlation [Data: Sources (34)].
+
+Who should own / escalation level
+- This should be treated as a 2nd-level (escalation) ticket: customer-side 1st-level checks (client tests) and initial troubleshooting were already completed, Network did a firewall analysis, and Core checked FileZilla site settings — the issue appears to involve perimeter/network configuration or a deliberate change (firewall rule removal / decommissioning) and therefore requires Network & Security and Core/Infrastructure engineering involvement for definitive resolution [Data: Sources (34,33)].  
+- Suggested assignees: BU Network & Security (to verify firewall/NAT/port forwarding and whether external access was intentionally removed) and Core / Infrastructure Engineering (to correlate FileZilla logs and server-side configuration) [Data: Sources (34,33)].
+
+Suggested short next-action message to post/update the ticket
+- "Network & Security: please confirm whether external FTP access to KF14azedi01 (10.10.10.10:21) was intentionally disabled or had its policy removed on 17.12.24. Please provide firewall logs for attempted external connections (timestamps and source IPs) and any relevant deny/drop entries. Core: please attach FileZilla Server control/data-channel logs for the same timestamps so we can correlate. If external TCP to port 21 is reachable, we will focus on passive-port NAT/pinhole checks." — this is consistent with what the ticket already shows was done and what remains outstanding [Data: Sources (34,33)].
+
+If you want, I can draft the exact ticket update to post (including the specific timestamps and sample external test commands) or prepare a checklist to hand to Network & Core.

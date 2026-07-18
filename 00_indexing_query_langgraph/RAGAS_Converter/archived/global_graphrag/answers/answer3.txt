@@ -1,0 +1,58 @@
+ Answer — short conclusion
+- Likely connected: moderate-to-high probability that the three outages are related to weekend maintenance activity that touched perimeter (WAF/TLS), identity (ADFS/federation/cert), and server/OS layers. The pattern in the incident records points to a common failure domain in the identity/TLS layer (changes to WAF/templates, TLS/cipher and ADFS/federation settings) with an additional independent OS/restore failure for the SAP print servers that could explain the ERP delivery note symptom. [Data: Sources (15); Sources (11); Sources (29)].
+
+What the records show (evidence)
+- Customer portal 502 (external "Bad Gateway") was caused by a weekend security patch / profile reload on the perimeter publishing device which applied a Default Strict profile and removed the Portal App Template header rewrite (X Forwarded Proto); disabling TLS inspection restored access and re enabling it reproduced the 502 until the template/rewrites were restored [Data: Sources (15); Reports (13)].
+- Authentication/integration outages (TRAIN CE / Toolbox) were traced to an ADFS client registration configuration in PROD (EnableJWT and RequestMFAFromClaimsProviders) that broke non browser integrations; remediation included adjusting the client registration to match TEST, federation metadata updates and certificate cleanup/rotation [Data: Sources (11, 12); Reports (2)].
+- ERP/SAP delivery note printing failures coincided with a Windows update and a VM restore to a pre maintenance snapshot on the SAP print servers; the restore produced spooler/network share issues and BSODs which were remediated by the team (share toggles, spooler fixes) [Data: Sources (29); Reports (16)].
+- Defender/sensor “unhealthy” symptoms commonly follow blocked outbound HTTPS or TLS/proxy issues; the runbooks call out agent/service state, outbound TCP 443 connectivity, and TLS/proxy errors as primary causes of sensors losing telemetry — an edge change that broke TLS/tunnel behavior could explain SOC alarms about auth servers losing telemetry [Data: Reports (4); Sources (40)].
+
+Synthesis — how these could be the same problem
+- Path A (single correlated cause): a perimeter/TLS change (WAF TLS inspection profile or cipher changes) + ADFS/federation metadata/cert rotation could break token handoffs and header expectations simultaneously. For example, a WAF/inspection/template reload removing a required header or interfering with TLS termination combined with an identity metadata/cert change will produce external 502s, token issuance failures or “unhealthy” auth signals, and downstream service failures that require authentication (including ERP microservices). The incident corpus documents exactly these component failures in different tickets. [Data: Sources (15); Sources (11); Reports (55)].
+- Path B (multiple related but partly independent failures): perimeter/WAF template reload produced portal 502s; ADFS client parameter change produced the authentication/integration failures; the SAP print servers suffered an OS/VM update+restore regression that produced printing/spooler faults. These can be concurrent if the same maintenance window applied different changes to different systems — the records show weekend changes across perimeter, identity and VM patch/restore activity, though not all change ticket metadata is present. [Data: Sources (15); Sources (11); Sources (29)].
+
+Limits of the current evidence
+- The supplied incident tickets and reports document the symptoms and remediation steps, but do not include raw WAF/IIS/ADFS/AD/SIEM log exports or a consolidated change management RFC list that shows exact start/end timestamps and the operator/automation actor for every weekend change. That makes final attribution tentative until device/audit logs and change records are obtained. [Data: Sources (15); Sources (11); Sources (1); Sources (29)].
+
+Immediate prioritized actions (practical, in priority order)
+1) Stop-gap (fastest evidence):
+   - Ask Network/Security for the WAF/reverse proxy audit export for the weekend (pre/post config, template activation events, TLS inspection toggles) and an export of the specific requests that returned 502s (include headers). The portal ticket shows template reload + missing X Forwarded Proto was central to the 502s. [Data: Sources (15); Reports (13)].
+2) Identity plane:
+   - Request AD FS admin/operational event logs and ADFS configuration export (relying party/client registration, especially the Toolbox/Train client) for the window; pull Azure AD sign in logs for the same period filtered by the affected app/client IDs. The TRAIN CE incident shows EnableJWT / RequestMFAFromClaimsProviders changes in PROD were repaired. [Data: Sources (11,12); Reports (2)].
+3) SOC/D C telemetry:
+   - Ask SOC to provide Defender sensor health timelines, agent last seen heartbeats, and outbound TCP 443 connection traces for the affected DCs/hosts (check for TLS/proxy errors). The runbook identifies outbound HTTPS/TLS/proxy issues as a primary cause for “unhealthy” sensors. [Data: Reports (4); Sources (40)].
+4) ERP / SAP printing:
+   - Request hypervisor/backup restore logs (snapshot IDs INTER12203/INTER12204), Windows Update / Get HotFix lists and Windows Event logs (System/Application/PrintService) from the SAP printserver VMs. The print incident records a Windows update + VM restore sequence that produced spooler/share and BSOD issues. Preserve snapshots before any additional work. [Data: Sources (29); Reports (16)].
+5) TLS / Cipher verification:
+   - If IISCRYPTO or cipher/profile changes were applied to IIS/AOS during maintenance, obtain the IISCRYPTO export or run Get TlsCipherSuite and the Schannel registry snapshots from affected IIS/AOS servers. Prior incidents were resolved by applying IISCRYPTO and restarting AOS/IIS. [Data: Sources (0); Reports (55, 141, 56)].
+6) Change management correlation:
+   - Pull the Change Request(s)/RFCs, CAB approvals and device audit logs for the maintenance window (WAF, firewall rules, ADFS changes, Windows patch jobs, hypervisor restore job IDs). The dataset notes weekend PROD changes but lacks a formal CR list in the supplied extracts. [Data: Sources (15); Sources (11); Sources (29); Sources (34)].
+
+Exact logs/fields and windows to request (copy/paste)
+- Time window: maintenance_start − 2 hours through maintenance_end + 24 hours (if exact maintenance times are unknown, use the entire weekend plus 24 hours after). Provide both device local time and convert to UTC.
+- From WAF/reverse proxy: timestamp, request id, client IP, host header, path, request headers (X Forwarded Proto), response code, policy/profile name, admin change events, config diff or pre/post exports. [Data: Sources (15)].
+- From ADFS/Identity: AD FS Admin & Tracing EVTX exports; ADFS client/relaying party export (Get ADF SRelyingParty or equivalent), Azure AD SigninLogs for the tenant filtered by app/client IDs, correlation IDs. [Data: Sources (11,12); Reports (2)].
+- From system/SOC: Defender sensor heartbeats, agent events with TLS/proxy errors, outbound connection logs to Defender endpoints (TCP 443) from DCs. [Data: Reports (4); Sources (40)].
+- From IIS/AOS: IIS access/error logs (filter 5xx), IISCRYPTO export if available, Get TlsCipherSuite output and Schannel registry exports. [Data: Sources (0); Reports (55,141)].
+- From SAP/VM: hypervisor restore job logs (task ID, snapshot GUID), Windows Update / Get HotFix output, Windows Event logs (System/Application/PrintService), and spooler logs. [Data: Sources (29); Reports (16)].
+
+Short, actionable triage playbook (what to do in next 4 hours)
+1. Have Network/Security suspend TLS inspection on the WAF briefly (if safe) to verify whether the portal immediately returns to healthy — the team’s reproduction shows disabling TLS inspection removed the 502 symptom. Do this only with change control/coordination. [Data: Sources (15)].
+2. Collect ADFS and Azure AD sign in logs for the same interval and search for spikes of token errors, CA not satisfied, or correlation IDs from failed calls; prioritize the Toolbox/Train client. [Data: Sources (11); Sources (13)].
+3. Pull Defender/agent health and DC event excerpts to confirm whether agent telemetry dropped because of outbound blocking or TLS errors. [Data: Reports (4); Sources (40)].
+4. Freeze (preserve) the SAP VM snapshots and collect guest Windows logs before any further restores. [Data: Sources (29); Reports (16)].
+
+If you can provide now
+- Exact maintenance start/end timestamps (or the ticket IDs for the change requests) and the affected hostnames (portal FQDN, ADFS hostnames, SAP printserver hostnames) — I will draft ready to run Kusto/Splunk/PowerShell queries and a one page evidence request to send to the teams. The dataset shows the incidents and the most relevant ticket numbers to correlate against (e.g., the portal and TRAIN CE tickets) but not raw logs or CRs in the provided extracts. [Data: Sources (15); Sources (11); Sources (29)].
+
+General knowledge note
+- Common patterns: TLS inspection or cipher/profile changes on a perimeter device can strip or alter headers and break backend assumptions, producing 502s; ADFS/federation metadata or certificate rotations can break token issuance and cause cross service authentication failures; OS patch/restore can break spooler/driver state and cause ERP printing to fail. These are well documented operational failure modes. [Data: General Knowledge (https://learn.microsoft.com/en-us/windows-server/identity/ad-fs/); Data: General Knowledge (https://learn.microsoft.com/en-us/security/)].
+
+Quick summary recommendation
+- Treat this as a coordinated incident: convene Network/Security (WAF), Identity/ADFS, SOC (Defender), and Infrastructure (hypervisor/SAP) owners now, collect the audit exports above, and prioritize WAF header/TLS inspection and ADFS client registration logs. The existing tickets provide strong leads; with the device audit exports and change records we can produce a definitive, timestamped causal timeline. [Data: Sources (15); Sources (11); Sources (29); Reports (4)].
+
+If you want, I will:
+- Draft the exact log export queries and an evidence request email you can send to each team (WAF, ADFS, SOC, SAP/VM infra), and/or
+- Parse any exported log slices you upload and produce a correlated timeline and a recommended rollback or mitigation plan.
+
+Which would you prefer me to prepare first — (A) the evidence request email + checklist, or (B) the exact SIEM/PowerShell queries for each platform?

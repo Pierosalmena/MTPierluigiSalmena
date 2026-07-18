@@ -1,0 +1,1603 @@
+dataset,question,answer,context,is_recommendation,is_rec_reason,groundedness,groundedness_reason
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Verify the printer’s IP and VLAN. In the prior case the printer was placed into a newly defined printer VLAN which was not in the relay allow list,"=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement begins with a direct instruction to 'Verify the printer’s IP and VLAN,' which is an explicit recommendation/action.",supported,"The ticket log documents checking the printer IP, finding it in a newly defined printer VLAN, and confirming that this VLAN was not included in the SMTP relay allow list (entries on 12.12.25 and 15.12.25), matching both parts of the answer."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Test: scan to an internal mailbox (should succeed) and scan to an external mailbox (Gmail/partner) — confirm external delivery [Documented action & test steps used previously],"=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement contains directive test steps and action verbs ('Test:', 'should succeed', 'confirm external delivery'), which are instructions recommending actions to perform.",supported,"The ticket activity log documents performing test scans to an internal mailbox and to external addresses (Gmail and partner) and confirms external delivery after relay configuration was corrected, so the advised test steps were used previously."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"If an explicit Deny is present, remove it (and ensure permissions are assigned via AD groups as required by the standard). After change, have the user log off and log on again and then retry access [Documented action; analogous workflow in prior case]","=== CITED SOURCES ===
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement gives conditional, directive instructions (e.g., 'If an explicit Deny is present, remove it', 'ensure permissions', 'have the user log off and log on') which constitute recommendations.",supported,"The ticket shows an explicit 'Deny' on the printer queue was removed, permissions were cleaned up to use AD groups per the Print & Scanning Infrastructure Standard, and the user logged off/on and printing then succeeded, directly supporting the recommended steps."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Confirm the user’s AD group memberships and compare to the expected group(s) for Zurich branch access. The indexed records show that moves into different AD groups during reorganizations have caused access/default mapping issues and needed correction [Documented action]. This is supported by the documented group-change incident where group membership caused incorrect printer defaults until cleaned up,"=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement opens with an explicit directive to 'Confirm the user’s AD group memberships and compare to the expected group(s),' which clearly advises an action to be taken.",supported,"Ticket TI-1623017 documents the Finance team being moved into a new AD group that was additionally a member of a Zurich location group, causing the Zurich printer to become the default until the incorrect group membership was removed and the group structure cleaned up."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"If group membership is incorrect (e.g., user was added to a Zurich or restrictive group during the transfer), correct the group membership according to the organisation’s blueprint/standard, and then verify access [Documented action; group-cleanup resolution in prior case]","=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",yes,"Uses conditional and directive language ('If... correct... and then verify') giving stepwise actions, so it is a recommendation.",supported,"The ticket states the root cause was inconsistent group membership (Finance group became member of a Zurich location group), the group membership was corrected according to the Print & Scanning Infrastructure Standard/blueprint, and the fix was verified by tests and gpupdate, so all claims are documented in the CONTEXT."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Users losing access while others keep access has been caused by explicit Deny ACEs applied to a resource (in the documented case a printer queue). Removing the explicit Deny and logging the user back in restored access,"=== CITED SOURCES ===
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+",no,It describes a documented cause and a past remediation (removing the explicit Deny and re-logging) rather than issuing a recommendation or directive.,supported,"The ticket (TI-1623488) states an explicit “Deny” ACE on the printer queue caused the single-user Access Denied, and that removing the explicit deny and having the user log in again allowed a successful test print and restored printing."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"If the printer VLAN is not in the SMTP relay allow list, add the VLAN’s IP range to the relay allow list and ensure DNS resolution is internal as required by the Print & Scanning Infrastructure Standard [Documented action]. After this change the prior case reported successful external delivery and ticket closure","=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,"Contains conditional, directive advice ('If the printer VLAN... add the VLAN’s IP range... and ensure DNS resolution is internal'), i.e., actionable recommendation.",supported,"The ticket notes the printer VLAN was not in the SMTP relay allow list, the SMTP relay and DNS configuration were adjusted per the Print & Scanning Infrastructure Standard (which requires defined relay IP ranges and internal DNS), and subsequent tests showed successful external delivery and ticket closure."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"I can apply the documented, proven steps for the scan-to-mail problem: check SMTP logs, confirm printer VLAN, add VLAN to relay allow list, and re-test — this sequence fixed the previous incident","=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement lists explicit action steps to apply (check SMTP logs, confirm printer VLAN, add VLAN to relay allow list, re-test), so it is directive advice.",supported,"The ticket log shows SMTP log analysis ('Relay denied'), verification of the printer IP and new printer VLAN, updating the SMTP relay to allow the VLAN (IP range released), and subsequent tests that confirmed external delivery — supporting each step and that the sequence fixed the incident."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Check the folder ACL for explicit Deny entries for the user account. In a documented incident an explicit “Deny” ACE on a print queue for a user caused an immediate “Access denied” and removing that deny restored access [Documented action],"=== CITED SOURCES ===
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+",yes,"Contains an imperative instruction ('Check the folder ACL for explicit Deny entries...') that proposes an action, even though it also cites a documented incident.",supported,The ticket (TI-1623488) documents an explicit “Deny” ACE on the printer queue causing immediate “Access denied”; removing that deny at 11:10 allowed a successful test print and closure states the deny was the root cause.
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Changes during a relocation or reorganization (new AD groups / group membership change) have produced permission and printer-default issues; correcting AD group membership according to the standard resolved those cases,"=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+",no,"This is a past-tense report of what happened and what resolved the issues, not a directive or recommendation to take action.",partially_supported,"Source 2 directly supports that a reorganization/new AD group membership caused a default-printer issue and that correcting group membership per the Print & Scanning Infrastructure Standard resolved it; however Source 3 shows a permission issue caused by an explicit ""Deny"" from a prior test (not a reorganization) and was resolved by removing that deny/cleaning permissions, so the answer overgeneralises by attributing both cases to AD-group changes and stating both were fixed by correcting group membership."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Check the SMTP relay logs for the printer’s IP to see if the relay denied the message (look for “Relay denied”). The indexed record shows this exact symptom and log message in the prior case [Documented action]. This is supported by the case where the printer showed a green check but external delivery failed and the SMTP log showed “Relay denied”,"=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,Contains an imperative instruction ('Check the SMTP relay logs...') that explicitly directs the reader to perform a specific action.,partially_supported,"The recommendation to check SMTP relay logs for the printer IP and look for 'Relay denied' is supported by the ticket (mail log shows ‘Relay denied’ and the issue traced to the printer VLAN not being allowed), but the ANSWER's claim that the printer 'showed a green check' is not present in the CONTEXT (the ticket notes no error message visible)."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"Scan-to-mail failing for external recipients can be caused by the printer being in a VLAN that is not allowed by the SMTP relay. In the documented case, the printer showed no error on its display (green check), the SMTP logs showed “Relay denied”, and the fix was to add the printer VLAN IP range to the relay allow list and verify DNS resolution. After that external delivery worked and the ticket was closed","=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,"Although presented as what fixed the issue, it contains directive actions to take ('add the printer VLAN IP range to the relay allow list' and 'verify DNS resolution'), i.e., a recommended fix.",supported,"The ticket states the printer showed no error, SMTP logs showed “Relay denied”, the printer was in a new VLAN not allowed by the SMTP relay, the relay configuration (including IP range) and DNS were adjusted, after which external delivery worked and the ticket was closed."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"Permission to check the SMTP relay logs and, if required, add the printer VLAN IP range to the relay allow list (I will record the change and request re-test) — supported by the documented fix","=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,"It proposes actions and next steps (requesting permission to check logs, possibly add the VLAN to the allow list, record the change and request re-test), i.e., forward-looking advice.",supported,"supported — the ticket shows mail log analysis with “Relay denied”, confirms the printer VLAN was not in the relay allow list, and documents updating the SMTP relay to include the printer VLAN IP range followed by successful re-testing."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"I can apply the documented, proven steps for the access permission problem: inspect ACLs for explicit Deny ACEs and verify/correct AD group membership, then re-test after relogin — these actions fixed prior incidents","=== CITED SOURCES ===
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement gives explicit action-oriented steps (inspect ACLs, verify/correct AD group membership, re-test) as recommended procedures to resolve the issue.",supported,"Both tickets document those steps: Source 3 shows an explicit Deny ACE on the printer queue being removed and the user logging in again which restored printing, and Source 2 shows correcting AD group membership (with gpupdate and re-login) which fixed the default-printer issue, matching the claimed actions and outcomes."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Network segmentation changes (new VLANs or VM restores / Windows updates) have previously caused printing and share-access disruptions; fixes included adjusting routing/firewall rules and re-enabling network shares on print servers after a VM restore,"=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 28:
+﻿
+Ticket summary:
+Ticket name: KF13: PRIO HIGH - Printing from SAP not possible
+Ticket number: TI-931293
+Company: Customer Company 13
+Contact person: Contact Person 11
+Owner: Employee 17
+Origin: Phone
+Type: Support Request
+Created on: 18.07.24 17:16
+
+Closure
+Closure date: 19.07.24 16:48
+Closure text: After a Windows update and the subsequent VM restore, the printer network share caused issues. These were corrected and operations were restored.
+
+Activities
+Emails:
+19.07.24 09:01 | Ticket: KF13: PRIO HIGH - Printing from SAP not possible set to status ""In Progress"" #027064349 | NO-REPLY | BU_CustomerServices_RUN@ConsultingSampleCompany.ch
+Hello BU Customer Services Run,
+The ticket KF13: PRIO HIGH - Printing from SAP not possible, number TI-931293, has been set to status ""In Progress"".
+Link: KF13: PRIO HIGH - Printing from SAP not possible
+
+19.07.24 12:52 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+I would like to briefly check whether the issue with printing from SAP has been resolved in the meantime.
+Kind regards
+Employee 18
+
+19.07.24 13:01 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Contact Person 12 | Employee 18
+Hi everyone,
+Unfortunately, it is still not working.
+Kind regards
+Contact Person 12
+Head of Customer Services, Customer Company 13 AG
+Phone: +41 00 000 00 00
+
+19.07.24 13:24 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+Thank you for your feedback. I will inform the responsible department that the issue still persists.
+I will keep you updated on further progress.
+Kind regards
+Employee 18
+
+19.07.24 16:38 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17 | Contact Person 11
+Dear all,
+I would like to inform you that we have identified the root cause and resolved the incident. Printing via both print servers through SAP is now functioning properly again. Mr. Contact Person 12 has confirmed that SAP print jobs are being executed correctly.
+After the Windows update and the restore of the two VMs, all printers had issues with the network share on print server VRINFRGERPRNT03. After disabling and re-enabling the network share for all printer queues, all pending documents on the affected printers were successfully printed.
+No further actions are currently required, and we will now close the ticket.
+Should you require further assistance or have any questions, please do not hesitate to contact us.
+Kind regards and have a nice weekend,
+Employee 17
+Senior System Engineer Core Engineering
+Consulting Sample Company AG
+
+19.07.24 16:44 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17
+FYI
+
+19.07.24 16:55 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello everyone,
+THANK YOU VERY MUCH!!! TOP SERVICE!!!
+We are very satisfied 😊
+Wishing you both a very nice weekend as well!
+Best regards
+Tom
+Head of IT Switzerland Informatics, Customer Company 13
+
+19.07.24 17:16 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello Giusi,
+You were not included in the distribution list, I only just noticed that.
+Best regards
+Tom
+
+22.07.24 07:56 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 19
+Hello @Employee 17 and @Employee 20,
+Thank you very much for your great support last Friday on this ticket. This was highly appreciated by KF13, including Contact Person 11, and they were truly grateful for your efforts.
+Especially for Giusi and Employee 20, here again Tom’s praise.
+Kind regards
+Employee 19
+Service Manager
+
+22.07.24 09:19 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 26
+Nice one 😊 That’s a great way to start the week.
+Employee 26
+Head of Core Engineering
+
+Notes:
+18.07.24 17:17 | Admin, CRM | WEB
+Ticket opened on 18.07.24 17:16 by Employee 23.
+18.07.24 17:22 | ApplicationUser, CRM Development | WEB
+Classified as PRIO HIGH because no orders could be printed from SAP, preventing deliveries.
+18.07.24 17:24 | Employee 23 | WEB
+Printing from SAP via VRINFRGERPRNT03 and VRINFRGERPRNT04 not possible. Normal printing works via other print servers with follow-me solution. Contact Person 11 requests rollback of the Windows version on the print servers.
+18.",no,"This is a past-tense report of causes and fixes (what was done), not a recommendation or directive advising future action.",supported,Source 22 shows printers moved to a new VLAN and printing was restored by adjusting firewall/routing rules; Source 28 shows a Windows update and VM restores caused network-share printing issues that were resolved by disabling and re-enabling the print server shares.
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"If server-side shares or print servers were recently restored/updated (VM restore or Windows update), network share re-enable steps were required for printers in at least one documented incident — if you see VM or patch events in the Zurich infrastructure timeline, consider verifying recent updates/restores on relevant servers and re-enabling shares if needed [Documented action]","=== CITED SOURCES ===
+SOURCE 28:
+﻿
+Ticket summary:
+Ticket name: KF13: PRIO HIGH - Printing from SAP not possible
+Ticket number: TI-931293
+Company: Customer Company 13
+Contact person: Contact Person 11
+Owner: Employee 17
+Origin: Phone
+Type: Support Request
+Created on: 18.07.24 17:16
+
+Closure
+Closure date: 19.07.24 16:48
+Closure text: After a Windows update and the subsequent VM restore, the printer network share caused issues. These were corrected and operations were restored.
+
+Activities
+Emails:
+19.07.24 09:01 | Ticket: KF13: PRIO HIGH - Printing from SAP not possible set to status ""In Progress"" #027064349 | NO-REPLY | BU_CustomerServices_RUN@ConsultingSampleCompany.ch
+Hello BU Customer Services Run,
+The ticket KF13: PRIO HIGH - Printing from SAP not possible, number TI-931293, has been set to status ""In Progress"".
+Link: KF13: PRIO HIGH - Printing from SAP not possible
+
+19.07.24 12:52 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+I would like to briefly check whether the issue with printing from SAP has been resolved in the meantime.
+Kind regards
+Employee 18
+
+19.07.24 13:01 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Contact Person 12 | Employee 18
+Hi everyone,
+Unfortunately, it is still not working.
+Kind regards
+Contact Person 12
+Head of Customer Services, Customer Company 13 AG
+Phone: +41 00 000 00 00
+
+19.07.24 13:24 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+Thank you for your feedback. I will inform the responsible department that the issue still persists.
+I will keep you updated on further progress.
+Kind regards
+Employee 18
+
+19.07.24 16:38 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17 | Contact Person 11
+Dear all,
+I would like to inform you that we have identified the root cause and resolved the incident. Printing via both print servers through SAP is now functioning properly again. Mr. Contact Person 12 has confirmed that SAP print jobs are being executed correctly.
+After the Windows update and the restore of the two VMs, all printers had issues with the network share on print server VRINFRGERPRNT03. After disabling and re-enabling the network share for all printer queues, all pending documents on the affected printers were successfully printed.
+No further actions are currently required, and we will now close the ticket.
+Should you require further assistance or have any questions, please do not hesitate to contact us.
+Kind regards and have a nice weekend,
+Employee 17
+Senior System Engineer Core Engineering
+Consulting Sample Company AG
+
+19.07.24 16:44 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17
+FYI
+
+19.07.24 16:55 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello everyone,
+THANK YOU VERY MUCH!!! TOP SERVICE!!!
+We are very satisfied 😊
+Wishing you both a very nice weekend as well!
+Best regards
+Tom
+Head of IT Switzerland Informatics, Customer Company 13
+
+19.07.24 17:16 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello Giusi,
+You were not included in the distribution list, I only just noticed that.
+Best regards
+Tom
+
+22.07.24 07:56 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 19
+Hello @Employee 17 and @Employee 20,
+Thank you very much for your great support last Friday on this ticket. This was highly appreciated by KF13, including Contact Person 11, and they were truly grateful for your efforts.
+Especially for Giusi and Employee 20, here again Tom’s praise.
+Kind regards
+Employee 19
+Service Manager
+
+22.07.24 09:19 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 26
+Nice one 😊 That’s a great way to start the week.
+Employee 26
+Head of Core Engineering
+
+Notes:
+18.07.24 17:17 | Admin, CRM | WEB
+Ticket opened on 18.07.24 17:16 by Employee 23.
+18.07.24 17:22 | ApplicationUser, CRM Development | WEB
+Classified as PRIO HIGH because no orders could be printed from SAP, preventing deliveries.
+18.07.24 17:24 | Employee 23 | WEB
+Printing from SAP via VRINFRGERPRNT03 and VRINFRGERPRNT04 not possible. Normal printing works via other print servers with follow-me solution. Contact Person 11 requests rollback of the Windows version on the print servers.
+18.",yes,"The text explicitly advises action—'consider verifying recent updates/restores... and re-enabling shares if needed'—using directive language and a conditional, so it is a recommendation.",supported,"Ticket TI-931293 documents that a Windows update and subsequent VM restore caused network-share issues on print server VRINFRGERPRNT03 and that disabling and re-enabling the network shares for all printer queues restored printing, which directly supports the recommended verification and re-enable action."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Permission to inspect the ERP_Upgrade folder ACL and the user’s AD group memberships and to remove any explicit Deny or correct the group membership per the standard — supported by documented fixes,"=== CITED SOURCES ===
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",yes,It explicitly proposes actions — inspect the ERP_Upgrade folder ACL and AD group memberships and remove explicit Deny or correct group membership — so it is a recommendation.,partially_supported,"Removing an explicit Deny and correcting AD group membership per the standard is supported by the cited tickets (printer queue Deny removed in SOURCE 3; group membership correction in SOURCE 2), but the CONTEXT does not mention the specific 'ERP_Upgrade' folder ACL, so that particular inspection is not documented."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"Because the user just transferred branches, configuration changes (AD group change, VLAN assignment, firewall/routing differences) are plausible causes for both the intranet permission issue and the scan-to-mail failure. Prior tickets show that relocation/group changes and VLAN/firewall rules were root causes in similar cases","=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+",no,"This is a diagnostic explanation linking recent branch transfer and configuration changes to observed issues, not a recommendation or suggested action.",partially_supported,"Supported: prior tickets show AD group/relocation changes and VLAN/firewall/SMTP relay misconfigurations were root causes in similar printer and scan-to-mail incidents (Sources 2, 22, 6). Missing: the CONTEXT does not explicitly state a single user ‘transferred branches’ causing an intranet permission issue or that both issues stemmed from that exact user transfer."

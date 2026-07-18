@@ -1,0 +1,2340 @@
+dataset,question,answer,context,is_recommendation,is_rec_reason,groundedness,groundedness_reason
+traceability_ragas_classification_answer3,Is the statement supported by the evidence?,Escalate to the M365 / Identity engineering team (in past incidents the BU Infrastructure – M365 / Identity group and system engineers handled comparable cases),"=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+
+
+SOURCE 31:
+ denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+Notable:
+When applying the Sensitivity Label, the option
+“Preserve custom permissions”
+was not activated.
+Result:
+• Existing SharePoint permissions formally remained
+• Encryption, however, applies only to explicitly defined groups
+This creates a situation where:
+SharePoint says → Access allowed
+AIP encryption says → Access only with key permission
+Depending on token refresh timing, access is granted or blocked.
+24.03.25 14:35
+Reproduction in test tenant:
+• Folder with Unique Permissions created
+• Sensitivity Label applied afterward
+• Different users tested
+Result:
+Users with older access tokens could temporarily access.
+After token renewal, access blocked.
+25.03.25 09:15
+Root cause defined:
+The folder was:
+1. Renamed
+2. Assigned Unique Permissions
+3. Subsequently encrypted with a Sensitivity Label
+The encryption defined a different permission group than the SharePoint ACL.
+Token caching caused inconsistent behavior.
+25.03.25 11:40 – Actions
+• Sensitivity Label removed
+• Folder reassigned with correct group reference
+• Label reapplied with correct group integration
+• “Compliance_Core” and “COMPLIANCE_TEAM” structurally aligned
+• Tests performed with multiple user accounts
+• Tokens intentionally invalidated
+26.03.25 – Monitoring
+Multiple users tested
+Access consistently possible
+No further error messages
+28.03.25 15:42 – Customer feedback
+Audit team confirms stable access for all employees.
+Ticket closure
+28.03.25 16:02
+Dear Contact Person 02
+The root cause was an inconsistent combination of Unique SharePoint permissions and a subsequently applied Sensitivity Label encryption.
+Due to differing group references between ACL and encryption, inconsistent access behavior occurred, amplified by token caching.
+The permission structure was aligned and tested.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+
+
+SOURCE 13:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – External project members lose access sporadically
+Ticket number: TI-1583327
+Company: Customer Company 25 AG
+Contact person: Contact Person 07
+Owner: Employee 31
+Origin: Email
+Type: Incident
+Created on: 07.04.25 08:12
+Closure
+Closure date: 17.04.25 15:18
+Closure text: Root cause identified (Azure AD Connect synchronization error affecting group attributes). Cleanup and full sync performed. Access stable.
+Activities
+07.04.25 08:04
+Subject: Project members (external) lose access to SharePoint
+From: Contact Person 07
+Good morning
+Several external project members report that they no longer have access to the folder
+/Projects/Compliance_Review_2025
+Internal employees do not appear to have issues.
+Please review.
+Kind regards
+Contact Person 07
+07.04.25 08:12
+Ticket created
+Assigned to: Employee 31
+Status: In Progress
+Notes
+07.04.25 09:05
+Helpdesk asks:
+• Does it affect only external users?
+• What error message appears?
+• Since when exactly?
+• Were groups or permissions adjusted?
+07.04.25 10:20
+Customer responds:
+Error message:
+Access denied
+One user could access yesterday.
+Today no longer.
+No deliberate changes made.
+07.04.25 11:10
+Helpdesk checks SharePoint:
+• Folder permissions correct
+• Group “SP_Compliance_Main” contains “COMPLIANCE_TEAM”
+• External users are members of “COMPLIANCE_TEAM”
+Comparison internal vs external users:
+No visible difference.
+08.04.25 08:45
+Customer adds:
+One external user was newly added and immediately had access.
+Another who has been in the project for months loses access sporadically.
+08.04.25 10:15
+Helpdesk tests:
+• Remove + re-add to group
+→ Access temporarily restored
+After approx. 1 hour, no access again.
+08.04.25 14:30
+Hypothesis:
+Token / cache / Conditional Access
+Test:
+User fully logs out → logs in again
+→ Access remains denied
+Hypothesis rejected.
+09.04.25 09:12
+Helpdesk asks:
+Are external users created as “Guest” or “Member”?
+09.04.25 10:05
+Customer:
+All externals are created as Guest.
+Some were recently synchronized from On-Prem AD to Cloud.
+09.04.25 11:40
+First observation:
+For two affected users in Entra ID portal, attribute
+“source” = Windows Server AD
+For functioning external users:
+“source” = Azure AD
+Correlation unclear.
+09.04.25 14:20
+Ticket escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – Identity
+10.04.25 08:55
+Ticket taken over by: System Engineer 14
+In-depth analysis
+10.04.25 09:40
+Azure AD Connect reviewed.
+Observation:
+Group “COMPLIANCE_TEAM” exists both On-Prem and in Cloud.
+On-Prem version is synchronized.
+Cloud version was originally created manually.
+Result:
+• External guests exist only in Cloud group
+• SharePoint references the synchronized On-Prem group
+Same name, but different Object IDs.
+10.04.25 11:25
+Review of group members via Graph:
+Cloud group:
+→ Contains external guests
+Synchronized On-Prem group:
+→ Contains only internal users
+Since SharePoint evaluates by Object ID, not by name, external users lose access once synchronization takes effect.
+11.04.25 08:30
+Reproduction in test:
+• On-Prem group re-synchronized
+• Cloud group overwritten
+• External users reproducibly lose access
+Root Cause
+Two groups existed with identical name:
+COMPLIANCE_TEAM
+1. Cloud-native group
+2. Synchronized On-Prem group
+Through Azure AD Connect, the Cloud group was gradually overwritten or deactivated.
+SharePoint referenced the synchronized version.
+External guests were never managed On-Prem and therefore were not included in the synchronized group.
+Actions
+11.04.25 – 14.04.25
+• Consolidation of group structure
+• Old Cloud group removed
+• On-Prem group properly cleaned
+• External guests managed as Cloud-only members
+• Azure AD Connect full synchronization performed
+15.04.25 – Monitoring
+Access remains stable
+No further inconsistencies
+17.04.25 15:18 – Ticket closure
+Dear Contact Person 07
+The root cause was the parallel existence of two groups with identical names but different origins (Cloud vs. On-Prem synchronized).
+Due to synchronization, effective group membership for external users was not correctly applied.
+The group structure was consolidated and fully synchronized.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+",yes,"The phrase 'Escalate to the M365 / Identity engineering team' is a direct instruction to take action, indicating a recommendation.",supported,"Both cited tickets show escalation to the BU Infrastructure – M365 / Identity (Assigned Group changed to: BU Infrastructure – M365 / Identity / BU Infrastructure – Identity) and being handled by system engineers (System Engineer 11 and System Engineer 14), so escalating to M365/Identity engineering matches documented precedent."
+traceability_ragas_classification_answer3,Is the statement supported by the evidence?,Verify group nesting in Entra ID to rule out ineffective inheritance; prior fixes involved correcting nesting and removing deprecated groups (TI-1569482),"=== CITED SOURCES ===
+SOURCE 20:
+﻿Ticket summary:
+Ticket name: KF25: SharePoint – Access to project folder denied
+Ticket number: TI-1569482
+Company: Customer Company 25 AG
+Contact person: Contact Person 03
+Owner: Employee 18
+Origin: Email
+Type: Incident
+Created on: 18.02.25 09:06
+Closure
+Closure date: 25.02.25 14:38
+Closure text: Root cause identified (group nesting in Entra ID). Permission structure cleaned up. Access restored.
+Activities
+Emails:
+18.02.25 08:59
+Subject: No access to project folder “2025_Migration”
+From: Contact Person 03
+To: HELPDESK
+Good morning
+Several employees from the team “IT-Projekte” receive the following message when accessing the SharePoint folder
+/Projects/2025_Migration
+Access denied – You do not have the required permissions
+Access was working until last week.
+Please review.
+Kind regards
+Contact Person 03
+18.02.25 09:06
+Ticket TI-1569482 created
+Assigned to: Employee 18
+Status: In Progress
+Notes:
+18.02.25 09:22 – Remote analysis
+• Access tested with affected user → reproducible
+• SharePoint Online reachable
+• Other project folders accessible
+• Only folder “2025_Migration” affected
+• Permission view in SharePoint shows: Access via group “SP_Project_IT”
+Comparison with working user:
+This user is member of “SP_Project_IT_Lead”
+Suspicion: Group membership inconsistent
+18.02.25 10:05 – Entra ID review
+• User is member of Azure AD group “IT-Projekte”
+• This group is nested in “SP_Project_IT”
+• Notable: “SP_Project_IT” was newly created last week
+History checked:
+Old group “SP_Project_IT_v1” was deactivated
+18.02.25 11:40 – Test measure
+User added directly to “SP_Project_IT”
+→ Access works immediately
+After removing the direct assignment → access denied again
+Conclusion: Nesting not functioning correctly
+19.02.25 08:55 – Further analysis
+Review of group structure:
+IT-Projekte
+└── SP_Project_IT_v1 (deactivated)
+└── SP_Project_IT (new)
+“IT-Projekte” was still nested in the old group, not in the new one.
+Therefore, users did not receive effective permissions on the new SharePoint folder.
+19.02.25 10:20 – Adjustment
+• Nesting corrected
+• “IT-Projekte” properly integrated into “SP_Project_IT”
+• Old group removed
+• Synchronization awaited
+20.02.25 – Monitoring
+Multiple users tested
+Access consistently possible
+25.02.25 14:30 – Customer feedback
+Access works again for all employees without restriction.
+Ticket closure
+25.02.25 14:38
+Dear Contact Person 03
+The root cause was incorrect group nesting in Entra ID after the creation of the new SharePoint permission group.
+The structure was cleaned up and tested.
+Access has been restored.
+Kind regards
+Consulting Sample Company
+
+",yes,Uses a directive verb 'Verify...' that explicitly proposes an action to check group nesting and prevent ineffective inheritance.,supported,"Ticket TI-1569482 identifies incorrect group nesting in Entra ID as the root cause and the notes state the nesting was corrected and the old/deactivated group removed, with the structure cleaned up and access restored."
+traceability_ragas_classification_answer3,Is the statement supported by the evidence?,"Have engineers check for Sensitivity Label / AIP encryption applied after permission changes, and verify whether the label’s allowed group differs from the SharePoint ACL; past remediation included removing/reapplying the label and aligning the group references (worked previously)","=== CITED SOURCES ===
+SOURCE 31:
+ denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+Notable:
+When applying the Sensitivity Label, the option
+“Preserve custom permissions”
+was not activated.
+Result:
+• Existing SharePoint permissions formally remained
+• Encryption, however, applies only to explicitly defined groups
+This creates a situation where:
+SharePoint says → Access allowed
+AIP encryption says → Access only with key permission
+Depending on token refresh timing, access is granted or blocked.
+24.03.25 14:35
+Reproduction in test tenant:
+• Folder with Unique Permissions created
+• Sensitivity Label applied afterward
+• Different users tested
+Result:
+Users with older access tokens could temporarily access.
+After token renewal, access blocked.
+25.03.25 09:15
+Root cause defined:
+The folder was:
+1. Renamed
+2. Assigned Unique Permissions
+3. Subsequently encrypted with a Sensitivity Label
+The encryption defined a different permission group than the SharePoint ACL.
+Token caching caused inconsistent behavior.
+25.03.25 11:40 – Actions
+• Sensitivity Label removed
+• Folder reassigned with correct group reference
+• Label reapplied with correct group integration
+• “Compliance_Core” and “COMPLIANCE_TEAM” structurally aligned
+• Tests performed with multiple user accounts
+• Tokens intentionally invalidated
+26.03.25 – Monitoring
+Multiple users tested
+Access consistently possible
+No further error messages
+28.03.25 15:42 – Customer feedback
+Audit team confirms stable access for all employees.
+Ticket closure
+28.03.25 16:02
+Dear Contact Person 02
+The root cause was an inconsistent combination of Unique SharePoint permissions and a subsequently applied Sensitivity Label encryption.
+Due to differing group references between ACL and encryption, inconsistent access behavior occurred, amplified by token caching.
+The permission structure was aligned and tested.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+",yes,"The statement explicitly instructs engineers to check and verify Sensitivity Labels/AIP encryption and describes remediation steps, so it is a recommendation.",supported,"The context states the root cause was a Sensitivity Label applied after unique SharePoint permissions which used a different permission group than the ACL, and remediation steps included removing the label, reassigning the correct group reference, and reapplying the label (after which access was stable), which directly supports the suggested checks and past remediation. "
+traceability_ragas_classification_answer3,Is the statement supported by the evidence?,Review Azure AD group origins (cloud vs on‑prem) and Azure AD Connect behavior to ensure object IDs and memberships are correct and that no cloud group was overwritten by a synchronized on‑prem group — consolidation and a full sync resolved similar external-access issues before,"=== CITED SOURCES ===
+SOURCE 13:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – External project members lose access sporadically
+Ticket number: TI-1583327
+Company: Customer Company 25 AG
+Contact person: Contact Person 07
+Owner: Employee 31
+Origin: Email
+Type: Incident
+Created on: 07.04.25 08:12
+Closure
+Closure date: 17.04.25 15:18
+Closure text: Root cause identified (Azure AD Connect synchronization error affecting group attributes). Cleanup and full sync performed. Access stable.
+Activities
+07.04.25 08:04
+Subject: Project members (external) lose access to SharePoint
+From: Contact Person 07
+Good morning
+Several external project members report that they no longer have access to the folder
+/Projects/Compliance_Review_2025
+Internal employees do not appear to have issues.
+Please review.
+Kind regards
+Contact Person 07
+07.04.25 08:12
+Ticket created
+Assigned to: Employee 31
+Status: In Progress
+Notes
+07.04.25 09:05
+Helpdesk asks:
+• Does it affect only external users?
+• What error message appears?
+• Since when exactly?
+• Were groups or permissions adjusted?
+07.04.25 10:20
+Customer responds:
+Error message:
+Access denied
+One user could access yesterday.
+Today no longer.
+No deliberate changes made.
+07.04.25 11:10
+Helpdesk checks SharePoint:
+• Folder permissions correct
+• Group “SP_Compliance_Main” contains “COMPLIANCE_TEAM”
+• External users are members of “COMPLIANCE_TEAM”
+Comparison internal vs external users:
+No visible difference.
+08.04.25 08:45
+Customer adds:
+One external user was newly added and immediately had access.
+Another who has been in the project for months loses access sporadically.
+08.04.25 10:15
+Helpdesk tests:
+• Remove + re-add to group
+→ Access temporarily restored
+After approx. 1 hour, no access again.
+08.04.25 14:30
+Hypothesis:
+Token / cache / Conditional Access
+Test:
+User fully logs out → logs in again
+→ Access remains denied
+Hypothesis rejected.
+09.04.25 09:12
+Helpdesk asks:
+Are external users created as “Guest” or “Member”?
+09.04.25 10:05
+Customer:
+All externals are created as Guest.
+Some were recently synchronized from On-Prem AD to Cloud.
+09.04.25 11:40
+First observation:
+For two affected users in Entra ID portal, attribute
+“source” = Windows Server AD
+For functioning external users:
+“source” = Azure AD
+Correlation unclear.
+09.04.25 14:20
+Ticket escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – Identity
+10.04.25 08:55
+Ticket taken over by: System Engineer 14
+In-depth analysis
+10.04.25 09:40
+Azure AD Connect reviewed.
+Observation:
+Group “COMPLIANCE_TEAM” exists both On-Prem and in Cloud.
+On-Prem version is synchronized.
+Cloud version was originally created manually.
+Result:
+• External guests exist only in Cloud group
+• SharePoint references the synchronized On-Prem group
+Same name, but different Object IDs.
+10.04.25 11:25
+Review of group members via Graph:
+Cloud group:
+→ Contains external guests
+Synchronized On-Prem group:
+→ Contains only internal users
+Since SharePoint evaluates by Object ID, not by name, external users lose access once synchronization takes effect.
+11.04.25 08:30
+Reproduction in test:
+• On-Prem group re-synchronized
+• Cloud group overwritten
+• External users reproducibly lose access
+Root Cause
+Two groups existed with identical name:
+COMPLIANCE_TEAM
+1. Cloud-native group
+2. Synchronized On-Prem group
+Through Azure AD Connect, the Cloud group was gradually overwritten or deactivated.
+SharePoint referenced the synchronized version.
+External guests were never managed On-Prem and therefore were not included in the synchronized group.
+Actions
+11.04.25 – 14.04.25
+• Consolidation of group structure
+• Old Cloud group removed
+• On-Prem group properly cleaned
+• External guests managed as Cloud-only members
+• Azure AD Connect full synchronization performed
+15.04.25 – Monitoring
+Access remains stable
+No further inconsistencies
+17.04.25 15:18 – Ticket closure
+Dear Contact Person 07
+The root cause was the parallel existence of two groups with identical names but different origins (Cloud vs. On-Prem synchronized).
+Due to synchronization, effective group membership for external users was not correctly applied.
+The group structure was consolidated and fully synchronized.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+",yes,"It uses a directive verb ('Review ... to ensure') instructing action to check Azure AD group origins and AD Connect behavior, which is a recommendation.",supported,"Ticket TI-1583327 documents a cloud-native and a synchronized on‑prem group with the same name where Azure AD Connect overwritten the cloud group (object IDs differed), causing external guests to lose access; consolidation/cleanup and a full Azure AD Connect sync were performed and access became stable."
+traceability_ragas_classification_answer3,Is the statement supported by the evidence?,A further example showed that incorrect group nesting in Entra ID caused broad access denial until engineers corrected the nesting and cleaned up permission groups (TI-1569482),"=== CITED SOURCES ===
+SOURCE 20:
+﻿Ticket summary:
+Ticket name: KF25: SharePoint – Access to project folder denied
+Ticket number: TI-1569482
+Company: Customer Company 25 AG
+Contact person: Contact Person 03
+Owner: Employee 18
+Origin: Email
+Type: Incident
+Created on: 18.02.25 09:06
+Closure
+Closure date: 25.02.25 14:38
+Closure text: Root cause identified (group nesting in Entra ID). Permission structure cleaned up. Access restored.
+Activities
+Emails:
+18.02.25 08:59
+Subject: No access to project folder “2025_Migration”
+From: Contact Person 03
+To: HELPDESK
+Good morning
+Several employees from the team “IT-Projekte” receive the following message when accessing the SharePoint folder
+/Projects/2025_Migration
+Access denied – You do not have the required permissions
+Access was working until last week.
+Please review.
+Kind regards
+Contact Person 03
+18.02.25 09:06
+Ticket TI-1569482 created
+Assigned to: Employee 18
+Status: In Progress
+Notes:
+18.02.25 09:22 – Remote analysis
+• Access tested with affected user → reproducible
+• SharePoint Online reachable
+• Other project folders accessible
+• Only folder “2025_Migration” affected
+• Permission view in SharePoint shows: Access via group “SP_Project_IT”
+Comparison with working user:
+This user is member of “SP_Project_IT_Lead”
+Suspicion: Group membership inconsistent
+18.02.25 10:05 – Entra ID review
+• User is member of Azure AD group “IT-Projekte”
+• This group is nested in “SP_Project_IT”
+• Notable: “SP_Project_IT” was newly created last week
+History checked:
+Old group “SP_Project_IT_v1” was deactivated
+18.02.25 11:40 – Test measure
+User added directly to “SP_Project_IT”
+→ Access works immediately
+After removing the direct assignment → access denied again
+Conclusion: Nesting not functioning correctly
+19.02.25 08:55 – Further analysis
+Review of group structure:
+IT-Projekte
+└── SP_Project_IT_v1 (deactivated)
+└── SP_Project_IT (new)
+“IT-Projekte” was still nested in the old group, not in the new one.
+Therefore, users did not receive effective permissions on the new SharePoint folder.
+19.02.25 10:20 – Adjustment
+• Nesting corrected
+• “IT-Projekte” properly integrated into “SP_Project_IT”
+• Old group removed
+• Synchronization awaited
+20.02.25 – Monitoring
+Multiple users tested
+Access consistently possible
+25.02.25 14:30 – Customer feedback
+Access works again for all employees without restriction.
+Ticket closure
+25.02.25 14:38
+Dear Contact Person 03
+The root cause was incorrect group nesting in Entra ID after the creation of the new SharePoint permission group.
+The structure was cleaned up and tested.
+Access has been restored.
+Kind regards
+Consulting Sample Company
+
+",no,"The sentence reports a past incident and corrective actions taken (engineers corrected nesting), and does not propose or recommend any future action.",supported,"Ticket TI-1569482 explicitly states the root cause was incorrect group nesting in Entra ID, notes nesting was corrected and the permission structure cleaned up, and that access was restored for all affected employees."
+traceability_ragas_classification_answer3,Is the statement supported by the evidence?,Another incident with similar intermittent visibility/access was caused by token caching combined with Conditional Access/device compliance delays; the fix required Conditional Access policy adjustment and re-authentication (TI-1571046),"=== CITED SOURCES ===
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+",no,"The statement reports a past incident and the corrective actions that were applied, rather than recommending or advising future actions.",supported,"Ticket TI-1571046 explicitly identifies the root cause as token caching combined with Conditional Access evaluation/device compliance delays and documents actions: Conditional Access policy adjustment and user re-authentication (with device sync), after which access stabilized."
+traceability_ragas_classification_answer3,Is the statement supported by the evidence?,"Investigate token caching and Conditional Access/device compliance timing: force token invalidation and re-authentication for test users, and review CA policies that might intermittently block access; in a prior case CA policy adjustment and re-authentication stopped the flicker","=== CITED SOURCES ===
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement uses direct imperatives and actionable suggestions ('Investigate', 'force token invalidation', 'review CA policies') instructing specific steps to take, so it is a recommendation.",supported,"The ticket attributes the issue to token caching and Conditional Access evaluation delay; tests showed forcing logout/clearing caches and re-authentication restored access, and the CA policy was adjusted (with re-authentication) which stopped the intermittent access problems."
+traceability_ragas_classification_answer3,Is the statement supported by the evidence?,"Root causes in similar tickets included: mismatch between SharePoint permissions and AIP/Sensitivity Label encryption, token-caching / stale claims, Conditional Access evaluation delays, Azure AD Connect synchronization overwriting cloud groups, and incorrect group nesting","=== CITED SOURCES ===
+SOURCE 31:
+ denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+Notable:
+When applying the Sensitivity Label, the option
+“Preserve custom permissions”
+was not activated.
+Result:
+• Existing SharePoint permissions formally remained
+• Encryption, however, applies only to explicitly defined groups
+This creates a situation where:
+SharePoint says → Access allowed
+AIP encryption says → Access only with key permission
+Depending on token refresh timing, access is granted or blocked.
+24.03.25 14:35
+Reproduction in test tenant:
+• Folder with Unique Permissions created
+• Sensitivity Label applied afterward
+• Different users tested
+Result:
+Users with older access tokens could temporarily access.
+After token renewal, access blocked.
+25.03.25 09:15
+Root cause defined:
+The folder was:
+1. Renamed
+2. Assigned Unique Permissions
+3. Subsequently encrypted with a Sensitivity Label
+The encryption defined a different permission group than the SharePoint ACL.
+Token caching caused inconsistent behavior.
+25.03.25 11:40 – Actions
+• Sensitivity Label removed
+• Folder reassigned with correct group reference
+• Label reapplied with correct group integration
+• “Compliance_Core” and “COMPLIANCE_TEAM” structurally aligned
+• Tests performed with multiple user accounts
+• Tokens intentionally invalidated
+26.03.25 – Monitoring
+Multiple users tested
+Access consistently possible
+No further error messages
+28.03.25 15:42 – Customer feedback
+Audit team confirms stable access for all employees.
+Ticket closure
+28.03.25 16:02
+Dear Contact Person 02
+The root cause was an inconsistent combination of Unique SharePoint permissions and a subsequently applied Sensitivity Label encryption.
+Due to differing group references between ACL and encryption, inconsistent access behavior occurred, amplified by token caching.
+The permission structure was aligned and tested.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+
+
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 13:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – External project members lose access sporadically
+Ticket number: TI-1583327
+Company: Customer Company 25 AG
+Contact person: Contact Person 07
+Owner: Employee 31
+Origin: Email
+Type: Incident
+Created on: 07.04.25 08:12
+Closure
+Closure date: 17.04.25 15:18
+Closure text: Root cause identified (Azure AD Connect synchronization error affecting group attributes). Cleanup and full sync performed. Access stable.
+Activities
+07.04.25 08:04
+Subject: Project members (external) lose access to SharePoint
+From: Contact Person 07
+Good morning
+Several external project members report that they no longer have access to the folder
+/Projects/Compliance_Review_2025
+Internal employees do not appear to have issues.
+Please review.
+Kind regards
+Contact Person 07
+07.04.25 08:12
+Ticket created
+Assigned to: Employee 31
+Status: In Progress
+Notes
+07.04.25 09:05
+Helpdesk asks:
+• Does it affect only external users?
+• What error message appears?
+• Since when exactly?
+• Were groups or permissions adjusted?
+07.04.25 10:20
+Customer responds:
+Error message:
+Access denied
+One user could access yesterday.
+Today no longer.
+No deliberate changes made.
+07.04.25 11:10
+Helpdesk checks SharePoint:
+• Folder permissions correct
+• Group “SP_Compliance_Main” contains “COMPLIANCE_TEAM”
+• External users are members of “COMPLIANCE_TEAM”
+Comparison internal vs external users:
+No visible difference.
+08.04.25 08:45
+Customer adds:
+One external user was newly added and immediately had access.
+Another who has been in the project for months loses access sporadically.
+08.04.25 10:15
+Helpdesk tests:
+• Remove + re-add to group
+→ Access temporarily restored
+After approx. 1 hour, no access again.
+08.04.25 14:30
+Hypothesis:
+Token / cache / Conditional Access
+Test:
+User fully logs out → logs in again
+→ Access remains denied
+Hypothesis rejected.
+09.04.25 09:12
+Helpdesk asks:
+Are external users created as “Guest” or “Member”?
+09.04.25 10:05
+Customer:
+All externals are created as Guest.
+Some were recently synchronized from On-Prem AD to Cloud.
+09.04.25 11:40
+First observation:
+For two affected users in Entra ID portal, attribute
+“source” = Windows Server AD
+For functioning external users:
+“source” = Azure AD
+Correlation unclear.
+09.04.25 14:20
+Ticket escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – Identity
+10.04.25 08:55
+Ticket taken over by: System Engineer 14
+In-depth analysis
+10.04.25 09:40
+Azure AD Connect reviewed.
+Observation:
+Group “COMPLIANCE_TEAM” exists both On-Prem and in Cloud.
+On-Prem version is synchronized.
+Cloud version was originally created manually.
+Result:
+• External guests exist only in Cloud group
+• SharePoint references the synchronized On-Prem group
+Same name, but different Object IDs.
+10.04.25 11:25
+Review of group members via Graph:
+Cloud group:
+→ Contains external guests
+Synchronized On-Prem group:
+→ Contains only internal users
+Since SharePoint evaluates by Object ID, not by name, external users lose access once synchronization takes effect.
+11.04.25 08:30
+Reproduction in test:
+• On-Prem group re-synchronized
+• Cloud group overwritten
+• External users reproducibly lose access
+Root Cause
+Two groups existed with identical name:
+COMPLIANCE_TEAM
+1. Cloud-native group
+2. Synchronized On-Prem group
+Through Azure AD Connect, the Cloud group was gradually overwritten or deactivated.
+SharePoint referenced the synchronized version.
+External guests were never managed On-Prem and therefore were not included in the synchronized group.
+Actions
+11.04.25 – 14.04.25
+• Consolidation of group structure
+• Old Cloud group removed
+• On-Prem group properly cleaned
+• External guests managed as Cloud-only members
+• Azure AD Connect full synchronization performed
+15.04.25 – Monitoring
+Access remains stable
+No further inconsistencies
+17.04.25 15:18 – Ticket closure
+Dear Contact Person 07
+The root cause was the parallel existence of two groups with identical names but different origins (Cloud vs. On-Prem synchronized).
+Due to synchronization, effective group membership for external users was not correctly applied.
+The group structure was consolidated and fully synchronized.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 20:
+﻿Ticket summary:
+Ticket name: KF25: SharePoint – Access to project folder denied
+Ticket number: TI-1569482
+Company: Customer Company 25 AG
+Contact person: Contact Person 03
+Owner: Employee 18
+Origin: Email
+Type: Incident
+Created on: 18.02.25 09:06
+Closure
+Closure date: 25.02.25 14:38
+Closure text: Root cause identified (group nesting in Entra ID). Permission structure cleaned up. Access restored.
+Activities
+Emails:
+18.02.25 08:59
+Subject: No access to project folder “2025_Migration”
+From: Contact Person 03
+To: HELPDESK
+Good morning
+Several employees from the team “IT-Projekte” receive the following message when accessing the SharePoint folder
+/Projects/2025_Migration
+Access denied – You do not have the required permissions
+Access was working until last week.
+Please review.
+Kind regards
+Contact Person 03
+18.02.25 09:06
+Ticket TI-1569482 created
+Assigned to: Employee 18
+Status: In Progress
+Notes:
+18.02.25 09:22 – Remote analysis
+• Access tested with affected user → reproducible
+• SharePoint Online reachable
+• Other project folders accessible
+• Only folder “2025_Migration” affected
+• Permission view in SharePoint shows: Access via group “SP_Project_IT”
+Comparison with working user:
+This user is member of “SP_Project_IT_Lead”
+Suspicion: Group membership inconsistent
+18.02.25 10:05 – Entra ID review
+• User is member of Azure AD group “IT-Projekte”
+• This group is nested in “SP_Project_IT”
+• Notable: “SP_Project_IT” was newly created last week
+History checked:
+Old group “SP_Project_IT_v1” was deactivated
+18.02.25 11:40 – Test measure
+User added directly to “SP_Project_IT”
+→ Access works immediately
+After removing the direct assignment → access denied again
+Conclusion: Nesting not functioning correctly
+19.02.25 08:55 – Further analysis
+Review of group structure:
+IT-Projekte
+└── SP_Project_IT_v1 (deactivated)
+└── SP_Project_IT (new)
+“IT-Projekte” was still nested in the old group, not in the new one.
+Therefore, users did not receive effective permissions on the new SharePoint folder.
+19.02.25 10:20 – Adjustment
+• Nesting corrected
+• “IT-Projekte” properly integrated into “SP_Project_IT”
+• Old group removed
+• Synchronization awaited
+20.02.25 – Monitoring
+Multiple users tested
+Access consistently possible
+25.02.25 14:30 – Customer feedback
+Access works again for all employees without restriction.
+Ticket closure
+25.02.25 14:38
+Dear Contact Person 03
+The root cause was incorrect group nesting in Entra ID after the creation of the new SharePoint permission group.
+The structure was cleaned up and tested.
+Access has been restored.
+Kind regards
+Consulting Sample Company
+
+",no,The statement lists observed root causes from past tickets and simply reports findings rather than proposing or recommending any action.,supported,Each listed root cause appears in the CONTEXT: Source 31 documents the Sensitivity Label vs. SharePoint permission mismatch and token-caching; Source 38 documents token caching/outdated claims and Conditional Access evaluation delays; Source 13 shows Azure AD Connect overwriting cloud groups; Source 20 shows incorrect group nesting.
+traceability_ragas_classification_answer3,Is the statement supported by the evidence?,"Your symptoms — intermittent/“flickering” access for some users, some users able to see a folder but not open files, bookmark/URL access working while folder is invisible in lists, and inconsistent behaviour across internal vs external users — match multiple prior incidents that required engineering-level investigation rather than a simple first-line fix. For example, a SharePoint folder that behaved inconsistently after being renamed and then encrypted with a Sensitivity Label was diagnosed as a conflict between SharePoint ACLs and AIP encryption plus token caching; resolving it required label removal/reapplication, alignment of groups and token invalidation by engineers (TI-1578891 / continuation)","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+
+
+SOURCE 31:
+ denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+Notable:
+When applying the Sensitivity Label, the option
+“Preserve custom permissions”
+was not activated.
+Result:
+• Existing SharePoint permissions formally remained
+• Encryption, however, applies only to explicitly defined groups
+This creates a situation where:
+SharePoint says → Access allowed
+AIP encryption says → Access only with key permission
+Depending on token refresh timing, access is granted or blocked.
+24.03.25 14:35
+Reproduction in test tenant:
+• Folder with Unique Permissions created
+• Sensitivity Label applied afterward
+• Different users tested
+Result:
+Users with older access tokens could temporarily access.
+After token renewal, access blocked.
+25.03.25 09:15
+Root cause defined:
+The folder was:
+1. Renamed
+2. Assigned Unique Permissions
+3. Subsequently encrypted with a Sensitivity Label
+The encryption defined a different permission group than the SharePoint ACL.
+Token caching caused inconsistent behavior.
+25.03.25 11:40 – Actions
+• Sensitivity Label removed
+• Folder reassigned with correct group reference
+• Label reapplied with correct group integration
+• “Compliance_Core” and “COMPLIANCE_TEAM” structurally aligned
+• Tests performed with multiple user accounts
+• Tokens intentionally invalidated
+26.03.25 – Monitoring
+Multiple users tested
+Access consistently possible
+No further error messages
+28.03.25 15:42 – Customer feedback
+Audit team confirms stable access for all employees.
+Ticket closure
+28.03.25 16:02
+Dear Contact Person 02
+The root cause was an inconsistent combination of Unique SharePoint permissions and a subsequently applied Sensitivity Label encryption.
+Due to differing group references between ACL and encryption, inconsistent access behavior occurred, amplified by token caching.
+The permission structure was aligned and tested.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+",yes,"It advises escalation to engineering-level investigation and lists concrete remediation actions (label removal/reapplication, group alignment, token invalidation) that should be performed.",partially_supported,"The detailed technical claims (rename + Sensitivity Label causing conflict between SharePoint ACLs and AIP encryption, token caching causing intermittent access, and remediation steps including label removal/reapplication, group alignment and token invalidation) are directly documented in TI-1578891, but the assertion that these match 'multiple prior incidents' is unsupported because the CONTEXT contains only this single incident."
+traceability_ragas_classification_answer3,Is the statement supported by the evidence?,"Remediation actions actually performed in those incidents included: removing and reapplying the Sensitivity Label and aligning the label’s permitted group with the SharePoint ACL, invalidating/forcing token renewal and adjusting Conditional Access policies, consolidating group structures and performing a full Azure AD Connect sync, and correcting Entra ID group nesting. These were done by system engineers / Identity teams and resulted in stable access after monitoring","=== CITED SOURCES ===
+SOURCE 31:
+ denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+Notable:
+When applying the Sensitivity Label, the option
+“Preserve custom permissions”
+was not activated.
+Result:
+• Existing SharePoint permissions formally remained
+• Encryption, however, applies only to explicitly defined groups
+This creates a situation where:
+SharePoint says → Access allowed
+AIP encryption says → Access only with key permission
+Depending on token refresh timing, access is granted or blocked.
+24.03.25 14:35
+Reproduction in test tenant:
+• Folder with Unique Permissions created
+• Sensitivity Label applied afterward
+• Different users tested
+Result:
+Users with older access tokens could temporarily access.
+After token renewal, access blocked.
+25.03.25 09:15
+Root cause defined:
+The folder was:
+1. Renamed
+2. Assigned Unique Permissions
+3. Subsequently encrypted with a Sensitivity Label
+The encryption defined a different permission group than the SharePoint ACL.
+Token caching caused inconsistent behavior.
+25.03.25 11:40 – Actions
+• Sensitivity Label removed
+• Folder reassigned with correct group reference
+• Label reapplied with correct group integration
+• “Compliance_Core” and “COMPLIANCE_TEAM” structurally aligned
+• Tests performed with multiple user accounts
+• Tokens intentionally invalidated
+26.03.25 – Monitoring
+Multiple users tested
+Access consistently possible
+No further error messages
+28.03.25 15:42 – Customer feedback
+Audit team confirms stable access for all employees.
+Ticket closure
+28.03.25 16:02
+Dear Contact Person 02
+The root cause was an inconsistent combination of Unique SharePoint permissions and a subsequently applied Sensitivity Label encryption.
+Due to differing group references between ACL and encryption, inconsistent access behavior occurred, amplified by token caching.
+The permission structure was aligned and tested.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+
+
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 13:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – External project members lose access sporadically
+Ticket number: TI-1583327
+Company: Customer Company 25 AG
+Contact person: Contact Person 07
+Owner: Employee 31
+Origin: Email
+Type: Incident
+Created on: 07.04.25 08:12
+Closure
+Closure date: 17.04.25 15:18
+Closure text: Root cause identified (Azure AD Connect synchronization error affecting group attributes). Cleanup and full sync performed. Access stable.
+Activities
+07.04.25 08:04
+Subject: Project members (external) lose access to SharePoint
+From: Contact Person 07
+Good morning
+Several external project members report that they no longer have access to the folder
+/Projects/Compliance_Review_2025
+Internal employees do not appear to have issues.
+Please review.
+Kind regards
+Contact Person 07
+07.04.25 08:12
+Ticket created
+Assigned to: Employee 31
+Status: In Progress
+Notes
+07.04.25 09:05
+Helpdesk asks:
+• Does it affect only external users?
+• What error message appears?
+• Since when exactly?
+• Were groups or permissions adjusted?
+07.04.25 10:20
+Customer responds:
+Error message:
+Access denied
+One user could access yesterday.
+Today no longer.
+No deliberate changes made.
+07.04.25 11:10
+Helpdesk checks SharePoint:
+• Folder permissions correct
+• Group “SP_Compliance_Main” contains “COMPLIANCE_TEAM”
+• External users are members of “COMPLIANCE_TEAM”
+Comparison internal vs external users:
+No visible difference.
+08.04.25 08:45
+Customer adds:
+One external user was newly added and immediately had access.
+Another who has been in the project for months loses access sporadically.
+08.04.25 10:15
+Helpdesk tests:
+• Remove + re-add to group
+→ Access temporarily restored
+After approx. 1 hour, no access again.
+08.04.25 14:30
+Hypothesis:
+Token / cache / Conditional Access
+Test:
+User fully logs out → logs in again
+→ Access remains denied
+Hypothesis rejected.
+09.04.25 09:12
+Helpdesk asks:
+Are external users created as “Guest” or “Member”?
+09.04.25 10:05
+Customer:
+All externals are created as Guest.
+Some were recently synchronized from On-Prem AD to Cloud.
+09.04.25 11:40
+First observation:
+For two affected users in Entra ID portal, attribute
+“source” = Windows Server AD
+For functioning external users:
+“source” = Azure AD
+Correlation unclear.
+09.04.25 14:20
+Ticket escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – Identity
+10.04.25 08:55
+Ticket taken over by: System Engineer 14
+In-depth analysis
+10.04.25 09:40
+Azure AD Connect reviewed.
+Observation:
+Group “COMPLIANCE_TEAM” exists both On-Prem and in Cloud.
+On-Prem version is synchronized.
+Cloud version was originally created manually.
+Result:
+• External guests exist only in Cloud group
+• SharePoint references the synchronized On-Prem group
+Same name, but different Object IDs.
+10.04.25 11:25
+Review of group members via Graph:
+Cloud group:
+→ Contains external guests
+Synchronized On-Prem group:
+→ Contains only internal users
+Since SharePoint evaluates by Object ID, not by name, external users lose access once synchronization takes effect.
+11.04.25 08:30
+Reproduction in test:
+• On-Prem group re-synchronized
+• Cloud group overwritten
+• External users reproducibly lose access
+Root Cause
+Two groups existed with identical name:
+COMPLIANCE_TEAM
+1. Cloud-native group
+2. Synchronized On-Prem group
+Through Azure AD Connect, the Cloud group was gradually overwritten or deactivated.
+SharePoint referenced the synchronized version.
+External guests were never managed On-Prem and therefore were not included in the synchronized group.
+Actions
+11.04.25 – 14.04.25
+• Consolidation of group structure
+• Old Cloud group removed
+• On-Prem group properly cleaned
+• External guests managed as Cloud-only members
+• Azure AD Connect full synchronization performed
+15.04.25 – Monitoring
+Access remains stable
+No further inconsistencies
+17.04.25 15:18 – Ticket closure
+Dear Contact Person 07
+The root cause was the parallel existence of two groups with identical names but different origins (Cloud vs. On-Prem synchronized).
+Due to synchronization, effective group membership for external users was not correctly applied.
+The group structure was consolidated and fully synchronized.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 20:
+﻿Ticket summary:
+Ticket name: KF25: SharePoint – Access to project folder denied
+Ticket number: TI-1569482
+Company: Customer Company 25 AG
+Contact person: Contact Person 03
+Owner: Employee 18
+Origin: Email
+Type: Incident
+Created on: 18.02.25 09:06
+Closure
+Closure date: 25.02.25 14:38
+Closure text: Root cause identified (group nesting in Entra ID). Permission structure cleaned up. Access restored.
+Activities
+Emails:
+18.02.25 08:59
+Subject: No access to project folder “2025_Migration”
+From: Contact Person 03
+To: HELPDESK
+Good morning
+Several employees from the team “IT-Projekte” receive the following message when accessing the SharePoint folder
+/Projects/2025_Migration
+Access denied – You do not have the required permissions
+Access was working until last week.
+Please review.
+Kind regards
+Contact Person 03
+18.02.25 09:06
+Ticket TI-1569482 created
+Assigned to: Employee 18
+Status: In Progress
+Notes:
+18.02.25 09:22 – Remote analysis
+• Access tested with affected user → reproducible
+• SharePoint Online reachable
+• Other project folders accessible
+• Only folder “2025_Migration” affected
+• Permission view in SharePoint shows: Access via group “SP_Project_IT”
+Comparison with working user:
+This user is member of “SP_Project_IT_Lead”
+Suspicion: Group membership inconsistent
+18.02.25 10:05 – Entra ID review
+• User is member of Azure AD group “IT-Projekte”
+• This group is nested in “SP_Project_IT”
+• Notable: “SP_Project_IT” was newly created last week
+History checked:
+Old group “SP_Project_IT_v1” was deactivated
+18.02.25 11:40 – Test measure
+User added directly to “SP_Project_IT”
+→ Access works immediately
+After removing the direct assignment → access denied again
+Conclusion: Nesting not functioning correctly
+19.02.25 08:55 – Further analysis
+Review of group structure:
+IT-Projekte
+└── SP_Project_IT_v1 (deactivated)
+└── SP_Project_IT (new)
+“IT-Projekte” was still nested in the old group, not in the new one.
+Therefore, users did not receive effective permissions on the new SharePoint folder.
+19.02.25 10:20 – Adjustment
+• Nesting corrected
+• “IT-Projekte” properly integrated into “SP_Project_IT”
+• Old group removed
+• Synchronization awaited
+20.02.25 – Monitoring
+Multiple users tested
+Access consistently possible
+25.02.25 14:30 – Customer feedback
+Access works again for all employees without restriction.
+Ticket closure
+25.02.25 14:38
+Dear Contact Person 03
+The root cause was incorrect group nesting in Entra ID after the creation of the new SharePoint permission group.
+The structure was cleaned up and tested.
+Access has been restored.
+Kind regards
+Consulting Sample Company
+
+",no,The text reports past remediation actions and outcomes in past tense without proposing or recommending any future action.,supported,"Each remediation is explicitly documented across the tickets: Source 31 records sensitivity-label removal/reapplication, group alignment and token invalidation with subsequent monitoring; Source 38 documents Conditional Access policy adjustment and reauthentication; Source 13 describes group consolidation and a full Azure AD Connect sync; Source 20 describes correcting Entra ID group nesting—actions were performed by system engineers/Identity teams and each ticket reports stable access after monitoring."
+traceability_ragas_classification_answer3,Is the statement supported by the evidence?,"Because the ticket’s symptoms closely mirror multiple documented incidents that required escalation to identity/M365 or network/security engineering teams and non‑trivial configuration/remediation (label/group alignment, syncs, policy changes, token invalidation), classify this as second_level_support. The past tickets listed above show that resolving such mixed and intermittent access problems was not resolved by routine first-line steps alone and needed engineering intervention","=== CITED SOURCES ===
+SOURCE 31:
+ denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+Notable:
+When applying the Sensitivity Label, the option
+“Preserve custom permissions”
+was not activated.
+Result:
+• Existing SharePoint permissions formally remained
+• Encryption, however, applies only to explicitly defined groups
+This creates a situation where:
+SharePoint says → Access allowed
+AIP encryption says → Access only with key permission
+Depending on token refresh timing, access is granted or blocked.
+24.03.25 14:35
+Reproduction in test tenant:
+• Folder with Unique Permissions created
+• Sensitivity Label applied afterward
+• Different users tested
+Result:
+Users with older access tokens could temporarily access.
+After token renewal, access blocked.
+25.03.25 09:15
+Root cause defined:
+The folder was:
+1. Renamed
+2. Assigned Unique Permissions
+3. Subsequently encrypted with a Sensitivity Label
+The encryption defined a different permission group than the SharePoint ACL.
+Token caching caused inconsistent behavior.
+25.03.25 11:40 – Actions
+• Sensitivity Label removed
+• Folder reassigned with correct group reference
+• Label reapplied with correct group integration
+• “Compliance_Core” and “COMPLIANCE_TEAM” structurally aligned
+• Tests performed with multiple user accounts
+• Tokens intentionally invalidated
+26.03.25 – Monitoring
+Multiple users tested
+Access consistently possible
+No further error messages
+28.03.25 15:42 – Customer feedback
+Audit team confirms stable access for all employees.
+Ticket closure
+28.03.25 16:02
+Dear Contact Person 02
+The root cause was an inconsistent combination of Unique SharePoint permissions and a subsequently applied Sensitivity Label encryption.
+Due to differing group references between ACL and encryption, inconsistent access behavior occurred, amplified by token caching.
+The permission structure was aligned and tested.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+
+
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 13:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – External project members lose access sporadically
+Ticket number: TI-1583327
+Company: Customer Company 25 AG
+Contact person: Contact Person 07
+Owner: Employee 31
+Origin: Email
+Type: Incident
+Created on: 07.04.25 08:12
+Closure
+Closure date: 17.04.25 15:18
+Closure text: Root cause identified (Azure AD Connect synchronization error affecting group attributes). Cleanup and full sync performed. Access stable.
+Activities
+07.04.25 08:04
+Subject: Project members (external) lose access to SharePoint
+From: Contact Person 07
+Good morning
+Several external project members report that they no longer have access to the folder
+/Projects/Compliance_Review_2025
+Internal employees do not appear to have issues.
+Please review.
+Kind regards
+Contact Person 07
+07.04.25 08:12
+Ticket created
+Assigned to: Employee 31
+Status: In Progress
+Notes
+07.04.25 09:05
+Helpdesk asks:
+• Does it affect only external users?
+• What error message appears?
+• Since when exactly?
+• Were groups or permissions adjusted?
+07.04.25 10:20
+Customer responds:
+Error message:
+Access denied
+One user could access yesterday.
+Today no longer.
+No deliberate changes made.
+07.04.25 11:10
+Helpdesk checks SharePoint:
+• Folder permissions correct
+• Group “SP_Compliance_Main” contains “COMPLIANCE_TEAM”
+• External users are members of “COMPLIANCE_TEAM”
+Comparison internal vs external users:
+No visible difference.
+08.04.25 08:45
+Customer adds:
+One external user was newly added and immediately had access.
+Another who has been in the project for months loses access sporadically.
+08.04.25 10:15
+Helpdesk tests:
+• Remove + re-add to group
+→ Access temporarily restored
+After approx. 1 hour, no access again.
+08.04.25 14:30
+Hypothesis:
+Token / cache / Conditional Access
+Test:
+User fully logs out → logs in again
+→ Access remains denied
+Hypothesis rejected.
+09.04.25 09:12
+Helpdesk asks:
+Are external users created as “Guest” or “Member”?
+09.04.25 10:05
+Customer:
+All externals are created as Guest.
+Some were recently synchronized from On-Prem AD to Cloud.
+09.04.25 11:40
+First observation:
+For two affected users in Entra ID portal, attribute
+“source” = Windows Server AD
+For functioning external users:
+“source” = Azure AD
+Correlation unclear.
+09.04.25 14:20
+Ticket escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – Identity
+10.04.25 08:55
+Ticket taken over by: System Engineer 14
+In-depth analysis
+10.04.25 09:40
+Azure AD Connect reviewed.
+Observation:
+Group “COMPLIANCE_TEAM” exists both On-Prem and in Cloud.
+On-Prem version is synchronized.
+Cloud version was originally created manually.
+Result:
+• External guests exist only in Cloud group
+• SharePoint references the synchronized On-Prem group
+Same name, but different Object IDs.
+10.04.25 11:25
+Review of group members via Graph:
+Cloud group:
+→ Contains external guests
+Synchronized On-Prem group:
+→ Contains only internal users
+Since SharePoint evaluates by Object ID, not by name, external users lose access once synchronization takes effect.
+11.04.25 08:30
+Reproduction in test:
+• On-Prem group re-synchronized
+• Cloud group overwritten
+• External users reproducibly lose access
+Root Cause
+Two groups existed with identical name:
+COMPLIANCE_TEAM
+1. Cloud-native group
+2. Synchronized On-Prem group
+Through Azure AD Connect, the Cloud group was gradually overwritten or deactivated.
+SharePoint referenced the synchronized version.
+External guests were never managed On-Prem and therefore were not included in the synchronized group.
+Actions
+11.04.25 – 14.04.25
+• Consolidation of group structure
+• Old Cloud group removed
+• On-Prem group properly cleaned
+• External guests managed as Cloud-only members
+• Azure AD Connect full synchronization performed
+15.04.25 – Monitoring
+Access remains stable
+No further inconsistencies
+17.04.25 15:18 – Ticket closure
+Dear Contact Person 07
+The root cause was the parallel existence of two groups with identical names but different origins (Cloud vs. On-Prem synchronized).
+Due to synchronization, effective group membership for external users was not correctly applied.
+The group structure was consolidated and fully synchronized.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 20:
+﻿Ticket summary:
+Ticket name: KF25: SharePoint – Access to project folder denied
+Ticket number: TI-1569482
+Company: Customer Company 25 AG
+Contact person: Contact Person 03
+Owner: Employee 18
+Origin: Email
+Type: Incident
+Created on: 18.02.25 09:06
+Closure
+Closure date: 25.02.25 14:38
+Closure text: Root cause identified (group nesting in Entra ID). Permission structure cleaned up. Access restored.
+Activities
+Emails:
+18.02.25 08:59
+Subject: No access to project folder “2025_Migration”
+From: Contact Person 03
+To: HELPDESK
+Good morning
+Several employees from the team “IT-Projekte” receive the following message when accessing the SharePoint folder
+/Projects/2025_Migration
+Access denied – You do not have the required permissions
+Access was working until last week.
+Please review.
+Kind regards
+Contact Person 03
+18.02.25 09:06
+Ticket TI-1569482 created
+Assigned to: Employee 18
+Status: In Progress
+Notes:
+18.02.25 09:22 – Remote analysis
+• Access tested with affected user → reproducible
+• SharePoint Online reachable
+• Other project folders accessible
+• Only folder “2025_Migration” affected
+• Permission view in SharePoint shows: Access via group “SP_Project_IT”
+Comparison with working user:
+This user is member of “SP_Project_IT_Lead”
+Suspicion: Group membership inconsistent
+18.02.25 10:05 – Entra ID review
+• User is member of Azure AD group “IT-Projekte”
+• This group is nested in “SP_Project_IT”
+• Notable: “SP_Project_IT” was newly created last week
+History checked:
+Old group “SP_Project_IT_v1” was deactivated
+18.02.25 11:40 – Test measure
+User added directly to “SP_Project_IT”
+→ Access works immediately
+After removing the direct assignment → access denied again
+Conclusion: Nesting not functioning correctly
+19.02.25 08:55 – Further analysis
+Review of group structure:
+IT-Projekte
+└── SP_Project_IT_v1 (deactivated)
+└── SP_Project_IT (new)
+“IT-Projekte” was still nested in the old group, not in the new one.
+Therefore, users did not receive effective permissions on the new SharePoint folder.
+19.02.25 10:20 – Adjustment
+• Nesting corrected
+• “IT-Projekte” properly integrated into “SP_Project_IT”
+• Old group removed
+• Synchronization awaited
+20.02.25 – Monitoring
+Multiple users tested
+Access consistently possible
+25.02.25 14:30 – Customer feedback
+Access works again for all employees without restriction.
+Ticket closure
+25.02.25 14:38
+Dear Contact Person 03
+The root cause was incorrect group nesting in Entra ID after the creation of the new SharePoint permission group.
+The structure was cleaned up and tested.
+Access has been restored.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement explicitly directs an action—'classify this as second_level_support'—based on past incidents, which constitutes a recommendation.",supported,"The cited tickets show the same mixed/intermittent access pattern being resolved by engineering-level actions rather than routine first-line fixes — e.g. sensitivity label and group alignment plus intentional token invalidation (Source 31), Conditional Access policy adjustment and device/token syncs (Source 38), Azure AD Connect group consolidation after escalation to the Identity team (Source 13), and group nesting cleanup in Entra ID (Source 20)."
+traceability_ragas_classification_answer3,Is the statement supported by the evidence?,"A separate case where external users lost access sporadically was due to Azure AD Connect synchronizing an on‑prem group that had the same name as an existing cloud group (different object IDs); remediation required consolidation of groups, cleaning the on‑prem group, and a full sync (TI-1583327)","=== CITED SOURCES ===
+SOURCE 13:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – External project members lose access sporadically
+Ticket number: TI-1583327
+Company: Customer Company 25 AG
+Contact person: Contact Person 07
+Owner: Employee 31
+Origin: Email
+Type: Incident
+Created on: 07.04.25 08:12
+Closure
+Closure date: 17.04.25 15:18
+Closure text: Root cause identified (Azure AD Connect synchronization error affecting group attributes). Cleanup and full sync performed. Access stable.
+Activities
+07.04.25 08:04
+Subject: Project members (external) lose access to SharePoint
+From: Contact Person 07
+Good morning
+Several external project members report that they no longer have access to the folder
+/Projects/Compliance_Review_2025
+Internal employees do not appear to have issues.
+Please review.
+Kind regards
+Contact Person 07
+07.04.25 08:12
+Ticket created
+Assigned to: Employee 31
+Status: In Progress
+Notes
+07.04.25 09:05
+Helpdesk asks:
+• Does it affect only external users?
+• What error message appears?
+• Since when exactly?
+• Were groups or permissions adjusted?
+07.04.25 10:20
+Customer responds:
+Error message:
+Access denied
+One user could access yesterday.
+Today no longer.
+No deliberate changes made.
+07.04.25 11:10
+Helpdesk checks SharePoint:
+• Folder permissions correct
+• Group “SP_Compliance_Main” contains “COMPLIANCE_TEAM”
+• External users are members of “COMPLIANCE_TEAM”
+Comparison internal vs external users:
+No visible difference.
+08.04.25 08:45
+Customer adds:
+One external user was newly added and immediately had access.
+Another who has been in the project for months loses access sporadically.
+08.04.25 10:15
+Helpdesk tests:
+• Remove + re-add to group
+→ Access temporarily restored
+After approx. 1 hour, no access again.
+08.04.25 14:30
+Hypothesis:
+Token / cache / Conditional Access
+Test:
+User fully logs out → logs in again
+→ Access remains denied
+Hypothesis rejected.
+09.04.25 09:12
+Helpdesk asks:
+Are external users created as “Guest” or “Member”?
+09.04.25 10:05
+Customer:
+All externals are created as Guest.
+Some were recently synchronized from On-Prem AD to Cloud.
+09.04.25 11:40
+First observation:
+For two affected users in Entra ID portal, attribute
+“source” = Windows Server AD
+For functioning external users:
+“source” = Azure AD
+Correlation unclear.
+09.04.25 14:20
+Ticket escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – Identity
+10.04.25 08:55
+Ticket taken over by: System Engineer 14
+In-depth analysis
+10.04.25 09:40
+Azure AD Connect reviewed.
+Observation:
+Group “COMPLIANCE_TEAM” exists both On-Prem and in Cloud.
+On-Prem version is synchronized.
+Cloud version was originally created manually.
+Result:
+• External guests exist only in Cloud group
+• SharePoint references the synchronized On-Prem group
+Same name, but different Object IDs.
+10.04.25 11:25
+Review of group members via Graph:
+Cloud group:
+→ Contains external guests
+Synchronized On-Prem group:
+→ Contains only internal users
+Since SharePoint evaluates by Object ID, not by name, external users lose access once synchronization takes effect.
+11.04.25 08:30
+Reproduction in test:
+• On-Prem group re-synchronized
+• Cloud group overwritten
+• External users reproducibly lose access
+Root Cause
+Two groups existed with identical name:
+COMPLIANCE_TEAM
+1. Cloud-native group
+2. Synchronized On-Prem group
+Through Azure AD Connect, the Cloud group was gradually overwritten or deactivated.
+SharePoint referenced the synchronized version.
+External guests were never managed On-Prem and therefore were not included in the synchronized group.
+Actions
+11.04.25 – 14.04.25
+• Consolidation of group structure
+• Old Cloud group removed
+• On-Prem group properly cleaned
+• External guests managed as Cloud-only members
+• Azure AD Connect full synchronization performed
+15.04.25 – Monitoring
+Access remains stable
+No further inconsistencies
+17.04.25 15:18 – Ticket closure
+Dear Contact Person 07
+The root cause was the parallel existence of two groups with identical names but different origins (Cloud vs. On-Prem synchronized).
+Due to synchronization, effective group membership for external users was not correctly applied.
+The group structure was consolidated and fully synchronized.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+",no,"This sentence reports a past incident and the remediation that was performed (consolidation, cleaning, full sync) rather than issuing a recommendation or instructing future action.",supported,"The ticket TI-1583327 explicitly documents external users losing access sporadically due to Azure AD Connect synchronizing an on‑prem group that had the same name but different object IDs than a cloud group, and lists remediation actions: consolidation of groups, cleaning the on‑prem group, and performing a full sync."

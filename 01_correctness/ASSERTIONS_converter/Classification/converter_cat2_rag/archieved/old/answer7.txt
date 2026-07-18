@@ -1,0 +1,66 @@
+Short answer
+- You have multiple, separate issues that look like different root causes — not a single “one-thing” outage. Some SharePoint problems match known identity / sensitivity-label / token-caching failure modes and typically require 2nd‑level (Identity/M365) work. The Teams device problems (camera missing; mic input zero) match simple OS/permission or hardware-connection causes and are usually solvable by 1st‑level support with the standard “Blueprint” checks [Data: Sources (20, 30, 38, 13)].
+
+What I found in the records (mapped to your symptoms)
+
+1) The “/Projects/2025_Migration” folder: permissions suddenly denying users
+- A prior case with the exact “folder worked yesterday, now access denied” symptom was caused by incorrect group nesting in Entra ID after a permission-group change. Fixing the nesting restored access [Data: Sources (20)].
+- Practical implication: if the SharePoint permission shows access via a group that was recently re-created or renamed, users may have lost effective permissions because the nesting/links were not updated [Data: Sources (20)].
+
+2) The renamed folder + “Confidential” label producing inconsistent behavior (some users, incognito works briefly)
+- Renaming a folder and then applying a sensitivity label that enforces encryption / access by a different Azure AD group can create a conflict between SharePoint ACLs and AIP encryption (different groups or object IDs), leading to inconsistent, intermittent access [Data: Sources (30)].
+- A related, separate pattern is when two groups with the same name (one cloud-native, one synced from on‑prem) exist — external guests in the cloud group can be excluded once Azure AD Connect starts overwriting/merging objects, producing exactly the sporadic “works in incognito / only after re-add / then fails again” behavior [Data: Sources (13)].
+- Token caching and Conditional Access delays can also produce partial access where signing out / signing in, or running incognito, temporarily helps — this has been seen and was resolved by forcing re-authentication, triggering device sync or adjusting the CA policy for the affected resource [Data: Sources (38)].
+
+3) External auditor upload (WinSCP hangs / times out)
+- The provided data does not contain a direct record diagnosing an SFTP/WinSCP upload hang or “secure drop” timeout, so I cannot determine the root cause from these records alone. I can’t confirm whether this is caused by the same Identity/AAD issues above or by a separate network/server/service problem — there’s no supporting ticket in the dataset about WinSCP or the secure drop upload failing [Data: Sources (none)].
+- To proceed I recommend collecting the uploader’s WinSCP session log, the server-side logs and timestamps, and testing an upload from an internal host to confirm whether the problem is external-only or affects internal clients as well.
+
+4) Teams camera disappeared from Teams settings but visible in Device Manager
+- There is a direct match: a case where Device Manager showed the camera but Teams could not access it; root cause was Windows OS privacy settings (camera access for apps disabled) / blocked app permissions — adjusting OS camera and app permissions per the Teams Client Devices & Permissions blueprint restored the camera in Teams [Data: Sources (42)].
+
+5) Teams call: mic selected but input level stuck at zero (USB headset)
+- This matches a resolved case where a USB headset’s microphone cable was not fully inserted; Windows and Teams showed the device but no input signal until the mic connector was seated properly — after reconnecting the mic input the test call worked [Data: Sources (37)].
+
+Are these problems likely related?
+- SharePoint problems described (2025_Migration denial; labelled folder inconsistencies; external guests issues; incognito/temporary access) are all related to identity/group sync, sensitivity-label encryption, and token/CA evaluation. Those often require 2nd‑level Identity/M365 investigation (Entra/Azure AD Connect, label scoping, Conditional Access and token claims) [Data: Sources (20, 30, 13, 38)].
+- The Teams camera and headset-mic symptoms are client/device-level and were routinely resolved by first‑level helpdesk actions (OS privacy settings, plugging in headset correctly, Teams settings / test call) [Data: Sources (42, 37)]. Those are likely independent from the SharePoint/Identity problems.
+
+Severity and recommended support level (classification)
+- SharePoint / Identity problems (project folder walled off; sensitivity-label conflicts; external access broken; token/CA intermittence): classify as 2nd‑level support (Identity / M365 / Entra team). These items in the dataset were escalated to BU Infrastructure – Identity or System Engineers and required group-structure cleanup, Azure AD Connect sync or policy changes [Data: Sources (30, 13, 20, 38)].
+- Teams device/permission problems (camera missing in Teams; microphone input zero): start with 1st‑level helpdesk using the standard blueprint checks (Windows privacy/app permissions, Focus Assist, Teams device selection, physical connections, test call). The examples in the logs were resolved at helpdesk level and closed quickly [Data: Sources (42, 37, 19)].
+
+Immediate, practical next steps (what to ask/do now)
+
+For SharePoint / Access issues (2nd‑level work)
+- Verify which exact Azure AD group(s) are used for the folder’s permissions and whether those groups were recreated/renamed recently. If the group was re-created, check nesting and object IDs (Group A may not equal Group B even if names match) [Data: Sources (20, 13)].
+- Check if a sensitivity label with encryption was applied after the rename. If so, confirm which AAD group the label allows (e.g., “Compliance_Core”) and test adding a user directly to that group to see whether access is immediately granted (this was used as a diagnostic step previously) [Data: Sources (30)].
+- Have 2nd‑level run:
+  - Azure AD Connect full sync and reconcile any duplicate groups (cloud vs on‑prem) [Data: Sources (13)].
+  - Review Sign‑In logs and token claims for affected users to confirm whether group claims are present or missing [Data: Sources (38)].
+  - If Conditional Access / device compliance is involved, either trigger device sync or temporarily adjust the CA rule for the site while investigating [Data: Sources (38)].
+- Collect and provide: list of affected users (internal vs external), screenshots of error messages, exact folder path, timestamps when access was tested, whether a user could briefly access and then lost access (helps reproduce token/caching behavior) [Data: Sources (30, 38)].
+
+For the external auditor upload (what we need)
+- I don’t have records here that diagnose the upload/WinSCP timeout — please provide:
+  - WinSCP session log + exact error message
+  - Server logs for the secure drop (SFTP/FTP/HTTP endpoint) with timestamps
+  - Network trace or firewall logs around the time the upload was attempted
+  - Whether internal users can upload successfully and whether the auditor’s IP is blocked or subject to geofencing/Conditional Access
+Without these logs I can’t determine if this is identity-related, a network/firewall problem, or a service issue on the secure-drop host.
+
+For Teams camera & microphone (1st‑level checks to perform right away)
+- Camera: verify Windows Settings → Privacy → Camera allows apps and that Teams is enabled; confirm Teams app restart and test Teams Web after that. In the recorded case the camera was listed in Device Manager but blocked by OS permissions; enabling camera access resolved it [Data: Sources (42)].
+- Microphone (USB headset): confirm the mic connector is fully inserted and check Windows Sound → Input to see if the input level moves; try unplugging/re-plugging or a different USB port and run a Teams test call. A prior case was resolved by reseating the headset mic cable [Data: Sources (37)].
+- Notifications/coordination in Teams: also check Windows Focus Assist / Teams banner notifications if pop-ups are part of the problem (this has been a separate, quickly resolved item in the logs) [Data: Sources (19)].
+
+How to classify and escalate in your ticketing system
+- Open (or mark existing) SharePoint/2025_Migration and the renamed/labelled folder issues as 2nd‑level (Identity / M365) with these attachments: affected user list, screenshots, SharePoint permission view showing the permission group, and time of the last successful access. Reference the need to check Entra group nesting, Azure AD Connect and label encryption scope [Data: Sources (20, 30, 13)].
+- Open (or keep) Teams camera and headset issues as 1st‑level (Client/End‑user) with remote‑session attempt notes, Device Manager screenshot, and test-call logs; apply the Blueprint checks (OS privacy, app permissions, reconnect headset) first [Data: Sources (42, 37, 19)].
+- For the external upload, create a separate troubleshooting ticket and attach the WinSCP logs & server logs (so the network/infra or security team can triage).
+
+If you want, I can:
+- Draft two ready-to-send incident descriptions for your ticketing system (one 2nd‑level Identity/M365 and one 1st‑level Client Support) including the exact logs/screenshots to attach; or
+- List the exact commands/logs to collect for the WinSCP/server side for your infra team.
+
+Which of those would help you most right now?

@@ -1,0 +1,45 @@
+Below I map each of your four symptoms to the documented incidents in our records, state whether they are likely related, recommend the support level for each, and list immediate next steps you can take to accelerate resolution.
+
+Summary of matching incidents
+- D365 / Financial Reports (General Ledger → Financial Reports → Edit): The behavior you describe (errors or indefinite spinner for multiple users, authors shown as “unknown”, “report cannot be found”, affects UAT and PROD) matches the investigation recorded for ticket TI-722511. The team reproduced the error across environments and users, performed a Data Mart reset and FRDB recreation, and a Microsoft support ticket was opened (#2404050050000982) for further investigation [Data: Sources (0, 1)].
+- New hotline numbers dead (calls reach carrier/edge but never reach users): This aligns with an incident where incoming calls from a specific/new number range were received by the carrier/SBC but not forwarded to internal users because the SBC translation/routing table did not include the new range; the fix was to update translation/routing rules [Data: Sources (8)].
+- Basel external calls dropping after ~30 seconds: This is the same symptom and root-cause pattern as ticket TI-1604879: calls were established but disconnected after ~30s due to a session timer / NAT session timeout mismatch introduced when a dedicated “Voice” VLAN and NAT policy were implemented; increasing NAT/session timeouts to match the architecture resolved the issue [Data: Sources (16)].
+- Teams pop-up banners not shown on laptops (messages arrive only after opening Teams): This matches a reported issue where client banner notifications were disabled in Teams and Windows Focus Assist was active; after re-enabling banner notifications and disabling Focus Assist, pop-ups resumed [Data: Sources (19)].
+
+Are these connected or separate incidents?
+- Based on the recorded root causes, these are separate, unrelated incidents:
+  - The D365 problem is an application/platform issue requiring Dynamics / Data Mart / Microsoft investigation and was escalated to Microsoft support in the recorded ticket [Data: Sources (0, 1)].
+  - The hotline issue was caused by voice routing/translation configuration on the SBC (carrier-invites reached the edge but were not translated/routed internally) [Data: Sources (8)].
+  - The Basel drop is a network/VoIP session timeout/NAT configuration issue introduced with a new VLAN/NAT policy [Data: Sources (16)].
+  - The Teams banner issue is a client/settings problem (Teams notification banners and Windows Focus Assist) and was resolved by helpdesk-level changes in the example ticket [Data: Sources (19)].
+- Because the impacted systems involve different technology stacks (D365 application stack vs. Direct Routing / SBC / network vs. Teams client/Windows settings), the incidents look like multiple concurrent problems rather than a single root cause [Data: Sources (0, 1, 8, 16, 19)].
+
+Recommended classification (1st-level vs 2nd-level)
+- D365 (Financial Reports): 2nd-level / Application Specialist and vendor escalation (Dynamics / Microsoft). The ticket in records was escalated and a Microsoft support case opened, so treat this as higher-level/third-party escalation after initial triage [Data: Sources (0, 1)].
+- Hotline new numbers (calls not reaching users): 2nd-level / UC or Network / SBC engineer. This is a Direct Routing / SBC routing issue that requires log analysis (INVITE/404 behavior) and translation table updates [Data: Sources (8)].
+- Basel 30s drops: 2nd-level / Network or UC engineer. The root cause was NAT/session timer and VLAN/NAT policy differences; resolution required SBC/session parameter adjustment and NAT timeout alignment [Data: Sources (16)].
+- Teams pop-up banners (no notifications on laptops): 1st-level helpdesk. This is client-level settings (Teams banner settings and Windows Focus Assist). In the example, helpdesk performed checks per the “Blueprint” and restored notifications [Data: Sources (19)].
+
+Immediate steps to take (action items)
+- D365 Financial Reports
+  - Triage (1st-level): collect screenshots, exact timestamps, user IDs, affected environments (UAT/PROD), and confirm whether the issue occurs for all reports or only certain ones.
+  - Escalate to 2nd-level / Dynamics and open/verify the Microsoft support case. Note: Data Mart Reset and FRDB recreation were already attempted in the recorded case; confirm those steps and share results and logs with Microsoft [Data: Sources (0, 1)].
+- Hotline new numbers
+  - Ask UC/Network team to pull SBC logs for INVITEs from the carrier for the affected numbers (look for 404 or immediate rejects) and verify the SBC translation/normalization table contains the new number range. The recorded fix was to update translation/routing rules for the new range [Data: Sources (8)].
+  - Coordinate with the carrier to perform inbound test calls while capturing SBC logs.
+- Basel 30-second drops
+  - Have network/UC engineer verify NAT/UDP session timeout and Session-Expires/SIP session timer values on SBC/firewall for the Basel voice VLAN and compare to other locations. The example incident was resolved by increasing NAT session timeout / session parameters to architected values (e.g., 180s) [Data: Sources (16)].
+  - Temporarily extend session timers to confirm stability, then apply permanent fix per architecture.
+- Teams notifications on laptops
+  - 1st-level checklist: confirm Teams banner notifications are enabled (Teams settings → Notifications → Banner), check Windows Notification Center, and ensure Focus Assist / Do Not Disturb is disabled or set correctly for the user. The recorded resolution followed a “Blueprint – Teams Notifications Standard” checklist and re-enabled banners / disabled Focus Assist [Data: Sources (19)].
+  - If settings are correct but still failing, collect client logs and escalate to 2nd-level.
+
+Owners and priorities (suggested)
+- Create separate tickets for each of the four issues and assign to the appropriate teams:
+  - D365: Application / Dynamics Team (priority: High — multiple users, production affected) [Data: Sources (0, 1)].
+  - Hotline numbers: UC/Network / SBC Team (priority: High — incoming calls not delivered) [Data: Sources (8)].
+  - Basel call drops: Network / UC Team (priority: High/Medium — affects one location but impacts external calls) [Data: Sources (16)].
+  - Teams notifications: Helpdesk / 1st-level (priority: Medium — local client impact, easy triage) [Data: Sources (19)].
+
+If you want, I can:
+- Draft four short ticket templates (one per incident) including required data to speed triage (timestamps, affected users, call examples/numbers, screenshots, logs to collect). Tell me which one to prepare first and I’ll draft it.

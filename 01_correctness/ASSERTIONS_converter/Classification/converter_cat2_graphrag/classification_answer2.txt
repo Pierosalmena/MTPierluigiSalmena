@@ -1,0 +1,27 @@
+Recommendation
+- Classify this ticket as: second_level_support.
+
+What the indexed records explicitly document (evidence)
+- Cross‑system failures that follow an HR/org‑chart or AD/group change (guest/workspace access loss, telephony/dialer failures, and site‑scoped printer mapping) were handled as engineering escalations in prior incidents. Examples of the relevant prior cases:
+  - External/guest access loss caused by a cloud vs on‑prem group/object collision and fixed by group consolidation + full Azure AD Connect sync [Data: Sources (13)].
+  - Sales outbound dialing failing because a provisioning/script or voice‑routing‑policy assignment was incorrect and required policy/provisioning fixes (engineer involvement) [Data: Sources (9)].
+  - Finance users receiving the wrong site printers after a Finance-group nesting error; group membership/nesting fixes were applied (ticketed remediation) [Data: Sources (2)].
+  - SBC/Direct‑Routing incidents where missing translation entries or session‑timer/NAT mismatches required SBC/config and carrier coordination to resolve (temporary translation rule → permanent update; session‑timer changes) [Data: Sources (8); Sources (16)].
+
+Why this ticket should be second_level_support (brief reasoning)
+- The reported symptoms span identity/provisioning (freelancers locked out of shared workspaces), Unified Communications/Direct Routing (dialer beeps and immediate drop), and site/GPO/print mapping (invoices printing at the wrong office). In the indexed knowledge base, the same pattern — simultaneous, reproducible failures across identity, telephony, and print routing after an org/group change — repeatedly required specialist investigation and hands‑on engineering changes (Azure AD Connect/group consolidation, voice routing policy or SBC config edits, GPO/printer membership corrections). Those prior tickets were not resolved by routine first‑line runbook steps but by second‑level teams (identity/infra, UC/SBC engineers, Core Engineering) [Data: Sources (13); Sources (9); Sources (2); Sources (8); Sources (16)].
+
+What the records do not (and so cannot) tell us about this specific incident
+- The indexed records do not prove which exact AD/Azure‑AD objects changed, which actor performed the HR update, or the exact timestamps for the change in your environment. They document the failure modes and how similar events were remediated, but not the raw logs from your tenant or the live change audit for this event [Data: Sources (13); Sources (2)].
+
+Immediate next steps (recommended, not purely record‑extracted)
+- Escalate to identity (Azure AD/Entra) engineering, Unified Communications/SBC owners, and print/GPO owners for coordinated investigation (recommended). Collect the change timestamp and AD/Azure AD audit entries, Teams/Direct Routing/SBC call traces and correlation IDs for failed calls, and the print server/queue mapping and recent group‑membership deltas (recommended). These are recommended actions consistent with triage patterns used in the past but are not themselves verbatim actions recorded for this specific ticket in the indexed corpus.
+
+Key supporting references (selected)
+- Guest/cloud vs on‑prem group collision → remediation with consolidation + full sync: TI‑1583327 [Data: Sources (13)].
+- Sales outbound dialing / provisioning voice‑policy misassignment → required policy/provisioning fix: TI‑1609823 [Data: Sources (9)].
+- Finance group nesting causing Zurich printers to apply to Basel users → group membership/nesting correction: TI‑1623017 [Data: Sources (2)].
+- SBC translation table missing new number range (INVITE → 404) and temporary rule → permanent update: TI‑1612036 [Data: Sources (8)].
+- Session‑timer / NAT timeout causing short call teardowns (BYE ~29–31s) → SBC/NAT/session‑timer changes: TI‑1604879 / related Direct Routing incidents [Data: Sources (16)].
+
+If you want, I can draft the minimal escalation note (one paragraph) to paste into the ticket that lists the exact artifacts to attach (change timestamp, Azure AD audit IDs/ObjectIDs, sample Teams call timestamps + Admin Center correlation IDs, and print‑server queue logs). That draft would be a recommended artifact to speed a second‑level handoff.

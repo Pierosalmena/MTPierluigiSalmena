@@ -1,0 +1,42 @@
+FINAL ANSWER:
+ ### Short answer
+Most likely this is a perimeter (WAF / reverse‑proxy) problem: a recent security/patch activity caused the WAF to reload a default inspection/profile and the Portal‑App‑Template (with the custom header‑rewrite that forwards X‑Forwarded‑Proto) was not active — as a result the backend did not see X‑Forwarded‑Proto and returned 502s for external FQDN requests. This is a 2nd‑level (Network & Security / WAF) support issue and should be escalated accordingly. [Data: Sources (15); Reports (13)]
+
+---
+
+### Why that fits your symptoms
+- External clients see “502 Bad Gateway” while office (internal) users work — the incident record shows that when the publishing/WAF layer strips or fails to forward X‑Forwarded‑Proto during TLS inspection, the backend rejects or misinterprets the request even though the backend itself and LB health checks remain healthy [Data: Sources (15); Reports (13)].  
+- Direct‑to‑reverse‑proxy (bypass) worked while FQDN failed — consistent with name‑based/profile selection at the perimeter (a different template or SNI/virtual‑host mapping applied for the FQDN path) or with header rewrite being present on the direct path but absent on the public/published path [Data: Sources (15)].  
+- A certificate was installed over the weekend and a firewall/security patch ran at the same time; the ticket shows the cert was validated and not the root cause, while the patch triggered a profile/template reload that removed the Portal‑App‑Template (the header rewrite) — tying the outage to the perimeter change rather than DNS or the app itself [Data: Sources (15); Sources (17)].
+
+---
+
+### Immediate actions to take (priority order)
+1. Escalate to Network & Security / WAF owners (2nd‑level) immediately. The remediation requires editing/appplying WAF templates or inspection policy changes [Data: Sources (15)].  
+2. Verify active template/profile for the portal virtual server and confirm the custom header‑rewrite that injects X‑Forwarded‑Proto: https is present. If it isn’t, re‑apply the Portal‑App‑Template from your canonical blueprint and test. [Data: Sources (15); Sources (17)]  
+3. Reproduce externally and capture headers (to prove the failure): from an external host run a verbose curl and force the portal FQDN to the reverse‑proxy IP (example):  
+   - curl -v --resolve portal.kf40.ch:443:<REVERSE_PROXY_IP> https://portal.kf40.ch/  
+   Capture the verbose output and response headers and provide them to the WAF team. (This exact --resolve test is a recommended diagnostic to compare FQDN vs direct‑IP behavior.) [Data: Reports (13); Reports (159)]  
+4. Check WAF logs and audit/change history for a template/profile reload or any config commit during the weekend patch window — look for activations of Default‑Strict or removal of Portal‑App‑Template. Correlate those timestamps to the first observed 502s. [Data: Sources (15); Reports (13)]  
+5. As a short, controlled test (only if authorized): temporarily disable TLS inspection for the portal object and retest external login. The ticket shows disabling inspection restored logins and re‑enabling reproduced 502 — this is useful to validate the hypothesis quickly before changing templates permanently. [Data: Sources (15)]  
+6. After fix, run and retain external end‑to‑end synthetic checks that assert both 200 login success and that X‑Forwarded‑Proto is present at the backend. Add this to your post‑patch validation checklist. [Data: Sources (17); Reports (13)]
+
+---
+
+### What to collect and attach when you escalate
+- The external curl verbose outputs (FQDN and --resolve tests) with timestamps.  
+- WAF transaction/transaction‑audit lines for the failing request(s) showing request headers and the template/profile in effect. Export the request/egress pair (client→WAF and WAF→backend) if possible. If you can paste a redacted sample I will read it. [Data: Sources (15); Reports (13)]  
+- WAF config change / audit log entries for the weekend patch window (who/what/when committed the profile reload). [Data: Sources (15)]
+
+---
+
+### Classification: 1st‑level vs 2nd‑level
+This should be handled as 2nd‑level (Network & Security / WAF) work. Initial triage steps (DNS, cert, basic reachability) are 1st‑level, but the root cause is perimeter template/profile and TLS‑inspection behavior and requires WAF operator privileges to reapply templates and validate header rewrites. The documented incident followed exactly this escalation path. [Data: Sources (15)]
+
+---
+
+### Extra notes / short mitigations
+- Don’t roll back certs as first step — helpdesk validated the certificate (CN/SAN/chain) and ticket evidence shows the header/template change was the proximate cause [Data: Sources (15)].  
+- If you need a quick runbook, exact curl commands, or the precise WAF log fields/queries to extract (or vendor‑specific commands to reapply Portal‑App‑Template), tell me the WAF vendor and I’ll draft them for you.  
+
+If you want, I can also draft the short message/payload to paste into your change/alert ticket to request the WAF transaction export and the config diff for the weekend patch.

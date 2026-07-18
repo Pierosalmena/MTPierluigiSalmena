@@ -1,0 +1,160 @@
+Below I use only the indexed incident records to (A) map your four symptoms to the failure classes seen in prior cases, (B) give a step‑by‑step resolution plan that separates what the records explicitly show was done in earlier incidents from what I recommend you do next (these recommended steps are clearly labelled), and (C) list exactly which evidence/logs to collect (so the engineers can reproduce the same diagnosis & fixes recorded previously). Where I cite a statement I show the supporting indexed records.
+
+Short summary (diagnosis hypothesis from the records)
+- The indexed incidents show the same 4 symptoms occurring together in prior escalations — but they were resolved as several PKI/Intune/network problems occurring around the same maintenance window (not a single magic‑bullet). In prior cases the set of problems was fixed by: publishing a renewed issuing CA to the internal AIA/CRL; correcting a VPN server certificate template that had dropped the required IKE EKU and re‑issuing the server cert; rescoping Intune Wi‑Fi/profile assignments or relaxing the tightened device‑compliance rule so replacement devices could receive profiles; and rescoping App‑Protection/MDM gating for iOS onboarding. Those prior incidents were escalated to PKI/Network/Endpoint engineering (second‑level) for coordinated remediation [Data: Sources (55); Reports (104); Sources (87); Sources (20); Reports (13)].
+
+A. What the indexed records explicitly document (facts, diagnostics and fixes actually performed in prior incidents)
+1) Internal browser warnings for internal‑only sites
+- Symptom & root cause recorded: browsers showed “Issuer’s certificate not found” (chain broke at the issuing CA) after an issuing‑CA renewal because the renewed issuing/intermediate CA cert was not published to the internal AIA distribution point. The explicit corrective action recorded: publish the new issuing CA cert to the configured internal AIA/CRL distribution point, validate HTTP download from the AIA URL, then force client refresh (example actions used: gpupdate /force and certutil -pulse); after that internal services validated OK [Documented remediation].  
+  [Data: Sources (55); Reports (13)]
+
+2) VPN authentication failure (≈80 remote users)
+- Symptom & root cause recorded: CheckPoint IKEv2 logs contained “client cert chain validation failed” / “EKU mismatch”; investigation showed the newly issued VPN server certificate (post‑PKI change) had omitted the required IPsec/IKE EKU. The recorded remediation sequence: correct the VPN server certificate template to include the IPsec/IKE EKU, re‑issue the server cert and deploy it to the concentrator (restart/reload), then validate user reconnections — outage resolved after that sequence [Documented remediation].  
+  [Data: Sources (104); Reports (105)]
+
+3) Office Wi‑Fi missing on new / replacement laptops
+- Symptom & root cause recorded: Wi‑Fi profile had been assigned to a compliance‑scoped dynamic group (e.g., “KF90‑Compliant‑Devices”); after the Intune/BitLocker device‑evaluation policy was tightened many replacement/new devices were reported non‑compliant and therefore the Wi‑Fi profile was “Not applicable” / not delivered. The recorded remediation: change the profile assignment (for onboarding) to a static group or adjust compliance policy so those devices receive the Wi‑Fi profile; sample devices were revalidated in Endpoint Manager afterward [Documented remediation].  
+  [Data: Sources (87); Sources (114)]
+
+4) iPhone Outlook (device approval) loop
+- Symptom & root cause recorded: Outlook-for‑iOS onboarding was blocked by an App‑Protection/MAM policy that enforced device compliance; affected iPhones were non‑compliant under the tightened Intune policy and the App‑Protection gating created a setup loop. The recorded remediation: re‑scope the App‑Protection policy for onboarding (or fix the Intune compliance root cause), re‑evaluate devices in Intune and validate Outlook onboarding on sample devices [Documented remediation].  
+  [Data: Sources (20); Sources (114)]
+
+5) Other infrastructure actions that appeared in the same windows
+- The corpus shows multiple change classes in close time windows in prior cases: a PKI/issuing‑CA renewal with missed AIA publication, certificate‑template changes/refresh that removed needed EKUs, and perimeter appliance (WAF/TLS inspection) template/profile reloads after a security patch which in one ticket caused portal header/inspection behavior changes. Those different maintenance activities each caused specific downstream failures in their domain [Documented examples].  
+  [Data: Sources (55); Sources (104); Sources (43)]
+
+B. Step‑by‑step resolution plan that reproduces the prior successful remediations
+Below I split each step into (1) actions that are explicitly recorded as having been performed in prior incidents (these are “Documented actions”), and (2) recommended next tasks you should perform now (marked “Recommended” when not explicitly documented as executed in the indexed records).
+
+Step 0 — Triage & assign
+- Documented: Prior incidents with the same symptom set were classified as second_level_support and escalated immediately to PKI/Network/Endpoint/Mobile engineering teams [Documented].  
+  [Data: Sources (55); Reports (104); Sources (114)]
+- Recommended (not verbatim in tickets): create a single incident timeline (maintenance window → symptom onset) and assign a coordinating Incident Engineer to call in the domain owners: PKI/AD‑CS, VPN/VPN‑appliance, Endpoint/Intune, Wireless/NAC, Mobile/IAM.
+
+Step 1 — Collect immediate, decisive artifacts (evidence used in prior incidents)
+- Documented (what prior cases asked for and used):
+  - Browser certificate chain screenshots (Inspect → Security) from affected internal clients and/or the certutil -urlfetch -verify output from representative Windows endpoints — used to show the chain break at the issuing CA [Documented].  
+    [Data: Sources (55)]
+  - CheckPoint VPN IKEv2 negotiation logs that contained “client cert chain validation failed” / “EKU mismatch” — used to identify the VPN server cert/template EKU problem [Documented].  
+    [Data: Sources (104); Reports (109)]
+  - Intune / Endpoint Manager per‑device compliance‑evaluation history and profile assignment applicability for sample replacement laptops (the same artifacts used to determine “not applicable” for Wi‑Fi) [Documented].  
+    [Data: Sources (114); Sources (87)]
+  - Intune device enrollment/compliance diagnostics and App‑Protection policy assignment for affected iPhones; NDES connector logs if SCEP is used [Documented].  
+    [Data: Sources (20); Sources (93)]
+- Recommended (additional evidence to collect now): aggregate these artifacts into the CRM ticket and time‑stamp them; capture the CA/AD‑CS event log around the maintenance window (to correlate issuance/publish events) and the AIA/CRL HTTP server access logs if available (see Step 2). (These collection items were the practical next steps used in prior remediations but require pulling raw logs from systems.)
+
+Step 2 — PKI / issuing CA / AIA verification (HR portal & chain warnings)
+- Documented actions to perform (from prior incidents):
+  1. Confirm the issuing/intermediate CA certificate was published to the configured internal AIA/CRL distribution point (the documented root cause in the comparable case was that the renewed issuing CA certificate was installed on the CA server but not published to the AIA share). The prior fix was: publish the intermediate to the AIA location, validate HTTP download from the AIA URL, then force client refresh.  
+     [Data: Sources (55); Reports (13)]
+  2. Validate clients can fetch the intermediate from the AIA URL and confirm chain verifies on sample clients (the prior team used certutil -urlfetch -verify and browser inspection to confirm).  
+     [Data: Sources (55); Sources (57)]
+- Recommended actions (to run now; not all are verbatim in the tickets but follow the same investigative pattern):
+  - From a representative internal client that sees the browser warning: capture browser Inspect→Security screenshot AND run a client chain verification (attach results). Provide these artifacts to PKI. (This is the exact diagnostic the prior owners requested.)  
+    [Data: Sources (55)]
+  - Ask PKI/AD‑CS owners to: (a) export the issuing CA certificate object or the AIA/CRL URL strings from the CA server, (b) confirm AIA/CRL file is present on the distribution origin and provide file timestamps, and (c) share AIA/CRL host access logs (HTTP GETs) for the remediation window. If the issuing CA was not published, publish it (documented fix) and notify desktop/Intune teams to force refresh on sample clients (documented: gpupdate / certutil -pulse used in prior case).  
+    [Data: Sources (55); Reports (361, 362)]
+  - After AIA publish: validate on sample clients (browser & certutil outputs) and then broaden.
+
+Step 3 — VPN concentrator / server certificate EKU (home‑working “cannot verify server identity”)
+- Documented actions (from the prior VPN outage):
+  1. Collect IKEv2 negotiation logs from the CheckPoint concentrator and examine log lines that said “client cert chain validation failed” / “EKU mismatch.” Those logs guided the diagnosis.  
+     [Data: Sources (104); Reports (109)]
+  2. Inspect the VPN server certificate (openssl/x509 or appliance UI) and confirm the EKU set. Prior incident: server cert was missing the IPsec/IKE EKU.  
+     [Data: Sources (105); Reports (104)]
+  3. Correct the certificate template (re‑add required EKU), re‑issue the VPN server certificate from PKI, deploy it to the CheckPoint cluster and restart/reload the service; validate reconnections (documented remediation).  
+     [Data: Sources (104); Reports (105)]
+- Recommended actions for you now:
+  - Pull recent IKE logs, capture failing connection timestamps, and get the server cert (PEM/DER or s_client output) presented by the concentrator at those times. Provide to PKI and VPN engineering. (Prior cases used exactly this data to fix template & re‑issue.)  
+    [Data: Sources (104)]
+  - If the server cert lacks the needed EKU: arrange the template correction and re‑issue as in the prior incident; then deploy to the concentrator and validate with a small user cohort.
+
+Step 4 — Intune / Wi‑Fi profile and App‑Protection gating (replacement laptops + iPhone loop)
+- Documented actions (from prior Intune incidents):
+  1. Export per‑device compliance evaluation history and device configuration/assignment view for sample replacement devices (this was the authority used in the prior Wi‑Fi and Outlook iOS incidents). Investigators validated that devices were marked non‑compliant and the Wi‑Fi profile was “Not applicable.” The prior remediation was to change assignment scope or adjust compliance policy and then re‑evaluate the devices [Documented].  
+     [Data: Sources (114); Sources (87)]
+  2. For Outlook iOS: review App‑Protection/MAM policy assignment that blocks onboarding while non‑compliant; rescope policy or fix device compliance for onboarding [Documented].  
+     [Data: Sources (20)]
+- Recommended actions:
+  - From Endpoint/Intune team: export per‑device compliance history for a representative set of affected replacement laptops and affected iPhones (include the “non‑compliant reason” and assignment applicability). In past incidents these exact exports were decisive.  
+    [Data: Sources (114)]
+  - If a Wi‑Fi profile is assigned to a compliance‑scoped dynamic group and replacement devices are non‑compliant, change the Wi‑Fi profile assignment to a static onboarding group (or fix the compliance rule) — this is what the prior case did to restore SSID visibility. Document and revalidate on sample hardware.  
+    [Data: Sources (87)]
+  - For iPhones stuck in App‑Protection gating: either temporarily rescope MAM policy to allow onboarding or accelerate device compliance remediation (re‑enroll, re‑evaluate), then validate Outlook onboarding on a test iPhone. The prior remediation used exactly those steps.  
+    [Data: Sources (20); Sources (114)]
+
+Step 5 — NDES / SCEP / AD CS connector checks (if Wi‑Fi or mobile profiles use device certificates)
+- Documented actions: prior cases that used SCEP/NDES required collecting NDES connector logs and, in one recorded repair, re‑installing the NDES connector without proxy settings to restore connectivity (connector logs were attached to the ticket) [Documented].  
+  [Data: Sources (93); Reports (99)]
+- Recommended actions:
+  - If your Wi‑Fi/EAP profile or mobile enrollment uses SCEP: collect NDES connector logs; confirm NDES saw the certificate requests; if the connector reported failures around maintenance time, restore connectivity (fix proxy/firewall issues or reinstall connector as in the recorded ticket) and re‑attempt SCEP issuance for sample devices.
+
+Step 6 — Correlate timelines and conclude whether a single change or multiple causes
+- Documented pattern in the records: earlier incidents with identical symptom clusters were caused by multiple simultaneous changes (CA renewal with missed AIA publish, template EKU edits, Intune policy changes, and a perimeter appliance template reload) — the records treated them as separate but temporally overlapping causes and required cross‑team remediation [Documented].  
+  [Data: Sources (55); Sources (104); Sources (43); Reports (13)]
+- Conclusion from the indexed evidence: you likely have at least two independent causes (PKI/AIA issues causing internal TLS warnings; certificate‑template EKU issue causing VPN failures; Intune/compliance policy causing Wi‑Fi and iOS setup problems). The prior corpus does not support asserting a single single‑root cause that explains all four symptoms without the logs below — you must collect the evidence in Step 1–5 to prove commonality.  
+  [Data: Sources (55); Reports (104); Sources (114)]
+
+C. Exact evidence and log artifacts to collect (these are the same artifact classes used in the prior remediations)
+(These collections match what the prior incident responders requested and used.)
+1) PKI & browser chain evidence (used by Employee 32 in prior tickets)
+   - Browser Inspect → Security screenshot(s) showing the chain break for HR portal (hrportal FQDN) and the exact browser banner. [Data: Sources (55)]
+   - certutil -urlfetch -verify output from 2–3 affected Windows endpoints (client viewpoint of AIA/CRL retrieval). [Data: Sources (55)]
+   - CA server: AIA/CRL publication events and CA event log entries for the renewal; AIA/CRL distribution host file‑timestamps and HTTP access logs (to show GETs). [Data: Reports (361, 362)]
+
+2) VPN / concentrator evidence (used in prior VPN incident)
+   - CheckPoint IKEv2 negotiation logs for failing sessions (timestamps, client IDs, “EKU mismatch” phrases). [Data: Sources (104); Reports (109)]
+   - Export of the VPN server certificate presented by the concentrator (PEM/DER or s_client transcript) to show EKUs. [Data: Sources (105)]
+
+3) Intune / Endpoint evidence (used in Wi‑Fi and mobile incidents)
+   - Per‑device Intune compliance‑evaluation history CSV for sample replacement laptops. [Data: Sources (114)]
+   - Device configuration / profile applicability view (shows “Not applicable” for Wi‑Fi profile). [Data: Sources (87)]
+   - For iPhones: Intune device diagnostic export, App‑Protection policy evaluation logs and the device‑approval error message screenshots. [Data: Sources (20)]
+
+4) NDES / SCEP evidence (if SCEP used)
+   - NDES connector logs and AD CS issuance logs for certificate requests from the devices/time window. Prior connector remediation included connector logs in the ticket. [Data: Sources (93); Reports (99)]
+
+5) Perimeter / WAF / TLS‑inspection evidence (if suspected)
+   - Firewall/WAF change & template reload logs and the appliance’s TLS inspection config (prior case where a patch overwritten a template caused portal 502s). [Data: Sources (43)]
+
+D. Escalation and classification (who must be involved)
+- Documented: Prior similar multi‑symptom incidents were escalated to second_level_support and required coordination between PKI/AD‑CS (Employee 32 / PKI team), VPN/Network engineers (Employee 33 / VPN owner), Endpoint/Intune engineers (Employee 34), and Mobile Security (Employee 35) to resolve the set of problems [Documented].  
+  [Data: Sources (55); Sources (104); Sources (114); Sources (20)]
+- Recommendation: escalate now to PKI, VPN/VPN‑appliance team, Endpoint/Intune, Wireless/NAC and Mobile/IAM simultaneously and attach the artifacts requested in Section C to a single root CRM ticket (the indexed records show CRM portal attachments and coordinated ownership were used as the canonical evidence trail).  
+  [Data: Sources (24); Reports (61)]
+
+E. Limitations from the indexed records — what I cannot prove from the corpus alone
+- The indexed records do not contain your tenant’s raw AIA/CRL URL strings, firewall appliance inspection cert details, or your live concentrator/radius logs — therefore I cannot, from the records alone, definitively prove which single maintenance action caused each symptom in your environment. The prior tickets show which artifacts to gather and which fixes worked, but the raw logs/exports must come from your environment to complete the root‑cause proof.  
+  [Data: Sources (55); Reports (13); Sources (105)]
+- Explicit statement: the corpus documents the successful fixes (publish AIA; correct VPN template EKU and reissue; rescope Intune/assignment; NDES connector fixes) but does not contain your site’s specific log files or AIA/CRL URLs — you must produce the artifacts listed in Section C for the teams to complete the same fixes in your tenant.  
+  [Data: Sources (55); Sources (104); Sources (114); Sources (93)]
+
+F. Minimal, prioritized immediate actions to run in order (recommended and aligned to documented fixes)
+(These are the immediate items you should do now — they combine the documented fixes and the recommended evidence collection.)
+1) PKI triage (highest priority for internal browser warnings)
+   - Ask PKI to confirm whether the issuing CA cert was published to AIA/CRL and to provide the AIA/CRL URLs and CA event log timestamps for the renewal. If not present, publish and validate HTTP download; then force sample client refresh (as in the documented case) and attach certutil/browser outputs to the ticket. [Documented fix used in TI‑1700005.]  
+     [Data: Sources (55); Reports (361)]
+
+2) VPN triage (concurrent)
+   - Pull CheckPoint IKE logs for failing auths and a sample copy of the VPN server cert presented. If logs show EKU mismatch, coordinate with PKI to correct the template (re‑add IPsec/IKE EKU), reissue and deploy the new server cert to the cluster. [Documented fix used in TI‑1700006/TI‑1700005].  
+     [Data: Sources (104); Reports (105)]
+
+3) Endpoint / Wi‑Fi / iPhone triage (parallel)
+   - From Endpoint team: export per‑device Intune compliance history and profile applicability for replacement laptops and affected iPhones; if Wi‑Fi profile assignment is dynamic/compliance‑scoped, reassign to a static onboarding group (or fix the compliance rule) and re‑validate. For iPhones, rescope App‑Protection or fix compliance so onboarding completes. [Documented in TI‑1700010 / TI‑1700009 / TI‑1700011].  
+     [Data: Sources (87); Sources (114); Sources (20)]
+
+4) NDES / SCEP check (if applicable)
+   - If Wi‑Fi/EAP or iPhone enrollment uses SCEP: pull NDES connector logs and AD CS issuance logs for the time window and verify connector health; reinstall or adjust proxy settings for the connector if it reported connectivity issues (documented in the connector ticket).  
+     [Data: Sources (93); Reports (99)]
+
+If you want I will (recommended next step, not in the indexed records) prepare a short log‑collection checklist you can paste into the CRM ticket so the desktop/site admins can attach the exact files referenced above (certutil outputs, IKE logs, Intune export files, NDES logs, AIA HTTP access logs). The prior incidents show attaching these exact artifacts to the CRM ticket enabled rapid PKI/VPN/Intune remediation [Data: Sources (24); Sources (55); Sources (104); Sources (114)].
+
+G. Final statement of sufficiency
+- The indexed records contain clear, repeatable remediation sequences that were successful in earlier incidents: publish issuing CA→validate→client refresh (for browser chain errors); restore template EKU→reissue→deploy (for VPN); rescope profile/adjust compliance→revalidate (for Wi‑Fi and iOS). However, the indexed corpus does not contain your live logs, AIA/CRL URLs, or appliance cert exports — therefore I cannot conclusively prove (from the corpus alone) which of your performed maintenance actions caused each symptom. You must supply the artifacts in Section C so the same documented remediations can be applied and validated in your environment [Data: Sources (55); Sources (104); Sources (87); Sources (20); Sources (93)].
+
+If you would like, I will:
+- produce the exact short CRM ticket text and a per‑artifact list (filenames + example fields) to ask your PKI, VPN, Endpoint and Wireless/NAC teams to attach; and
+- prepare the single timeline correlation (mapping maintenance timestamp(s) you give me to the ticketed remediation timestamps in the indexed records above).
+
+Which would you like me to prepare next?

@@ -1,0 +1,34 @@
+Short answer — what likely broke
+- The symptoms you describe strongly match three documented incidents where an organizational change (AD/Azure AD group changes / provisioning) caused: (A) users losing access to Finance reports and creators showing as “unknown” (reports “cannot be found”), (B) Sales users being unable to place external calls because their Voice Routing Policy was changed by the new group membership, and (C) Finance users’ default printer being set incorrectly because GPO/printer assignments are location‑based and depend on AD group membership. Each of those symptom clusters appears in our ticket history after group/organizational changes [Data: Sources (0, 1)] [Data: Sources (9)] [Data: Sources (2)].
+
+What the tickets show as root causes (evidence)
+- Report / workspace access issues: users could not open Management Reports; previous report creators showed as “unknown” and attempts to create/open reports returned “Report cannot be found.” The team performed FRDB recreation and a Data Mart Reset and engaged Microsoft when no local fix was found [Data: Sources (0, 1)].  
+- Sales calling failures: affected users were recently moved into a new AD/Azure AD group and an automated provisioning rule assigned them the wrong Voice Routing Policy (“Global”) which lacked PSTN usage, so external calls failed; assigning the correct routing policy (“DR‑Standard”) restored calling in tests and the provisioning logic was later corrected [Data: Sources (9)].  
+- Wrong/default printer mapping: after a departmental AD group change the Finance group had inconsistent memberships and became (indirectly) member of the Zurich location group, so the Zurich printer was applied via GPO as default for Basel users; removing the incorrect group membership and forcing a gpupdate fixed the default printer behavior [Data: Sources (2)].
+
+Immediate (urgent) triage actions — what to do now
+1. Isolate and prioritize affected accounts
+   - Identify the exact AD/Azure AD groups changed in last night’s org chart update and list affected users in Sales, Finance and the freelancers. This is necessary before making changes (see parallels in the voice/printer incidents) [Data: Sources (9, 2)].
+
+2. Emergency rollback / short-term fixes (fastest restores)
+   - Sales (calls): Temporarily assign one affected Sales user the known-working routing policy (e.g., “DR‑Standard”) and test external calling. If calls work, bulk‑reassign affected Sales users to the correct policy while you fix provisioning [Data: Sources (9)].  
+   - Finance printing: Temporarily remove the erroneous group membership that causes the Zurich printer to be applied, then force a group policy update on affected machines (gpupdate /force) and have users re-login — that restored correct default printer in the precedent ticket [Data: Sources (2)].  
+   - Freelance / reports: If the freelance users are blocked from shared reports/workspaces, try restoring their previous AD group membership / access group (or re-provision their identities) as a first step. If reports remain inaccessible, follow the ticketed steps used previously: recreate the FRDB and perform a Data Mart Reset; escalate to Microsoft if that does not resolve it [Data: Sources (1, 0)].
+
+3. Quick tests to confirm fixes
+   - For voice: run the same checks used in the incident (Get‑CsOnlineVoiceRoutingPolicy or equivalent) and perform a test external call after policy change [Data: Sources (9)].  
+   - For printing: test printing after gpupdate and confirm device sees the expected default printer [Data: Sources (2)].  
+   - For reports: verify that report creators are displayed correctly and that reports can be loaded/edited after restoration or Data Mart Reset [Data: Sources (0, 1)].
+
+Recommended next steps (medium term)
+- Revert or correct the provisioning logic that maps new AD/Azure AD groups to services/policies. The voice incident was caused by an automated provisioning script assigning the wrong routing policy; updating that logic avoided recurrence [Data: Sources (9)].  
+- Clean up and validate the AD group hierarchy after the org change (remove unintended parent group memberships). The printer incident was fixed by cleaning up group membership according to the Print & Scanning blueprint and reapplying GPOs [Data: Sources (2)].  
+- Run a controlled verification plan for the org chart update: before applying broadly, simulate group membership changes in a test tenant and check: Teams Voice routing assignments, printer GPOs, and any Finance/ERP report/catalog permissions. Use the “Blueprint” documents referenced in the tickets to ensure alignment with architectural rules [Data: Sources (9, 2)].  
+- For the reporting issue, consider scheduled FRDB/Data Mart health checks and an escalation path to Microsoft (ticketing) if resets/recreates are required — this was done in the Management Report incident [Data: Sources (1, 0)].
+
+If you want, I can
+- Draft the minimal rollback steps (exact groups to revert, sample PowerShell to reassign voice routing policy, and gpupdate guidance) based on the ticket remedies (e.g., gpupdate /force was used successfully) [Data: Sources (2, 9, 1)].  
+- Produce a prioritized action checklist (who does what in the next 30/60/120 minutes) so your incident responders can act immediately.
+
+If you want me to prepare the rollback/checklist now, tell me:
+- the exact AD/Azure AD group(s) changed last night and a list (or counts) of affected users in Sales, Finance and Freelancers — I’ll draft the precise commands and order of operations.

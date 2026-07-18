@@ -1,0 +1,65 @@
+Summary answer (what the indexed records document)
+- The symptom cluster in your ticket matches two separate, documented causes in the indexed records:
+  - A PKI/issuing-CA change over a weekend caused multiple internal certificate-validation failures (internal HTTPS/TLS warnings, VPN/server certificate validation and LDAP-S issues). The prior incidents show that after PKI/issuing-CA work, services failed until intermediate/issuing CA material and certificate templates were corrected and certificates re-issued or re-enrolled [Data: Sources (55, 104, 13)].
+  - A tightened device/compliance policy / App Protection (MAM) change caused Outlook for iOS to require device compliance and therefore to loop during account setup for devices that Intune flagged non‑compliant. The prior incident was resolved by changing the App Protection policy assignment so affected users could complete setup [Data: Sources (20)].
+
+What the records explicitly document (symptoms, root causes, and actions actually taken)
+- Internal browser TLS warnings on internal-only sites:
+  - Symptom: internal HTTPS services showed “NET::ERR_CERT_AUTHORITY_INVALID” / “issuer’s certificate not found” (chain breaks at issuing CA) after an issuing CA renewal [Data: Sources (55)].
+  - Root cause and action: The issuing (intermediate) CA certificate was not present in the chain/AIA distribution points after the renewal; the intermediate CA certificate was published correctly to AIA/CRL distribution points and affected services were validated, which removed the browser warnings [Data: Sources (55)].
+
+- VPN authentication failing for ~80 home-working users:
+  - Symptom: IKEv2 mutual auth failures; concentrator logs: “client cert chain validation failed” / “EKU mismatch”; clients reported “could not validate server certificate” [Data: Sources (104)].
+  - Root cause and action: A refreshed certificate template used for the server certificate omitted the required IPsec/IKE EKU (included only Server Authentication). Resolution documented: VPN clients were reissued certificates from a corrected template that included the required EKU; new certificates were deployed via GPO and affected users validated [Data: Sources (104)].
+
+- LDAPS/LDAP-S queries to Domain Controllers failing for some internal applications:
+  - Symptom: Applications using LDAP‑S could not establish secure connection to domain controllers after PKI work; DC certs showed issued-by-old-CA and applications complained despite certs not expired [Data: Sources (13)].
+  - Root cause and action: Domain Controller certificate auto‑enrollment/template issues after PKI change. Resolution documented: Domain Controllers were re-enrolled from the internal CA after fixing the auto-enrollment template; LDAP‑S queries were restored [Data: Sources (13)].
+
+- Outlook on iPhone looping during setup:
+  - Symptom: Outlook iOS shows “device must be registered/managed” and loops; affected devices were marked non‑compliant in Intune after a tightened device-evaluation policy [Data: Sources (20)].
+  - Root cause and action: An App Protection (MAM) policy required device compliance before a protected account could be added. Resolution documented: The App Protection policy assignment for Outlook iOS was rescoped and affected users then completed setup successfully [Data: Sources (20)].
+
+Assessment: are these incidents a single root cause or multiple?
+- The records show a common PKI-related cause for the certificate-validation failures across internal HTTPS, VPN, and LDAP‑S (all three are independently documented as consequences of PKI/CA/template changes) [Data: Sources (55, 104, 13)].
+- The Outlook/iOS setup loop is documented as a separate cause driven by tightened device-compliance/App Protection policy, and was resolved by rescoping the App Protection assignment [Data: Sources (20)].
+- Therefore, the indexed evidence indicates at least two separate causes (PKI work and stricter device/MAM policies), not a single change that explains all four symptoms [Data: Sources (55, 104, 13, 20)].
+
+Step‑by‑step resolution plan based on documented prior fixes
+The steps below reproduce the actions that were actually performed in prior incidents. Each step cites the ticket(s) where that action was recorded as the fix.
+
+1) Confirm PKI/issuing-CA state (documented investigative step)
+   - Verify whether the issuing CA(s) were renewed and whether intermediate CA certificates are present in AIA/CRL distribution points. Prior incident found the issuing CA was renewed and the chain was incomplete in browsers [Data: Sources (55)].
+   - Evidence to look for (as described in the record): browser chain shows “Issuer’s certificate not found” or certutil -urlfetch -verify reveals chain break. (This investigative action is described in the ticket narrative; the corrective action is documented in the closure) [Data: Sources (55)].
+
+2) Restore complete CA chain/publication (documented remediation for internal HTTPS)
+   - Action performed in record: publish the intermediate/issuing CA certificate correctly to the AIA/CRL distribution points and validate affected services. After doing so, internal HTTPS services were validated and browser warnings resolved [Data: Sources (55)].
+
+3) Correct certificate templates and reissue/redeploy certificates for VPN (documented remediation)
+   - Action performed in record: determine that the VPN server certificate had been issued from a refreshed template that lacked the required IPsec/IKE EKU. Remedial action performed: reissue certificates from a corrected template (including the required EKUs) and deploy the new certificates (the record states VPN clients were reissued certificates and new certificates were deployed via GPO) [Data: Sources (104)].
+   - After reissuing and deploying corrected certificates, affected VPN users were validated as able to connect [Data: Sources (104)].
+
+4) Re-enroll Domain Controller certificates if auto-enrollment/template issues exist (documented remediation)
+   - Action performed in record: fix the domain controller certificate template / auto-enrollment configuration and re-enroll DC certificates from the internal CA. After re-enrollment, LDAPS queries were restored [Data: Sources (13)].
+
+5) For Outlook/iOS setup loop: adjust App Protection policy assignment (documented remediation)
+   - Action performed in record: rescope the App Protection (MAM) policy assignment protecting Outlook for iOS so that affected users could complete device enrollment and add the work account. After rescoping, users completed setup successfully [Data: Sources (20)].
+
+Where the indexed knowledge is insufficient
+- The indexed records do not contain any documented incident or resolution that directly explains “office wireless network not showing up for newer team members / replacement laptops” (your item #3). I cannot find a prior ticket or documented fix in the indexed records that addresses this exact symptom. Therefore I cannot provide a resolution from the indexed knowledge for the Wi‑Fi symptom. (No source ids cover this issue.)
+
+Recommended next steps (these are recommendations — not steps documented in the indexed records)
+- (Recommended) For the Wi‑Fi issue, check whether the office Wi‑Fi uses certificate-based (machine/user) authentication (WPA2/WPA3-Enterprise) and whether the new laptops have the necessary machine/user certificates or Wi‑Fi profile assigned by your management system (MDM/GPO). Also verify that the SSID is configured to broadcast and that any network access control (NAC) or RADIUS policy is not filtering by device posture, certificate template/source, or group membership.
+- (Recommended) Correlate device onboarding dates with Intune/MDM profile assignment and with any recent NAC or wireless controller changes. If your Wi‑Fi relies on a client certificate (SCEP/PKI), check whether the client certificate template or SCEP configuration was changed during the PKI maintenance (this is a plausible link to the PKI work, but is not documented in the indexed records).
+- (Recommended) If you suspect the Wi‑Fi symptom is PKI-related (e.g., supplicant requires machine certificate), try enrolling a replacement device and observe certificate provisioning and any RADIUS logs for certificate validation failures.
+
+If you want, I can:
+- Produce a concise checklist of the exact verification steps to run (which logs/fields to inspect, what to look for in certutil / RADIUS / VPN / browser chains), labeled clearly as recommended actions (not taken from the indexed records). Tell me whether you want those recommended troubleshooting commands and I will provide them.
+
+Key supporting record references
+- Internal HTTPS / issuing CA chain fixed by publishing intermediate to AIA/CRL; services validated [Data: Sources (55)].
+- VPN failure due to template EKU mismatch; VPN clients reissued certificates from corrected template and deployed via GPO; users validated [Data: Sources (104)].
+- Domain Controller LDAPS failures resolved by fixing auto-enrollment template and re-enrolling DC certificates [Data: Sources (13)].
+- Outlook iOS setup loop due to App Protection policy requiring Intune compliance; resolution by rescoping App Protection assignment [Data: Sources (20)].
+
+If you would like, I can map these documented steps into an ordered operational runbook for your team (separating actions that must be taken immediately from validation steps) — please confirm and I will prepare that, marking any steps that are my recommendations rather than documented past actions.

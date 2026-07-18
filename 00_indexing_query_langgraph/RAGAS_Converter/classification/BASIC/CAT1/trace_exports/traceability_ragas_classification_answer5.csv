@@ -1,0 +1,1275 @@
+﻿question,answer,context
+Is the statement supported by the evidence?,"External Teams calls with one‑way audio (internal OK, external silent) in Zurich were previously diagnosed as a media/firewall/NAT configuration issue affecting media ports or session timers. Resolution required Unified Communications/SBC and network adjustments according to the Direct Routing architecture (changes made by engineers; tests with SBC/session parameters; firewall/NAT timeouts adjusted). This is documented in tickets TI-1602241 and TI-1604879","=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 16:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls disconnect after approx. 30 seconds
+Ticket number: TI-1604879
+Company: Customer Company 52 AG
+Contact person: Contact Person 16
+Owner: Employee 35
+Origin: Email
+Type: Incident
+Created on: 22.07.25 09:14
+Closure
+Closure date: 31.07.25 15:52
+Closure text: Analysis completed. Adjustment made according to Direct Routing architecture. Calls stable.
+Activities
+22.07.25 09:02 – Email from Contact Person 16 to Helpdesk
+Good morning
+Since yesterday, several employees report that external calls in Microsoft Teams disconnect after approximately 30 seconds.
+The call is established normally, both parties can hear each other, but the connection is terminated after a short time.
+Internal Teams calls are not affected.
+Could you please review this?
+Kind regards
+22.07.25 09:14
+Ticket created and assigned to Employee 35.
+22.07.25 10:05 – Helpdesk inquiry
+Good day
+Thank you for your report.
+Could you please confirm:
+– Does it affect incoming and outgoing calls?
+– Does the disconnection always occur after approximately the same duration?
+– Are all locations affected or only a specific one?
+Thank you very much.
+22.07.25 10:42 – Customer response
+It only affects the Basel location.
+Both incoming and outgoing calls.
+The disconnection occurs almost exactly after 30 seconds, sometimes slightly earlier.
+Home office users are not affected.
+22.07.25 11:30 – Internal note
+Test performed with affected user.
+External call to mobile phone.
+Call disconnected after 29–31 seconds.
+No error message in the Teams client, simply “Call Ended.”
+23.07.25 08:55 – Initial hypothesis
+Possible client error or unstable connection.
+Test with another device → same behavior.
+Test with LAN cable instead of docking station → no change.
+23.07.25 11:10 – Email to customer
+Good day
+We are currently analyzing the Direct Routing logs.
+Signaling is established correctly.
+The disconnection does not appear to be triggered by the client.
+Were there any recent network changes at the Basel location?
+Kind regards
+23.07.25 13:45 – Customer response
+On Friday, a new network segment for VoIP traffic was implemented.
+A separate VLAN for “Voice” was created.
+Could this be relevant?
+24.07.25 09:05 – Internal analysis
+SBC logs reviewed:
+– SIP INVITE successful
+– 200 OK correct
+– Call established
+– After 30 seconds, BYE from SBC
+No obvious error code.
+24.07.25 10:30 – Firewall analysis
+No blocking visible.
+Ports open according to standard configuration.
+24.07.25 14:20 – Detailed SIP analysis
+Session-Expires header reviewed.
+Session timer set to 30 seconds.
+Comparison with other locations shows:
+There, 180 seconds.
+25.07.25 08:50 – Review of internal documentation
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Session Handling – Version 2.1”
+Section on NAT session persistence and SIP session timers relevant.
+Note in the blueprint:
+For certain firewall or NAT configurations, the session timer must be adjusted to avoid premature termination.
+25.07.25 11:15 – Internal tests
+Temporary adjustment of session parameters on SBC.
+Test call performed.
+Call remains stable for several minutes.
+Reverting to original configuration → disconnection after approx. 30 seconds reproducible.
+28.07.25 – Coordination with network team
+New “Voice” VLAN uses different NAT policy.
+UDP session timeout configured to 30 seconds.
+Comparison with Zurich location → 180 seconds.
+29.07.25 – Adjustment
+NAT session timeout adjusted according to architecture specification.
+Details not documented in ticket for security reasons.
+30.07.25 – Customer feedback
+Good morning
+We conducted several test calls.
+No more disconnections observed.
+Longer conversations are also stable.
+Thank you very much.
+31.07.25 15:52 – Ticket closure
+Dear Contact Person 16
+The root cause was a deviation in the session and NAT configuration at the Basel location related to the new VLAN structure.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Calls now remain stable.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 23:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls without audio (only silence)
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05S
+Closure text: Analysis completed. Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Phone notification.
+Several employees report:
+• External calls can be established
+• The other party can hear them
+• They themselves hear nothing (complete silence)
+Internal Teams-to-Teams calls function.
+Chat and video also function.
+Affected: approx. 12 users at the Zurich location.
+08.07.25 08:21
+Ticket created
+Assigned to: Employee 33
+Status: In Progress
+Notes
+08.07.25 09:05
+Helpdesk asks:
+• Does it affect only external PSTN calls?
+• Only incoming or also outgoing?
+• Headset or speaker?
+• WLAN or LAN?
+08.07.25 09:30
+Customer responds:
+• Only external calls affected
+• Incoming and outgoing
+• Various headsets
+• LAN connection
+• Other locations not affected
+08.07.25 10:15
+Helpdesk tests with affected user:
+Test 1 – Internal Teams call → OK
+Test 2 – External mobile call → No audio
+Test 3 – External landline call → No audio
+Notable:
+Call status shows “Connected”.
+08.07.25 11:40
+Initial hypothesis: Client issue
+Measures:
+• Teams cache cleared
+• Teams reinstalled
+• Drivers checked
+Result: No change.
+09.07.25 08:55
+Customer adds:
+A new firewall rule was implemented at the location over the weekend (Security Hardening).
+Unclear whether there is a correlation.
+09.07.25 10:10
+Helpdesk checks:
+• Internet stable
+• No packet loss visible
+• Microsoft 365 status normal
+Suspicion: Network / VoIP layer
+Ticket forwarded to: BU Unified Communications
+09.07.25 10:22
+Ticket taken over by: System Engineer 18
+In-depth analysis
+09.07.25 11:15
+Analysis in Teams Admin Center:
+• Direct Routing active
+• SBC status: Online
+• PSTN calls are signaled
+• No errors in SIP signaling
+Notable:
+• RTP stream appears not to run bidirectionally
+10.07.25 08:40
+SBC log analysis:
+• SIP INVITE correct
+• 200 OK correct
+• Media negotiation (SDP) successful
+RTP stream from Microsoft IP visible
+RTP stream from internal client not consistently visible
+10.07.25 10:50
+Firewall logs reviewed.
+New rule implemented:
+Outbound traffic restricted
+Only defined port ranges allowed
+Documentation shows:
+Teams media ports UDP 3478–3481
+and dynamic RTP ports 49152–53247
+Firewall rule allows only 3478–3481.
+11.07.25 09:15
+Test:
+Temporary opening of wider UDP port range
+→ Audio works immediately.
+Port restricted again
+→ No audio.
+11.07.25 13:20
+Comparison with internal architecture documentation:
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Section 3 describes:
+• Media Bypass behavior
+• RTP port range requirements
+• Location-specific firewall rules
+• NAT traversal
+14.07.25
+Comparison shows:
+Zurich location uses Media Bypass
+Other locations do not.
+With Media Bypass, RTP runs directly from client to SBC.
+Firewall rule was designed only for signaling.
+16.07.25
+Configuration adjustment carried out according to architecture specification.
+Details not documented in the ticket for security reasons.
+18.07.25 15:30
+Multiple external test calls successful.
+Audio stable in both directions.
+Monitoring 48h without anomalies.
+Ticket closure
+18.07.25 16:05
+Dear Contact Person 14
+The root cause was a restriction of media port communication following a firewall adjustment at the Zurich location.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Voice transmission is stable again.
+Kind regards
+Consulting Sample Company
+
+
+"
+Is the statement supported by the evidence?,"Multiple types of printing failures (printer not responding after printers were moved into a new VLAN; single user “Access denied” from an explicit deny on the printer queue; default printer switching because of AD/GPO group membership; SAP printing broken after VM restore causing print‑share issues) were diagnosed and resolved by system engineers or required coordination with the Network/Core teams. Remediations included adjusting routing/firewall rules between server and printer VLAN, removing explicit deny permissions on the print queue, cleaning up AD group memberships or re‑enabling network shares on print servers — all actions done per the Print & Scanning Infrastructure Standard or by engineering staff","=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 28:
+﻿
+Ticket summary:
+Ticket name: KF13: PRIO HIGH - Printing from SAP not possible
+Ticket number: TI-931293
+Company: Customer Company 13
+Contact person: Contact Person 11
+Owner: Employee 17
+Origin: Phone
+Type: Support Request
+Created on: 18.07.24 17:16
+
+Closure
+Closure date: 19.07.24 16:48
+Closure text: After a Windows update and the subsequent VM restore, the printer network share caused issues. These were corrected and operations were restored.
+
+Activities
+Emails:
+19.07.24 09:01 | Ticket: KF13: PRIO HIGH - Printing from SAP not possible set to status ""In Progress"" #027064349 | NO-REPLY | BU_CustomerServices_RUN@ConsultingSampleCompany.ch
+Hello BU Customer Services Run,
+The ticket KF13: PRIO HIGH - Printing from SAP not possible, number TI-931293, has been set to status ""In Progress"".
+Link: KF13: PRIO HIGH - Printing from SAP not possible
+
+19.07.24 12:52 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+I would like to briefly check whether the issue with printing from SAP has been resolved in the meantime.
+Kind regards
+Employee 18
+
+19.07.24 13:01 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Contact Person 12 | Employee 18
+Hi everyone,
+Unfortunately, it is still not working.
+Kind regards
+Contact Person 12
+Head of Customer Services, Customer Company 13 AG
+Phone: +41 00 000 00 00
+
+19.07.24 13:24 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+Thank you for your feedback. I will inform the responsible department that the issue still persists.
+I will keep you updated on further progress.
+Kind regards
+Employee 18
+
+19.07.24 16:38 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17 | Contact Person 11
+Dear all,
+I would like to inform you that we have identified the root cause and resolved the incident. Printing via both print servers through SAP is now functioning properly again. Mr. Contact Person 12 has confirmed that SAP print jobs are being executed correctly.
+After the Windows update and the restore of the two VMs, all printers had issues with the network share on print server VRINFRGERPRNT03. After disabling and re-enabling the network share for all printer queues, all pending documents on the affected printers were successfully printed.
+No further actions are currently required, and we will now close the ticket.
+Should you require further assistance or have any questions, please do not hesitate to contact us.
+Kind regards and have a nice weekend,
+Employee 17
+Senior System Engineer Core Engineering
+Consulting Sample Company AG
+
+19.07.24 16:44 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17
+FYI
+
+19.07.24 16:55 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello everyone,
+THANK YOU VERY MUCH!!! TOP SERVICE!!!
+We are very satisfied 😊
+Wishing you both a very nice weekend as well!
+Best regards
+Tom
+Head of IT Switzerland Informatics, Customer Company 13
+
+19.07.24 17:16 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello Giusi,
+You were not included in the distribution list, I only just noticed that.
+Best regards
+Tom
+
+22.07.24 07:56 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 19
+Hello @Employee 17 and @Employee 20,
+Thank you very much for your great support last Friday on this ticket. This was highly appreciated by KF13, including Contact Person 11, and they were truly grateful for your efforts.
+Especially for Giusi and Employee 20, here again Tom’s praise.
+Kind regards
+Employee 19
+Service Manager
+
+22.07.24 09:19 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 26
+Nice one 😊 That’s a great way to start the week.
+Employee 26
+Head of Core Engineering
+
+Notes:
+18.07.24 17:17 | Admin, CRM | WEB
+Ticket opened on 18.07.24 17:16 by Employee 23.
+18.07.24 17:22 | ApplicationUser, CRM Development | WEB
+Classified as PRIO HIGH because no orders could be printed from SAP, preventing deliveries.
+18.07.24 17:24 | Employee 23 | WEB
+Printing from SAP via VRINFRGERPRNT03 and VRINFRGERPRNT04 not possible. Normal printing works via other print servers with follow-me solution. Contact Person 11 requests rollback of the Windows version on the print servers.
+18."
+Is the statement supported by the evidence?,"The Zurich Teams symptom matches prior cases that were not solvable by client‑side steps (reinstalling, changing headsets, rebooting) and required SBC/network session and firewall changes performed by specialists (Direct Routing / NAT / session timer work)","=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 16:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls disconnect after approx. 30 seconds
+Ticket number: TI-1604879
+Company: Customer Company 52 AG
+Contact person: Contact Person 16
+Owner: Employee 35
+Origin: Email
+Type: Incident
+Created on: 22.07.25 09:14
+Closure
+Closure date: 31.07.25 15:52
+Closure text: Analysis completed. Adjustment made according to Direct Routing architecture. Calls stable.
+Activities
+22.07.25 09:02 – Email from Contact Person 16 to Helpdesk
+Good morning
+Since yesterday, several employees report that external calls in Microsoft Teams disconnect after approximately 30 seconds.
+The call is established normally, both parties can hear each other, but the connection is terminated after a short time.
+Internal Teams calls are not affected.
+Could you please review this?
+Kind regards
+22.07.25 09:14
+Ticket created and assigned to Employee 35.
+22.07.25 10:05 – Helpdesk inquiry
+Good day
+Thank you for your report.
+Could you please confirm:
+– Does it affect incoming and outgoing calls?
+– Does the disconnection always occur after approximately the same duration?
+– Are all locations affected or only a specific one?
+Thank you very much.
+22.07.25 10:42 – Customer response
+It only affects the Basel location.
+Both incoming and outgoing calls.
+The disconnection occurs almost exactly after 30 seconds, sometimes slightly earlier.
+Home office users are not affected.
+22.07.25 11:30 – Internal note
+Test performed with affected user.
+External call to mobile phone.
+Call disconnected after 29–31 seconds.
+No error message in the Teams client, simply “Call Ended.”
+23.07.25 08:55 – Initial hypothesis
+Possible client error or unstable connection.
+Test with another device → same behavior.
+Test with LAN cable instead of docking station → no change.
+23.07.25 11:10 – Email to customer
+Good day
+We are currently analyzing the Direct Routing logs.
+Signaling is established correctly.
+The disconnection does not appear to be triggered by the client.
+Were there any recent network changes at the Basel location?
+Kind regards
+23.07.25 13:45 – Customer response
+On Friday, a new network segment for VoIP traffic was implemented.
+A separate VLAN for “Voice” was created.
+Could this be relevant?
+24.07.25 09:05 – Internal analysis
+SBC logs reviewed:
+– SIP INVITE successful
+– 200 OK correct
+– Call established
+– After 30 seconds, BYE from SBC
+No obvious error code.
+24.07.25 10:30 – Firewall analysis
+No blocking visible.
+Ports open according to standard configuration.
+24.07.25 14:20 – Detailed SIP analysis
+Session-Expires header reviewed.
+Session timer set to 30 seconds.
+Comparison with other locations shows:
+There, 180 seconds.
+25.07.25 08:50 – Review of internal documentation
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Session Handling – Version 2.1”
+Section on NAT session persistence and SIP session timers relevant.
+Note in the blueprint:
+For certain firewall or NAT configurations, the session timer must be adjusted to avoid premature termination.
+25.07.25 11:15 – Internal tests
+Temporary adjustment of session parameters on SBC.
+Test call performed.
+Call remains stable for several minutes.
+Reverting to original configuration → disconnection after approx. 30 seconds reproducible.
+28.07.25 – Coordination with network team
+New “Voice” VLAN uses different NAT policy.
+UDP session timeout configured to 30 seconds.
+Comparison with Zurich location → 180 seconds.
+29.07.25 – Adjustment
+NAT session timeout adjusted according to architecture specification.
+Details not documented in ticket for security reasons.
+30.07.25 – Customer feedback
+Good morning
+We conducted several test calls.
+No more disconnections observed.
+Longer conversations are also stable.
+Thank you very much.
+31.07.25 15:52 – Ticket closure
+Dear Contact Person 16
+The root cause was a deviation in the session and NAT configuration at the Basel location related to the new VLAN structure.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Calls now remain stable.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 23:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – External calls without audio (only silence)
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05S
+Closure text: Analysis completed. Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Phone notification.
+Several employees report:
+• External calls can be established
+• The other party can hear them
+• They themselves hear nothing (complete silence)
+Internal Teams-to-Teams calls function.
+Chat and video also function.
+Affected: approx. 12 users at the Zurich location.
+08.07.25 08:21
+Ticket created
+Assigned to: Employee 33
+Status: In Progress
+Notes
+08.07.25 09:05
+Helpdesk asks:
+• Does it affect only external PSTN calls?
+• Only incoming or also outgoing?
+• Headset or speaker?
+• WLAN or LAN?
+08.07.25 09:30
+Customer responds:
+• Only external calls affected
+• Incoming and outgoing
+• Various headsets
+• LAN connection
+• Other locations not affected
+08.07.25 10:15
+Helpdesk tests with affected user:
+Test 1 – Internal Teams call → OK
+Test 2 – External mobile call → No audio
+Test 3 – External landline call → No audio
+Notable:
+Call status shows “Connected”.
+08.07.25 11:40
+Initial hypothesis: Client issue
+Measures:
+• Teams cache cleared
+• Teams reinstalled
+• Drivers checked
+Result: No change.
+09.07.25 08:55
+Customer adds:
+A new firewall rule was implemented at the location over the weekend (Security Hardening).
+Unclear whether there is a correlation.
+09.07.25 10:10
+Helpdesk checks:
+• Internet stable
+• No packet loss visible
+• Microsoft 365 status normal
+Suspicion: Network / VoIP layer
+Ticket forwarded to: BU Unified Communications
+09.07.25 10:22
+Ticket taken over by: System Engineer 18
+In-depth analysis
+09.07.25 11:15
+Analysis in Teams Admin Center:
+• Direct Routing active
+• SBC status: Online
+• PSTN calls are signaled
+• No errors in SIP signaling
+Notable:
+• RTP stream appears not to run bidirectionally
+10.07.25 08:40
+SBC log analysis:
+• SIP INVITE correct
+• 200 OK correct
+• Media negotiation (SDP) successful
+RTP stream from Microsoft IP visible
+RTP stream from internal client not consistently visible
+10.07.25 10:50
+Firewall logs reviewed.
+New rule implemented:
+Outbound traffic restricted
+Only defined port ranges allowed
+Documentation shows:
+Teams media ports UDP 3478–3481
+and dynamic RTP ports 49152–53247
+Firewall rule allows only 3478–3481.
+11.07.25 09:15
+Test:
+Temporary opening of wider UDP port range
+→ Audio works immediately.
+Port restricted again
+→ No audio.
+11.07.25 13:20
+Comparison with internal architecture documentation:
+Document:
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Section 3 describes:
+• Media Bypass behavior
+• RTP port range requirements
+• Location-specific firewall rules
+• NAT traversal
+14.07.25
+Comparison shows:
+Zurich location uses Media Bypass
+Other locations do not.
+With Media Bypass, RTP runs directly from client to SBC.
+Firewall rule was designed only for signaling.
+16.07.25
+Configuration adjustment carried out according to architecture specification.
+Details not documented in the ticket for security reasons.
+18.07.25 15:30
+Multiple external test calls successful.
+Audio stable in both directions.
+Monitoring 48h without anomalies.
+Ticket closure
+18.07.25 16:05
+Dear Contact Person 14
+The root cause was a restriction of media port communication following a firewall adjustment at the Zurich location.
+The configuration was adjusted according to the internal Direct Routing architecture.
+Voice transmission is stable again.
+Kind regards
+Consulting Sample Company
+
+
+"
+Is the statement supported by the evidence?,"The Basel printing symptoms combine multiple failure modes seen before that required server/queue permission changes, AD/GPO corrections, or network/VLAN routing and firewall rule changes — each of which in the past involved system engineers and coordination with network/core teams, not just front‑line user fixes","=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 28:
+﻿
+Ticket summary:
+Ticket name: KF13: PRIO HIGH - Printing from SAP not possible
+Ticket number: TI-931293
+Company: Customer Company 13
+Contact person: Contact Person 11
+Owner: Employee 17
+Origin: Phone
+Type: Support Request
+Created on: 18.07.24 17:16
+
+Closure
+Closure date: 19.07.24 16:48
+Closure text: After a Windows update and the subsequent VM restore, the printer network share caused issues. These were corrected and operations were restored.
+
+Activities
+Emails:
+19.07.24 09:01 | Ticket: KF13: PRIO HIGH - Printing from SAP not possible set to status ""In Progress"" #027064349 | NO-REPLY | BU_CustomerServices_RUN@ConsultingSampleCompany.ch
+Hello BU Customer Services Run,
+The ticket KF13: PRIO HIGH - Printing from SAP not possible, number TI-931293, has been set to status ""In Progress"".
+Link: KF13: PRIO HIGH - Printing from SAP not possible
+
+19.07.24 12:52 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+I would like to briefly check whether the issue with printing from SAP has been resolved in the meantime.
+Kind regards
+Employee 18
+
+19.07.24 13:01 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Contact Person 12 | Employee 18
+Hi everyone,
+Unfortunately, it is still not working.
+Kind regards
+Contact Person 12
+Head of Customer Services, Customer Company 13 AG
+Phone: +41 00 000 00 00
+
+19.07.24 13:24 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+Thank you for your feedback. I will inform the responsible department that the issue still persists.
+I will keep you updated on further progress.
+Kind regards
+Employee 18
+
+19.07.24 16:38 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17 | Contact Person 11
+Dear all,
+I would like to inform you that we have identified the root cause and resolved the incident. Printing via both print servers through SAP is now functioning properly again. Mr. Contact Person 12 has confirmed that SAP print jobs are being executed correctly.
+After the Windows update and the restore of the two VMs, all printers had issues with the network share on print server VRINFRGERPRNT03. After disabling and re-enabling the network share for all printer queues, all pending documents on the affected printers were successfully printed.
+No further actions are currently required, and we will now close the ticket.
+Should you require further assistance or have any questions, please do not hesitate to contact us.
+Kind regards and have a nice weekend,
+Employee 17
+Senior System Engineer Core Engineering
+Consulting Sample Company AG
+
+19.07.24 16:44 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17
+FYI
+
+19.07.24 16:55 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello everyone,
+THANK YOU VERY MUCH!!! TOP SERVICE!!!
+We are very satisfied 😊
+Wishing you both a very nice weekend as well!
+Best regards
+Tom
+Head of IT Switzerland Informatics, Customer Company 13
+
+19.07.24 17:16 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello Giusi,
+You were not included in the distribution list, I only just noticed that.
+Best regards
+Tom
+
+22.07.24 07:56 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 19
+Hello @Employee 17 and @Employee 20,
+Thank you very much for your great support last Friday on this ticket. This was highly appreciated by KF13, including Contact Person 11, and they were truly grateful for your efforts.
+Especially for Giusi and Employee 20, here again Tom’s praise.
+Kind regards
+Employee 19
+Service Manager
+
+22.07.24 09:19 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 26
+Nice one 😊 That’s a great way to start the week.
+Employee 26
+Head of Core Engineering
+
+Notes:
+18.07.24 17:17 | Admin, CRM | WEB
+Ticket opened on 18.07.24 17:16 by Employee 23.
+18.07.24 17:22 | ApplicationUser, CRM Development | WEB
+Classified as PRIO HIGH because no orders could be printed from SAP, preventing deliveries.
+18.07.24 17:24 | Employee 23 | WEB
+Printing from SAP via VRINFRGERPRNT03 and VRINFRGERPRNT04 not possible. Normal printing works via other print servers with follow-me solution. Contact Person 11 requests rollback of the Windows version on the print servers.
+18."

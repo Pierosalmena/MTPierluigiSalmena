@@ -1,0 +1,55 @@
+- Likely root cause: a set of recent security/network policy changes (tightened firewall/NAT/VLAN segmentation plus relay/auth policy changes) are causing multiple, related failures: desktop SMTP submission/auth failures, chat/federation + media breakage, SMTP relay size/allow list rejections for MFPs, and print server reachability/ACL problems for Basel. This pattern and these specific failure strings were observed in the incident records [Data: Sources (36); Sources (6); Sources (23); Sources (32)].  
+- Classification: 2nd level / cross team incident. It spans Mail, Network/Security, Identity and Print teams and requires coordinated fixes (not just a single user level action) [Data: Sources (36); Sources (23); Sources (22)].
+
+What the records actually show (evidence)
+- Desktop mail apps: users saw a client connection/send failure while webmail worked; on prem Exchange logged SMTP AUTH rejections “535 5.7.3 Authentication unsuccessful” that correlated to desktop send attempts [Data: Sources (32); Reports (49, 52)].  
+- Scan to Mail MFPs: large (20–30 page) PDFs were rejected at the SMTP relay with the relay log text “Message size exceeds fixed limit”; smaller scans succeeded. Separately, some devices were denied relaying because their new PRINTER VLAN wasn’t allow listed and produced “Relay denied” in the relay logs [Data: Sources (36); Sources (6)].  
+- Chat/presence & calls: firewall/NAT and perimeter inspection changes in the same change windows caused Teams/real time media failures (blocked RTP/dynamic ports and short NAT timeouts produced audio/connection problems); tenant federation/presence settings can also make external partners appear Offline [Data: Sources (23); Sources (16); Sources (26); Sources (21)].  
+- Basel printing: jobs disappearing from the server queue matched classic queue ACL/print server reachability problems (explicit Deny ACEs or inter VLAN firewall/routing issues were recorded in the Basel print incidents) [Data: Sources (3); Sources (22)].
+
+Immediate triage (what to run/collect right now)
+1. Collect mail evidence:
+   - Exchange / on prem Event Log entries with “535 5.7.3 Authentication unsuccessful” (match times of user send attempts). Also collect any Message Trace for the affected users/accounts [Data: Sources (32)].  
+   - SMTP relay log lines that include the strings: "MESSAGE SIZE EXCEEDS FIXED LIMIT" and "Relay denied" and full raw lines (timestamp, client IP, message ID, reported SIZE) for the time windows when scans were submitted [Data: Sources (36); Sources (6)].
+
+2. Collect client evidence:
+   - Screenshot of Outlook error (0x800CCC0E or similar), Outlook client logs (enable logging briefly) with exact timestamps for failing sends [Data: Sources (32)].  
+
+3. Collect network/security evidence:
+   - Firewall/NGFW rule diffs and audit entries for the recent change window (look for outbound UDP restrictions and NAT/session timeout changes). Note whether outbound UDP was narrowed to only STUN ports (3478–3481) and whether dynamic RTP range (e.g., 49152–53247) was blocked — this was the pattern recorded in prior Teams media outages [Data: Sources (23)].  
+   - NAT/UDP session timeout settings for the Voice VLAN (Basel had a short 30s timeout in one incident) [Data: Sources (16)].  
+
+4. Collect print/MFP evidence:
+   - MFP job logs (job submission timestamp, pages, dpi, compression setting), print server spooler logs and queue ACL listing for the Basel queue (check for explicit Deny ACEs) [Data: Sources (36); Sources (3); Sources (22)].  
+   - DHCP/IPAM or switch MAC tables to map device hostnames to IPs and VLANs.
+
+Exact log search strings to ask Mail/Relay team for
+- grep / filter for (case insensitive): "Relay denied", "MESSAGE SIZE EXCEEDS FIXED LIMIT", and "535 5.7.3 Authentication unsuccessful" — return full raw log lines with timestamps, client IP, message ID/queue id, reported size and authenticated username if present [Data: Sources (36); Sources (6); Sources (32)].
+
+Short list of immediate mitigations you can apply (short term)
+- For Sales: instruct affected users to use OWA/webmail or a mobile client (these paths were shown to work) while you collect evidence and/or temporarily scope a Conditional Access exception to allow SMTP AUTH for the small set of impacted accounts (do not leave exceptions open without a migration plan) [Data: Sources (32)].  
+- For MFPs: temporarily reduce dpi or enable PDF compression and resend the scanned job (a 300 dpi + compression test restored a 25 page scan in the record); consider temporarily increasing relay size or adding the printer VLAN to the relay allow list as warranted and monitored [Data: Sources (36); Sources (6)].  
+- For Basel printing: check the print queue ACLs and remove any unintended Deny ACEs; verify routing/firewall rules let the print server reach the printer VLAN (the Basel fix combined ACL and routing changes in the record) [Data: Sources (3); Sources (22)].
+
+Who must be involved (owners to include)
+- Mail/Messaging team (Exchange / SMTP relay / Message Trace) — to extract relay logs, adjust relay size or allow list [Data: Sources (36); Sources (6)].  
+- Identity / Entra AD / Conditional Access team — to check Security Defaults, CA policies and any selective SMTP AUTH exceptions applied and to provide the exact audit entry/time for the tenant change that disabled legacy auth [Data: Sources (32)].  
+- Network / Firewall / Perimeter Security — to supply firewall rule diffs, NAT timeout values, WAF/TLS inspection changes, and to temporarily open/relax media ports for test windows [Data: Sources (23); Sources (15)].  
+- Print Services / Print Server owners — to inspect spooler queues, ACLs, MFP logs, and to apply printer template changes (dpi/compression) fleet wide per Print & Scanning standard [Data: Sources (41); Sources (36); Sources (22)].
+
+Next level tests / useful commands (general guidance)
+- I can provide precise openssl/telnet and packet capture commands and tcpdump/Wireshark filters to run during a timed test. These are practical network/admin commands (not verbatim evidence from the incident tickets) — see below for examples you or your Network/2nd level team can run.  
+  [Data: General Knowledge: use openssl s_client -starttls smtp, tcpdump filters for SMTP and Teams RTP ranges, etc.]
+
+Immediate recommended next steps (practical sequence)
+1. Open a single cross team incident ticket (classify 2nd level) and attach: a) sample Outlook screenshot(s) and client log time(s); b) the SMTP/relay filtered export for the incident windows; c) firewall change IDs/diffs for the recent change window; d) MFP job timestamps and print server queue snapshots. The incident records show this cross team escalation is required to resolve similar multi symptom outages [Data: Sources (36); Sources (23); Sources (22)].  
+2. Mail team: run the relay searches for the strings above and return the raw lines (include message sizes and client IPs). 3. Network team: temporarily open media/RTP port range for a short test window and check call quality; validate NAT session timeout values for voice VLANs. 4. Identity team: export Azure AD audit logs / Conditional Access change events for the date/time the problem started to confirm if Security Defaults or a CA edit disabled SMTP AUTH — remediation in the record involved a scoped CA exception to restore sending [Data: Sources (32)].  
+5. Print team: run a 1 page and a 25 page test with 600→300 dpi + compression changes while capturing relay logs for correlation; fix allow list for the printer VLAN if “Relay denied” appears [Data: Sources (36); Sources (6)].
+
+Why this is 2nd level, not 1st level
+- Multiple independent services are impacted (Mail, UC/Teams, Print) and the probable causes are perimeter/network and tenant policy changes rather than single workstation faults; the incident records that match this pattern were escalated to 2nd level teams for coordinated fixes and ACL/relay/CA changes [Data: Sources (36); Sources (23); Sources (22)].
+
+Offer and next steps I can do for you
+- I can draft the exact log request email to send to Mail/Relay (including the grep patterns and time windows) and a one page checklist for the Network/Identity/Print owners to cut paste into the cross team ticket (I prepared that template in the incident set). If you want I’ll also prepare the openssl/tcpdump commands (as operational guidance) for your second line engineers to run during a controlled test.  
+
+If you want me to prepare the log request and the test commands now, tell me: which time windows (local timezone/UTC) and one sample affected Outlook user or one MFP hostname/IP to use as a search key.

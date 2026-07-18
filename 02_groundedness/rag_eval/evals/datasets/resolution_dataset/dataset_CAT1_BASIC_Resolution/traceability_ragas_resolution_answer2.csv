@@ -1,0 +1,3889 @@
+﻿question,answer,context
+Is the statement supported by the evidence?,"Based on the indexed incidents, each of the four symptoms in your report matches prior cases that required escalation to specialist teams (system engineers / infrastructure teams). Therefore this should be treated as at least a 2nd‑level support ticket (multiple backend services and identity/auth components involved) rather than a pure 1st‑level helpdesk task. This is supported by examples where similar problems were escalated and resolved by system engineers / BU teams","=== CITED SOURCES ===
+SOURCE 11:
+Understood. Below is the **plain English translation**, with **only personal and company names replaced by “Employee <number>”**, **employee numbers kept**, and **no formatting, no headings, no extra structure** beyond what is already implicit in the text.
+
+---
+
+Ticket summary:
+Ticket name: KF11: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket number: TI-1385257
+Company: Customer company 11AG
+Contact person: Employee 14
+Owner: Employee 24
+Source: Email
+Type: Support Request
+Created on: 26.11.24 10:07
+
+Closure
+Closure date: 18.12.24 00:33
+Closure text: Parameters adjusted on ADFS as in the TEST environment
+
+Activities
+Emails:
+
+26.11.24 09:58 Customer company 11CE TRAIN: Connection error from DevOps and FO Employee 14 Helpdesk
+Hi,
+we are experiencing connectivity issues with the TRAIN CE server. A restart of the application server has already been performed, but it did not help.
+The user account works in the browser frontend, so the password is correct.
+Thank you very much and kind regards
+Employee 14
+
+26.11.24 10:12 Ticket created: TI-1385257 | Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket confirmation
+Dear Employee 14,
+Your request has been successfully received and recorded in our system under the ticket number TI-1385257.
+Ticket details:
+Ticket number: TI-1385257
+Subject: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Priority: Normal
+Contact person: Employee 16
+We will contact you as soon as possible.
+
+26.11.24 10:18 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 16,
+The ticket TI-1385257 is no longer in your area of responsibility.
+It was transferred from Employee to Employee 14.
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:18 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:21 Re: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Dear Employee 14,
+Thank you for your inquiry.
+The ticket has been forwarded to the responsible system engineer.
+Kind regards
+Employee 16
+
+26.11.24 10:48 Portal note added
+Employee mentioned it could be the user KF11\001-svc-axavaobt-tra as this is the account currently configured.
+Is it possible to get an overview of all interfaces and their corresponding users and passwords?
+
+26.11.24 13:36 Portal note added
+Employee mentioned again KF11\001-svc-axavaobt-tra. Was the password changed?
+
+27.11.24 13:29 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+
+27.11.24 13:29 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 14,
+The ticket TI-1385257 is no longer in your responsibility.
+It was transferred from Admin to Employee 24.
+
+28.11.24 09:01 Ticket status changed to In Progress
+The ticket TI-1385257 was set to status In Progress.
+
+09.12.24 15:58 Re: Ticket created: TI-1385257
+Hi,
+we cannot connect to the CE TRAIN server again. Could you please reopen this ticket?
+Thank you and best regards
+Employee 14
+
+18.12.24 00:33 Ticket closed | TI-1385257
+Dear Employee 14,
+Your ticket from 26.11.24 10:07 has been closed.
+Closure description:
+Parameters adjusted on ADFS as in the TEST environment.
+
+18.12.24 00:34 Re: TRAIN-CE/FO integration / MFA
+Dear Employee 7,
+During the joint analysis of the issue, we identified that two parameters were not correctly set during the ADFS client registration. In the new client application used specifically for the MFA request of the Toolbox on the Train system, the following parameters were set to true:
+EnableJWT
+RequestMFAFromClaimsProviders
+
+EnableJWT activates the issuance of JSON Web Tokens in the authentication process. If enabled, ADFS issues JWTs instead of other token formats such as SAML. These tokens are evaluated by the target application. If the target system does not support JWTs or cannot validate their signature, authentication fails.
+
+RequestMFAFromClaimsProviders forwards MFA requirements to configured claims providers. This delegates MFA execution to external providers and increases complexity in authentication flow, logging, and auditing.
+
+The combination of these parameters can lead to login failures if the target system is not designed to handle JWTs or external MFA claims.
+
+We have documented the configuration to avoid future issues. From our perspective, no further problems are expected after adjusting the parameters. If MFA works stably and the Train environment is reachable again, the login topic can be considered resolved.
+
+Kind regards
+Employee 21
+
+Notes:
+26.11.24 Ticket opened by Employee 16.
+26.11.24 Ticket assigned
+
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+
+
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+"
+Is the statement supported by the evidence?,Symptom documented: client application (DevOps/CE integration) cannot authenticate while the same account works in the browser UI. This was investigated as a TRAIN CE connection issue,"=== CITED SOURCES ===
+SOURCE 11:
+Understood. Below is the **plain English translation**, with **only personal and company names replaced by “Employee <number>”**, **employee numbers kept**, and **no formatting, no headings, no extra structure** beyond what is already implicit in the text.
+
+---
+
+Ticket summary:
+Ticket name: KF11: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket number: TI-1385257
+Company: Customer company 11AG
+Contact person: Employee 14
+Owner: Employee 24
+Source: Email
+Type: Support Request
+Created on: 26.11.24 10:07
+
+Closure
+Closure date: 18.12.24 00:33
+Closure text: Parameters adjusted on ADFS as in the TEST environment
+
+Activities
+Emails:
+
+26.11.24 09:58 Customer company 11CE TRAIN: Connection error from DevOps and FO Employee 14 Helpdesk
+Hi,
+we are experiencing connectivity issues with the TRAIN CE server. A restart of the application server has already been performed, but it did not help.
+The user account works in the browser frontend, so the password is correct.
+Thank you very much and kind regards
+Employee 14
+
+26.11.24 10:12 Ticket created: TI-1385257 | Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket confirmation
+Dear Employee 14,
+Your request has been successfully received and recorded in our system under the ticket number TI-1385257.
+Ticket details:
+Ticket number: TI-1385257
+Subject: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Priority: Normal
+Contact person: Employee 16
+We will contact you as soon as possible.
+
+26.11.24 10:18 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 16,
+The ticket TI-1385257 is no longer in your area of responsibility.
+It was transferred from Employee to Employee 14.
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:18 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:21 Re: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Dear Employee 14,
+Thank you for your inquiry.
+The ticket has been forwarded to the responsible system engineer.
+Kind regards
+Employee 16
+
+26.11.24 10:48 Portal note added
+Employee mentioned it could be the user KF11\001-svc-axavaobt-tra as this is the account currently configured.
+Is it possible to get an overview of all interfaces and their corresponding users and passwords?
+
+26.11.24 13:36 Portal note added
+Employee mentioned again KF11\001-svc-axavaobt-tra. Was the password changed?
+
+27.11.24 13:29 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+
+27.11.24 13:29 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 14,
+The ticket TI-1385257 is no longer in your responsibility.
+It was transferred from Admin to Employee 24.
+
+28.11.24 09:01 Ticket status changed to In Progress
+The ticket TI-1385257 was set to status In Progress.
+
+09.12.24 15:58 Re: Ticket created: TI-1385257
+Hi,
+we cannot connect to the CE TRAIN server again. Could you please reopen this ticket?
+Thank you and best regards
+Employee 14
+
+18.12.24 00:33 Ticket closed | TI-1385257
+Dear Employee 14,
+Your ticket from 26.11.24 10:07 has been closed.
+Closure description:
+Parameters adjusted on ADFS as in the TEST environment.
+
+18.12.24 00:34 Re: TRAIN-CE/FO integration / MFA
+Dear Employee 7,
+During the joint analysis of the issue, we identified that two parameters were not correctly set during the ADFS client registration. In the new client application used specifically for the MFA request of the Toolbox on the Train system, the following parameters were set to true:
+EnableJWT
+RequestMFAFromClaimsProviders
+
+EnableJWT activates the issuance of JSON Web Tokens in the authentication process. If enabled, ADFS issues JWTs instead of other token formats such as SAML. These tokens are evaluated by the target application. If the target system does not support JWTs or cannot validate their signature, authentication fails.
+
+RequestMFAFromClaimsProviders forwards MFA requirements to configured claims providers. This delegates MFA execution to external providers and increases complexity in authentication flow, logging, and auditing.
+
+The combination of these parameters can lead to login failures if the target system is not designed to handle JWTs or external MFA claims.
+
+We have documented the configuration to avoid future issues. From our perspective, no further problems are expected after adjusting the parameters. If MFA works stably and the Train environment is reachable again, the login topic can be considered resolved.
+
+Kind regards
+Employee 21
+
+Notes:
+26.11.24 Ticket opened by Employee 16.
+26.11.24 Ticket assigned"
+Is the statement supported by the evidence?,"Root cause documented: two ADFS client registration parameters for the new client were set in a way that caused authentication failures: EnableJWT and RequestMFAFromClaimsProviders were set to true; the target system could not handle JWTs / external MFA claims, causing background logins to fail","=== CITED SOURCES ===
+SOURCE 11:
+Understood. Below is the **plain English translation**, with **only personal and company names replaced by “Employee <number>”**, **employee numbers kept**, and **no formatting, no headings, no extra structure** beyond what is already implicit in the text.
+
+---
+
+Ticket summary:
+Ticket name: KF11: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket number: TI-1385257
+Company: Customer company 11AG
+Contact person: Employee 14
+Owner: Employee 24
+Source: Email
+Type: Support Request
+Created on: 26.11.24 10:07
+
+Closure
+Closure date: 18.12.24 00:33
+Closure text: Parameters adjusted on ADFS as in the TEST environment
+
+Activities
+Emails:
+
+26.11.24 09:58 Customer company 11CE TRAIN: Connection error from DevOps and FO Employee 14 Helpdesk
+Hi,
+we are experiencing connectivity issues with the TRAIN CE server. A restart of the application server has already been performed, but it did not help.
+The user account works in the browser frontend, so the password is correct.
+Thank you very much and kind regards
+Employee 14
+
+26.11.24 10:12 Ticket created: TI-1385257 | Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket confirmation
+Dear Employee 14,
+Your request has been successfully received and recorded in our system under the ticket number TI-1385257.
+Ticket details:
+Ticket number: TI-1385257
+Subject: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Priority: Normal
+Contact person: Employee 16
+We will contact you as soon as possible.
+
+26.11.24 10:18 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 16,
+The ticket TI-1385257 is no longer in your area of responsibility.
+It was transferred from Employee to Employee 14.
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:18 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:21 Re: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Dear Employee 14,
+Thank you for your inquiry.
+The ticket has been forwarded to the responsible system engineer.
+Kind regards
+Employee 16
+
+26.11.24 10:48 Portal note added
+Employee mentioned it could be the user KF11\001-svc-axavaobt-tra as this is the account currently configured.
+Is it possible to get an overview of all interfaces and their corresponding users and passwords?
+
+26.11.24 13:36 Portal note added
+Employee mentioned again KF11\001-svc-axavaobt-tra. Was the password changed?
+
+27.11.24 13:29 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+
+27.11.24 13:29 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 14,
+The ticket TI-1385257 is no longer in your responsibility.
+It was transferred from Admin to Employee 24.
+
+28.11.24 09:01 Ticket status changed to In Progress
+The ticket TI-1385257 was set to status In Progress.
+
+09.12.24 15:58 Re: Ticket created: TI-1385257
+Hi,
+we cannot connect to the CE TRAIN server again. Could you please reopen this ticket?
+Thank you and best regards
+Employee 14
+
+18.12.24 00:33 Ticket closed | TI-1385257
+Dear Employee 14,
+Your ticket from 26.11.24 10:07 has been closed.
+Closure description:
+Parameters adjusted on ADFS as in the TEST environment.
+
+18.12.24 00:34 Re: TRAIN-CE/FO integration / MFA
+Dear Employee 7,
+During the joint analysis of the issue, we identified that two parameters were not correctly set during the ADFS client registration. In the new client application used specifically for the MFA request of the Toolbox on the Train system, the following parameters were set to true:
+EnableJWT
+RequestMFAFromClaimsProviders
+
+EnableJWT activates the issuance of JSON Web Tokens in the authentication process. If enabled, ADFS issues JWTs instead of other token formats such as SAML. These tokens are evaluated by the target application. If the target system does not support JWTs or cannot validate their signature, authentication fails.
+
+RequestMFAFromClaimsProviders forwards MFA requirements to configured claims providers. This delegates MFA execution to external providers and increases complexity in authentication flow, logging, and auditing.
+
+The combination of these parameters can lead to login failures if the target system is not designed to handle JWTs or external MFA claims.
+
+We have documented the configuration to avoid future issues. From our perspective, no further problems are expected after adjusting the parameters. If MFA works stably and the Train environment is reachable again, the login topic can be considered resolved.
+
+Kind regards
+Employee 21
+
+Notes:
+26.11.24 Ticket opened by Employee 16.
+26.11.24 Ticket assigned"
+Is the statement supported by the evidence?,Remediation documented: parameters were adjusted on ADFS to match the TEST environment and thereafter logins worked and ticket was closed,"=== CITED SOURCES ===
+SOURCE 11:
+Understood. Below is the **plain English translation**, with **only personal and company names replaced by “Employee <number>”**, **employee numbers kept**, and **no formatting, no headings, no extra structure** beyond what is already implicit in the text.
+
+---
+
+Ticket summary:
+Ticket name: KF11: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket number: TI-1385257
+Company: Customer company 11AG
+Contact person: Employee 14
+Owner: Employee 24
+Source: Email
+Type: Support Request
+Created on: 26.11.24 10:07
+
+Closure
+Closure date: 18.12.24 00:33
+Closure text: Parameters adjusted on ADFS as in the TEST environment
+
+Activities
+Emails:
+
+26.11.24 09:58 Customer company 11CE TRAIN: Connection error from DevOps and FO Employee 14 Helpdesk
+Hi,
+we are experiencing connectivity issues with the TRAIN CE server. A restart of the application server has already been performed, but it did not help.
+The user account works in the browser frontend, so the password is correct.
+Thank you very much and kind regards
+Employee 14
+
+26.11.24 10:12 Ticket created: TI-1385257 | Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket confirmation
+Dear Employee 14,
+Your request has been successfully received and recorded in our system under the ticket number TI-1385257.
+Ticket details:
+Ticket number: TI-1385257
+Subject: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Priority: Normal
+Contact person: Employee 16
+We will contact you as soon as possible.
+
+26.11.24 10:18 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 16,
+The ticket TI-1385257 is no longer in your area of responsibility.
+It was transferred from Employee to Employee 14.
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:18 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:21 Re: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Dear Employee 14,
+Thank you for your inquiry.
+The ticket has been forwarded to the responsible system engineer.
+Kind regards
+Employee 16
+
+26.11.24 10:48 Portal note added
+Employee mentioned it could be the user KF11\001-svc-axavaobt-tra as this is the account currently configured.
+Is it possible to get an overview of all interfaces and their corresponding users and passwords?
+
+26.11.24 13:36 Portal note added
+Employee mentioned again KF11\001-svc-axavaobt-tra. Was the password changed?
+
+27.11.24 13:29 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+
+27.11.24 13:29 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 14,
+The ticket TI-1385257 is no longer in your responsibility.
+It was transferred from Admin to Employee 24.
+
+28.11.24 09:01 Ticket status changed to In Progress
+The ticket TI-1385257 was set to status In Progress.
+
+09.12.24 15:58 Re: Ticket created: TI-1385257
+Hi,
+we cannot connect to the CE TRAIN server again. Could you please reopen this ticket?
+Thank you and best regards
+Employee 14
+
+18.12.24 00:33 Ticket closed | TI-1385257
+Dear Employee 14,
+Your ticket from 26.11.24 10:07 has been closed.
+Closure description:
+Parameters adjusted on ADFS as in the TEST environment.
+
+18.12.24 00:34 Re: TRAIN-CE/FO integration / MFA
+Dear Employee 7,
+During the joint analysis of the issue, we identified that two parameters were not correctly set during the ADFS client registration. In the new client application used specifically for the MFA request of the Toolbox on the Train system, the following parameters were set to true:
+EnableJWT
+RequestMFAFromClaimsProviders
+
+EnableJWT activates the issuance of JSON Web Tokens in the authentication process. If enabled, ADFS issues JWTs instead of other token formats such as SAML. These tokens are evaluated by the target application. If the target system does not support JWTs or cannot validate their signature, authentication fails.
+
+RequestMFAFromClaimsProviders forwards MFA requirements to configured claims providers. This delegates MFA execution to external providers and increases complexity in authentication flow, logging, and auditing.
+
+The combination of these parameters can lead to login failures if the target system is not designed to handle JWTs or external MFA claims.
+
+We have documented the configuration to avoid future issues. From our perspective, no further problems are expected after adjusting the parameters. If MFA works stably and the Train environment is reachable again, the login topic can be considered resolved.
+
+Kind regards
+Employee 21
+
+Notes:
+26.11.24 Ticket opened by Employee 16.
+26.11.24 Ticket assigned"
+Is the statement supported by the evidence?,"Symptoms and investigation steps documented: intermittent ""Item not found / Access denied"" for specific users; folder recently renamed; a Sensitivity Label (“Confidential – Internal”) requiring encryption and granting access to Azure AD group Compliance_Core was applied AFTER the rename; folder currently uses unique permissions mapped to SP_Compliance_Main. Tests showed adding a user directly to Compliance_Core made access immediately possible, but other users without Compliance_Core still had access → inconsistent behavior noted","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+"
+Is the statement supported by the evidence?,"Action documented: due to inconsistent behavior, the case was escalated to BU Infrastructure – M365 / Identity for deeper analysis (ticket remained in progress)","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+"
+Is the statement supported by the evidence?,"No final, definitive resolution is present in the indexed record excerpt — the ticket was escalated and further in‑depth analysis (Purview / Information Protection review) was started, but a definitive remediation action is not recorded in the excerpt we have","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+"
+Is the statement supported by the evidence?,"Symptoms documented: only desktop Outlook (older MSI build) affected; OWA and mobile devices work; receive OK; send fails with connection/auth error; client‑side troubleshooting (profile recreation, account re‑add, port check, AV/Firewall checks) did not help","=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+"
+Is the statement supported by the evidence?,Root cause documented: tenant security policy change (Security Default enabled) had disabled SMTP AUTH for legacy clients; affected users were on older Outlook (Build 2019 MSI),"=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+"
+Is the statement supported by the evidence?,Remediation documented: SMTP AUTH was selectively re‑enabled for the affected users and Conditional Access policy adjusted; tests succeeded and mail flow returned to normal; monitoring confirmed no further errors and ticket closed,"=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+"
+Is the statement supported by the evidence?,- Related example (similar “unhealthy sensor” case): a different incident describing MS Defender Identity sensors on Azure Domain Controllers showing “unhealthy” was resolved by removing and reinstalling the agent on the affected servers; after reinstall the sensors turned green and monitoring was performed,"=== CITED SOURCES ===
+SOURCE 14:
+﻿
+Ticket summary:
+Ticket name: KF10: Domain Controller with MS Defender Identity issues
+Ticket number: TI-1179834
+Company: Customer Company 10
+Contact person: Contact Person 6
+Owner: Employee 11
+Origin: Email
+Type: Support Request
+Created on: 24.09.24 11:09
+
+Closure
+Closure date: 03.10.24 11:39
+Closure text: Issue resolved.
+Coordinated with Contact Person 6.
+
+Activities
+Emails:
+Created on | Subject | From | To | Description
+24.09.24 10:58
+Domain Controller with MS Defender Identity issues
+Contact Person 6
+HELPDESK, Consulting Sample Company, Helpdesk
+Hello Network Team,
+I am receiving Defender warnings for both new Azure Domain Controllers.
+Please review the firewall settings according to the recommendations listed below.
+Thank you and kind regards,
+Contact Person 6
+System + Security Engineer
+ContactPerson6@KF10.com
+Customer Company 10
+www.KF10.com
+
+24.09.24 11:17
+TI-1179834 | KF10: Domain Controller with MS Defender Identity issues #040401646
+Employee 12 → Contact Person 6
+Hello Contact Person 6,
+I am forwarding your request to the responsible Systems Engineer.
+Regards,
+Employee 12
+
+24.09.24 13:08
+New portal note for ticket: KF10: Domain Controller with MS Defender Identity issues #027076043
+NO-REPLY → Mitarbeiter11@ConsultingSampleCompany.example
+Note: WEB
+The issue appears to be resolved.
+The ticket can be closed.
+Link: KF10: Domain Controller with MS Defender Identity issues
+
+26.09.24 09:45
+New portal note for ticket: KF10: Domain Controller with MS Defender Identity issues #027076325
+NO-REPLY → Mitarbeiter11@ConsultingSampleCompany.example
+Note: WEB
+Unfortunately, the sensors are showing as “unhealthy” again.
+Link: KF10: Domain Controller with MS Defender Identity issues
+
+Notes:
+Created on | Author | Title | Text
+24.09.24 11:10
+Admin, CRM
+WEB
+Ticket opened at 11:09 by Employee 12.
+24.09.24 11:18
+Employee 12
+WEB
+Please review Defender configuration for the servers – thanks.
+24.09.24 11:18
+Admin, CRM
+WEB
+Ticket assigned to BU Customer Services Run.
+24.09.24 11:25
+Arzbacher, Reto
+WEB
+Work completed so far:
+Review of Windows Firewall and open ports on both Domain Controllers by a Core Senior.
+Status:
+Review in progress by Core Senior.
+Next steps:
+Forward ticket to RMA.
+Contact:
+Contact Person 6, Customer Company 10.
+RAR & RMA, CDOM.
+
+24.09.24 11:26
+Admin, CRM
+WEB
+Ticket assigned to Employee 11.
+24.09.24 13:08
+Microsoft CRM Portals
+WEB
+Issue appears resolved, ticket can be closed.
+26.09.24 09:45
+Microsoft CRM Portals
+WEB
+Sensors “unhealthy” again.
+
+01.10.24 16:41
+Employee 11
+WEB
+Analysis:
+Agent removed and reinstalled on KF10azads02.
+Alerts have disappeared there – we will monitor whether they reoccur.
+If so, repeat installation (same procedure as azads02).
+
+01.10.24 21:06
+Employee 11
+WEB
+Hello Contact Person 6,
+On KF10azads01 the sensor was red.
+I completely removed and reinstalled the agent there as well.
+Since then, all sensors are green again.
+We will monitor the situation until Thursday.
+If no further issues occur, the sensor on KF10ads03 can be removed starting next week.
+Ticket has been temporarily set to “on-hold”.
+
+"
+Is the statement supported by the evidence?,"Check the ADFS client registration for the Train CE client application and verify the parameters EnableJWT and RequestMFAFromClaimsProviders. If they are set to true and the Train target does not support JWT or external MFA claims, change them to the settings that match the TEST environment. After adjusting, retest the background connectivity from the DevOps tool. This sequence of actions and the successful result are documented in ticket TI-1385257","=== CITED SOURCES ===
+SOURCE 11:
+Understood. Below is the **plain English translation**, with **only personal and company names replaced by “Employee <number>”**, **employee numbers kept**, and **no formatting, no headings, no extra structure** beyond what is already implicit in the text.
+
+---
+
+Ticket summary:
+Ticket name: KF11: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket number: TI-1385257
+Company: Customer company 11AG
+Contact person: Employee 14
+Owner: Employee 24
+Source: Email
+Type: Support Request
+Created on: 26.11.24 10:07
+
+Closure
+Closure date: 18.12.24 00:33
+Closure text: Parameters adjusted on ADFS as in the TEST environment
+
+Activities
+Emails:
+
+26.11.24 09:58 Customer company 11CE TRAIN: Connection error from DevOps and FO Employee 14 Helpdesk
+Hi,
+we are experiencing connectivity issues with the TRAIN CE server. A restart of the application server has already been performed, but it did not help.
+The user account works in the browser frontend, so the password is correct.
+Thank you very much and kind regards
+Employee 14
+
+26.11.24 10:12 Ticket created: TI-1385257 | Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket confirmation
+Dear Employee 14,
+Your request has been successfully received and recorded in our system under the ticket number TI-1385257.
+Ticket details:
+Ticket number: TI-1385257
+Subject: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Priority: Normal
+Contact person: Employee 16
+We will contact you as soon as possible.
+
+26.11.24 10:18 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 16,
+The ticket TI-1385257 is no longer in your area of responsibility.
+It was transferred from Employee to Employee 14.
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:18 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:21 Re: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Dear Employee 14,
+Thank you for your inquiry.
+The ticket has been forwarded to the responsible system engineer.
+Kind regards
+Employee 16
+
+26.11.24 10:48 Portal note added
+Employee mentioned it could be the user KF11\001-svc-axavaobt-tra as this is the account currently configured.
+Is it possible to get an overview of all interfaces and their corresponding users and passwords?
+
+26.11.24 13:36 Portal note added
+Employee mentioned again KF11\001-svc-axavaobt-tra. Was the password changed?
+
+27.11.24 13:29 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+
+27.11.24 13:29 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 14,
+The ticket TI-1385257 is no longer in your responsibility.
+It was transferred from Admin to Employee 24.
+
+28.11.24 09:01 Ticket status changed to In Progress
+The ticket TI-1385257 was set to status In Progress.
+
+09.12.24 15:58 Re: Ticket created: TI-1385257
+Hi,
+we cannot connect to the CE TRAIN server again. Could you please reopen this ticket?
+Thank you and best regards
+Employee 14
+
+18.12.24 00:33 Ticket closed | TI-1385257
+Dear Employee 14,
+Your ticket from 26.11.24 10:07 has been closed.
+Closure description:
+Parameters adjusted on ADFS as in the TEST environment.
+
+18.12.24 00:34 Re: TRAIN-CE/FO integration / MFA
+Dear Employee 7,
+During the joint analysis of the issue, we identified that two parameters were not correctly set during the ADFS client registration. In the new client application used specifically for the MFA request of the Toolbox on the Train system, the following parameters were set to true:
+EnableJWT
+RequestMFAFromClaimsProviders
+
+EnableJWT activates the issuance of JSON Web Tokens in the authentication process. If enabled, ADFS issues JWTs instead of other token formats such as SAML. These tokens are evaluated by the target application. If the target system does not support JWTs or cannot validate their signature, authentication fails.
+
+RequestMFAFromClaimsProviders forwards MFA requirements to configured claims providers. This delegates MFA execution to external providers and increases complexity in authentication flow, logging, and auditing.
+
+The combination of these parameters can lead to login failures if the target system is not designed to handle JWTs or external MFA claims.
+
+We have documented the configuration to avoid future issues. From our perspective, no further problems are expected after adjusting the parameters. If MFA works stably and the Train environment is reachable again, the login topic can be considered resolved.
+
+Kind regards
+Employee 21
+
+Notes:
+26.11.24 Ticket opened by Employee 16.
+26.11.24 Ticket assigned"
+Is the statement supported by the evidence?,"Verify whether SMTP AUTH is disabled at tenant level (Security Defaults or Conditional Access policy). If SMTP AUTH has been disabled and legacy desktop clients are impacted, selectively enable SMTP AUTH for the affected users and/or adjust Conditional Access to allow those legacy clients to authenticate. After the change, retest sending from the affected desktop clients and monitor mailflow. This is the remediation recorded in ticket TI-1548823","=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+"
+Is the statement supported by the evidence?,"Verify the Sensitivity Label applied to the folder and the label’s protection/encryption scope (which Azure AD group(s) it authorizes — e.g., Compliance_Core). Confirm whether the label was applied after folder rename and whether it enforces encryption and access via a different group than the folder’s SharePoint permissions","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+"
+Is the statement supported by the evidence?,"Test by adding an affected user directly to the label’s allowed group (Compliance_Core) — in the documented test that allowed immediate access for that user, though the behavior remained inconsistent","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+"
+Is the statement supported by the evidence?,"Because the ticket was escalated to BU Infrastructure – M365 / Identity for an in‑depth Purview/Information Protection review, follow that escalation path next","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+"
+Is the statement supported by the evidence?,Indexed records do not contain a documented resolution for a certificate‑bridge failure in the device management portal. The closest similar documented action is reinstalling the Defender/agent on domain controllers to recover “unhealthy” sensors,"=== CITED SOURCES ===
+SOURCE 14:
+﻿
+Ticket summary:
+Ticket name: KF10: Domain Controller with MS Defender Identity issues
+Ticket number: TI-1179834
+Company: Customer Company 10
+Contact person: Contact Person 6
+Owner: Employee 11
+Origin: Email
+Type: Support Request
+Created on: 24.09.24 11:09
+
+Closure
+Closure date: 03.10.24 11:39
+Closure text: Issue resolved.
+Coordinated with Contact Person 6.
+
+Activities
+Emails:
+Created on | Subject | From | To | Description
+24.09.24 10:58
+Domain Controller with MS Defender Identity issues
+Contact Person 6
+HELPDESK, Consulting Sample Company, Helpdesk
+Hello Network Team,
+I am receiving Defender warnings for both new Azure Domain Controllers.
+Please review the firewall settings according to the recommendations listed below.
+Thank you and kind regards,
+Contact Person 6
+System + Security Engineer
+ContactPerson6@KF10.com
+Customer Company 10
+www.KF10.com
+
+24.09.24 11:17
+TI-1179834 | KF10: Domain Controller with MS Defender Identity issues #040401646
+Employee 12 → Contact Person 6
+Hello Contact Person 6,
+I am forwarding your request to the responsible Systems Engineer.
+Regards,
+Employee 12
+
+24.09.24 13:08
+New portal note for ticket: KF10: Domain Controller with MS Defender Identity issues #027076043
+NO-REPLY → Mitarbeiter11@ConsultingSampleCompany.example
+Note: WEB
+The issue appears to be resolved.
+The ticket can be closed.
+Link: KF10: Domain Controller with MS Defender Identity issues
+
+26.09.24 09:45
+New portal note for ticket: KF10: Domain Controller with MS Defender Identity issues #027076325
+NO-REPLY → Mitarbeiter11@ConsultingSampleCompany.example
+Note: WEB
+Unfortunately, the sensors are showing as “unhealthy” again.
+Link: KF10: Domain Controller with MS Defender Identity issues
+
+Notes:
+Created on | Author | Title | Text
+24.09.24 11:10
+Admin, CRM
+WEB
+Ticket opened at 11:09 by Employee 12.
+24.09.24 11:18
+Employee 12
+WEB
+Please review Defender configuration for the servers – thanks.
+24.09.24 11:18
+Admin, CRM
+WEB
+Ticket assigned to BU Customer Services Run.
+24.09.24 11:25
+Arzbacher, Reto
+WEB
+Work completed so far:
+Review of Windows Firewall and open ports on both Domain Controllers by a Core Senior.
+Status:
+Review in progress by Core Senior.
+Next steps:
+Forward ticket to RMA.
+Contact:
+Contact Person 6, Customer Company 10.
+RAR & RMA, CDOM.
+
+24.09.24 11:26
+Admin, CRM
+WEB
+Ticket assigned to Employee 11.
+24.09.24 13:08
+Microsoft CRM Portals
+WEB
+Issue appears resolved, ticket can be closed.
+26.09.24 09:45
+Microsoft CRM Portals
+WEB
+Sensors “unhealthy” again.
+
+01.10.24 16:41
+Employee 11
+WEB
+Analysis:
+Agent removed and reinstalled on KF10azads02.
+Alerts have disappeared there – we will monitor whether they reoccur.
+If so, repeat installation (same procedure as azads02).
+
+01.10.24 21:06
+Employee 11
+WEB
+Hello Contact Person 6,
+On KF10azads01 the sensor was red.
+I completely removed and reinstalled the agent there as well.
+Since then, all sensors are green again.
+We will monitor the situation until Thursday.
+If no further issues occur, the sensor on KF10ads03 can be removed starting next week.
+Ticket has been temporarily set to “on-hold”.
+
+"
+Is the statement supported by the evidence?,ADFS/Identity team for the DevOps/Train issue (apply the documented parameter changes) — documented fix,"=== CITED SOURCES ===
+SOURCE 11:
+Understood. Below is the **plain English translation**, with **only personal and company names replaced by “Employee <number>”**, **employee numbers kept**, and **no formatting, no headings, no extra structure** beyond what is already implicit in the text.
+
+---
+
+Ticket summary:
+Ticket name: KF11: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket number: TI-1385257
+Company: Customer company 11AG
+Contact person: Employee 14
+Owner: Employee 24
+Source: Email
+Type: Support Request
+Created on: 26.11.24 10:07
+
+Closure
+Closure date: 18.12.24 00:33
+Closure text: Parameters adjusted on ADFS as in the TEST environment
+
+Activities
+Emails:
+
+26.11.24 09:58 Customer company 11CE TRAIN: Connection error from DevOps and FO Employee 14 Helpdesk
+Hi,
+we are experiencing connectivity issues with the TRAIN CE server. A restart of the application server has already been performed, but it did not help.
+The user account works in the browser frontend, so the password is correct.
+Thank you very much and kind regards
+Employee 14
+
+26.11.24 10:12 Ticket created: TI-1385257 | Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket confirmation
+Dear Employee 14,
+Your request has been successfully received and recorded in our system under the ticket number TI-1385257.
+Ticket details:
+Ticket number: TI-1385257
+Subject: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Priority: Normal
+Contact person: Employee 16
+We will contact you as soon as possible.
+
+26.11.24 10:18 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 16,
+The ticket TI-1385257 is no longer in your area of responsibility.
+It was transferred from Employee to Employee 14.
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:18 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:21 Re: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Dear Employee 14,
+Thank you for your inquiry.
+The ticket has been forwarded to the responsible system engineer.
+Kind regards
+Employee 16
+
+26.11.24 10:48 Portal note added
+Employee mentioned it could be the user KF11\001-svc-axavaobt-tra as this is the account currently configured.
+Is it possible to get an overview of all interfaces and their corresponding users and passwords?
+
+26.11.24 13:36 Portal note added
+Employee mentioned again KF11\001-svc-axavaobt-tra. Was the password changed?
+
+27.11.24 13:29 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+
+27.11.24 13:29 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 14,
+The ticket TI-1385257 is no longer in your responsibility.
+It was transferred from Admin to Employee 24.
+
+28.11.24 09:01 Ticket status changed to In Progress
+The ticket TI-1385257 was set to status In Progress.
+
+09.12.24 15:58 Re: Ticket created: TI-1385257
+Hi,
+we cannot connect to the CE TRAIN server again. Could you please reopen this ticket?
+Thank you and best regards
+Employee 14
+
+18.12.24 00:33 Ticket closed | TI-1385257
+Dear Employee 14,
+Your ticket from 26.11.24 10:07 has been closed.
+Closure description:
+Parameters adjusted on ADFS as in the TEST environment.
+
+18.12.24 00:34 Re: TRAIN-CE/FO integration / MFA
+Dear Employee 7,
+During the joint analysis of the issue, we identified that two parameters were not correctly set during the ADFS client registration. In the new client application used specifically for the MFA request of the Toolbox on the Train system, the following parameters were set to true:
+EnableJWT
+RequestMFAFromClaimsProviders
+
+EnableJWT activates the issuance of JSON Web Tokens in the authentication process. If enabled, ADFS issues JWTs instead of other token formats such as SAML. These tokens are evaluated by the target application. If the target system does not support JWTs or cannot validate their signature, authentication fails.
+
+RequestMFAFromClaimsProviders forwards MFA requirements to configured claims providers. This delegates MFA execution to external providers and increases complexity in authentication flow, logging, and auditing.
+
+The combination of these parameters can lead to login failures if the target system is not designed to handle JWTs or external MFA claims.
+
+We have documented the configuration to avoid future issues. From our perspective, no further problems are expected after adjusting the parameters. If MFA works stably and the Train environment is reachable again, the login topic can be considered resolved.
+
+Kind regards
+Employee 21
+
+Notes:
+26.11.24 Ticket opened by Employee 16.
+26.11.24 Ticket assigned"
+Is the statement supported by the evidence?,Exchange/Hybrid Mail team for the SMTP/Outbox issue (verify SMTP AUTH/Security Default and apply selective enablement) — documented fix,"=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+"
+Is the statement supported by the evidence?,M365 / Identity / Purview team for the SharePoint access inconsistency (reconcile AIP label encryption group vs SharePoint permission groups) — escalation already documented; final remediation not present in records,"=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+"
+Is the statement supported by the evidence?,Device Management/Core engineering for the certificate‑bridge health issue — no exact prior resolution in the indexed records; consider the “reinstall agent” precedent as one possible diagnostic step and escalate if uncertain,"=== CITED SOURCES ===
+SOURCE 14:
+﻿
+Ticket summary:
+Ticket name: KF10: Domain Controller with MS Defender Identity issues
+Ticket number: TI-1179834
+Company: Customer Company 10
+Contact person: Contact Person 6
+Owner: Employee 11
+Origin: Email
+Type: Support Request
+Created on: 24.09.24 11:09
+
+Closure
+Closure date: 03.10.24 11:39
+Closure text: Issue resolved.
+Coordinated with Contact Person 6.
+
+Activities
+Emails:
+Created on | Subject | From | To | Description
+24.09.24 10:58
+Domain Controller with MS Defender Identity issues
+Contact Person 6
+HELPDESK, Consulting Sample Company, Helpdesk
+Hello Network Team,
+I am receiving Defender warnings for both new Azure Domain Controllers.
+Please review the firewall settings according to the recommendations listed below.
+Thank you and kind regards,
+Contact Person 6
+System + Security Engineer
+ContactPerson6@KF10.com
+Customer Company 10
+www.KF10.com
+
+24.09.24 11:17
+TI-1179834 | KF10: Domain Controller with MS Defender Identity issues #040401646
+Employee 12 → Contact Person 6
+Hello Contact Person 6,
+I am forwarding your request to the responsible Systems Engineer.
+Regards,
+Employee 12
+
+24.09.24 13:08
+New portal note for ticket: KF10: Domain Controller with MS Defender Identity issues #027076043
+NO-REPLY → Mitarbeiter11@ConsultingSampleCompany.example
+Note: WEB
+The issue appears to be resolved.
+The ticket can be closed.
+Link: KF10: Domain Controller with MS Defender Identity issues
+
+26.09.24 09:45
+New portal note for ticket: KF10: Domain Controller with MS Defender Identity issues #027076325
+NO-REPLY → Mitarbeiter11@ConsultingSampleCompany.example
+Note: WEB
+Unfortunately, the sensors are showing as “unhealthy” again.
+Link: KF10: Domain Controller with MS Defender Identity issues
+
+Notes:
+Created on | Author | Title | Text
+24.09.24 11:10
+Admin, CRM
+WEB
+Ticket opened at 11:09 by Employee 12.
+24.09.24 11:18
+Employee 12
+WEB
+Please review Defender configuration for the servers – thanks.
+24.09.24 11:18
+Admin, CRM
+WEB
+Ticket assigned to BU Customer Services Run.
+24.09.24 11:25
+Arzbacher, Reto
+WEB
+Work completed so far:
+Review of Windows Firewall and open ports on both Domain Controllers by a Core Senior.
+Status:
+Review in progress by Core Senior.
+Next steps:
+Forward ticket to RMA.
+Contact:
+Contact Person 6, Customer Company 10.
+RAR & RMA, CDOM.
+
+24.09.24 11:26
+Admin, CRM
+WEB
+Ticket assigned to Employee 11.
+24.09.24 13:08
+Microsoft CRM Portals
+WEB
+Issue appears resolved, ticket can be closed.
+26.09.24 09:45
+Microsoft CRM Portals
+WEB
+Sensors “unhealthy” again.
+
+01.10.24 16:41
+Employee 11
+WEB
+Analysis:
+Agent removed and reinstalled on KF10azads02.
+Alerts have disappeared there – we will monitor whether they reoccur.
+If so, repeat installation (same procedure as azads02).
+
+01.10.24 21:06
+Employee 11
+WEB
+Hello Contact Person 6,
+On KF10azads01 the sensor was red.
+I completely removed and reinstalled the agent there as well.
+Since then, all sensors are green again.
+We will monitor the situation until Thursday.
+If no further issues occur, the sensor on KF10ads03 can be removed starting next week.
+Ticket has been temporarily set to “on-hold”.
+
+"
+Is the statement supported by the evidence?,"Record and preserve logs / timestamps for each symptom occurrence (sign‑in logs for DevOps, Azure AD sign‑in and token claims for affected SharePoint users, Exchange server auth logs showing 535 5.7.3 for SMTP failures, device management health logs for certificate bridge). The records show these kinds of logs were used to identify causes in prior tickets","=== CITED SOURCES ===
+SOURCE 11:
+Understood. Below is the **plain English translation**, with **only personal and company names replaced by “Employee <number>”**, **employee numbers kept**, and **no formatting, no headings, no extra structure** beyond what is already implicit in the text.
+
+---
+
+Ticket summary:
+Ticket name: KF11: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket number: TI-1385257
+Company: Customer company 11AG
+Contact person: Employee 14
+Owner: Employee 24
+Source: Email
+Type: Support Request
+Created on: 26.11.24 10:07
+
+Closure
+Closure date: 18.12.24 00:33
+Closure text: Parameters adjusted on ADFS as in the TEST environment
+
+Activities
+Emails:
+
+26.11.24 09:58 Customer company 11CE TRAIN: Connection error from DevOps and FO Employee 14 Helpdesk
+Hi,
+we are experiencing connectivity issues with the TRAIN CE server. A restart of the application server has already been performed, but it did not help.
+The user account works in the browser frontend, so the password is correct.
+Thank you very much and kind regards
+Employee 14
+
+26.11.24 10:12 Ticket created: TI-1385257 | Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket confirmation
+Dear Employee 14,
+Your request has been successfully received and recorded in our system under the ticket number TI-1385257.
+Ticket details:
+Ticket number: TI-1385257
+Subject: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Priority: Normal
+Contact person: Employee 16
+We will contact you as soon as possible.
+
+26.11.24 10:18 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 16,
+The ticket TI-1385257 is no longer in your area of responsibility.
+It was transferred from Employee to Employee 14.
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:18 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:21 Re: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Dear Employee 14,
+Thank you for your inquiry.
+The ticket has been forwarded to the responsible system engineer.
+Kind regards
+Employee 16
+
+26.11.24 10:48 Portal note added
+Employee mentioned it could be the user KF11\001-svc-axavaobt-tra as this is the account currently configured.
+Is it possible to get an overview of all interfaces and their corresponding users and passwords?
+
+26.11.24 13:36 Portal note added
+Employee mentioned again KF11\001-svc-axavaobt-tra. Was the password changed?
+
+27.11.24 13:29 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+
+27.11.24 13:29 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 14,
+The ticket TI-1385257 is no longer in your responsibility.
+It was transferred from Admin to Employee 24.
+
+28.11.24 09:01 Ticket status changed to In Progress
+The ticket TI-1385257 was set to status In Progress.
+
+09.12.24 15:58 Re: Ticket created: TI-1385257
+Hi,
+we cannot connect to the CE TRAIN server again. Could you please reopen this ticket?
+Thank you and best regards
+Employee 14
+
+18.12.24 00:33 Ticket closed | TI-1385257
+Dear Employee 14,
+Your ticket from 26.11.24 10:07 has been closed.
+Closure description:
+Parameters adjusted on ADFS as in the TEST environment.
+
+18.12.24 00:34 Re: TRAIN-CE/FO integration / MFA
+Dear Employee 7,
+During the joint analysis of the issue, we identified that two parameters were not correctly set during the ADFS client registration. In the new client application used specifically for the MFA request of the Toolbox on the Train system, the following parameters were set to true:
+EnableJWT
+RequestMFAFromClaimsProviders
+
+EnableJWT activates the issuance of JSON Web Tokens in the authentication process. If enabled, ADFS issues JWTs instead of other token formats such as SAML. These tokens are evaluated by the target application. If the target system does not support JWTs or cannot validate their signature, authentication fails.
+
+RequestMFAFromClaimsProviders forwards MFA requirements to configured claims providers. This delegates MFA execution to external providers and increases complexity in authentication flow, logging, and auditing.
+
+The combination of these parameters can lead to login failures if the target system is not designed to handle JWTs or external MFA claims.
+
+We have documented the configuration to avoid future issues. From our perspective, no further problems are expected after adjusting the parameters. If MFA works stably and the Train environment is reachable again, the login topic can be considered resolved.
+
+Kind regards
+Employee 21
+
+Notes:
+26.11.24 Ticket opened by Employee 16.
+26.11.24 Ticket assigned
+
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+
+
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+
+
+SOURCE 14:
+﻿
+Ticket summary:
+Ticket name: KF10: Domain Controller with MS Defender Identity issues
+Ticket number: TI-1179834
+Company: Customer Company 10
+Contact person: Contact Person 6
+Owner: Employee 11
+Origin: Email
+Type: Support Request
+Created on: 24.09.24 11:09
+
+Closure
+Closure date: 03.10.24 11:39
+Closure text: Issue resolved.
+Coordinated with Contact Person 6.
+
+Activities
+Emails:
+Created on | Subject | From | To | Description
+24.09.24 10:58
+Domain Controller with MS Defender Identity issues
+Contact Person 6
+HELPDESK, Consulting Sample Company, Helpdesk
+Hello Network Team,
+I am receiving Defender warnings for both new Azure Domain Controllers.
+Please review the firewall settings according to the recommendations listed below.
+Thank you and kind regards,
+Contact Person 6
+System + Security Engineer
+ContactPerson6@KF10.com
+Customer Company 10
+www.KF10.com
+
+24.09.24 11:17
+TI-1179834 | KF10: Domain Controller with MS Defender Identity issues #040401646
+Employee 12 → Contact Person 6
+Hello Contact Person 6,
+I am forwarding your request to the responsible Systems Engineer.
+Regards,
+Employee 12
+
+24.09.24 13:08
+New portal note for ticket: KF10: Domain Controller with MS Defender Identity issues #027076043
+NO-REPLY → Mitarbeiter11@ConsultingSampleCompany.example
+Note: WEB
+The issue appears to be resolved.
+The ticket can be closed.
+Link: KF10: Domain Controller with MS Defender Identity issues
+
+26.09.24 09:45
+New portal note for ticket: KF10: Domain Controller with MS Defender Identity issues #027076325
+NO-REPLY → Mitarbeiter11@ConsultingSampleCompany.example
+Note: WEB
+Unfortunately, the sensors are showing as “unhealthy” again.
+Link: KF10: Domain Controller with MS Defender Identity issues
+
+Notes:
+Created on | Author | Title | Text
+24.09.24 11:10
+Admin, CRM
+WEB
+Ticket opened at 11:09 by Employee 12.
+24.09.24 11:18
+Employee 12
+WEB
+Please review Defender configuration for the servers – thanks.
+24.09.24 11:18
+Admin, CRM
+WEB
+Ticket assigned to BU Customer Services Run.
+24.09.24 11:25
+Arzbacher, Reto
+WEB
+Work completed so far:
+Review of Windows Firewall and open ports on both Domain Controllers by a Core Senior.
+Status:
+Review in progress by Core Senior.
+Next steps:
+Forward ticket to RMA.
+Contact:
+Contact Person 6, Customer Company 10.
+RAR & RMA, CDOM.
+
+24.09.24 11:26
+Admin, CRM
+WEB
+Ticket assigned to Employee 11.
+24.09.24 13:08
+Microsoft CRM Portals
+WEB
+Issue appears resolved, ticket can be closed.
+26.09.24 09:45
+Microsoft CRM Portals
+WEB
+Sensors “unhealthy” again.
+
+01.10.24 16:41
+Employee 11
+WEB
+Analysis:
+Agent removed and reinstalled on KF10azads02.
+Alerts have disappeared there – we will monitor whether they reoccur.
+If so, repeat installation (same procedure as azads02).
+
+01.10.24 21:06
+Employee 11
+WEB
+Hello Contact Person 6,
+On KF10azads01 the sensor was red.
+I completely removed and reinstalled the agent there as well.
+Since then, all sensors are green again.
+We will monitor the situation until Thursday.
+If no further issues occur, the sensor on KF10ads03 can be removed starting next week.
+Ticket has been temporarily set to “on-hold”.
+
+"
+Is the statement supported by the evidence?,"Open this as a formal 2nd‑level ticket and create parallel escalations to Identity/ADFS, Exchange/Hybrid, and M365/Identity teams, attaching the relevant evidence and suggested documented remediation steps (I will reference TI-1385257, TI-1548823 and TI-1578891 in the escalation). Those prior tickets show exactly which teams to involve and which remediation steps to try first","=== CITED SOURCES ===
+SOURCE 11:
+Understood. Below is the **plain English translation**, with **only personal and company names replaced by “Employee <number>”**, **employee numbers kept**, and **no formatting, no headings, no extra structure** beyond what is already implicit in the text.
+
+---
+
+Ticket summary:
+Ticket name: KF11: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket number: TI-1385257
+Company: Customer company 11AG
+Contact person: Employee 14
+Owner: Employee 24
+Source: Email
+Type: Support Request
+Created on: 26.11.24 10:07
+
+Closure
+Closure date: 18.12.24 00:33
+Closure text: Parameters adjusted on ADFS as in the TEST environment
+
+Activities
+Emails:
+
+26.11.24 09:58 Customer company 11CE TRAIN: Connection error from DevOps and FO Employee 14 Helpdesk
+Hi,
+we are experiencing connectivity issues with the TRAIN CE server. A restart of the application server has already been performed, but it did not help.
+The user account works in the browser frontend, so the password is correct.
+Thank you very much and kind regards
+Employee 14
+
+26.11.24 10:12 Ticket created: TI-1385257 | Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket confirmation
+Dear Employee 14,
+Your request has been successfully received and recorded in our system under the ticket number TI-1385257.
+Ticket details:
+Ticket number: TI-1385257
+Subject: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Priority: Normal
+Contact person: Employee 16
+We will contact you as soon as possible.
+
+26.11.24 10:18 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 16,
+The ticket TI-1385257 is no longer in your area of responsibility.
+It was transferred from Employee to Employee 14.
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:18 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:21 Re: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Dear Employee 14,
+Thank you for your inquiry.
+The ticket has been forwarded to the responsible system engineer.
+Kind regards
+Employee 16
+
+26.11.24 10:48 Portal note added
+Employee mentioned it could be the user KF11\001-svc-axavaobt-tra as this is the account currently configured.
+Is it possible to get an overview of all interfaces and their corresponding users and passwords?
+
+26.11.24 13:36 Portal note added
+Employee mentioned again KF11\001-svc-axavaobt-tra. Was the password changed?
+
+27.11.24 13:29 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+
+27.11.24 13:29 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 14,
+The ticket TI-1385257 is no longer in your responsibility.
+It was transferred from Admin to Employee 24.
+
+28.11.24 09:01 Ticket status changed to In Progress
+The ticket TI-1385257 was set to status In Progress.
+
+09.12.24 15:58 Re: Ticket created: TI-1385257
+Hi,
+we cannot connect to the CE TRAIN server again. Could you please reopen this ticket?
+Thank you and best regards
+Employee 14
+
+18.12.24 00:33 Ticket closed | TI-1385257
+Dear Employee 14,
+Your ticket from 26.11.24 10:07 has been closed.
+Closure description:
+Parameters adjusted on ADFS as in the TEST environment.
+
+18.12.24 00:34 Re: TRAIN-CE/FO integration / MFA
+Dear Employee 7,
+During the joint analysis of the issue, we identified that two parameters were not correctly set during the ADFS client registration. In the new client application used specifically for the MFA request of the Toolbox on the Train system, the following parameters were set to true:
+EnableJWT
+RequestMFAFromClaimsProviders
+
+EnableJWT activates the issuance of JSON Web Tokens in the authentication process. If enabled, ADFS issues JWTs instead of other token formats such as SAML. These tokens are evaluated by the target application. If the target system does not support JWTs or cannot validate their signature, authentication fails.
+
+RequestMFAFromClaimsProviders forwards MFA requirements to configured claims providers. This delegates MFA execution to external providers and increases complexity in authentication flow, logging, and auditing.
+
+The combination of these parameters can lead to login failures if the target system is not designed to handle JWTs or external MFA claims.
+
+We have documented the configuration to avoid future issues. From our perspective, no further problems are expected after adjusting the parameters. If MFA works stably and the Train environment is reachable again, the login topic can be considered resolved.
+
+Kind regards
+Employee 21
+
+Notes:
+26.11.24 Ticket opened by Employee 16.
+26.11.24 Ticket assigned
+
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+
+
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+"

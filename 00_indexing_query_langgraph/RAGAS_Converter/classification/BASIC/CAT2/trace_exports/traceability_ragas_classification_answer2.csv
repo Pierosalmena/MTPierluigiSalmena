@@ -1,0 +1,763 @@
+﻿question,answer,context
+Is the statement supported by the evidence?,"The SharePoint/permissions symptom (freelancers locked out of shared workspaces after an org change) closely matches a documented incident where a reorganization and new AD/group structure caused partial access loss and inconsistent behavior. That case required escalation to the M365/Identity engineering team for in‑depth analysis (unique permissions vs. sensitivity labels, direct group membership tests, and System Engineer involvement)","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+"
+Is the statement supported by the evidence?,The printer symptom (invoices for Zurich printing in Basel) mirrors a documented incident where an organizational/group change caused incorrect default-printer assignments via GPOs. The root cause was inconsistent AD group membership after a reorganization; resolution required correcting group membership and updating GPO assignment (gpupdate/test/login) according to the Print & Scanning Infrastructure Standard,"=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,"The current ticket reports multiple, different subsystems failing (collaboration permissions, telephony/dialer, and printing). Past multi-domain incidents (printing outages that required infrastructure or OS/VM restores and coordination across teams, or network/VLAN/firewall fixes for printers) involved specialist teams (network, core engineering, or system engineers) rather than only first-line fixes","=== CITED SOURCES ===
+SOURCE 28:
+﻿
+Ticket summary:
+Ticket name: KF13: PRIO HIGH - Printing from SAP not possible
+Ticket number: TI-931293
+Company: Customer Company 13
+Contact person: Contact Person 11
+Owner: Employee 17
+Origin: Phone
+Type: Support Request
+Created on: 18.07.24 17:16
+
+Closure
+Closure date: 19.07.24 16:48
+Closure text: After a Windows update and the subsequent VM restore, the printer network share caused issues. These were corrected and operations were restored.
+
+Activities
+Emails:
+19.07.24 09:01 | Ticket: KF13: PRIO HIGH - Printing from SAP not possible set to status ""In Progress"" #027064349 | NO-REPLY | BU_CustomerServices_RUN@ConsultingSampleCompany.ch
+Hello BU Customer Services Run,
+The ticket KF13: PRIO HIGH - Printing from SAP not possible, number TI-931293, has been set to status ""In Progress"".
+Link: KF13: PRIO HIGH - Printing from SAP not possible
+
+19.07.24 12:52 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+I would like to briefly check whether the issue with printing from SAP has been resolved in the meantime.
+Kind regards
+Employee 18
+
+19.07.24 13:01 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Contact Person 12 | Employee 18
+Hi everyone,
+Unfortunately, it is still not working.
+Kind regards
+Contact Person 12
+Head of Customer Services, Customer Company 13 AG
+Phone: +41 00 000 00 00
+
+19.07.24 13:24 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+Thank you for your feedback. I will inform the responsible department that the issue still persists.
+I will keep you updated on further progress.
+Kind regards
+Employee 18
+
+19.07.24 16:38 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17 | Contact Person 11
+Dear all,
+I would like to inform you that we have identified the root cause and resolved the incident. Printing via both print servers through SAP is now functioning properly again. Mr. Contact Person 12 has confirmed that SAP print jobs are being executed correctly.
+After the Windows update and the restore of the two VMs, all printers had issues with the network share on print server VRINFRGERPRNT03. After disabling and re-enabling the network share for all printer queues, all pending documents on the affected printers were successfully printed.
+No further actions are currently required, and we will now close the ticket.
+Should you require further assistance or have any questions, please do not hesitate to contact us.
+Kind regards and have a nice weekend,
+Employee 17
+Senior System Engineer Core Engineering
+Consulting Sample Company AG
+
+19.07.24 16:44 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17
+FYI
+
+19.07.24 16:55 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello everyone,
+THANK YOU VERY MUCH!!! TOP SERVICE!!!
+We are very satisfied 😊
+Wishing you both a very nice weekend as well!
+Best regards
+Tom
+Head of IT Switzerland Informatics, Customer Company 13
+
+19.07.24 17:16 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello Giusi,
+You were not included in the distribution list, I only just noticed that.
+Best regards
+Tom
+
+22.07.24 07:56 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 19
+Hello @Employee 17 and @Employee 20,
+Thank you very much for your great support last Friday on this ticket. This was highly appreciated by KF13, including Contact Person 11, and they were truly grateful for your efforts.
+Especially for Giusi and Employee 20, here again Tom’s praise.
+Kind regards
+Employee 19
+Service Manager
+
+22.07.24 09:19 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 26
+Nice one 😊 That’s a great way to start the week.
+Employee 26
+Head of Core Engineering
+
+Notes:
+18.07.24 17:17 | Admin, CRM | WEB
+Ticket opened on 18.07.24 17:16 by Employee 23.
+18.07.24 17:22 | ApplicationUser, CRM Development | WEB
+Classified as PRIO HIGH because no orders could be printed from SAP, preventing deliveries.
+18.07.24 17:24 | Employee 23 | WEB
+Printing from SAP via VRINFRGERPRNT03 and VRINFRGERPRNT04 not possible. Normal printing works via other print servers with follow-me solution. Contact Person 11 requests rollback of the Windows version on the print servers.
+18.
+
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,Reorg/group changes can cause SharePoint access issues that were not resolved by first-line steps and were escalated to M365/Identity system engineers for detailed analysis (ticket TI-1578891),"=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+"
+Is the statement supported by the evidence?,Incorrect default printer assignment after organizational changes was traced to AD group membership and fixed by adjusting group membership and GPOs (ticket TI-1623017),"=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,Print outages have required network/firewall adjustments or VM/OS restores and coordination with network/core teams (tickets TI-1622483 and TI-931293),"=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 28:
+﻿
+Ticket summary:
+Ticket name: KF13: PRIO HIGH - Printing from SAP not possible
+Ticket number: TI-931293
+Company: Customer Company 13
+Contact person: Contact Person 11
+Owner: Employee 17
+Origin: Phone
+Type: Support Request
+Created on: 18.07.24 17:16
+
+Closure
+Closure date: 19.07.24 16:48
+Closure text: After a Windows update and the subsequent VM restore, the printer network share caused issues. These were corrected and operations were restored.
+
+Activities
+Emails:
+19.07.24 09:01 | Ticket: KF13: PRIO HIGH - Printing from SAP not possible set to status ""In Progress"" #027064349 | NO-REPLY | BU_CustomerServices_RUN@ConsultingSampleCompany.ch
+Hello BU Customer Services Run,
+The ticket KF13: PRIO HIGH - Printing from SAP not possible, number TI-931293, has been set to status ""In Progress"".
+Link: KF13: PRIO HIGH - Printing from SAP not possible
+
+19.07.24 12:52 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+I would like to briefly check whether the issue with printing from SAP has been resolved in the meantime.
+Kind regards
+Employee 18
+
+19.07.24 13:01 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Contact Person 12 | Employee 18
+Hi everyone,
+Unfortunately, it is still not working.
+Kind regards
+Contact Person 12
+Head of Customer Services, Customer Company 13 AG
+Phone: +41 00 000 00 00
+
+19.07.24 13:24 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+Thank you for your feedback. I will inform the responsible department that the issue still persists.
+I will keep you updated on further progress.
+Kind regards
+Employee 18
+
+19.07.24 16:38 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17 | Contact Person 11
+Dear all,
+I would like to inform you that we have identified the root cause and resolved the incident. Printing via both print servers through SAP is now functioning properly again. Mr. Contact Person 12 has confirmed that SAP print jobs are being executed correctly.
+After the Windows update and the restore of the two VMs, all printers had issues with the network share on print server VRINFRGERPRNT03. After disabling and re-enabling the network share for all printer queues, all pending documents on the affected printers were successfully printed.
+No further actions are currently required, and we will now close the ticket.
+Should you require further assistance or have any questions, please do not hesitate to contact us.
+Kind regards and have a nice weekend,
+Employee 17
+Senior System Engineer Core Engineering
+Consulting Sample Company AG
+
+19.07.24 16:44 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17
+FYI
+
+19.07.24 16:55 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello everyone,
+THANK YOU VERY MUCH!!! TOP SERVICE!!!
+We are very satisfied 😊
+Wishing you both a very nice weekend as well!
+Best regards
+Tom
+Head of IT Switzerland Informatics, Customer Company 13
+
+19.07.24 17:16 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello Giusi,
+You were not included in the distribution list, I only just noticed that.
+Best regards
+Tom
+
+22.07.24 07:56 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 19
+Hello @Employee 17 and @Employee 20,
+Thank you very much for your great support last Friday on this ticket. This was highly appreciated by KF13, including Contact Person 11, and they were truly grateful for your efforts.
+Especially for Giusi and Employee 20, here again Tom’s praise.
+Kind regards
+Employee 19
+Service Manager
+
+22.07.24 09:19 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 26
+Nice one 😊 That’s a great way to start the week.
+Employee 26
+Head of Core Engineering
+
+Notes:
+18.07.24 17:17 | Admin, CRM | WEB
+Ticket opened on 18.07.24 17:16 by Employee 23.
+18.07.24 17:22 | ApplicationUser, CRM Development | WEB
+Classified as PRIO HIGH because no orders could be printed from SAP, preventing deliveries.
+18.07.24 17:24 | Employee 23 | WEB
+Printing from SAP via VRINFRGERPRNT03 and VRINFRGERPRNT04 not possible. Normal printing works via other print servers with follow-me solution. Contact Person 11 requests rollback of the Windows version on the print servers.
+18."

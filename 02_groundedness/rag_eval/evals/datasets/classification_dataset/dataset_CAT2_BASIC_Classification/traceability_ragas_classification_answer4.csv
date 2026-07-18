@@ -1,0 +1,502 @@
+﻿question,answer,context
+Is the statement supported by the evidence?,"The ticket describes multiple distinct failures that map closely to prior incidents which required engineer-level troubleshooting and remediation: internal browser certificate trust errors after a PKI renewal (TI-1700005), VPN authentication breaks tied to a changed VPN/server certificate template (TI-1700006), and Wi‑Fi profile not deploying due to Intune/dynamic-group assignment scope (TI-1700010). Each of those past cases was handled by infrastructure/PKI/network/endpoint engineers rather than being resolved by first‑line helpdesk procedures","=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+
+
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now
+
+SOURCE 87:
+Ticket summary:
+Ticket name: KF90: Office Wi-Fi configuration not deploying to some devices
+Ticket number: TI-1700010
+Company: Customer Company 90 AG
+Contact person: Contact Person 32
+Owner: Employee 34
+Source: Email
+Type: Support Request
+Created on: 04.03.25 11:30
+
+Closure
+Closure date: 13.03.25 16:48
+Closure text: Wi-Fi profile assignment scope adjusted to remove dependency on compliance state; devices receiving correct profile configuration.
+
+Activities
+Emails:
+
+04.03.25 11:30 KF90: New employees cannot connect to office Wi-Fi Contact Person 32 Helpdesk
+Hello,
+Several new joiners and a few users who recently received replacement laptops are reporting that they cannot connect to the office Wi-Fi (KF90-Corp). The Wi-Fi profile is supposed to deploy automatically via Intune.
+On their devices, the corporate Wi-Fi profile simply doesn't appear in the available networks list. Their devices are enrolled in Intune (visible in the portal) but the Wi-Fi profile is shown as ""not applicable"" in the Intune device-side configuration view.
+Affecting about 8 users currently. Could you investigate?
+Best regards
+Contact Person 32
+
+04.03.25 11:35 Ticket created: TI-1700010.
+
+04.03.25 11:50 Ticket assigned | TI-1700010
+Assigned to Employee 34 (BU Infrastructure - Endpoint Management).
+
+04.03.25 15:25 Re: KF90: Wi-Fi profile not deploying Employee 34 Contact Person 32
+Hello,
+Thanks. Could you please share:
+- 2-3 affected device names
+- The compliance status of those devices in Intune
+- The assignment scope of the Wi-Fi profile (which group is it targeted to?)
+
+05.03.25 09:30 Re: KF90: Wi-Fi profile not deploying Contact Person 32 Employee 34
+Hi,
+- Devices: KF90-LT-3001, KF90-LT-3002, KF90-LT-3003
+- Compliance: all three show ""non-compliant"" - flagged for ""BitLocker recovery key not escrowed within 30 days"" (we are looking at this in another ticket)
+- Wi-Fi profile is assigned to ""KF90-Compliant-Devices"" dynamic group
+
+13.03.25 16:48 Ticket closed | TI-1700010
+Closure description:
+Root cause: The Wi-Fi profile was deployed via assignment to a dynamic group ""KF90-Compliant-Devices"" whose membership rule was based on Intune compliance state. Devices affected by the BitLocker escrow compliance issue (see TI-1700009) had flipped to non-compliant and therefore dropped out of the dynamic group, which made the Wi-Fi profile assignment ""
+
+SOURCE 13:
+Ticket summary:
+Ticket name: KF80: LDAP-S queries to DCs failing for some applications
+Ticket number: TI-1700008
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 13.02.25 10:20
+
+Closure
+Closure date: 21.02.25 13:55
+Closure text: Domain Controller certificates re-enrolled from internal CA after auto-enrollment template fix; LDAP-S queries restored.
+
+Activities
+Emails:
+
+13.02.25 10:20 KF80: Internal applications cannot bind to AD over LDAP-S Contact Person 31 Helpdesk
+Hello,
+Our identity team reported that several internal applications which use LDAP-S (LDAP over TLS port 636) to authenticate against Active Directory have been failing since this morning. Examples include our HR system's user provisioning, the on-prem SharePoint for user lookup, and the network access control (NAC) system.
+The affected applications report ""could not establish secure connection to LDAP server"" or ""TLS handshake failed against domain controller"". Plain LDAP (port 389) still works but our security policy requires LDAP-S.
+We suspect this is related to the PKI work last weekend.
+Thanks
+Contact Person 31
+
+13.02.25 10:25 Ticket created: TI-1700008. Priority High - identity infrastructure impact.
+
+13.02.25 10:35 Ticket assigned | TI-1700008
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 14:00 Re: KF80: LDAP-S queries failing Employee 32 Contact Person 31
+Hello,
+Thanks. Could you please confirm:
+- Whether ALL DCs are affected or only some
+- The output from a DC of: certutil -store MY (look for the ""Domain Controller"" or ""Kerberos Authentication"" certificates and check expiry/issuer)
+- When the symptom started exactly (yesterday, today morning?)
+
+13.02.25 17:50 Re: KF80: LDAP-S queries failing Contact Person 31 Employee 32
+Hi,
+- All 4 DCs in the main site are affected; the secondary site DCs were not yet checked
+- Sample DC: cert in MY store shows the DC cert ISSUED 14.02.2024 (so almost a year ago) by the OLD issuing CA. It hasn't expired yet but applications complain about it
+- Started overnight - applications worked yesterday afternoon, failed by morning
+
+21.02.25 13:55 Ticket closed | TI-1700008
+Closure description:
+Root cause: The Domain Controllers were configured to auto-enroll for the ""Domain Controller Authentication"" certificate template via Group Policy. Last year's certificate had not yet expired but auto-enrollment normally triggers renewal at the 60%"
+Is the statement supported by the evidence?,"Because at least two of your described symptoms (internal TLS trust failures and VPN server identity validation failures) in the knowledge base were caused by PKI/template changes and required coordination between PKI and network teams, the consolidated symptom set in your ticket is consistent with an issue set that needs second‑level (engineer/escalation) involvement rather than routine first‑line fixes","=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+
+
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now"
+Is the statement supported by the evidence?,Internal-only sites showing browser trust warnings after an issuing CA renewal; resolution required publishing the intermediate CA correctly to AIA/CRL distribution points and validation by infrastructure engineers (KF80 TI-1700005),"=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+"
+Is the statement supported by the evidence?,VPN clients failing to authenticate after a PKI change because the new server certificate template omitted a required EKU; resolution required reissuing or adjusting certificates/templates and deploying corrected certs (KF80 TI-1700006),"=== CITED SOURCES ===
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now"
+Is the statement supported by the evidence?,Corporate Wi‑Fi not appearing on certain devices because the Wi‑Fi profile was targeted via a dynamic Intune group tied to device compliance state; the assignment scope was adjusted by endpoint engineers to restore connectivity (KF90 TI-1700010),"=== CITED SOURCES ===
+SOURCE 87:
+Ticket summary:
+Ticket name: KF90: Office Wi-Fi configuration not deploying to some devices
+Ticket number: TI-1700010
+Company: Customer Company 90 AG
+Contact person: Contact Person 32
+Owner: Employee 34
+Source: Email
+Type: Support Request
+Created on: 04.03.25 11:30
+
+Closure
+Closure date: 13.03.25 16:48
+Closure text: Wi-Fi profile assignment scope adjusted to remove dependency on compliance state; devices receiving correct profile configuration.
+
+Activities
+Emails:
+
+04.03.25 11:30 KF90: New employees cannot connect to office Wi-Fi Contact Person 32 Helpdesk
+Hello,
+Several new joiners and a few users who recently received replacement laptops are reporting that they cannot connect to the office Wi-Fi (KF90-Corp). The Wi-Fi profile is supposed to deploy automatically via Intune.
+On their devices, the corporate Wi-Fi profile simply doesn't appear in the available networks list. Their devices are enrolled in Intune (visible in the portal) but the Wi-Fi profile is shown as ""not applicable"" in the Intune device-side configuration view.
+Affecting about 8 users currently. Could you investigate?
+Best regards
+Contact Person 32
+
+04.03.25 11:35 Ticket created: TI-1700010.
+
+04.03.25 11:50 Ticket assigned | TI-1700010
+Assigned to Employee 34 (BU Infrastructure - Endpoint Management).
+
+04.03.25 15:25 Re: KF90: Wi-Fi profile not deploying Employee 34 Contact Person 32
+Hello,
+Thanks. Could you please share:
+- 2-3 affected device names
+- The compliance status of those devices in Intune
+- The assignment scope of the Wi-Fi profile (which group is it targeted to?)
+
+05.03.25 09:30 Re: KF90: Wi-Fi profile not deploying Contact Person 32 Employee 34
+Hi,
+- Devices: KF90-LT-3001, KF90-LT-3002, KF90-LT-3003
+- Compliance: all three show ""non-compliant"" - flagged for ""BitLocker recovery key not escrowed within 30 days"" (we are looking at this in another ticket)
+- Wi-Fi profile is assigned to ""KF90-Compliant-Devices"" dynamic group
+
+13.03.25 16:48 Ticket closed | TI-1700010
+Closure description:
+Root cause: The Wi-Fi profile was deployed via assignment to a dynamic group ""KF90-Compliant-Devices"" whose membership rule was based on Intune compliance state. Devices affected by the BitLocker escrow compliance issue (see TI-1700009) had flipped to non-compliant and therefore dropped out of the dynamic group, which made the Wi-Fi profile assignment """
+Is the statement supported by the evidence?,Certificate/Identity issues on domain controllers and LDAP-S failures have previously required PKI or DC certificate re-enrollment actions by infrastructure teams (KF80 TI-1700008),"=== CITED SOURCES ===
+SOURCE 13:
+Ticket summary:
+Ticket name: KF80: LDAP-S queries to DCs failing for some applications
+Ticket number: TI-1700008
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 13.02.25 10:20
+
+Closure
+Closure date: 21.02.25 13:55
+Closure text: Domain Controller certificates re-enrolled from internal CA after auto-enrollment template fix; LDAP-S queries restored.
+
+Activities
+Emails:
+
+13.02.25 10:20 KF80: Internal applications cannot bind to AD over LDAP-S Contact Person 31 Helpdesk
+Hello,
+Our identity team reported that several internal applications which use LDAP-S (LDAP over TLS port 636) to authenticate against Active Directory have been failing since this morning. Examples include our HR system's user provisioning, the on-prem SharePoint for user lookup, and the network access control (NAC) system.
+The affected applications report ""could not establish secure connection to LDAP server"" or ""TLS handshake failed against domain controller"". Plain LDAP (port 389) still works but our security policy requires LDAP-S.
+We suspect this is related to the PKI work last weekend.
+Thanks
+Contact Person 31
+
+13.02.25 10:25 Ticket created: TI-1700008. Priority High - identity infrastructure impact.
+
+13.02.25 10:35 Ticket assigned | TI-1700008
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+13.02.25 14:00 Re: KF80: LDAP-S queries failing Employee 32 Contact Person 31
+Hello,
+Thanks. Could you please confirm:
+- Whether ALL DCs are affected or only some
+- The output from a DC of: certutil -store MY (look for the ""Domain Controller"" or ""Kerberos Authentication"" certificates and check expiry/issuer)
+- When the symptom started exactly (yesterday, today morning?)
+
+13.02.25 17:50 Re: KF80: LDAP-S queries failing Contact Person 31 Employee 32
+Hi,
+- All 4 DCs in the main site are affected; the secondary site DCs were not yet checked
+- Sample DC: cert in MY store shows the DC cert ISSUED 14.02.2024 (so almost a year ago) by the OLD issuing CA. It hasn't expired yet but applications complain about it
+- Started overnight - applications worked yesterday afternoon, failed by morning
+
+21.02.25 13:55 Ticket closed | TI-1700008
+Closure description:
+Root cause: The Domain Controllers were configured to auto-enroll for the ""Domain Controller Authentication"" certificate template via Group Policy. Last year's certificate had not yet expired but auto-enrollment normally triggers renewal at the 60%"

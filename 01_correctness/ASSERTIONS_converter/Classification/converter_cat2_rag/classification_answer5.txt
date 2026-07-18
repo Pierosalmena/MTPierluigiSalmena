@@ -1,0 +1,21 @@
+Recommendation: second_level_support
+
+Why: the symptoms in this ticket (multiple unrelated services suddenly showing TLS / certificate failures, VPN mutual-authentication breaking, and protected email/sealing no longer working) closely match prior incidents that were caused by PKI/CA work and required engineer-level remediation rather than routine first‑line fixes.
+
+What the records explicitly document
+- Internal HTTPS services showing browser trust warnings after a PKI change: a past case where an issuing CA was renewed over a weekend produced NET::ERR_CERT_AUTHORITY_INVALID across internal sites; the resolution required publishing the intermediate CA to AIA/CRL and validation by engineers (TI-1700005) [Data: Sources (55)].
+- VPN authentication failing for many remote users after the weekend PKI work: a prior incident where the new VPN server certificate was issued from a refreshed template that omitted a required EKU; resolution involved reissuing certificates from a corrected template and deploying them via GPO (TI-1700006) [Data: Sources (104)].
+- LDAP-S / AD secure-bind failures tied to domain controller certificates after PKI/template changes: a prior ticket where DC certificates were re-enrolled from the internal CA after an auto-enrollment template fix, restoring LDAP‑S functionality (TI-1700008) [Data: Sources (13)].
+
+These three examples show the same pattern: a PKI/CA change caused multiple, cross‑service failures and each required engineering changes to CA/template/publishing and certificate re-issuance or re-enrollment — actions that were performed by infrastructure/PKI engineers in those tickets [Data: Sources (55, 104, 13)].
+
+Classification rationale (concise)
+- The scope (many services across HTTPS, VPN, AD, and secure email) and the timing (all started after an infrastructure/PKI maintenance window) strongly indicate a centralized PKI/CA issue rather than separate routine user-level problems.
+- In the indexed cases with the same symptoms, resolution required engineer action (template fixes, CA publishing, certificate re-issuance and GPO deployment), not first-level troubleshooting steps. Therefore this should be handled as second_level_support [Data: Sources (55, 104, 13)].
+
+Recommended (not from records)
+- Escalate immediately to the PKI/Infrastructure engineering team and open a second‑level incident (if not already done).
+- Have engineers verify whether CA/issuing certificates were renewed/published to AIA/CRL distribution points, review certificate templates (EKUs and auto-enrollment settings), and plan coordinated re‑enrollment/re‑issuance for affected server and user certificates.
+- Coordinate with application owners to validate service trust chains after fixes and schedule GPO / client distribution as needed.
+
+If you want, I can draft a short incident summary you can send to the PKI engineers that highlights the matching prior cases and the likely areas to check.

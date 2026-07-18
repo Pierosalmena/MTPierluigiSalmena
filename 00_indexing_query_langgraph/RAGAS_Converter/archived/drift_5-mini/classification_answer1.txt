@@ -1,0 +1,25 @@
+Recommendation: second_level_support
+
+What the indexed records explicitly document (evidence)
+- One‑way / silent external audio that affects users at a site has in the KB been caused by site edge / firewall / Direct‑Routing media restrictions and required UC/Network engineering to fix (Zurich outbound firewall change blocked RTP; engineers applied blueprint‑aligned firewall/SBC changes) [Data: Sources (5)].  
+- A single‑user audio symptom that was resolved by first‑line helpdesk is documented (microphone cable reseat after a Teams Test Call), so purely local hardware faults have precedent for L1 resolution — but that was an isolated single‑user hardware case (TI‑1616128) [Data: Sources (37)].  
+- Intranet/folder access denials after a transfer or change have in the KB been caused by token/Conditional‑Access timing or by AD/Azure AD group/object synchronization/nesting issues; those investigations used Entra/Azure AD membership and sign‑in logs and in several cases required identity/BU‑Infrastructure intervention [Data: Sources (38); Reports (13)].  
+- Scan‑to‑Mail cases where the MFP showed a local “success” while the external recipient received nothing were repeatedly diagnosed to the SMTP relay (either “MESSAGE SIZE EXCEEDS FIXED LIMIT” for oversized scans, or “Relay denied” where a new printer VLAN IP range was not whitelisted). Remediations in the KB involved Mail/Relay and Network changes (whitelisting VLANs, adjusting relay limits) and then validating delivery [Data: Reports (36); Reports (6)].  
+- Multi‑domain incidents (voice + directory + printing/mail) in the corpus were routinely escalated for coordinated engineer action rather than closed by first‑line alone (examples and post‑mortems reference escalation to infrastructure/engineering for cross‑system faults) [Data: Reports (16); Sources (28)].
+
+Why I recommend second_level_support (concise reasoning)
+- Your ticket reports three concurrent faults spanning distinct systems: telephony/media (Teams/desktop app), identity/permissions (ERP_Upgrade folder), and mail/printing (MFP → external vendor). The indexed KB shows that: (a) site‑wide/edge telephony media faults were handled by UC/Network engineers (not L1) [Data: Sources (5)]; (b) folder access regressions sometimes needed Identity team/AD/Azure AD sync analysis (not always a simple gpupdate) [Data: Sources (38)]; and (c) scan‑to‑mail failures where the device UI lied required Mail/Relay and Network coordination to whitelist VLANs or change relay policy [Data: Reports (36); Reports (6)]. Together, this combination historically required cross‑team engineer involvement to diagnose and remediate, so classify as second_level_support.  
+- Note: if investigation shows the telephony symptom is a single‑endpoint hardware problem (like TI‑1616128) and the other two problems are independent first‑line fixes, L1 could close—but the simultaneous, multi‑domain nature of your report matches prior cases that were escalated [Data: Sources (37); Sources (5); Reports (36)].
+
+Recommended immediate actions (these are recommendations, not claims of prior actions in the KB)
+- Triage concurrently and collect artifacts for escalation: Teams Test Call result + client/version and timestamp; SIP/SBC traces or call attempt timestamps (for UC/Network); Azure AD/Entra membership export for the user (direct + nested groups) and recent sign‑in logs around the transfer time; printer job timestamp/ID, printer IP/VLAN and SMTP relay logs for that timestamp. (Recommended — consistent with diagnostics used in the cited incidents but not claimed as already performed here.)  
+- If the Teams Test Call proves the endpoint audio is functioning locally, escalate UC/Network immediately (site‑edge media/firewall or SBC). If the SMTP relay shows “Relay denied” or size rejects, involve Mail/Network to whitelist the printer VLAN or adjust relay policy. If Azure AD membership/sync looks inconsistent, involve Identity/BU‑Infrastructure. (Recommended next‑owners based on past-case roles.)
+
+Key supporting records cited
+- Zurich one‑way audio caused by firewall change (escalated to UC/Network) [Data: Sources (5)].  
+- Single‑user microphone reseat resolved at first‑line (example where L1 closed one‑way audio) [Data: Sources (37)].  
+- ERP_Upgrade / token/Conditional Access and identity‑plane diagnostics (use of Azure AD sign‑in logs and membership checks in prior cases) [Data: Sources (38); Reports (13)].  
+- Scan‑to‑Mail: “MESSAGE SIZE EXCEEDS FIXED LIMIT” and “Relay denied” findings; remediation by Mail/Relay and VLAN whitelisting [Data: Reports (36); Reports (6)].  
+- Multi‑domain incidents that required infrastructure/engineering coordination (precedent for escalation) [Data: Reports (16); Sources (28)].
+
+If you want, I can now draft the exact minimal artifact list and the short wording to include in the escalation ticket so the UC/Network, Identity and Mail teams receive the logs and timestamps they need (this would be a recommended action, not a KB excerpt).

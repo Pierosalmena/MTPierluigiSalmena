@@ -1,0 +1,114 @@
+Summary of what the indexed records explicitly show
+- Very similar incidents have been documented where a combination of (a) Unique SharePoint folder permissions, (b) a Sensitivity Label (AIP/Encryption) that referenced a different Azure AD group, and (c) authentication token caching produced intermittent access: users could sometimes access content (old token) and later be blocked (new token) [Data: Sources (30, 31)].
+- Other documented causes for intermittent or partial access in the sample cases were: Conditional Access / device-compliance evaluation delays combined with cached tokens [Data: Sources (38)], duplicate groups with identical names created by a mix of Cloud and On‑Prem (Azure AD Connect) leading SharePoint to evaluate a different group object id than expected [Data: Sources (13)], and incorrect group nesting in Entra ID so effective permissions were not delivered to users [Data: Sources (20)].
+
+What the records document you should check first (diagnostic steps drawn from prior tickets)
+1) Confirm SharePoint folder permission model and which group the ACL uses
+   - Check whether the folder has Unique Permissions and which group is listed in the SharePoint permissions UI (example: “SP_Compliance_Main”) [Data: Sources (30)].
+
+2) Check Sensitivity Label / AIP encryption settings for that folder
+   - Verify whether a Sensitivity Label with encryption is applied, and which Azure AD group is granted the AIP encryption key (example problem: label granted only to “Compliance_Core” while SharePoint ACL used “COMPLIANCE_TEAM”) [Data: Sources (30, 31)].
+   - Verify whether the label was applied after the folder received Unique Permissions (records show labels applied after renaming/permission change caused the issue) [Data: Sources (30)].
+
+3) Inspect sign-in tokens / claims for affected users
+   - Review Azure AD Sign‑In Logs for affected users to see which group claims are present in the token (records showed tokens containing COMPLIANCE_TEAM but not Compliance_Core for affected users) [Data: Sources (30)].
+
+4) Reproduce access behavior with minimal caching
+   - Test access in Incognito/private browser and by signing out of all Office apps (records show Incognito/signed‑out sessions sometimes allowed access temporarily) [Data: Sources (30, 31)].
+
+5) Check for group origin / Azure AD Connect effects (if externals are affected)
+   - In Entra/Azure AD, check the “source” attribute for users and groups (records found some groups/users “source = Windows Server AD” vs “Azure AD”) and whether two groups with identical names but different object IDs exist (Cloud‑native vs synchronized On‑Prem) [Data: Sources (13)].
+
+6) Check Conditional Access and device compliance policies
+   - Verify CA policies that apply to SharePoint or the project resources and device compliance/Hybrid AAD join status (one case showed CA requiring compliant devices caused delays; device status “unknown” and sync delays of 6–8 hours) [Data: Sources (38)].
+
+What the records show worked as remediation (step‑by‑step actions actually performed in prior incidents)
+A. If the root cause is Sensitivity Label encryption conflicting with SharePoint ACLs
+   1. Remove the Sensitivity Label temporarily from the folder to stop encryption gating access [Data: Sources (31)].
+   2. Reassign the folder permissions so the SharePoint ACL points to the correct group object (align group references used by SharePoint ACL with the group granted the AIP encryption key) [Data: Sources (31)].
+   3. Reapply the Sensitivity Label with the correct group integration (make sure the encryption grant contains the same group/object id used by SharePoint) [Data: Sources (31)].
+   4. Invalidate existing authentication tokens for affected users (have users sign out of Office apps/browsers or intentionally expire tokens) and retest — this resolved the token-caching inconsistency in the documented case [Data: Sources (31)].
+   5. Monitor and confirm consistent access for all user types (internal, external, guests) [Data: Sources (31)].
+
+B. If the root cause is duplicate groups from Azure AD Connect (external guests losing access intermittently)
+   1. Identify that two groups exist with the same display name but different origins/Object IDs (Cloud‑native group + On‑Prem synchronized group) [Data: Sources (13)].
+   2. Consolidate group structure: remove the redundant Cloud group (or the redundant On‑Prem group) so SharePoint references the correct object id; clean the On‑Prem group as needed [Data: Sources (13)].
+   3. Manage external guests as Cloud‑only members (so they are present in the final effective group) [Data: Sources (13)].
+   4. Perform an Azure AD Connect full synchronization to ensure cloud and on‑prem state are aligned [Data: Sources (13)].
+   5. Validate and monitor that external guest access is stable [Data: Sources (13)].
+
+C. If the root cause is Conditional Access / device compliance token delays causing flickering access
+   1. Identify CA policy applied to the resource (e.g., “Require compliant device for Finance Resources”) and note any recent adjustments [Data: Sources (38)].
+   2. For immediate relief, adjust the CA scope (in the documented case they excluded the specific SharePoint folder from the Finance CA rule) or ensure device compliance sync completes quickly [Data: Sources (38)].
+   3. Have affected users fully sign out and sign back in (clear token cache); trigger device sync for Hybrid AAD joined devices if synchronization is delayed [Data: Sources (38)].
+   4. Monitor sign‑in logs to confirm Conditional Access evaluation succeeds and tokens contain updated claims [Data: Sources (38)].
+
+D. If the root cause is incorrect group nesting
+   1. Review nesting in Entra ID and correct it so the high‑level group is nested into the permission group SharePoint evaluates (example: “IT‑Projekte” was still nested into old “SP_Project_IT_v1” instead of the new “SP_Project_IT”) [Data: Sources (20)].
+   2. Remove old/deactivated group, correct nesting, wait for synchronization and re-test access [Data: Sources (20)].
+
+Which of the above likely apply to your described symptoms (match to your ticket)
+- Your description (some users sometimes see the folder then later cannot; locals can see folder name but cannot open documents; one finance user’s access “flickering” after restart; a different folder invisible in file list but accessible by URL) matches the combination of:
+  - Sensitivity Label + Unique Permissions + token caching producing mixed behavior (intermittent access, different results before/after token refresh) [Data: Sources (30, 31)].
+  - Conditional Access / device compliance delays (flickering that sometimes resolves after restart/sign‑out) [Data: Sources (38)].
+  - Duplicate groups / synchronization issues (external users sometimes having and sometimes losing access; folder invisible in list but reachable by URL can also point to group/object ID mismatches or nesting) [Data: Sources (13), (20)].
+
+Limitations — what the indexed knowledge does NOT contain for your specific environment
+- The indexed records document the problems and exact remediation steps that were taken in those customers’ environments, but they do not contain your tenant’s specific group object IDs, the exact Sensitivity Label configuration in your tenant, nor your tenant’s Conditional Access policy definitions and scopes. Therefore I cannot produce exact commands, object IDs, or the precise label/group mappings for your tenant — you must fetch those details from your environment before applying the exact changes [Recommendation: see next section].
+
+Concrete, ordered checklist you can follow now (each step cites the prior case that shows the step was effective)
+1) Verify SharePoint folder permissions and Sensitivity Label state
+   - Confirm whether the folder has Unique Permissions and which SharePoint group/object id is referenced in the ACL [Data: Sources (30)].
+   - Confirm whether a Sensitivity Label with encryption is applied and which Azure AD group is granted the label’s encryption key; check whether the label was applied after the folder’s permissions were set [Data: Sources (30, 31)].
+
+2) Reproduce behavior with fresh tokens
+   - Test affected user(s) in Incognito/private mode and after signing out of Office apps (records show this can temporarily reveal correct or blocked behavior) [Data: Sources (30, 31)].
+
+3) Check token claims and sign‑in logs
+   - For an affected user, inspect Azure AD Sign‑In logs and token claims to see which group claims are present or missing (example: token included COMPLIANCE_TEAM but not Compliance_Core) [Data: Sources (30)].
+
+4) If Sensitivity Label encryption is found to reference a different group than the SharePoint ACL:
+   - Remove the label temporarily, align the SharePoint ACL and the group granted the label encryption key, then reapply the label with correct group integration. Invalidate tokens and retest [Data: Sources (31)].
+
+5) If external guests are intermittently affected:
+   - Inspect group origins and object IDs for groups with the same display name (Cloud vs On‑Prem). If duplicate groups exist, consolidate the group structure, ensure external guests are in the cloud‑managed group, and run a full Azure AD Connect sync [Data: Sources (13)].
+
+6) If access flickers and users are on Hybrid AAD Joined devices or CA policies apply:
+   - Check relevant Conditional Access policy scope (e.g., device compliance for Finance). For immediate relief, adjust policy scope for the affected folder or ensure device compliance state and device sync are current; require users to fully sign out/sign in after changes [Data: Sources (38)].
+
+7) If group nesting appears inconsistent:
+   - Validate nesting in Entra ID and correct any references to old/deactivated groups so the effective membership flows into the SharePoint permission group [Data: Sources (20)].
+
+8) After remediation, perform these validations
+   - Test access for internal users, external guests, and users on different device types (company laptop, private device) [Data: Sources (31, 13, 38)].
+   - Monitor sign‑in logs and SharePoint access; confirm no “Item not found” / “Access denied” errors recur [Data: Sources (31, 38, 13)].
+
+Actions that were actually performed in prior incidents and proved successful
+- Removing the Sensitivity Label, aligning the ACL and label group, reapplying the label, and invalidating tokens resolved the inconsistent access caused by label+ACL mismatch and token caching [Data: Sources (31)].
+- Consolidating duplicate groups (remove Cloud duplicate or clean On‑Prem group), managing guests as Cloud‑only, and performing a full Azure AD Connect sync restored stable external access [Data: Sources (13)].
+- Adjusting Conditional Access scope for the affected folder and forcing re‑authentication (plus device sync) solved flickering access caused by CA/device compliance delays [Data: Sources (38)].
+- Correcting group nesting in Entra ID fixed permissions that had been incorrectly routed to a deactivated/old group [Data: Sources (20)].
+
+Recommended next steps for you (these are recommendations based on the documented fixes; your environment specifics are required)
+- Inventory the affected folders, document for each: SharePoint ACL group name/object id, sensitivity label name and encryption group, whether Unique Permissions are enabled, and whether the folder was renamed or moved recently. (RECOMMENDED — not directly a record action, but follows the documented diagnostics.)
+- For any folder with a label+unique permissions conflict, follow remediation A above (remove label, align groups, reapply, invalidate tokens) [Based on documented actions (31)].
+- If externals are affected, check for duplicated group names/object ids and run a full AD Connect sync after consolidation [Based on documented actions (13)].
+- If multiple causes are present simultaneously (labels, CA, sync), prioritize safe steps: temporarily remove the label or temporarily scope CA to avoid blocking critical access while you align group membership — then reapply controls once alignment is confirmed [This sequencing follows how the documented tickets restored access before reapplying protections (31, 38)].
+
+If you want, I can:
+- Produce a concise list of the exact data points to collect from your tenant (group object IDs, label encryption grants, token claim samples, CA policy names and scopes, Azure AD Connect health) so you can paste them back and I map them to the exact remediation steps shown above (I cannot fetch those tenant‑specific values from the indexed records) — I recommend this because the indexed incidents required those specific values to perform the fixes [Recommendation: you must collect environment details; records do not contain them].
+
+If anything in the above is unclear, or if you can provide the following items from your environment, I will map the exact remediation actions (with references to the most relevant prior case) to your situation:
+- Folder name(s) and whether Unique Permissions are set (yes/no).
+- Sensitivity Label name applied to the folder, and the AAD group(s) that are granted the label’s encryption key (if known).
+- For one or two affected users: a copy/screenshot of token claim groups or the Azure AD Sign‑In log entries around an attempted access.
+- Whether the affected external users show “source = Windows Server AD” or “source = Azure AD” in Entra.
+- Any Conditional Access policies that target SharePoint/this user group and whether those users are on Hybrid AAD Joined devices.
+
+References (examples of the documented cases I used above)
+- Folder renamed + Sensitivity Label conflict + token caching causing intermittent access; remediation: remove label, reassign, reapply with aligned groups, invalidate tokens (TI-1578891 / continuation) [Data: Sources (30, 31)].
+- Token caching + Conditional Access (device compliance) causing flickering access; remediation: adjust CA scope, re-authenticate, trigger device sync (TI-1571046) [Data: Sources (38)].
+- External guests losing access due to duplicate Cloud vs On‑Prem groups; remediation: consolidate groups and run full Azure AD Connect sync (TI-1583327) [Data: Sources (13)].
+- Incorrect group nesting causing access denial; remediation: correct nesting and remove old group (TI-1569482) [Data: Sources (20)].
+
+If you want me to produce the small, specific checklist of exact console locations and the minimal evidence to capture (token claim screenshots, group object id export, label encryption grant view) so you can collect them and post back, say so and I will prepare that checklist (this is a recommended next step — not part of the indexed records).

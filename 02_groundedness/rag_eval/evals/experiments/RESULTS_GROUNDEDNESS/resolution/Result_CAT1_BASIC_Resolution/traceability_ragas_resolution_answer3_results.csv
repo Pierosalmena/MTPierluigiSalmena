@@ -1,0 +1,4716 @@
+dataset,question,answer,context,is_recommendation,is_rec_reason,groundedness,groundedness_reason
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,2) Microphone selected but input level stuck at zero with USB headset (documented resolution): confirm physical headset connection — in the documented incident the mic cable on the headset was not fully plugged in. Reconnecting the mic properly immediately produced input signal and restored calls,"=== CITED SOURCES ===
+SOURCE 37:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Call participants cannot hear the user
+Ticket number: TI-1616128
+Company: Customer Company 52 AG
+Contact person: Contact Person 07
+Owner: Employee 33
+Origin: Telephone
+Type: Incident
+Created on: 14.10.25 09:18
+Closure
+Closure date: 14.10.25 09:52
+Closure text: Microphone not properly connected. Device configured correctly. Function restored.
+Activities
+14.10.25 09:10 – Telephone report
+Mr. Contact Person 07 reports that an employee can hear everything during Teams calls but cannot be heard by the other participant.
+Both internal and external calls are affected.
+Chat works.
+Camera works.
+14.10.25 09:18
+Ticket created and assigned to Employee 33.
+14.10.25 09:25 – Helpdesk inquiry
+Good morning
+Could you please briefly confirm:
+– Is a headset or the integrated microphone being used?
+– Does the issue also occur during a Teams test call?
+Thank you.
+14.10.25 09:32 – Customer response
+A USB headset is being used.
+No sound is recorded during the test call either.
+14.10.25 09:40 – Remote session
+Connected with the user.
+In Teams, “USB Audio Device” is selected as the microphone.
+However, the input level indicator remains empty.
+In the Windows Sound menu, no input signal is displayed either.
+After a brief check, it was determined that although the USB headset was plugged in, the microphone cable on the headset itself was not fully inserted.
+After correctly plugging it in, the input level indicator immediately showed activity.
+Test call performed → Microphone functioning.
+14.10.25 09:50 – User feedback
+Call tested. Working properly again.
+14.10.25 09:52 – Ticket closure
+Dear Contact Person 07
+The microphone was not properly connected, which prevented any input signal from being detected.
+After correctly reconnecting the device, voice transmission is functioning normally again.
+Kind regards
+Consulting Sample Company
+
+",yes,Contains an explicit directive to 'confirm physical headset connection' and describes reconnecting the mic as the corrective action.,supported,"SOURCE 37 documents a USB headset selected in Teams with the input level at zero; the mic cable was not fully inserted and after reconnecting the input indicator showed activity and test calls were restored, directly supporting the ANSWER's claims."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,Token caching / Conditional Access evaluation delay and CA policy adjustment: TI-1571046,"=== CITED SOURCES ===
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+",no,"This is a brief issue/title describing token caching and Conditional Access evaluation delay with a policy adjustment reference, not providing any recommendation or directive.",supported,"The ticket TI-1571046 closure and activity notes state the root cause was token caching and Conditional Access evaluation delay, and that access became stable after the Conditional Access policy was adjusted."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,Microphone no input due to headset cable not fully plugged in: TI-1616128,"=== CITED SOURCES ===
+SOURCE 37:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Call participants cannot hear the user
+Ticket number: TI-1616128
+Company: Customer Company 52 AG
+Contact person: Contact Person 07
+Owner: Employee 33
+Origin: Telephone
+Type: Incident
+Created on: 14.10.25 09:18
+Closure
+Closure date: 14.10.25 09:52
+Closure text: Microphone not properly connected. Device configured correctly. Function restored.
+Activities
+14.10.25 09:10 – Telephone report
+Mr. Contact Person 07 reports that an employee can hear everything during Teams calls but cannot be heard by the other participant.
+Both internal and external calls are affected.
+Chat works.
+Camera works.
+14.10.25 09:18
+Ticket created and assigned to Employee 33.
+14.10.25 09:25 – Helpdesk inquiry
+Good morning
+Could you please briefly confirm:
+– Is a headset or the integrated microphone being used?
+– Does the issue also occur during a Teams test call?
+Thank you.
+14.10.25 09:32 – Customer response
+A USB headset is being used.
+No sound is recorded during the test call either.
+14.10.25 09:40 – Remote session
+Connected with the user.
+In Teams, “USB Audio Device” is selected as the microphone.
+However, the input level indicator remains empty.
+In the Windows Sound menu, no input signal is displayed either.
+After a brief check, it was determined that although the USB headset was plugged in, the microphone cable on the headset itself was not fully inserted.
+After correctly plugging it in, the input level indicator immediately showed activity.
+Test call performed → Microphone functioning.
+14.10.25 09:50 – User feedback
+Call tested. Working properly again.
+14.10.25 09:52 – Ticket closure
+Dear Contact Person 07
+The microphone was not properly connected, which prevented any input signal from being detected.
+After correctly reconnecting the device, voice transmission is functioning normally again.
+Kind regards
+Consulting Sample Company
+
+",no,This is a factual diagnosis stating the cause (headset cable not fully plugged in) rather than a recommendation or instruction to take action.,supported,The ticket TI-1616128 explicitly states the headset's microphone cable was not fully inserted and after correctly plugging it in the input level showed activity and the microphone worked again.
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,Camera missing because OS privacy/app permissions blocked Teams: TI-1615042,"=== CITED SOURCES ===
+SOURCE 42:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Camera not detected
+Ticket number: TI-1615042
+Company: Customer Company 52 AG
+Contact person: Contact Person 09
+Owner: Employee 33
+Origin: Email
+Type: Incident
+Created on: 07.10.25 09:12
+Closure
+Closure date: 07.10.25 11:06
+Closure text: Camera available again in Teams. Root cause was missing operating system permission and blocked device setting. Steps performed according to Blueprint.
+Activities
+07.10.25 09:05 – Email from Contact Person 09
+Good morning
+For one user, the camera is no longer working in Teams. No camera is displayed in the Teams device settings. In other apps it also appears to be partially unavailable. Could you please assist?
+Kind regards
+07.10.25 09:12
+Ticket created and assigned to Employee 33.
+07.10.25 09:30 – Helpdesk inquiry
+Good day
+Could you please confirm whether the user is using Windows or Mac and whether the camera is available in the browser (e.g., Teams Web)?
+Thank you.
+07.10.25 09:48 – Customer response
+Windows 11. The camera also does not work in the browser.
+07.10.25 10:25 – Internal note
+Connected to the user via remote session. The camera is visible in Device Manager, but Teams has no access. In Windows privacy settings, camera access for apps is disabled. Additionally, Teams is not enabled in the list of allowed apps.
+According to “Blueprint – Teams Client Devices & Permissions – Version 1.2”, the standard checks were performed (OS privacy settings, app permissions, Teams restart).
+07.10.25 10:55 – Customer feedback
+User confirms that the camera is now displayed in Teams and the test call is successful.
+07.10.25 11:06 – Ticket closure
+Dear Contact Person 09
+The camera was blocked by operating system permissions. After adjusting the camera and app permissions according to the Blueprint, the camera is available again in Teams.
+Kind regards
+Consulting Sample Company
+
+
+",no,This is reporting a cause/diagnosis (camera missing due to OS/privacy permissions blocking Teams) rather than offering a recommendation or proposed action.,supported,Ticket TI-1615042 explicitly states Windows privacy settings had camera access for apps disabled and Teams was not allowed; closure notes the root cause was missing OS permission/blocked device setting and adjusting permissions restored the camera.
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,Camera-not-present in Teams was resolved where Windows privacy/settings had blocked camera access for apps; unlocking camera access for apps and enabling Teams restored camera availability (helpdesk performed OS privacy checks and adjusted permissions per a Blueprint),"=== CITED SOURCES ===
+SOURCE 42:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Camera not detected
+Ticket number: TI-1615042
+Company: Customer Company 52 AG
+Contact person: Contact Person 09
+Owner: Employee 33
+Origin: Email
+Type: Incident
+Created on: 07.10.25 09:12
+Closure
+Closure date: 07.10.25 11:06
+Closure text: Camera available again in Teams. Root cause was missing operating system permission and blocked device setting. Steps performed according to Blueprint.
+Activities
+07.10.25 09:05 – Email from Contact Person 09
+Good morning
+For one user, the camera is no longer working in Teams. No camera is displayed in the Teams device settings. In other apps it also appears to be partially unavailable. Could you please assist?
+Kind regards
+07.10.25 09:12
+Ticket created and assigned to Employee 33.
+07.10.25 09:30 – Helpdesk inquiry
+Good day
+Could you please confirm whether the user is using Windows or Mac and whether the camera is available in the browser (e.g., Teams Web)?
+Thank you.
+07.10.25 09:48 – Customer response
+Windows 11. The camera also does not work in the browser.
+07.10.25 10:25 – Internal note
+Connected to the user via remote session. The camera is visible in Device Manager, but Teams has no access. In Windows privacy settings, camera access for apps is disabled. Additionally, Teams is not enabled in the list of allowed apps.
+According to “Blueprint – Teams Client Devices & Permissions – Version 1.2”, the standard checks were performed (OS privacy settings, app permissions, Teams restart).
+07.10.25 10:55 – Customer feedback
+User confirms that the camera is now displayed in Teams and the test call is successful.
+07.10.25 11:06 – Ticket closure
+Dear Contact Person 09
+The camera was blocked by operating system permissions. After adjusting the camera and app permissions according to the Blueprint, the camera is available again in Teams.
+Kind regards
+Consulting Sample Company
+
+
+",no,This statement reports a past remediation and actions performed to restore camera access rather than offering recommendations or advising future actions.,supported,Supported by the ticket: internal notes state Windows privacy settings had camera access for apps disabled and Teams was not allowed; closure notes say permissions were adjusted per the Blueprint and the camera became available again.
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,Microphone: Physically verify headset connections. In the documented case reconnecting the mic plug fixed the zero input level immediately. Also verify Windows Sound shows an input signal and test a Teams test call [Documented: TI-1616128],"=== CITED SOURCES ===
+SOURCE 37:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Call participants cannot hear the user
+Ticket number: TI-1616128
+Company: Customer Company 52 AG
+Contact person: Contact Person 07
+Owner: Employee 33
+Origin: Telephone
+Type: Incident
+Created on: 14.10.25 09:18
+Closure
+Closure date: 14.10.25 09:52
+Closure text: Microphone not properly connected. Device configured correctly. Function restored.
+Activities
+14.10.25 09:10 – Telephone report
+Mr. Contact Person 07 reports that an employee can hear everything during Teams calls but cannot be heard by the other participant.
+Both internal and external calls are affected.
+Chat works.
+Camera works.
+14.10.25 09:18
+Ticket created and assigned to Employee 33.
+14.10.25 09:25 – Helpdesk inquiry
+Good morning
+Could you please briefly confirm:
+– Is a headset or the integrated microphone being used?
+– Does the issue also occur during a Teams test call?
+Thank you.
+14.10.25 09:32 – Customer response
+A USB headset is being used.
+No sound is recorded during the test call either.
+14.10.25 09:40 – Remote session
+Connected with the user.
+In Teams, “USB Audio Device” is selected as the microphone.
+However, the input level indicator remains empty.
+In the Windows Sound menu, no input signal is displayed either.
+After a brief check, it was determined that although the USB headset was plugged in, the microphone cable on the headset itself was not fully inserted.
+After correctly plugging it in, the input level indicator immediately showed activity.
+Test call performed → Microphone functioning.
+14.10.25 09:50 – User feedback
+Call tested. Working properly again.
+14.10.25 09:52 – Ticket closure
+Dear Contact Person 07
+The microphone was not properly connected, which prevented any input signal from being detected.
+After correctly reconnecting the device, voice transmission is functioning normally again.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement contains direct action verbs and instructions (e.g., 'Physically verify headset connections', 'verify Windows Sound', 'test a Teams test call'), which are recommendations for what to do.",supported,"The ticket TI-1616128 documents a USB headset mic not fully inserted; once reconnected the Windows input level indicator immediately showed activity and a Teams test call succeeded, supporting all recommended checks."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,"Camera: Check Windows Privacy > Camera and ensure “Allow apps to access your camera” and Teams is allowed; after changing, restart Teams. The documented case used these Blueprint checks and restored camera availability [Documented: TI-1615042]","=== CITED SOURCES ===
+SOURCE 42:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Camera not detected
+Ticket number: TI-1615042
+Company: Customer Company 52 AG
+Contact person: Contact Person 09
+Owner: Employee 33
+Origin: Email
+Type: Incident
+Created on: 07.10.25 09:12
+Closure
+Closure date: 07.10.25 11:06
+Closure text: Camera available again in Teams. Root cause was missing operating system permission and blocked device setting. Steps performed according to Blueprint.
+Activities
+07.10.25 09:05 – Email from Contact Person 09
+Good morning
+For one user, the camera is no longer working in Teams. No camera is displayed in the Teams device settings. In other apps it also appears to be partially unavailable. Could you please assist?
+Kind regards
+07.10.25 09:12
+Ticket created and assigned to Employee 33.
+07.10.25 09:30 – Helpdesk inquiry
+Good day
+Could you please confirm whether the user is using Windows or Mac and whether the camera is available in the browser (e.g., Teams Web)?
+Thank you.
+07.10.25 09:48 – Customer response
+Windows 11. The camera also does not work in the browser.
+07.10.25 10:25 – Internal note
+Connected to the user via remote session. The camera is visible in Device Manager, but Teams has no access. In Windows privacy settings, camera access for apps is disabled. Additionally, Teams is not enabled in the list of allowed apps.
+According to “Blueprint – Teams Client Devices & Permissions – Version 1.2”, the standard checks were performed (OS privacy settings, app permissions, Teams restart).
+07.10.25 10:55 – Customer feedback
+User confirms that the camera is now displayed in Teams and the test call is successful.
+07.10.25 11:06 – Ticket closure
+Dear Contact Person 09
+The camera was blocked by operating system permissions. After adjusting the camera and app permissions according to the Blueprint, the camera is available again in Teams.
+Kind regards
+Consulting Sample Company
+
+
+",yes,"Contains explicit directives ('Check', 'ensure', 'restart') that instruct the reader to perform specific actions to restore camera functionality.",supported,"The ticket TI-1615042 describes Windows camera access for apps being disabled and Teams not allowed; staff performed Blueprint checks (OS privacy, app permissions, Teams restart) and after adjusting permissions the camera was available in Teams."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,"Camera/mic issues were resolved by first‑level helpdesk performing OS privacy checks, app permission changes and simple device checks (Blueprint) or physically reconnecting a headset — these match 1st‑level resolution steps in the records","=== CITED SOURCES ===
+SOURCE 42:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Camera not detected
+Ticket number: TI-1615042
+Company: Customer Company 52 AG
+Contact person: Contact Person 09
+Owner: Employee 33
+Origin: Email
+Type: Incident
+Created on: 07.10.25 09:12
+Closure
+Closure date: 07.10.25 11:06
+Closure text: Camera available again in Teams. Root cause was missing operating system permission and blocked device setting. Steps performed according to Blueprint.
+Activities
+07.10.25 09:05 – Email from Contact Person 09
+Good morning
+For one user, the camera is no longer working in Teams. No camera is displayed in the Teams device settings. In other apps it also appears to be partially unavailable. Could you please assist?
+Kind regards
+07.10.25 09:12
+Ticket created and assigned to Employee 33.
+07.10.25 09:30 – Helpdesk inquiry
+Good day
+Could you please confirm whether the user is using Windows or Mac and whether the camera is available in the browser (e.g., Teams Web)?
+Thank you.
+07.10.25 09:48 – Customer response
+Windows 11. The camera also does not work in the browser.
+07.10.25 10:25 – Internal note
+Connected to the user via remote session. The camera is visible in Device Manager, but Teams has no access. In Windows privacy settings, camera access for apps is disabled. Additionally, Teams is not enabled in the list of allowed apps.
+According to “Blueprint – Teams Client Devices & Permissions – Version 1.2”, the standard checks were performed (OS privacy settings, app permissions, Teams restart).
+07.10.25 10:55 – Customer feedback
+User confirms that the camera is now displayed in Teams and the test call is successful.
+07.10.25 11:06 – Ticket closure
+Dear Contact Person 09
+The camera was blocked by operating system permissions. After adjusting the camera and app permissions according to the Blueprint, the camera is available again in Teams.
+Kind regards
+Consulting Sample Company
+
+
+
+
+SOURCE 37:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Call participants cannot hear the user
+Ticket number: TI-1616128
+Company: Customer Company 52 AG
+Contact person: Contact Person 07
+Owner: Employee 33
+Origin: Telephone
+Type: Incident
+Created on: 14.10.25 09:18
+Closure
+Closure date: 14.10.25 09:52
+Closure text: Microphone not properly connected. Device configured correctly. Function restored.
+Activities
+14.10.25 09:10 – Telephone report
+Mr. Contact Person 07 reports that an employee can hear everything during Teams calls but cannot be heard by the other participant.
+Both internal and external calls are affected.
+Chat works.
+Camera works.
+14.10.25 09:18
+Ticket created and assigned to Employee 33.
+14.10.25 09:25 – Helpdesk inquiry
+Good morning
+Could you please briefly confirm:
+– Is a headset or the integrated microphone being used?
+– Does the issue also occur during a Teams test call?
+Thank you.
+14.10.25 09:32 – Customer response
+A USB headset is being used.
+No sound is recorded during the test call either.
+14.10.25 09:40 – Remote session
+Connected with the user.
+In Teams, “USB Audio Device” is selected as the microphone.
+However, the input level indicator remains empty.
+In the Windows Sound menu, no input signal is displayed either.
+After a brief check, it was determined that although the USB headset was plugged in, the microphone cable on the headset itself was not fully inserted.
+After correctly plugging it in, the input level indicator immediately showed activity.
+Test call performed → Microphone functioning.
+14.10.25 09:50 – User feedback
+Call tested. Working properly again.
+14.10.25 09:52 – Ticket closure
+Dear Contact Person 07
+The microphone was not properly connected, which prevented any input signal from being detected.
+After correctly reconnecting the device, voice transmission is functioning normally again.
+Kind regards
+Consulting Sample Company
+
+",no,"The sentence reports past resolution steps and confirms they match records, without proposing any action, suggestion, or forward-looking advice.",supported,"Ticket TI-1615042 documents OS privacy and app-permission checks performed per the Blueprint to restore the camera, and ticket TI-1616128 documents the microphone fixed by correctly reconnecting the headset, all performed by the assigned helpdesk employee."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,Microphone no input on Teams with USB headset was resolved where the headset microphone plug was not fully connected; plugging it in correctly immediately restored the input level and call audio,"=== CITED SOURCES ===
+SOURCE 37:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Call participants cannot hear the user
+Ticket number: TI-1616128
+Company: Customer Company 52 AG
+Contact person: Contact Person 07
+Owner: Employee 33
+Origin: Telephone
+Type: Incident
+Created on: 14.10.25 09:18
+Closure
+Closure date: 14.10.25 09:52
+Closure text: Microphone not properly connected. Device configured correctly. Function restored.
+Activities
+14.10.25 09:10 – Telephone report
+Mr. Contact Person 07 reports that an employee can hear everything during Teams calls but cannot be heard by the other participant.
+Both internal and external calls are affected.
+Chat works.
+Camera works.
+14.10.25 09:18
+Ticket created and assigned to Employee 33.
+14.10.25 09:25 – Helpdesk inquiry
+Good morning
+Could you please briefly confirm:
+– Is a headset or the integrated microphone being used?
+– Does the issue also occur during a Teams test call?
+Thank you.
+14.10.25 09:32 – Customer response
+A USB headset is being used.
+No sound is recorded during the test call either.
+14.10.25 09:40 – Remote session
+Connected with the user.
+In Teams, “USB Audio Device” is selected as the microphone.
+However, the input level indicator remains empty.
+In the Windows Sound menu, no input signal is displayed either.
+After a brief check, it was determined that although the USB headset was plugged in, the microphone cable on the headset itself was not fully inserted.
+After correctly plugging it in, the input level indicator immediately showed activity.
+Test call performed → Microphone functioning.
+14.10.25 09:50 – User feedback
+Call tested. Working properly again.
+14.10.25 09:52 – Ticket closure
+Dear Contact Person 07
+The microphone was not properly connected, which prevented any input signal from being detected.
+After correctly reconnecting the device, voice transmission is functioning normally again.
+Kind regards
+Consulting Sample Company
+
+",no,This is a factual report of a past resolution (reconnecting the headset) describing what happened rather than offering a recommendation or instructing the reader to take action.,supported,Ticket TI-1616128 (SOURCE 37) reports a USB headset mic cable was not fully inserted; after correctly plugging it in the input level immediately showed activity and a test call confirmed the microphone worked.
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,", or (b) cached authentication tokens and Conditional Access evaluation delays (access restored after sign‑out / CA policy adjustment)","=== CITED SOURCES ===
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+",no,"This is a descriptive explanation of causes and outcomes (cached tokens and CA evaluation delays with access restored after sign-out or CA policy adjustment), not a recommendation or directive.",supported,The ticket explicitly identifies 'Token caching & Conditional Access evaluation delay' as the root cause and documents that signing out/clearing cached tokens and adjusting the Conditional Access policy restored access.
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,Confirm the folder’s SharePoint permission model (unique permissions?) and the Azure AD group(s) listed in the folder permissions [Documented: TI-1578891/TI-1571046],"=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+
+
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement uses a directive verb ('Confirm') instructing verification of the SharePoint permission model and Azure AD groups, which is actionable advice.",supported,"TI-1578891 explicitly notes the folder has Unique Permissions and documents permission via group 'SP_Compliance_Main' and AIP label referencing 'Compliance_Core', and TI-1571046 shows verification of Azure AD group membership and SharePoint permissions, so confirming permission model and listed AAD groups is documented in those tickets."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,"5) If behavior is inconsistent (works in Incognito but not regular session), have affected users fully sign out of all Office apps and browsers and sign in again (token cache / stale claims). In a prior case, clearing cached tokens and re‑authenticating restored access for users whose tokens were stale; where CA evaluation delay was a factor, reauthentication also helped after CA policy adjustments","=== CITED SOURCES ===
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+",yes,"Contains a conditional directive ('If... have affected users sign out and sign in again') instructing actions to resolve the issue, so it is a recommendation.",supported,Both tickets show inconsistent behavior (Incognito vs regular) and document tests where fully signing out of Office/clearing browser cache or clearing cached tokens and re‑authenticating restored access; Source 38 cites 'Token caching & Conditional Access evaluation delay' and notes access was stable after policy adjustment and renewed authentication.
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,"4) If externals are affected (documented root cause for externals): check whether there are two groups with the same name (Cloud‑native and On‑Prem synchronized) and whether Azure AD Connect is overwriting the cloud group. The documented resolution was consolidation of groups, ensuring external guests are managed cloud‑only where appropriate, cleaning the On‑Prem group, and performing a full Azure AD Connect synchronization [Documented fix: TI-1583327]","=== CITED SOURCES ===
+SOURCE 13:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – External project members lose access sporadically
+Ticket number: TI-1583327
+Company: Customer Company 25 AG
+Contact person: Contact Person 07
+Owner: Employee 31
+Origin: Email
+Type: Incident
+Created on: 07.04.25 08:12
+Closure
+Closure date: 17.04.25 15:18
+Closure text: Root cause identified (Azure AD Connect synchronization error affecting group attributes). Cleanup and full sync performed. Access stable.
+Activities
+07.04.25 08:04
+Subject: Project members (external) lose access to SharePoint
+From: Contact Person 07
+Good morning
+Several external project members report that they no longer have access to the folder
+/Projects/Compliance_Review_2025
+Internal employees do not appear to have issues.
+Please review.
+Kind regards
+Contact Person 07
+07.04.25 08:12
+Ticket created
+Assigned to: Employee 31
+Status: In Progress
+Notes
+07.04.25 09:05
+Helpdesk asks:
+• Does it affect only external users?
+• What error message appears?
+• Since when exactly?
+• Were groups or permissions adjusted?
+07.04.25 10:20
+Customer responds:
+Error message:
+Access denied
+One user could access yesterday.
+Today no longer.
+No deliberate changes made.
+07.04.25 11:10
+Helpdesk checks SharePoint:
+• Folder permissions correct
+• Group “SP_Compliance_Main” contains “COMPLIANCE_TEAM”
+• External users are members of “COMPLIANCE_TEAM”
+Comparison internal vs external users:
+No visible difference.
+08.04.25 08:45
+Customer adds:
+One external user was newly added and immediately had access.
+Another who has been in the project for months loses access sporadically.
+08.04.25 10:15
+Helpdesk tests:
+• Remove + re-add to group
+→ Access temporarily restored
+After approx. 1 hour, no access again.
+08.04.25 14:30
+Hypothesis:
+Token / cache / Conditional Access
+Test:
+User fully logs out → logs in again
+→ Access remains denied
+Hypothesis rejected.
+09.04.25 09:12
+Helpdesk asks:
+Are external users created as “Guest” or “Member”?
+09.04.25 10:05
+Customer:
+All externals are created as Guest.
+Some were recently synchronized from On-Prem AD to Cloud.
+09.04.25 11:40
+First observation:
+For two affected users in Entra ID portal, attribute
+“source” = Windows Server AD
+For functioning external users:
+“source” = Azure AD
+Correlation unclear.
+09.04.25 14:20
+Ticket escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – Identity
+10.04.25 08:55
+Ticket taken over by: System Engineer 14
+In-depth analysis
+10.04.25 09:40
+Azure AD Connect reviewed.
+Observation:
+Group “COMPLIANCE_TEAM” exists both On-Prem and in Cloud.
+On-Prem version is synchronized.
+Cloud version was originally created manually.
+Result:
+• External guests exist only in Cloud group
+• SharePoint references the synchronized On-Prem group
+Same name, but different Object IDs.
+10.04.25 11:25
+Review of group members via Graph:
+Cloud group:
+→ Contains external guests
+Synchronized On-Prem group:
+→ Contains only internal users
+Since SharePoint evaluates by Object ID, not by name, external users lose access once synchronization takes effect.
+11.04.25 08:30
+Reproduction in test:
+• On-Prem group re-synchronized
+• Cloud group overwritten
+• External users reproducibly lose access
+Root Cause
+Two groups existed with identical name:
+COMPLIANCE_TEAM
+1. Cloud-native group
+2. Synchronized On-Prem group
+Through Azure AD Connect, the Cloud group was gradually overwritten or deactivated.
+SharePoint referenced the synchronized version.
+External guests were never managed On-Prem and therefore were not included in the synchronized group.
+Actions
+11.04.25 – 14.04.25
+• Consolidation of group structure
+• Old Cloud group removed
+• On-Prem group properly cleaned
+• External guests managed as Cloud-only members
+• Azure AD Connect full synchronization performed
+15.04.25 – Monitoring
+Access remains stable
+No further inconsistencies
+17.04.25 15:18 – Ticket closure
+Dear Contact Person 07
+The root cause was the parallel existence of two groups with identical names but different origins (Cloud vs. On-Prem synchronized).
+Due to synchronization, effective group membership for external users was not correctly applied.
+The group structure was consolidated and fully synchronized.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+",yes,"The text uses conditional and directive language ('If externals are affected: check whether...') and lists prescriptive actions (consolidate groups, manage guests cloud-only, clean On‑Prem group, perform full sync), which constitute recommendations.",supported,"Ticket TI-1583327 explicitly documents two identically named groups (cloud-native and synchronized On-Prem), shows Azure AD Connect overwriting the cloud group causing externals to lose access, and records the fix: consolidating groups, removing/cleaning the On-Prem group, managing externals as cloud-only, and performing a full Azure AD Connect synchronization."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,4) Check Azure AD Sign‑in / Token claims for affected users to see which group claims are present in the token and whether the label’s required group appears. Prior work showed tokens for affected users contained the project group but not the label group; this is diagnostic evidence that label enforcement can block access,"=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+",yes,"Uses a directive verb 'Check' instructing the reader to inspect Azure AD sign-in/token claims, i.e., an explicit recommended diagnostic action.",supported,"Azure AD sign-in logs in the context state affected users' tokens contained the COMPLIANCE_TEAM claim but not Compliance_Core, and tests showed adding a user to Compliance_Core immediately restored access, which supports that checking token group claims can diagnose label-enforced access blocking."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,Sensitivity label conflict and test of adding user to label group: TI-1578891,"=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+",no,"This is a descriptive title noting an issue and test (sensitivity label conflict and adding a user) and contains no recommendation, directive, or forward-looking advice.",supported,"The ticket analysis explicitly hypothesizes a conflict between SharePoint permissions and the sensitivity/AIP label, and testing showed that adding a user to the 'Compliance_Core' label group immediately granted access (removal revoked access), matching the ANSWER."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,"Treat the SharePoint access problem (multiple internal users + external auditor unable to deliver files) as a 2nd‑level / Identity escalation if the initial helpdesk checks (folder permissions, label check, sign‑out/re‑auth) do not immediately resolve it. In the indexed incidents similar multi‑user / group / sync / label problems were escalated to BU Infrastructure – M365 / Identity for in‑depth analysis (TI-1578891, TI-1583327)","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+
+
+SOURCE 13:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – External project members lose access sporadically
+Ticket number: TI-1583327
+Company: Customer Company 25 AG
+Contact person: Contact Person 07
+Owner: Employee 31
+Origin: Email
+Type: Incident
+Created on: 07.04.25 08:12
+Closure
+Closure date: 17.04.25 15:18
+Closure text: Root cause identified (Azure AD Connect synchronization error affecting group attributes). Cleanup and full sync performed. Access stable.
+Activities
+07.04.25 08:04
+Subject: Project members (external) lose access to SharePoint
+From: Contact Person 07
+Good morning
+Several external project members report that they no longer have access to the folder
+/Projects/Compliance_Review_2025
+Internal employees do not appear to have issues.
+Please review.
+Kind regards
+Contact Person 07
+07.04.25 08:12
+Ticket created
+Assigned to: Employee 31
+Status: In Progress
+Notes
+07.04.25 09:05
+Helpdesk asks:
+• Does it affect only external users?
+• What error message appears?
+• Since when exactly?
+• Were groups or permissions adjusted?
+07.04.25 10:20
+Customer responds:
+Error message:
+Access denied
+One user could access yesterday.
+Today no longer.
+No deliberate changes made.
+07.04.25 11:10
+Helpdesk checks SharePoint:
+• Folder permissions correct
+• Group “SP_Compliance_Main” contains “COMPLIANCE_TEAM”
+• External users are members of “COMPLIANCE_TEAM”
+Comparison internal vs external users:
+No visible difference.
+08.04.25 08:45
+Customer adds:
+One external user was newly added and immediately had access.
+Another who has been in the project for months loses access sporadically.
+08.04.25 10:15
+Helpdesk tests:
+• Remove + re-add to group
+→ Access temporarily restored
+After approx. 1 hour, no access again.
+08.04.25 14:30
+Hypothesis:
+Token / cache / Conditional Access
+Test:
+User fully logs out → logs in again
+→ Access remains denied
+Hypothesis rejected.
+09.04.25 09:12
+Helpdesk asks:
+Are external users created as “Guest” or “Member”?
+09.04.25 10:05
+Customer:
+All externals are created as Guest.
+Some were recently synchronized from On-Prem AD to Cloud.
+09.04.25 11:40
+First observation:
+For two affected users in Entra ID portal, attribute
+“source” = Windows Server AD
+For functioning external users:
+“source” = Azure AD
+Correlation unclear.
+09.04.25 14:20
+Ticket escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – Identity
+10.04.25 08:55
+Ticket taken over by: System Engineer 14
+In-depth analysis
+10.04.25 09:40
+Azure AD Connect reviewed.
+Observation:
+Group “COMPLIANCE_TEAM” exists both On-Prem and in Cloud.
+On-Prem version is synchronized.
+Cloud version was originally created manually.
+Result:
+• External guests exist only in Cloud group
+• SharePoint references the synchronized On-Prem group
+Same name, but different Object IDs.
+10.04.25 11:25
+Review of group members via Graph:
+Cloud group:
+→ Contains external guests
+Synchronized On-Prem group:
+→ Contains only internal users
+Since SharePoint evaluates by Object ID, not by name, external users lose access once synchronization takes effect.
+11.04.25 08:30
+Reproduction in test:
+• On-Prem group re-synchronized
+• Cloud group overwritten
+• External users reproducibly lose access
+Root Cause
+Two groups existed with identical name:
+COMPLIANCE_TEAM
+1. Cloud-native group
+2. Synchronized On-Prem group
+Through Azure AD Connect, the Cloud group was gradually overwritten or deactivated.
+SharePoint referenced the synchronized version.
+External guests were never managed On-Prem and therefore were not included in the synchronized group.
+Actions
+11.04.25 – 14.04.25
+• Consolidation of group structure
+• Old Cloud group removed
+• On-Prem group properly cleaned
+• External guests managed as Cloud-only members
+• Azure AD Connect full synchronization performed
+15.04.25 – Monitoring
+Access remains stable
+No further inconsistencies
+17.04.25 15:18 – Ticket closure
+Dear Contact Person 07
+The root cause was the parallel existence of two groups with identical names but different origins (Cloud vs. On-Prem synchronized).
+Due to synchronization, effective group membership for external users was not correctly applied.
+The group structure was consolidated and fully synchronized.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+",yes,It issues conditional directive advice—instructing to treat the issue as a 2nd‑level/Identity escalation if initial helpdesk checks do not resolve it.,supported,"Both cited tickets show helpdesk performing folder/permission checks, sensitivity-label review and sign-out/re-auth/cache tests and then escalating to BU Infrastructure – M365/Identity (TI-1578891 escalated to BU Infrastructure – M365 / Identity; TI-1583327 escalated to BU Infrastructure – Identity), which supports the recommended 2nd‑level identity escalation after initial checks fail."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,"The records document fixes for label vs permission conflicts, group duplication via Azure AD Connect, and token/Conditional Access caching issues — all plausible matches for your symptom set and with concrete remediation steps already used in other tickets","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+
+
+SOURCE 13:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – External project members lose access sporadically
+Ticket number: TI-1583327
+Company: Customer Company 25 AG
+Contact person: Contact Person 07
+Owner: Employee 31
+Origin: Email
+Type: Incident
+Created on: 07.04.25 08:12
+Closure
+Closure date: 17.04.25 15:18
+Closure text: Root cause identified (Azure AD Connect synchronization error affecting group attributes). Cleanup and full sync performed. Access stable.
+Activities
+07.04.25 08:04
+Subject: Project members (external) lose access to SharePoint
+From: Contact Person 07
+Good morning
+Several external project members report that they no longer have access to the folder
+/Projects/Compliance_Review_2025
+Internal employees do not appear to have issues.
+Please review.
+Kind regards
+Contact Person 07
+07.04.25 08:12
+Ticket created
+Assigned to: Employee 31
+Status: In Progress
+Notes
+07.04.25 09:05
+Helpdesk asks:
+• Does it affect only external users?
+• What error message appears?
+• Since when exactly?
+• Were groups or permissions adjusted?
+07.04.25 10:20
+Customer responds:
+Error message:
+Access denied
+One user could access yesterday.
+Today no longer.
+No deliberate changes made.
+07.04.25 11:10
+Helpdesk checks SharePoint:
+• Folder permissions correct
+• Group “SP_Compliance_Main” contains “COMPLIANCE_TEAM”
+• External users are members of “COMPLIANCE_TEAM”
+Comparison internal vs external users:
+No visible difference.
+08.04.25 08:45
+Customer adds:
+One external user was newly added and immediately had access.
+Another who has been in the project for months loses access sporadically.
+08.04.25 10:15
+Helpdesk tests:
+• Remove + re-add to group
+→ Access temporarily restored
+After approx. 1 hour, no access again.
+08.04.25 14:30
+Hypothesis:
+Token / cache / Conditional Access
+Test:
+User fully logs out → logs in again
+→ Access remains denied
+Hypothesis rejected.
+09.04.25 09:12
+Helpdesk asks:
+Are external users created as “Guest” or “Member”?
+09.04.25 10:05
+Customer:
+All externals are created as Guest.
+Some were recently synchronized from On-Prem AD to Cloud.
+09.04.25 11:40
+First observation:
+For two affected users in Entra ID portal, attribute
+“source” = Windows Server AD
+For functioning external users:
+“source” = Azure AD
+Correlation unclear.
+09.04.25 14:20
+Ticket escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – Identity
+10.04.25 08:55
+Ticket taken over by: System Engineer 14
+In-depth analysis
+10.04.25 09:40
+Azure AD Connect reviewed.
+Observation:
+Group “COMPLIANCE_TEAM” exists both On-Prem and in Cloud.
+On-Prem version is synchronized.
+Cloud version was originally created manually.
+Result:
+• External guests exist only in Cloud group
+• SharePoint references the synchronized On-Prem group
+Same name, but different Object IDs.
+10.04.25 11:25
+Review of group members via Graph:
+Cloud group:
+→ Contains external guests
+Synchronized On-Prem group:
+→ Contains only internal users
+Since SharePoint evaluates by Object ID, not by name, external users lose access once synchronization takes effect.
+11.04.25 08:30
+Reproduction in test:
+• On-Prem group re-synchronized
+• Cloud group overwritten
+• External users reproducibly lose access
+Root Cause
+Two groups existed with identical name:
+COMPLIANCE_TEAM
+1. Cloud-native group
+2. Synchronized On-Prem group
+Through Azure AD Connect, the Cloud group was gradually overwritten or deactivated.
+SharePoint referenced the synchronized version.
+External guests were never managed On-Prem and therefore were not included in the synchronized group.
+Actions
+11.04.25 – 14.04.25
+• Consolidation of group structure
+• Old Cloud group removed
+• On-Prem group properly cleaned
+• External guests managed as Cloud-only members
+• Azure AD Connect full synchronization performed
+15.04.25 – Monitoring
+Access remains stable
+No further inconsistencies
+17.04.25 15:18 – Ticket closure
+Dear Contact Person 07
+The root cause was the parallel existence of two groups with identical names but different origins (Cloud vs. On-Prem synchronized).
+Due to synchronization, effective group membership for external users was not correctly applied.
+The group structure was consolidated and fully synchronized.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+",no,"No — the statement reports that records contain fixes and remediation steps used elsewhere, but does not recommend or direct any action.",partially_supported,"The context clearly documents fixes for group-duplication via Azure AD Connect (SOURCE 13) and for token/Conditional Access caching issues (SOURCE 38), but while label vs permission conflicts are investigated in SOURCE 30, that ticket does not show a concrete remediation/fix being applied, so the claim that records document fixes for that issue is not supported."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,Ask an affected user to test Incognito/private browsing and then to fully sign out of Office apps and sign back in; record whether that temporarily resolves it (documented symptomatic behaviour in TI-1578891 and TI-1571046),"=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+
+
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement uses explicit directive verbs and actionable instructions ('Ask an affected user to test...', 'sign out... and sign back in', 'record whether...'), so it is a recommendation.",partially_supported,"Signing out of Office and re-authenticating is documented in both TI-1578891 and TI-1571046 as temporarily resolving access, and Incognito/private browsing is documented in TI-1578891; however Incognito/private browsing is not shown in TI-1571046, so the claim that both behaviours are documented in both tickets is not fully supported."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,Duplicate Cloud vs On‑Prem group and external users losing access; consolidation and full sync remediation: TI-1583327,"=== CITED SOURCES ===
+SOURCE 13:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – External project members lose access sporadically
+Ticket number: TI-1583327
+Company: Customer Company 25 AG
+Contact person: Contact Person 07
+Owner: Employee 31
+Origin: Email
+Type: Incident
+Created on: 07.04.25 08:12
+Closure
+Closure date: 17.04.25 15:18
+Closure text: Root cause identified (Azure AD Connect synchronization error affecting group attributes). Cleanup and full sync performed. Access stable.
+Activities
+07.04.25 08:04
+Subject: Project members (external) lose access to SharePoint
+From: Contact Person 07
+Good morning
+Several external project members report that they no longer have access to the folder
+/Projects/Compliance_Review_2025
+Internal employees do not appear to have issues.
+Please review.
+Kind regards
+Contact Person 07
+07.04.25 08:12
+Ticket created
+Assigned to: Employee 31
+Status: In Progress
+Notes
+07.04.25 09:05
+Helpdesk asks:
+• Does it affect only external users?
+• What error message appears?
+• Since when exactly?
+• Were groups or permissions adjusted?
+07.04.25 10:20
+Customer responds:
+Error message:
+Access denied
+One user could access yesterday.
+Today no longer.
+No deliberate changes made.
+07.04.25 11:10
+Helpdesk checks SharePoint:
+• Folder permissions correct
+• Group “SP_Compliance_Main” contains “COMPLIANCE_TEAM”
+• External users are members of “COMPLIANCE_TEAM”
+Comparison internal vs external users:
+No visible difference.
+08.04.25 08:45
+Customer adds:
+One external user was newly added and immediately had access.
+Another who has been in the project for months loses access sporadically.
+08.04.25 10:15
+Helpdesk tests:
+• Remove + re-add to group
+→ Access temporarily restored
+After approx. 1 hour, no access again.
+08.04.25 14:30
+Hypothesis:
+Token / cache / Conditional Access
+Test:
+User fully logs out → logs in again
+→ Access remains denied
+Hypothesis rejected.
+09.04.25 09:12
+Helpdesk asks:
+Are external users created as “Guest” or “Member”?
+09.04.25 10:05
+Customer:
+All externals are created as Guest.
+Some were recently synchronized from On-Prem AD to Cloud.
+09.04.25 11:40
+First observation:
+For two affected users in Entra ID portal, attribute
+“source” = Windows Server AD
+For functioning external users:
+“source” = Azure AD
+Correlation unclear.
+09.04.25 14:20
+Ticket escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – Identity
+10.04.25 08:55
+Ticket taken over by: System Engineer 14
+In-depth analysis
+10.04.25 09:40
+Azure AD Connect reviewed.
+Observation:
+Group “COMPLIANCE_TEAM” exists both On-Prem and in Cloud.
+On-Prem version is synchronized.
+Cloud version was originally created manually.
+Result:
+• External guests exist only in Cloud group
+• SharePoint references the synchronized On-Prem group
+Same name, but different Object IDs.
+10.04.25 11:25
+Review of group members via Graph:
+Cloud group:
+→ Contains external guests
+Synchronized On-Prem group:
+→ Contains only internal users
+Since SharePoint evaluates by Object ID, not by name, external users lose access once synchronization takes effect.
+11.04.25 08:30
+Reproduction in test:
+• On-Prem group re-synchronized
+• Cloud group overwritten
+• External users reproducibly lose access
+Root Cause
+Two groups existed with identical name:
+COMPLIANCE_TEAM
+1. Cloud-native group
+2. Synchronized On-Prem group
+Through Azure AD Connect, the Cloud group was gradually overwritten or deactivated.
+SharePoint referenced the synchronized version.
+External guests were never managed On-Prem and therefore were not included in the synchronized group.
+Actions
+11.04.25 – 14.04.25
+• Consolidation of group structure
+• Old Cloud group removed
+• On-Prem group properly cleaned
+• External guests managed as Cloud-only members
+• Azure AD Connect full synchronization performed
+15.04.25 – Monitoring
+Access remains stable
+No further inconsistencies
+17.04.25 15:18 – Ticket closure
+Dear Contact Person 07
+The root cause was the parallel existence of two groups with identical names but different origins (Cloud vs. On-Prem synchronized).
+Due to synchronization, effective group membership for external users was not correctly applied.
+The group structure was consolidated and fully synchronized.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+",yes,"It proposes remediation actions ('consolidation and full sync remediation') to address access loss, which constitutes forward-looking advice.",supported,"Supported — Ticket TI-1583327 documents two groups with identical name (Cloud-native and synchronized On-Prem) causing external guests to lose access, and describes consolidation of the group structure and an Azure AD Connect full synchronization as the remediation."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,"What the records document: external users can lose effective access when two groups with identical names exist (one Cloud, one synchronized On‑Prem). SharePoint evaluates group membership by objectId; synchronized On‑Prem groups can overwrite cloud groups and drop external guests that were only in the cloud group. Consolidation and full Azure AD Connect sync fixed that scenario and restored external access in the documented incident","=== CITED SOURCES ===
+SOURCE 13:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – External project members lose access sporadically
+Ticket number: TI-1583327
+Company: Customer Company 25 AG
+Contact person: Contact Person 07
+Owner: Employee 31
+Origin: Email
+Type: Incident
+Created on: 07.04.25 08:12
+Closure
+Closure date: 17.04.25 15:18
+Closure text: Root cause identified (Azure AD Connect synchronization error affecting group attributes). Cleanup and full sync performed. Access stable.
+Activities
+07.04.25 08:04
+Subject: Project members (external) lose access to SharePoint
+From: Contact Person 07
+Good morning
+Several external project members report that they no longer have access to the folder
+/Projects/Compliance_Review_2025
+Internal employees do not appear to have issues.
+Please review.
+Kind regards
+Contact Person 07
+07.04.25 08:12
+Ticket created
+Assigned to: Employee 31
+Status: In Progress
+Notes
+07.04.25 09:05
+Helpdesk asks:
+• Does it affect only external users?
+• What error message appears?
+• Since when exactly?
+• Were groups or permissions adjusted?
+07.04.25 10:20
+Customer responds:
+Error message:
+Access denied
+One user could access yesterday.
+Today no longer.
+No deliberate changes made.
+07.04.25 11:10
+Helpdesk checks SharePoint:
+• Folder permissions correct
+• Group “SP_Compliance_Main” contains “COMPLIANCE_TEAM”
+• External users are members of “COMPLIANCE_TEAM”
+Comparison internal vs external users:
+No visible difference.
+08.04.25 08:45
+Customer adds:
+One external user was newly added and immediately had access.
+Another who has been in the project for months loses access sporadically.
+08.04.25 10:15
+Helpdesk tests:
+• Remove + re-add to group
+→ Access temporarily restored
+After approx. 1 hour, no access again.
+08.04.25 14:30
+Hypothesis:
+Token / cache / Conditional Access
+Test:
+User fully logs out → logs in again
+→ Access remains denied
+Hypothesis rejected.
+09.04.25 09:12
+Helpdesk asks:
+Are external users created as “Guest” or “Member”?
+09.04.25 10:05
+Customer:
+All externals are created as Guest.
+Some were recently synchronized from On-Prem AD to Cloud.
+09.04.25 11:40
+First observation:
+For two affected users in Entra ID portal, attribute
+“source” = Windows Server AD
+For functioning external users:
+“source” = Azure AD
+Correlation unclear.
+09.04.25 14:20
+Ticket escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – Identity
+10.04.25 08:55
+Ticket taken over by: System Engineer 14
+In-depth analysis
+10.04.25 09:40
+Azure AD Connect reviewed.
+Observation:
+Group “COMPLIANCE_TEAM” exists both On-Prem and in Cloud.
+On-Prem version is synchronized.
+Cloud version was originally created manually.
+Result:
+• External guests exist only in Cloud group
+• SharePoint references the synchronized On-Prem group
+Same name, but different Object IDs.
+10.04.25 11:25
+Review of group members via Graph:
+Cloud group:
+→ Contains external guests
+Synchronized On-Prem group:
+→ Contains only internal users
+Since SharePoint evaluates by Object ID, not by name, external users lose access once synchronization takes effect.
+11.04.25 08:30
+Reproduction in test:
+• On-Prem group re-synchronized
+• Cloud group overwritten
+• External users reproducibly lose access
+Root Cause
+Two groups existed with identical name:
+COMPLIANCE_TEAM
+1. Cloud-native group
+2. Synchronized On-Prem group
+Through Azure AD Connect, the Cloud group was gradually overwritten or deactivated.
+SharePoint referenced the synchronized version.
+External guests were never managed On-Prem and therefore were not included in the synchronized group.
+Actions
+11.04.25 – 14.04.25
+• Consolidation of group structure
+• Old Cloud group removed
+• On-Prem group properly cleaned
+• External guests managed as Cloud-only members
+• Azure AD Connect full synchronization performed
+15.04.25 – Monitoring
+Access remains stable
+No further inconsistencies
+17.04.25 15:18 – Ticket closure
+Dear Contact Person 07
+The root cause was the parallel existence of two groups with identical names but different origins (Cloud vs. On-Prem synchronized).
+Due to synchronization, effective group membership for external users was not correctly applied.
+The group structure was consolidated and fully synchronized.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+",no,The text reports what happened and how it was remediated in the incident without using directive language or explicitly recommending future actions.,supported,"The ticket explicitly documents duplicate Cloud vs On‑Prem groups, notes SharePoint evaluates membership by objectId (not name), shows synchronization overwrote the Cloud group removing cloud-only guests, and describes consolidation plus a full Azure AD Connect sync that restored stable access."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,"5) If access is intermittent or works only after sign‑out: review Sign‑In logs and token claims to confirm whether the token contains required group claims (documented in TI-1578891/TI-1571046). If tokens are stale and Conditional Access is involved, reauthentication plus a temporary CA policy adjustment resolved the documented CA‑related case [Documented: TI-1571046]","=== CITED SOURCES ===
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement uses conditional and directive language ('If ... review', 'confirm', 'reauthentication plus a temporary CA policy adjustment') that recommends specific actions.",partially_supported,"The recommended steps (review Sign‑In logs, token staleness causing outdated group claims, and reauthentication plus a temporary Conditional Access policy adjustment resolving the issue) are documented in TI-1571046, but the answer additionally cites TI-1578891 which is not present in the provided CONTEXT."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,3) If step 2 shows a label→group mismatch (documented fix): as a diagnostic test temporarily add one affected user to the label’s allowed Azure AD group (follow your org change management) to confirm label enforcement is the blocker — prior ticket documented that adding user to “Compliance_Core” immediately allowed access [Documented test: TI-1578891],"=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+",yes,"The text issues conditional, directive instructions (e.g., 'If... add one affected user... to confirm') recommending a diagnostic action to verify label enforcement.",supported,"Supported — Ticket TI-1578891 documents a test where adding a user to Azure AD group 'Compliance_Core' immediately allowed access and removal denied access, matching the recommended diagnostic test."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,Camera not visible in Teams (documented resolution): check Windows OS privacy settings and app permissions; enable camera access for apps and specifically allow Teams. In the documented case adjusting OS privacy settings and enabling Teams allowed the camera to appear and work again,"=== CITED SOURCES ===
+SOURCE 42:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Camera not detected
+Ticket number: TI-1615042
+Company: Customer Company 52 AG
+Contact person: Contact Person 09
+Owner: Employee 33
+Origin: Email
+Type: Incident
+Created on: 07.10.25 09:12
+Closure
+Closure date: 07.10.25 11:06
+Closure text: Camera available again in Teams. Root cause was missing operating system permission and blocked device setting. Steps performed according to Blueprint.
+Activities
+07.10.25 09:05 – Email from Contact Person 09
+Good morning
+For one user, the camera is no longer working in Teams. No camera is displayed in the Teams device settings. In other apps it also appears to be partially unavailable. Could you please assist?
+Kind regards
+07.10.25 09:12
+Ticket created and assigned to Employee 33.
+07.10.25 09:30 – Helpdesk inquiry
+Good day
+Could you please confirm whether the user is using Windows or Mac and whether the camera is available in the browser (e.g., Teams Web)?
+Thank you.
+07.10.25 09:48 – Customer response
+Windows 11. The camera also does not work in the browser.
+07.10.25 10:25 – Internal note
+Connected to the user via remote session. The camera is visible in Device Manager, but Teams has no access. In Windows privacy settings, camera access for apps is disabled. Additionally, Teams is not enabled in the list of allowed apps.
+According to “Blueprint – Teams Client Devices & Permissions – Version 1.2”, the standard checks were performed (OS privacy settings, app permissions, Teams restart).
+07.10.25 10:55 – Customer feedback
+User confirms that the camera is now displayed in Teams and the test call is successful.
+07.10.25 11:06 – Ticket closure
+Dear Contact Person 09
+The camera was blocked by operating system permissions. After adjusting the camera and app permissions according to the Blueprint, the camera is available again in Teams.
+Kind regards
+Consulting Sample Company
+
+
+",yes,"The statement uses directive verbs ('check', 'enable') and gives actionable steps to change OS/app settings, which constitutes a recommendation.",supported,"The ticket states Windows privacy settings had camera access for apps disabled and Teams was not allowed, and after adjusting OS camera and app permissions (per the Blueprint) the camera appeared in Teams and the test call succeeded."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,- A SharePoint folder that was renamed and then labelled with a sensitivity / encryption label caused inconsistent access for some users. In one prior case the label required encryption and limited access to a different Azure AD group than the one actually used for SharePoint permissions; adding a user into the label’s allowed group restored access immediately (documented test and hypothesis),"=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+",no,No — the text describes a prior incident and a documented remediation (adding a user restored access) without framing it as a recommendation or advising future action.,supported,"The ticket shows the folder was renamed and the sensitivity label 'Confidential – Internal' (with encryption and access restricted to Azure AD group 'Compliance_Core') was applied while SharePoint permissions used 'SP_Compliance_Main', causing inconsistent access; a documented test adding a user to 'Compliance_Core' restored access immediately (and removal denied it)."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,Treat the Teams camera and the USB headset microphone issues as 1st‑level tasks: these were resolved by helpdesk using OS privacy/app permission checks and a device physical check in the documented tickets (TI-1615042 and TI-1616128),"=== CITED SOURCES ===
+SOURCE 42:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Camera not detected
+Ticket number: TI-1615042
+Company: Customer Company 52 AG
+Contact person: Contact Person 09
+Owner: Employee 33
+Origin: Email
+Type: Incident
+Created on: 07.10.25 09:12
+Closure
+Closure date: 07.10.25 11:06
+Closure text: Camera available again in Teams. Root cause was missing operating system permission and blocked device setting. Steps performed according to Blueprint.
+Activities
+07.10.25 09:05 – Email from Contact Person 09
+Good morning
+For one user, the camera is no longer working in Teams. No camera is displayed in the Teams device settings. In other apps it also appears to be partially unavailable. Could you please assist?
+Kind regards
+07.10.25 09:12
+Ticket created and assigned to Employee 33.
+07.10.25 09:30 – Helpdesk inquiry
+Good day
+Could you please confirm whether the user is using Windows or Mac and whether the camera is available in the browser (e.g., Teams Web)?
+Thank you.
+07.10.25 09:48 – Customer response
+Windows 11. The camera also does not work in the browser.
+07.10.25 10:25 – Internal note
+Connected to the user via remote session. The camera is visible in Device Manager, but Teams has no access. In Windows privacy settings, camera access for apps is disabled. Additionally, Teams is not enabled in the list of allowed apps.
+According to “Blueprint – Teams Client Devices & Permissions – Version 1.2”, the standard checks were performed (OS privacy settings, app permissions, Teams restart).
+07.10.25 10:55 – Customer feedback
+User confirms that the camera is now displayed in Teams and the test call is successful.
+07.10.25 11:06 – Ticket closure
+Dear Contact Person 09
+The camera was blocked by operating system permissions. After adjusting the camera and app permissions according to the Blueprint, the camera is available again in Teams.
+Kind regards
+Consulting Sample Company
+
+
+
+
+SOURCE 37:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Call participants cannot hear the user
+Ticket number: TI-1616128
+Company: Customer Company 52 AG
+Contact person: Contact Person 07
+Owner: Employee 33
+Origin: Telephone
+Type: Incident
+Created on: 14.10.25 09:18
+Closure
+Closure date: 14.10.25 09:52
+Closure text: Microphone not properly connected. Device configured correctly. Function restored.
+Activities
+14.10.25 09:10 – Telephone report
+Mr. Contact Person 07 reports that an employee can hear everything during Teams calls but cannot be heard by the other participant.
+Both internal and external calls are affected.
+Chat works.
+Camera works.
+14.10.25 09:18
+Ticket created and assigned to Employee 33.
+14.10.25 09:25 – Helpdesk inquiry
+Good morning
+Could you please briefly confirm:
+– Is a headset or the integrated microphone being used?
+– Does the issue also occur during a Teams test call?
+Thank you.
+14.10.25 09:32 – Customer response
+A USB headset is being used.
+No sound is recorded during the test call either.
+14.10.25 09:40 – Remote session
+Connected with the user.
+In Teams, “USB Audio Device” is selected as the microphone.
+However, the input level indicator remains empty.
+In the Windows Sound menu, no input signal is displayed either.
+After a brief check, it was determined that although the USB headset was plugged in, the microphone cable on the headset itself was not fully inserted.
+After correctly plugging it in, the input level indicator immediately showed activity.
+Test call performed → Microphone functioning.
+14.10.25 09:50 – User feedback
+Call tested. Working properly again.
+14.10.25 09:52 – Ticket closure
+Dear Contact Person 07
+The microphone was not properly connected, which prevented any input signal from being detected.
+After correctly reconnecting the device, voice transmission is functioning normally again.
+Kind regards
+Consulting Sample Company
+
+",yes,It contains an imperative instruction—'Treat the Teams camera and the USB headset microphone issues as 1st‑level tasks'—which directs how to handle such issues and therefore is a recommendation.,supported,"Ticket TI-1615042 shows helpdesk resolved the camera by changing OS privacy/app permissions per the Blueprint, and TI-1616128 shows helpdesk fixed the microphone by physically reconnecting the USB headset, supporting treating these as 1st-level tasks."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,"8) If camera/mic checks do not resolve the Teams device issues, escalate to 2nd‑level (or the team that manages endpoints/driver policies) — in the camera case the issue was Windows privacy settings (helpdesk resolved), so escalate only if device drivers or blocked device policies appear involved (this escalation path is implied by the documented helpdesk->Blueprint steps)","=== CITED SOURCES ===
+SOURCE 42:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Camera not detected
+Ticket number: TI-1615042
+Company: Customer Company 52 AG
+Contact person: Contact Person 09
+Owner: Employee 33
+Origin: Email
+Type: Incident
+Created on: 07.10.25 09:12
+Closure
+Closure date: 07.10.25 11:06
+Closure text: Camera available again in Teams. Root cause was missing operating system permission and blocked device setting. Steps performed according to Blueprint.
+Activities
+07.10.25 09:05 – Email from Contact Person 09
+Good morning
+For one user, the camera is no longer working in Teams. No camera is displayed in the Teams device settings. In other apps it also appears to be partially unavailable. Could you please assist?
+Kind regards
+07.10.25 09:12
+Ticket created and assigned to Employee 33.
+07.10.25 09:30 – Helpdesk inquiry
+Good day
+Could you please confirm whether the user is using Windows or Mac and whether the camera is available in the browser (e.g., Teams Web)?
+Thank you.
+07.10.25 09:48 – Customer response
+Windows 11. The camera also does not work in the browser.
+07.10.25 10:25 – Internal note
+Connected to the user via remote session. The camera is visible in Device Manager, but Teams has no access. In Windows privacy settings, camera access for apps is disabled. Additionally, Teams is not enabled in the list of allowed apps.
+According to “Blueprint – Teams Client Devices & Permissions – Version 1.2”, the standard checks were performed (OS privacy settings, app permissions, Teams restart).
+07.10.25 10:55 – Customer feedback
+User confirms that the camera is now displayed in Teams and the test call is successful.
+07.10.25 11:06 – Ticket closure
+Dear Contact Person 09
+The camera was blocked by operating system permissions. After adjusting the camera and app permissions according to the Blueprint, the camera is available again in Teams.
+Kind regards
+Consulting Sample Company
+
+
+",yes,"The statement gives conditional, directive advice—if checks fail then escalate to 2nd‑level and specifies when escalation is appropriate.",partially_supported,"The ticket explicitly shows the camera issue was due to Windows privacy settings and was resolved by helpdesk following the Blueprint, which supports the claim about the privacy-setting root cause and helpdesk resolution; however the recommendation to escalate to 2nd‑level or the endpoints/driver‑policy team and the assertion that such an escalation path is implied by helpdesk->Blueprint steps is not shown in the CONTEXT."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,"2) Review any Sensitivity / AIP label applied to that folder and its protection settings (who is allowed by the label). In the documented incident the label required encryption and restricted access to an Azure AD group different from the SharePoint permission group, which produced a conflict","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+",yes,"Contains an explicit directive ('Review') instructing the reader to examine Sensitivity/AIP labels and protection settings, which is a recommendation.",partially_supported,"The context explicitly shows a Sensitivity label requiring encryption and access restricted to Azure AD group 'Compliance_Core', which differs from the SharePoint permission groups, and engineers hypothesised a conflict; however tests were inconclusive (some non-members still had access and the hypothesis was not definitively proven), so the claim that it ""produced a conflict"" is not fully supported."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,"1) Immediately collect evidence (documented best practice across tickets — helpdesk questions and tests): list affected user accounts (internal and external), times when access worked/didn’t, one reproducible username that currently cannot access, the exact SharePoint path, and screenshots of the “Item not found / Access denied” messages. (This mirrors the initial information gathering used in TI-1578891 and others)","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+
+
+SOURCE 13:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – External project members lose access sporadically
+Ticket number: TI-1583327
+Company: Customer Company 25 AG
+Contact person: Contact Person 07
+Owner: Employee 31
+Origin: Email
+Type: Incident
+Created on: 07.04.25 08:12
+Closure
+Closure date: 17.04.25 15:18
+Closure text: Root cause identified (Azure AD Connect synchronization error affecting group attributes). Cleanup and full sync performed. Access stable.
+Activities
+07.04.25 08:04
+Subject: Project members (external) lose access to SharePoint
+From: Contact Person 07
+Good morning
+Several external project members report that they no longer have access to the folder
+/Projects/Compliance_Review_2025
+Internal employees do not appear to have issues.
+Please review.
+Kind regards
+Contact Person 07
+07.04.25 08:12
+Ticket created
+Assigned to: Employee 31
+Status: In Progress
+Notes
+07.04.25 09:05
+Helpdesk asks:
+• Does it affect only external users?
+• What error message appears?
+• Since when exactly?
+• Were groups or permissions adjusted?
+07.04.25 10:20
+Customer responds:
+Error message:
+Access denied
+One user could access yesterday.
+Today no longer.
+No deliberate changes made.
+07.04.25 11:10
+Helpdesk checks SharePoint:
+• Folder permissions correct
+• Group “SP_Compliance_Main” contains “COMPLIANCE_TEAM”
+• External users are members of “COMPLIANCE_TEAM”
+Comparison internal vs external users:
+No visible difference.
+08.04.25 08:45
+Customer adds:
+One external user was newly added and immediately had access.
+Another who has been in the project for months loses access sporadically.
+08.04.25 10:15
+Helpdesk tests:
+• Remove + re-add to group
+→ Access temporarily restored
+After approx. 1 hour, no access again.
+08.04.25 14:30
+Hypothesis:
+Token / cache / Conditional Access
+Test:
+User fully logs out → logs in again
+→ Access remains denied
+Hypothesis rejected.
+09.04.25 09:12
+Helpdesk asks:
+Are external users created as “Guest” or “Member”?
+09.04.25 10:05
+Customer:
+All externals are created as Guest.
+Some were recently synchronized from On-Prem AD to Cloud.
+09.04.25 11:40
+First observation:
+For two affected users in Entra ID portal, attribute
+“source” = Windows Server AD
+For functioning external users:
+“source” = Azure AD
+Correlation unclear.
+09.04.25 14:20
+Ticket escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – Identity
+10.04.25 08:55
+Ticket taken over by: System Engineer 14
+In-depth analysis
+10.04.25 09:40
+Azure AD Connect reviewed.
+Observation:
+Group “COMPLIANCE_TEAM” exists both On-Prem and in Cloud.
+On-Prem version is synchronized.
+Cloud version was originally created manually.
+Result:
+• External guests exist only in Cloud group
+• SharePoint references the synchronized On-Prem group
+Same name, but different Object IDs.
+10.04.25 11:25
+Review of group members via Graph:
+Cloud group:
+→ Contains external guests
+Synchronized On-Prem group:
+→ Contains only internal users
+Since SharePoint evaluates by Object ID, not by name, external users lose access once synchronization takes effect.
+11.04.25 08:30
+Reproduction in test:
+• On-Prem group re-synchronized
+• Cloud group overwritten
+• External users reproducibly lose access
+Root Cause
+Two groups existed with identical name:
+COMPLIANCE_TEAM
+1. Cloud-native group
+2. Synchronized On-Prem group
+Through Azure AD Connect, the Cloud group was gradually overwritten or deactivated.
+SharePoint referenced the synchronized version.
+External guests were never managed On-Prem and therefore were not included in the synchronized group.
+Actions
+11.04.25 – 14.04.25
+• Consolidation of group structure
+• Old Cloud group removed
+• On-Prem group properly cleaned
+• External guests managed as Cloud-only members
+• Azure AD Connect full synchronization performed
+15.04.25 – Monitoring
+Access remains stable
+No further inconsistencies
+17.04.25 15:18 – Ticket closure
+Dear Contact Person 07
+The root cause was the parallel existence of two groups with identical names but different origins (Cloud vs. On-Prem synchronized).
+Due to synchronization, effective group membership for external users was not correctly applied.
+The group structure was consolidated and fully synchronized.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement uses direct imperative instructions ('Immediately collect', 'list', 'screenshots') that prescribe specific actions to perform, so it is a recommendation.",supported,"Both tickets show helpdesk requesting/collecting exactly these items: affected users (internal/external), when the issue started/when access worked or didn’t, screenshots of error messages, a reproducible test user, and the SharePoint path (/Projects/Compliance_Review_2025); TI-1578891 and TI-1583327 document these information-gathering steps and tests."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,Verify folder permission model and group referenced by SharePoint. Confirm whether the folder has unique permissions and which Azure AD group(s) are listed as having access. (This check was performed in TI-1578891 and TI-1571046 and led to further analysis),"=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+
+
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement uses directive verbs ('Verify', 'Confirm') instructing to perform specific checks, which constitutes a recommendation.",supported,"Both tickets explicitly show checks of SharePoint folder permissions and group membership: TI-1578891 notes the folder has Unique Permissions and permissions via group 'SP_Compliance_Main' (with group membership checks and escalation for in-depth analysis), and TI-1571046 documents verification of SharePoint permissions and group nesting (leading to further analysis and policy adjustments)."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,Check the applied Sensitivity/AIP label and its allowed group(s) (documented cause in TI-1578891),"=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+",yes,Contains a directive verb 'Check' that instructs verifying the applied Sensitivity/AIP label and its allowed group(s).,supported,"The ticket TI-1578891 explicitly documents the Sensitivity label and its allowed group (label requires access only for Azure AD group “Compliance_Core”) and tests showed adding a user to Compliance_Core restored access, so checking the AIP label and allowed groups is directly supported."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,"3) Test access by adding a representative affected user temporarily to the Azure AD group that the label permits (documented test: adding the user to “Compliance_Core” immediately allowed access) — do this as a short, reversible test to confirm the label-enforcement path is the block","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+",yes,"The statement contains explicit instructions and directive verbs ('Test access by...', 'do this') recommending a temporary test to confirm the label-enforcement issue.",partially_supported,"The context documents the exact test — adding a user to “Compliance_Core” immediately allowed access — so the suggested test is precedent; however the ticket also notes other users without Compliance_Core membership had access, so this does not definitively confirm the label-enforcement path as the sole blocker."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,"In other SharePoint incidents the root cause for “some users can’t see a folder, others can” was either (a) duplicate groups / On‑Prem vs Cloud group sync overwriting cloud memberships (external users lost access)","=== CITED SOURCES ===
+SOURCE 13:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – External project members lose access sporadically
+Ticket number: TI-1583327
+Company: Customer Company 25 AG
+Contact person: Contact Person 07
+Owner: Employee 31
+Origin: Email
+Type: Incident
+Created on: 07.04.25 08:12
+Closure
+Closure date: 17.04.25 15:18
+Closure text: Root cause identified (Azure AD Connect synchronization error affecting group attributes). Cleanup and full sync performed. Access stable.
+Activities
+07.04.25 08:04
+Subject: Project members (external) lose access to SharePoint
+From: Contact Person 07
+Good morning
+Several external project members report that they no longer have access to the folder
+/Projects/Compliance_Review_2025
+Internal employees do not appear to have issues.
+Please review.
+Kind regards
+Contact Person 07
+07.04.25 08:12
+Ticket created
+Assigned to: Employee 31
+Status: In Progress
+Notes
+07.04.25 09:05
+Helpdesk asks:
+• Does it affect only external users?
+• What error message appears?
+• Since when exactly?
+• Were groups or permissions adjusted?
+07.04.25 10:20
+Customer responds:
+Error message:
+Access denied
+One user could access yesterday.
+Today no longer.
+No deliberate changes made.
+07.04.25 11:10
+Helpdesk checks SharePoint:
+• Folder permissions correct
+• Group “SP_Compliance_Main” contains “COMPLIANCE_TEAM”
+• External users are members of “COMPLIANCE_TEAM”
+Comparison internal vs external users:
+No visible difference.
+08.04.25 08:45
+Customer adds:
+One external user was newly added and immediately had access.
+Another who has been in the project for months loses access sporadically.
+08.04.25 10:15
+Helpdesk tests:
+• Remove + re-add to group
+→ Access temporarily restored
+After approx. 1 hour, no access again.
+08.04.25 14:30
+Hypothesis:
+Token / cache / Conditional Access
+Test:
+User fully logs out → logs in again
+→ Access remains denied
+Hypothesis rejected.
+09.04.25 09:12
+Helpdesk asks:
+Are external users created as “Guest” or “Member”?
+09.04.25 10:05
+Customer:
+All externals are created as Guest.
+Some were recently synchronized from On-Prem AD to Cloud.
+09.04.25 11:40
+First observation:
+For two affected users in Entra ID portal, attribute
+“source” = Windows Server AD
+For functioning external users:
+“source” = Azure AD
+Correlation unclear.
+09.04.25 14:20
+Ticket escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – Identity
+10.04.25 08:55
+Ticket taken over by: System Engineer 14
+In-depth analysis
+10.04.25 09:40
+Azure AD Connect reviewed.
+Observation:
+Group “COMPLIANCE_TEAM” exists both On-Prem and in Cloud.
+On-Prem version is synchronized.
+Cloud version was originally created manually.
+Result:
+• External guests exist only in Cloud group
+• SharePoint references the synchronized On-Prem group
+Same name, but different Object IDs.
+10.04.25 11:25
+Review of group members via Graph:
+Cloud group:
+→ Contains external guests
+Synchronized On-Prem group:
+→ Contains only internal users
+Since SharePoint evaluates by Object ID, not by name, external users lose access once synchronization takes effect.
+11.04.25 08:30
+Reproduction in test:
+• On-Prem group re-synchronized
+• Cloud group overwritten
+• External users reproducibly lose access
+Root Cause
+Two groups existed with identical name:
+COMPLIANCE_TEAM
+1. Cloud-native group
+2. Synchronized On-Prem group
+Through Azure AD Connect, the Cloud group was gradually overwritten or deactivated.
+SharePoint referenced the synchronized version.
+External guests were never managed On-Prem and therefore were not included in the synchronized group.
+Actions
+11.04.25 – 14.04.25
+• Consolidation of group structure
+• Old Cloud group removed
+• On-Prem group properly cleaned
+• External guests managed as Cloud-only members
+• Azure AD Connect full synchronization performed
+15.04.25 – Monitoring
+Access remains stable
+No further inconsistencies
+17.04.25 15:18 – Ticket closure
+Dear Contact Person 07
+The root cause was the parallel existence of two groups with identical names but different origins (Cloud vs. On-Prem synchronized).
+Due to synchronization, effective group membership for external users was not correctly applied.
+The group structure was consolidated and fully synchronized.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+",no,"The statement describes observed past root causes in other incidents and does not propose any action, recommendation, or forward-looking advice.",supported,"Ticket TI-1583327 documents two groups with the same name (cloud-native and synchronized On‑Prem), Azure AD Connect overwriting the cloud group, and external guests losing access—directly matching the claimed root cause."
+traceability_ragas_resolution_answer3,Is the statement supported by the evidence?,"SharePoint issues that are clearly permission/group/label related and require analysis of AIP label enforcement, Azure AD group mappings, Azure AD Connect sync, or Conditional Access policy changes were escalated to BU Infrastructure – Identity / M365 in the documented cases and treated as 2nd‑level for in‑depth analysis (see TI-1578891 escalation and TI-1583327 full sync / group consolidation)","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+
+
+SOURCE 13:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – External project members lose access sporadically
+Ticket number: TI-1583327
+Company: Customer Company 25 AG
+Contact person: Contact Person 07
+Owner: Employee 31
+Origin: Email
+Type: Incident
+Created on: 07.04.25 08:12
+Closure
+Closure date: 17.04.25 15:18
+Closure text: Root cause identified (Azure AD Connect synchronization error affecting group attributes). Cleanup and full sync performed. Access stable.
+Activities
+07.04.25 08:04
+Subject: Project members (external) lose access to SharePoint
+From: Contact Person 07
+Good morning
+Several external project members report that they no longer have access to the folder
+/Projects/Compliance_Review_2025
+Internal employees do not appear to have issues.
+Please review.
+Kind regards
+Contact Person 07
+07.04.25 08:12
+Ticket created
+Assigned to: Employee 31
+Status: In Progress
+Notes
+07.04.25 09:05
+Helpdesk asks:
+• Does it affect only external users?
+• What error message appears?
+• Since when exactly?
+• Were groups or permissions adjusted?
+07.04.25 10:20
+Customer responds:
+Error message:
+Access denied
+One user could access yesterday.
+Today no longer.
+No deliberate changes made.
+07.04.25 11:10
+Helpdesk checks SharePoint:
+• Folder permissions correct
+• Group “SP_Compliance_Main” contains “COMPLIANCE_TEAM”
+• External users are members of “COMPLIANCE_TEAM”
+Comparison internal vs external users:
+No visible difference.
+08.04.25 08:45
+Customer adds:
+One external user was newly added and immediately had access.
+Another who has been in the project for months loses access sporadically.
+08.04.25 10:15
+Helpdesk tests:
+• Remove + re-add to group
+→ Access temporarily restored
+After approx. 1 hour, no access again.
+08.04.25 14:30
+Hypothesis:
+Token / cache / Conditional Access
+Test:
+User fully logs out → logs in again
+→ Access remains denied
+Hypothesis rejected.
+09.04.25 09:12
+Helpdesk asks:
+Are external users created as “Guest” or “Member”?
+09.04.25 10:05
+Customer:
+All externals are created as Guest.
+Some were recently synchronized from On-Prem AD to Cloud.
+09.04.25 11:40
+First observation:
+For two affected users in Entra ID portal, attribute
+“source” = Windows Server AD
+For functioning external users:
+“source” = Azure AD
+Correlation unclear.
+09.04.25 14:20
+Ticket escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – Identity
+10.04.25 08:55
+Ticket taken over by: System Engineer 14
+In-depth analysis
+10.04.25 09:40
+Azure AD Connect reviewed.
+Observation:
+Group “COMPLIANCE_TEAM” exists both On-Prem and in Cloud.
+On-Prem version is synchronized.
+Cloud version was originally created manually.
+Result:
+• External guests exist only in Cloud group
+• SharePoint references the synchronized On-Prem group
+Same name, but different Object IDs.
+10.04.25 11:25
+Review of group members via Graph:
+Cloud group:
+→ Contains external guests
+Synchronized On-Prem group:
+→ Contains only internal users
+Since SharePoint evaluates by Object ID, not by name, external users lose access once synchronization takes effect.
+11.04.25 08:30
+Reproduction in test:
+• On-Prem group re-synchronized
+• Cloud group overwritten
+• External users reproducibly lose access
+Root Cause
+Two groups existed with identical name:
+COMPLIANCE_TEAM
+1. Cloud-native group
+2. Synchronized On-Prem group
+Through Azure AD Connect, the Cloud group was gradually overwritten or deactivated.
+SharePoint referenced the synchronized version.
+External guests were never managed On-Prem and therefore were not included in the synchronized group.
+Actions
+11.04.25 – 14.04.25
+• Consolidation of group structure
+• Old Cloud group removed
+• On-Prem group properly cleaned
+• External guests managed as Cloud-only members
+• Azure AD Connect full synchronization performed
+15.04.25 – Monitoring
+Access remains stable
+No further inconsistencies
+17.04.25 15:18 – Ticket closure
+Dear Contact Person 07
+The root cause was the parallel existence of two groups with identical names but different origins (Cloud vs. On-Prem synchronized).
+Due to synchronization, effective group membership for external users was not correctly applied.
+The group structure was consolidated and fully synchronized.
+Access is now stable.
+Kind regards
+Consulting Sample Company
+
+",no,No — the statement describes how issues were handled in documented cases (past escalation and treatment) rather than instructing or recommending a future action.,partially_supported,"TI-1578891 shows escalation to BU Infrastructure – M365/Identity and analysis of the AIP/sensitivity label and group membership, and TI-1583327 shows escalation to BU Infrastructure – Identity with root cause in Azure AD Connect/group consolidation; however, the context contains no evidence that Conditional Access policy changes were analyzed or applied."

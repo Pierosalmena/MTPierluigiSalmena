@@ -1,0 +1,88 @@
+Below I separate (A) what the indexed records explicitly document about each failing symptom and the concrete remediation steps that were actually performed in prior incidents, and (B) a clear, step‑by‑step resolution plan for this ticket. Steps that are drawn directly from prior tickets / runbooks are marked as “Documented (records)”; steps that go beyond the indexed records (suggested next actions or diagnostics you should run now) are explicitly labelled “Recommended (not in records)”. At the end I list the exact artifacts the teams in prior incidents required; without those items we cannot complete definitive root‑cause analysis or close this ticket.
+
+— Telephony: “desktop app calls to external vendor are silent (they hear me; I can’t hear them)”
+
+What the records explicitly document (relevant precedents)
+- A single‑user microphone/hardware fault was resolved at first‑line by a remote session and reseating the microphone/headset cable; support verified success with a Teams Test Call and closed the ticket (TI‑1616128) [Documented (records)] [Data: Sources (37)].
+- Site‑wide or multi‑user one‑way audio in Zurich was caused by an outbound firewall change blocking RTP/media ports while the site used Media‑Bypass; that required escalation to UC/Network engineers and a firewall change aligned to the Direct‑Routing blueprint (temporary port opening validated audio, then a permanent fix was applied) (Zurich case TI‑1602241) [Documented (records)] [Data: Sources (5)].
+- Call drop / ~30s disconnect patterns were traced to Voice VLAN/NAT session timer and SBC session‑timer interactions and required SBC/network parameter changes (Basel case TI‑1604879) [Documented (records)] [Data: Sources (16)].
+
+Step‑by‑step actions (telephony)
+1. Documented (records) — Quick endpoint check by first‑line (do now)
+   - Ask the user to run a Teams Test Call and report the exact outcome (Test Call records inbound/outbound mic playback). In TI‑1616128 the Test Call was used to confirm a hardware cable reseat fixed the issue [Data: Sources (37)].
+   - Ask the user to (a) confirm headset type (USB headset vs integrated mic), (b) if USB, reseat/unplug‑replug the headset connector and retry the Test Call (documented successful fix in TI‑1616128) [Data: Sources (37)].
+   — If the Test Call shows the microphone/output functioning locally, document the result and continue; if Test Call still shows missing incoming audio for external PSTN calls, proceed to step 2.
+
+2. Documented → escalate (if endpoint checks fail OR multiple Zurich users are affected)
+   - Escalate to Unified Communications / Network engineering to validate site egress media port rules and SBC traces. Prior Zurich one‑way audio required firewall rule adjustment and SBC/Direct‑Routing alignment; engineers collected SBC/firewall traces and adjusted the firewall per the Direct‑Routing blueprint (TI‑1602241) [Data: Sources (5)].
+   - Request UC/Network capture: client-side logs (Teams logs), SBC trace (INVITE/200/ACK and RTP flow), and firewall/SBC NAT session timers. These log classes were used in the documented network/SBC remediations [Data: Sources (5); Sources (16)].
+
+3. Recommended (not in records) — If escalation is opened, attach these items to the ticket:
+   - Softphone Test Call timestamp and screenshot; client logs; headset model; whether the user is on Zurich wired LAN or Wi‑Fi; workstation IP/VLAN. These artifacts were decisive in prior diagnostics. (This is a recommended evidence list consistent with prior investigations.)
+
+— ERP_Upgrade intranet folder: “I could view it yesterday; now permission denied”
+
+What the records explicitly document (relevant precedents)
+- Similar SharePoint/ERP folder denials were caused either by token/cached token / Conditional Access timing (resolved by forcing re‑authentication) or by Azure AD / group‑membership / group‑nesting problems that required Identity team action (examples: token/CA case TI‑1571046; group‑nesting and Azure AD Connect cases TI‑1569482 and TI‑1583327) [Documented (records)] [Data: Sources (38); Sources (20); Sources (13)].
+- In prior incidents helpdesk first used sign‑out/sign‑in (force token refresh) as an immediate test, and Identity engineers used Microsoft Graph/Entra exports to compare on‑prem vs cloud group membership and the “source” attribute to identify object collisions [Documented (records)] [Data: Sources (38); Sources (13)].
+
+Step‑by‑step actions (ERP_Upgrade)
+1. Documented (records) — Immediate user action (do now)
+   - Ask the user to fully sign out of Office apps and browser, then sign back in and retry accessing the ERP_Upgrade folder. The token/cached‑token failure class in TI‑1571046 was resolved by re‑authentication [Data: Sources (38)].
+   - Request a screenshot of the exact error message (e.g., “Access denied” or “Item not found”) and note whether the user accessed via browser or via Teams/desktop app; prior tickets used screenshots to map the error string to known patterns [Data: Sources (38); Sources (0)].
+
+2. Documented (records) — If sign‑out/sign‑in does not restore access
+   - Have first‑line check the user’s AD group membership (direct membership) and whether the ERP resource group shows the user in the SharePoint permission pane. If a temporary direct membership test restores access (used in TI‑1569482), that indicates a nesting/sync problem and you should escalate to Identity/Entra team [Data: Sources (20); Sources (13)].
+
+3. Documented → escalate (Identity) (when group/sync suspected)
+   - Escalate to BU Infrastructure – Identity to: (a) export on‑prem memberOf (direct + transitive) for the user, (b) export Azure AD membership for the same user including each group’s ObjectId and the member “source” attribute, and (c) check Azure AD Connect sync health. Prior incidents used Microsoft Graph/Entra exports and full AAD Connect syncs to resolve cloud/on‑prem collisions (TI‑1583327) [Data: Sources (13); Sources (152)].
+
+4. Recommended (not in records) — Evidence to attach to the ticket before escalation
+   - Attach: screenshot of error, user UPN, exact time windows when access worked vs failed, the SharePoint folder path (/Projects/ERP_Upgrade/Finance), and a note whether the user’s device is hybrid‑joined. Prior tickets show these artifacts materially sped diagnosis [Data: Sources (38); Sources (13)].
+
+— Scan‑to‑Mail: “Hallway printer showed green checkmark but vendor never received the email”
+
+What the records explicitly document (relevant precedents)
+- Multiple Scan‑to‑Mail incidents were investigated by reviewing SMTP relay logs; two decisive relay log messages were (a) “MESSAGE SIZE EXCEEDS FIXED LIMIT” (oversized PDF rejection) and (b) “Relay denied” (printer IP/VLAN not in relay allow‑list). In those incidents printers showed local “Send successful” while the relay rejected the message (TI‑1624682 and TI‑1624175) [Documented (records)] [Data: Sources (36); Sources (6)].
+- Remediations actually performed in the indexed incidents included: changing device scan profile to reduce size (e.g., 300 dpi + enable PDF compression) and/or moderately increasing SMTP relay size limit, and adding the printer VLAN IP range to the relay allow‑list; tests to Gmail/partner addresses validated success [Documented (records)] [Data: Sources (36); Sources (6); Reports (11)].
+
+Step‑by‑step actions (scan‑to‑mail)
+1. Documented (records) — Immediate triage (do now)
+   - Get the exact printer identity (device name on the device display), the approximate timestamp of the scan job, the recipient/vendor email address used, and whether internal recipients received it. Prior tickets required those items to find the relay log entries [Data: Sources (6); Sources (36)].
+   - Ask the Mail/Network team to search the SMTP relay logs for that timestamp / source IP / recipient address and return any entries, looking specifically for “Relay denied” or “MESSAGE SIZE EXCEEDS FIXED LIMIT.” Those specific log strings were the primary diagnostic evidence in prior cases [Data: Sources (36); Sources (6)].
+
+2. Documented → actions based on relay findings
+   - If relay shows “Relay denied” for the printer IP: have Mail + Network add the printer VLAN IP range to the SMTP relay allow‑list and validate delivery to an external test recipient (this is exactly what resolved TI‑1624175) [Data: Sources (6)].
+   - If relay shows “MESSAGE SIZE EXCEEDS FIXED LIMIT”: (a) apply a lower‑size test profile on the MFP (e.g., 300 dpi + enable compression) and retry, and (b) if necessary and authorized, Mail Team may moderately increase the relay size limit for sanctioned printer VLANs — prior remediation combined device profile change + relay size moderation and validated success (TI‑1624682) [Data: Sources (36)].
+
+3. Recommended (not in records) — Evidence to attach and monitoring
+   - Attach printer job ID / screenshot of green checkmark, relay log lines (pre/post), test‑deliver timestamp(s), and note monitoring window (e.g., 24h) to validate sustained success. Prior tickets used Gmail/partner tests plus monitoring windows as closure evidence [Data: Sources (36); Sources (6)].
+
+— Overall classification and routing (documented precedence)
+- Because this ticket reports three distinct subsystems (UC/telephony, Identity/SharePoint, Mail/SMTP), the indexed records show similar multi‑domain incidents required escalation to second‑level/engineer teams for coordinated diagnostics (UC/Network, Identity, Mail). Prior analyses recommended second_level_support for concurrent multi‑area faults (see the multi‑domain classification examples) [Documented (records)] [Data: Sources (5); Sources (36); Sources (13)].
+
+— What I cannot complete from the indexed records alone (explicit statement)
+- I cannot fully resolve the ticket or confirm root cause for any of the three symptoms without the live artifacts listed below. The indexed records show which artifacts were used in prior incidents, but this dataset does not contain your user’s Test Call logs, your UPN/group exports, the printer job timestamp, or SMTP relay lines for your job — those must be provided or collected by the operational teams to complete the fix. You must provide or authorize collection of the items listed next.
+
+— Artifacts / information required (based on prior incidents)
+(These are the exact items the Mail/UC/Identity teams used in the documented resolutions; provide them so we can reproduce the prior investigative workflow.)
+- Telephony: result of a Teams Test Call (timestamp + screenshot), headset model, whether you are on Zurich wired LAN or Wi‑Fi, workstation IP/VLAN, Teams client vendor/version (if available). Prior telephony tickets used Test Call and headset reseat evidence (TI‑1616128) and UC/SBC/firewall traces for Zurich site escalation (TI‑1602241) [Data: Sources (37); Sources (5)].
+- ERP/SharePoint: user UPN, screenshot of the exact error string and URL, time windows when access still worked vs failed, whether the device is hybrid AAD‑joined; Identity team will request on‑prem memberOf export and Azure AD membership export with each group’s ObjectId and “source” attribute (used in prior group/sync fixes) [Data: Sources (38); Sources (13)].
+- Scan‑to‑Mail: printer name shown on device, printer IP (or print server queue name), approximate timestamp of the scan job, recipient vendor email address, and screenshot of green checkmark/job id. Mail Team will search SMTP relay logs for “Relay denied” or “MESSAGE SIZE EXCEEDS FIXED LIMIT” as in TI‑1624175/TI‑1624682 [Data: Sources (6); Sources (36)].
+
+— Minimal “who to notify / who will own next” (recommended routing based on prior cases)
+- First‑line: run immediate endpoint checks (Teams Test Call, headset reseat, sign‑out/sign‑in for SharePoint, capture screenshots). These steps were used and closed in documented first‑line cases (TI‑1616128; TI‑1571046) [Data: Sources (37); Sources (38)].
+- Immediately escalate to second_level_support / Engineering when either (a) endpoint checks fail for telephony and the user is on Zurich LAN, or (b) SharePoint group/membership or AAD Connect sync appears implicated, or (c) SMTP relay rejects the scan job. Prior multi‑domain incidents required UC/Network, Identity and Mail coordination [Data: Sources (5); Sources (36); Sources (13)].
+
+— Short actionable checklist you can paste to the user (what to do now)
+(Documented steps first; recommendations next)
+1. Run a Teams Test Call now and report the result + local time (Documented; used in TI‑1616128) [Data: Sources (37)].
+2. If using a USB headset, unplug and reseat the headset/mic connector and re‑run Test Call (Documented) [Data: Sources (37)].
+3. Fully sign out of Office apps and browser, then sign back in and retry ERP_Upgrade; attach a screenshot of the exact error if it persists (Documented) [Data: Sources (38); Sources (0)].
+4. Note which hallway printer you used, the approximate time you pressed Send, the vendor recipient address, and whether internal recipients got the scan; attach a photo/screenshot of the printer confirmation if possible (Documented: these items were used to find SMTP relay entries) [Data: Sources (6); Sources (36)].
+5. If the above first‑line checks do not resolve all three issues, we will escalate simultaneously to UC/Network (telephony traces and firewall), Identity (group exports and AAD Connect sync), and Mail (SMTP relay logs) — prior incidents followed this coordinated escalation pattern [Data: Sources (5); Sources (13); Sources (36)].
+
+— Final notes / offer
+- I cannot complete the forensic correlation or confirm the definitive root causes from the indexed records alone because your specific Test Call logs, AD membership exports, and SMTP relay lines for your job are not present in the indexed dataset. The indexed records do, however, show the exact investigative steps and fixes to apply once you or the operational teams provide the artifacts above (examples and remedies: headset reseat + Test Call [TI‑1616128]; firewall/SBC rule alignment per Direct‑Routing blueprint [TI‑1602241]; group/AD exports and Azure AD Connect sync fixes [TI‑1583327/TI‑1569482]; SMTP relay allow‑list or scan‑profile fixes [TI‑1624175 / TI‑1624682]) [Data: Sources (37); Sources (5); Sources (13); Sources (6); Sources (36)].
+
+If you confirm you will (A) run the short endpoint checks and paste back the Test Call result + screenshots and (B) provide the printer name + scan timestamp + recipient, I will prepare the exact escalation bundle (ticket text + the log queries and the files to attach) for UC/Network, Identity and Mail teams citing the prior incident evidence so they can act immediately.

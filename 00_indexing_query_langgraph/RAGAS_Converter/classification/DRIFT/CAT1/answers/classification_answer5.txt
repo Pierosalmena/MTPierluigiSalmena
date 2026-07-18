@@ -1,0 +1,18 @@
+Recommendation: second_level_support
+
+Reasoning (evidence-backed)
+- The Zurich symptom (external Teams calls “connected” but no inbound audio on site) matches prior Direct‑Routing/Media‑Bypass incidents that required SBC / network engineering and firewall/NAT changes (investigations used SBC traces, media‑port checks and firewall rule fixes). Engineers had to change SBC/translation or firewall rules to restore media in those cases [Data: Sources (23, 16, 8)].
+- The Basel print symptoms (new user sees no printers; another user gets “Access denied”; jobs stuck in queues) match prior print‑service incidents that went beyond desktop runbooks — examples include missing GPO application, an explicit Deny ACE on a queue, VLAN/routing issues and even VM‑restore/share‑publishing failures that required Core Engineering or print‑server remediation (disabling/re‑enabling shares, ACL edits, network/routing fixes) [Data: Sources (28, 22, 3, 39)].
+- When multiple independent subsystems fail at the same time (UC/media + printing + potential provisioning/identity implications), the indexed cases show these are typically configuration/synchronization or cross‑system faults that were escalated to engineers rather than resolved by first‑line steps [Data: Sources (13, 30)].
+
+What the records explicitly document (short)
+- SBC logs and test calls were decisive to prove whether faults were translation/routing vs media/NAT; fixes required SBC/firewall tuning in prior cases [Data: Sources (23, 8)].
+- Printing outages that affected many users were often rooted in AD/GPO/queue ACL or print‑server share exposure problems and in some incidents required Core Engineering actions (share toggle, VM/restore follow‑up) to clear queued jobs [Data: Sources (28, 3)].
+(These are the concrete precedents I used above.)
+
+Recommended next steps (these are recommendations, not items taken from the indexed records)
+1) Triage/collect evidence (attach to the ticket): concise list of affected users (samples) and exact failure timestamps (UTC if possible); Teams Admin Center call traces or per‑call correlation IDs; SBC SIP traces for sample failed calls (INVITE/200/SDP/BYE); firewall/NAT logs for the same times; print‑server queue snapshots, PrintService event log slices and queue ACLs; recent GPO / AD group‑membership changes for the affected users.  
+2) Escalate immediately to: Unified Communications / SBC owner + Network team (for the Zurich Teams media traces) and Core Engineering / Print services + AD/GPO owner (for Basel printing). Also include BU Infrastructure – Identity if you see recent group/sync activity.  
+3) Mark this ticket PRIO HIGH for cross‑team bridge/coordination — the historical pattern shows cross‑domain work (UC, Network, Print, Identity) is needed.
+
+If you want, I will draft the minimal evidence request text you can paste into the ticket for each team (SBC/Network, Print/Core, Identity) and include the exact fields/timestamps to extract (recommended).

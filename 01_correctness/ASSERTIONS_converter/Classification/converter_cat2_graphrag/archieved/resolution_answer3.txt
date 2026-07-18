@@ -1,0 +1,134 @@
+Below is a resolution plan built only from the indexed organisational records (what the records explicitly document) plus clearly‑labelled recommendations where the records do not contain tenant‑specific data or exact runbook commands. I cannot complete the remediation from here — the records do not contain your tenant’s live group ObjectIDs, Azure AD sign‑in logs, or Azure AD Connect run logs — so several collection steps below are required before a final fix can be applied. I list which steps are documented in prior incidents and which are my recommended operational actions to perform now.
+
+Summary of the pattern the records show
+- The symptoms you describe (external partners sometimes can open files then later cannot; internal users see the folder but cannot open documents; individual user access “flickers”; another folder invisible unless URL known) match a documented root‑cause pattern that combined:
+  - a Sensitivity Label applied after a folder had unique SharePoint permissions (label enforcing a different AAD group than the ACL), AND/OR
+  - Azure AD group/object identity collisions or incorrect group nesting (cloud group vs synchronized on‑prem group with same display name but different objectIDs), AND/OR
+  - token caching / Conditional Access timing causing old tokens to allow access briefly until token refresh enforces the new claims.  
+  These mechanisms and their interactions are recorded as the cause in the prior cases cited below [Data: Sources (30, 13, 38)].
+
+Concrete, step‑by‑step actions
+
+A. Immediate, documented triage actions (already recorded as effective in prior incidents)
+(Do these now to reduce user impact and collect immediate evidence.)
+
+1) Force full sign‑out for affected users (Office desktop apps + all browser sessions) and retest access for a representative affected user.
+- Why (documented): prior incidents used full sign‑out / token invalidation to remove stale cached tokens and confirm whether token caching accounted for temporary access vs denial [Documented: TI‑1571046; TI‑1578891].  
+- Evidence: sign‑out/token invalidation was part of remediation and helped reveal token‑claim mismatches in the recorded cases [Data: Sources (38, 30)].
+
+Documented‑step citation: [Data: Sources (38, 30)].
+
+2) If/when the user reproduces success/failure, collect the exact timestamps and the client used (browser normal vs Incognito vs Office desktop) for each observed success and failure.
+- Why (documented): investigators correlated sign‑in/tokens and client type to show cached tokens and CA timing explained intermittent behavior [Documented: TI‑1571046; TI‑1578891].  
+- Evidence: sign‑in log timestamps and client context were decisive in prior investigations [Data: Sources (38, 30)].
+
+Documented‑step citation: [Data: Sources (38, 30)].
+
+B. Evidence collection (required — records show these artifacts were used during prior RCAs)
+(You MUST provide these exports/logs. the indexed records show investigators relied on them.)
+
+3) Export / capture these artifacts and attach them to the ticket:
+   a) SharePoint folder permission export (folder ACL) showing each principal the folder is granted to (the SharePoint permission view for the folder).  
+   b) Purview / AIP label audit: label‑application event and the label configuration for that folder (which AAD group(s) the label permits for encryption; whether “Preserve custom permissions” was used).  
+   c) Azure AD sign‑in logs for the affected UPN(s) covering the success/failure timestamps (include Conditional Access evaluation fields and token claim contents).  
+   d) Azure AD group exports: for the groups named in the ACL and in the label (displayName and objectId and member lists, include the Entra “source” attribute).  
+   e) Azure AD Connect sync run history and connector logs for the window spanning the folder rename/label application and when users first reported failures.  
+
+- Why (documented): prior incidents used this precise set: SharePoint permission view + Purview label info + sign‑in logs + Graph/group exports + AD Connect sync logs to prove the ACL vs label / objectID collision / token timing chain that caused intermittent access [Documented: TI‑1578891; TI‑1583327; TI‑1571046].  
+- What the records show was done with these artifacts: compare group objectIDs, show tokens with COMPLIANCE_TEAM vs lacking Compliance_Core, reproduce overwrite by re‑syncing in test, then remediate by group consolidation and full sync [Data: Sources (30, 13, 38)].
+
+Documented‑step citation: [Data: Sources (30, 13, 38)].
+
+C. Diagnosis steps based on the collected evidence (these are the exact analytical checks recorded)
+(If you supply the items from B we (or your identity team) should run the checks below — these checks are what prior investigators performed.)
+
+4) Compare SharePoint ACL principal → AAD group objectId to the group objectId(s) returned by Entra ID for groups with that displayName.
+- What to look for (documented): same displayName but different ObjectIDs (cloud vs on‑prem) or the ACL referencing an On‑Prem synchronized object are the exact mismatch found previously [Documented: TI‑1583327].  
+- Evidence reference: investigators used Graph/portal to compare ObjectIDs and found cloud-only guests present in the cloud object but absent in the synchronized object [Data: Sources (13)].
+
+Documented‑step citation: [Data: Sources (13)].
+
+5) Confirm whether the Sensitivity Label applied to the folder is configured to allow a different group (e.g., Compliance_Core) than the SharePoint ACL (e.g., COMPLIANCE_TEAM) and whether “Preserve custom permissions” was disabled when label was applied.
+- What to expect (documented): labels applied after unique permissions without Preserve can re-map encryption access to a different group and cause decryption to fail even when the SharePoint ACL appears to grant access [Documented: TI‑1578891].  
+- Evidence reference: label applied after rename and Preserve option not enabled was explicitly called out as root cause in the sensitivity‑label case [Data: Sources (30)].
+
+Documented‑step citation: [Data: Sources (30)].
+
+6) Inspect Azure AD sign‑in logs for the timestamps of success and failure for affected users and examine issued token claims.
+- What the records show as diagnostic: tokens containing the ACL group claim (COMPLIANCE_TEAM) but lacking the label‑allowed group claim (Compliance_Core) explained why content could not be decrypted after token refresh; sign‑in logs were used for this exact finding [Documented: TI‑1578891].  
+- Evidence reference: sign‑in log inspection was central to proving the claim mismatch and token‑cache timing effect [Data: Sources (30, 38)].
+
+Documented‑step citation: [Data: Sources (30, 38)].
+
+7) If you find an objectID/name collision or that the ACL and label reference different group objectIDs, perform a TEST USER direct‑membership test: add a TEST USER to the label’s allowed group (Compliance_Core) and verify access, or add a TEST USER directly to the SharePoint permission object (SP_Compliance_Main) to show immediate grant — this verifies where the enforcement is occurring.
+- What the records show: direct‑membership tests were used to validate fixes (adding a user directly to the label group restored access in tests; adding a TEST USER to SP_Project_IT validated nesting issues in a different ticket) [Documented: TI‑1578891; TI‑1569482].  
+- Evidence reference: test‑user direct assignment was the immediate validation step used before major directory edits [Data: Sources (30, 20)].
+
+Documented‑step citation: [Data: Sources (30, 20)].
+
+D. Remediation (documented remediations that worked previously)
+(If the diagnosis matches the prior incidents, these are the remediation steps recorded as actually performed.)
+
+8) If root cause is label↔ACL mismatch (label applied after unique permissions and not preserving permissions):
+   - Remove/reapply the label using correct mapping (ensure the label allows the same group the ACL uses, or reconfigure ACL to match the label). Documented remediation included removing and reapplying the label and aligning the label’s allowed group to the ACL [Documented: TI‑1578891].  
+   - After reapplying label/group alignment, invalidate user tokens (full sign‑out / revoke refresh tokens) and validate access. The record shows token invalidation was performed as part of remediation and access validated by Audit Team [Data: Sources (30)].
+
+Documented‑step citation: [Data: Sources (30)].
+
+9) If root cause is cloud vs on‑prem group object collision or mis‑nesting:
+   - Consolidate / clean up the duplicate group objects (ensure the authoritative group contains the needed guest members), then run a full Azure AD Connect synchronization and monitor propagation. Prior incident remediation explicitly did group consolidation followed by a full Azure AD Connect sync and then validated stable access [Documented: TI‑1583327].  
+   - After the full sync, invalidate tokens / force sign‑in for affected users and validate access for external guests. The prior case combined consolidation + full sync + token invalidation to restore access [Data: Sources (13, 30)].
+
+Documented‑step citation: [Data: Sources (13, 30)].
+
+10) If root cause is token caching / Conditional Access timing:
+   - Revoke refresh tokens / force full sign‑out for affected clients and have users reauthenticate; if Conditional Access policies are causing intermittent evaluation differences, examine CA policy evaluation in sign‑in logs and adjust or remediate device compliance flows as needed. The token/CA timing diagnosis and the effective mitigation (force reauth) are recorded in TI‑1571046 and related tickets [Data: Sources (38)].
+
+Documented‑step citation: [Data: Sources (38)].
+
+E. Escalation / classification (documented guidance)
+11) The prior incidents with the same symptom set were escalated to identity/M365 engineering (second‑level support). The indexed evidence recommends escalation when group ObjectID reconciliation or Azure AD Connect changes are required; that was the path taken in TI‑1583327 and TI‑1569482 [Data: Sources (13, 20)].  
+- Recommendation (documented): classify this ticket as second_level_support and involve your Identity/Entra team and the group owner and Purview/Compliance owner for coordinated change windows [Data: Sources (13, 20, 30)].
+
+Documented‑step citation: [Data: Sources (13, 20, 30)].
+
+F. What the indexed knowledge does NOT contain (so you cannot finish remotely)
+- The indexed records do NOT contain your tenant’s actual Azure AD ObjectIDs, the SharePoint permission export for your folder, your tenant’s Purview label audit entries, or your Azure AD Connect synchronization logs — I cannot perform the ObjectID comparison or the sync‑log correlation without those tenant artifacts. The records explicitly state investigators needed those artifacts to prove the root cause, but they do not contain your tenant’s copies of them [Data: Sources (13, 30, 38)].
+
+What you must provide / actions for IT to perform now (recommended, required to complete resolution)
+(These are operational requests — they are not new claims from the records. Marked recommended.)
+
+- Export and attach (or make available to the identity team):
+  1. SharePoint permission export for each affected folder (show permission principal names and timestamps).  
+  2. Purview/AIP label application audit event for the folder, and the label configuration (which AAD group(s) are allowed; whether “Preserve custom permissions” was set).  
+  3. Azure AD sign‑in logs (full event JSON or CSV) for one internal reproducer and one affected external guest, for the exact UTC timestamps when they observed success and failure. Include Conditional Access evaluation fields and issued token claim fields.  
+  4. Microsoft Graph group exports for the group(s) named in the ACL and the label (displayName, objectId, member list, and user “source” attribute).  
+  5. Azure AD Connect Synchronization Service run history and connector logs for the time window spanning the folder rename/label application and when users first reported issues.  
+- If you cannot run those queries, authorize the Identity team (time‑boxed, audited) to run the Microsoft Graph / sign‑in log queries. Prior cases show identity engineers (System Engineer 14 / BU Infrastructure – Identity) executed these queries to reach the RCA [Data: Sources (13, 30)].
+
+Why these are required: prior investigations used these exact artifacts to demonstrate the ObjectID/group claim mismatch and to validate remediation (see citations) [Data: Sources (13, 30, 38)].
+
+Final, concise recommended runbook (in order)
+- Step 1 — Short mitigation: Force full sign‑out (Office + browser) for a small test set of affected users and attempt immediate re‑access; collect timestamps and client info if the issue reproduces [Documented: Sources (38, 30)].  
+- Step 2 — Evidence capture: collect artifacts listed in “What you must provide” above; do not change directory or label config until you have the group/ObjectID picture. (Records show engineers first collected these items) [Documented: Sources (13, 30)].  
+- Step 3 — Diagnostics: compare SharePoint ACL principal objectId vs Purview label allowed group objectId; inspect sign‑in token claims for presence/absence of label group claim (Compliance_Core) and ACL group claim (COMPLIANCE_TEAM) [Documented: Sources (30, 13)].  
+- Step 4 — Test fix: use a TEST USER direct assignment to Compliance_Core (or direct‑add to the SharePoint permission object as appropriate) to validate which plane (label vs ACL) is preventing access; record results [Documented: Sources (30, 20)].  
+- Step 5 — Remediate per diagnosis: either remove/reapply label and align group mapping + revoke tokens (if label↔ACL mismatch), or consolidate groups and run full Azure AD Connect sync (if objectID collision), and finally revoke tokens and validate [Documented: Sources (30, 13, 38)].  
+- Step 6 — Post‑change monitoring and Audit validation: monitor for 24–48 hours and validate with the Audit Team before closure (this was the validation pattern used previously) [Documented: Sources (30)].
+
+Escalation recommendation (documented)
+- Escalate to second_level_support / Identity (BU Infrastructure – M365 / Identity) for steps that modify groups or run a full Azure AD Connect sync; prior incidents with identical symptoms required engineer intervention and identity‑plane edits [Documented: TI‑1583327; TI‑1569482] [Data: Sources (13, 20)].
+
+If you want I will
+- Prepare the exact Graph / Azure AD sign‑in query filters and the Purview audit search wording you should run and the CSV columns to export (this is a recommended next step — the records show these artifacts were decisive but do not contain the literal queries). Tell me whether you want PowerShell / Graph REST or portal instructions and I will produce them (clearly labelled as recommended).
+
+References (key incident records used to build the steps above)
+- Sensitivity‑Label ↔ ACL case (folder rename, label applied without Preserve custom permissions, token‑claim mismatch, remove/reapply label + token invalidation remediation): TI‑1578891 [Data: Sources (30)].  
+- Azure AD Connect / cloud vs on‑prem group object collision (external guests excluded; consolidation + full sync remediation): TI‑1583327 [Data: Sources (13)].  
+- Token caching / Conditional Access timing case (force full sign‑out / re‑auth used as remediation): TI‑1571046 [Data: Sources (38)].  
+- Group nesting / TEST USER direct‑assignment validation (remediation required editing nesting): TI‑1569482 [Data: Sources (20)].
+
+Bottom line
+- The indexed records provide a clear diagnostic pattern and proven remediation sequence for your exact symptoms (label applied after rename without Preserve custom permissions; cloud vs on‑prem group collisions; token caching). However, the records do NOT contain your tenant’s live group ObjectIDs, sign‑in logs, or Azure AD Connect logs — you must supply the artifacts listed above (or authorize your identity team to retrieve them) before the precise fix (group consolidation vs label reapply) can be executed safely. The ticket should be routed to second_level_support / Identity with the requested artifacts attached. [Data: Sources (30, 13, 38, 20)]
+
+If you want, say “collect artifacts” and I will return the exact export filters and the minimal CSV column lists to request from your tenant admins (marked as recommended instructions, not as evidence from the records).

@@ -1,0 +1,30 @@
+## Recommendation — Classification
+second_level_support
+
+## Short rationale (concise)
+The ticket’s symptom set — folder rename/changes followed by:
+- external partners intermittently able to open files then later denied,
+- internal users seeing folders but failing to open documents,
+- access temporarily restored after client restart or re‑authentication,
+- and other folders becoming “invisible” except by direct URL —
+
+matches multiple prior incidents that required identity/SharePoint engineering (not routine first‑line fixes). Those past cases were resolved only after engineer‑level work (Entra/Azure AD group/object reconciliation, sensitivity‑label reapplication or group alignment, full Azure AD Connect syncs, and token invalidation) rather than by standard first‑line scripts.  
+This classification and reasoning follow the documented incident set for this tenant [Data: Sources (30); Sources (13); Sources (38)].
+
+## Evidence from the indexed records (what the records explicitly document)
+- A documented Sensitivity‑Label vs ACL divergence where a label was applied after unique folder permissions (and “Preserve custom permissions” was not enabled) produced exactly this intermittent behavior; remediation required label/group alignment and token invalidation [Data: Sources (30)].  
+- A documented Azure AD Connect / same‑display‑name group collision (cloud vs on‑prem group with different ObjectIDs) caused external guests to be excluded; remediation required group consolidation and a full Azure AD Connect sync [Data: Sources (13)].  
+- Token‑caching / Conditional Access timing produced “works temporarily then fails” symptoms in another recorded case; forcing full sign‑out (Office + browser) and re‑authentication was used as an immediate mitigation during investigations [Data: Sources (38)].
+
+(Each of the three failure modes above — label↔ACL mismatch, group/object‑ID collision, and token caching/CA timing — appears in the prior records as a root cause for the same mixed symptoms you describe [Data: Sources (30); Sources (13); Sources (38)].)
+
+## Why this is second_level_support (brief)
+- The prior tickets that match these symptoms (sensitivity‑label interactions, AAD group/object collisions, token timing effects) were escalated to BU Infrastructure / M365 / Identity and required system‑engineer actions (objectID reconciliation, group-nesting fixes, full AD Connect syncs, label reapply and token invalidation) — i.e., engineer involvement was necessary to fix and to prevent recurrence [Data: Sources (30); Sources (13); Sources (38)].
+
+## Immediate next steps (recommended — these are actions suggested based on the indexed cases, not additional documented facts)
+(Please treat these as recommended triage actions to perform now and/or hand to identity engineers.)
+1. Ask impacted users to fully sign out of Office desktop apps and browsers (or revoke refresh tokens for a test user) and re‑test — prior incidents used this as an immediate mitigation to force token refresh and to confirm token‑caching effects [Data: Sources (38)].  
+2. Capture evidence for escalation: SharePoint folder permission export (which principal/ObjectID the ACL references), the folder’s Purview/AIP label and its allowed principal(s), Azure AD sign‑in logs for representative affected users (timestamps of successful vs failed access and token claims), and Azure AD group objectIDs and membership listings for groups referenced by the ACL and the label. These are the exact artifacts used in past investigations [Data: Sources (30); Sources (13); Sources (38)].  
+3. If the above evidence shows a label↔ACL divergence or group ObjectID mismatch, escalate to your identity/M365 engineering team (second level) to reconcile group objects, reapply or reconfigure the label as needed, and (if required) run a controlled full Azure AD Connect sync and token invalidation — those were the remediation steps recorded as effective in the prior cases [Data: Sources (30); Sources (13)].
+
+If you’d like, I can draft the minimal evidence list you should collect now (exact log fields and the specific items to export) and a short escalation brief referencing the prior tickets so identity engineers get the context and artifacts they need. (That drafting would be a recommendation based on the documented investigations, not a new record of actions performed.)

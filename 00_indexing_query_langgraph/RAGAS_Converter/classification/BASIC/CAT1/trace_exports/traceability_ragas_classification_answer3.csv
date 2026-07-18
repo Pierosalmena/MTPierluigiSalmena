@@ -1,0 +1,1517 @@
+﻿question,answer,context
+Is the statement supported by the evidence?,"The SharePoint symptom you describe—one folder suddenly blocked for some users after a rename and application of a sensitivity/confidential label, with inconsistent visibility (works for some users, works in Incognito for others)—matches a prior incident that required escalation to the M365 / Identity team for in-depth analysis. In that case the label+permission interaction was investigated by a System Engineer and required tests against Azure AD groups and Purview/AIP behavior","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+"
+Is the statement supported by the evidence?,"A separate but related SharePoint/permission incident (access denied to a single project folder) was resolved only after correcting group nesting in Entra ID (not by simple client-side fixes); the remediation involved changing the Azure AD group structure and synchronizing it, after which access was restored","=== CITED SOURCES ===
+SOURCE 20:
+﻿Ticket summary:
+Ticket name: KF25: SharePoint – Access to project folder denied
+Ticket number: TI-1569482
+Company: Customer Company 25 AG
+Contact person: Contact Person 03
+Owner: Employee 18
+Origin: Email
+Type: Incident
+Created on: 18.02.25 09:06
+Closure
+Closure date: 25.02.25 14:38
+Closure text: Root cause identified (group nesting in Entra ID). Permission structure cleaned up. Access restored.
+Activities
+Emails:
+18.02.25 08:59
+Subject: No access to project folder “2025_Migration”
+From: Contact Person 03
+To: HELPDESK
+Good morning
+Several employees from the team “IT-Projekte” receive the following message when accessing the SharePoint folder
+/Projects/2025_Migration
+Access denied – You do not have the required permissions
+Access was working until last week.
+Please review.
+Kind regards
+Contact Person 03
+18.02.25 09:06
+Ticket TI-1569482 created
+Assigned to: Employee 18
+Status: In Progress
+Notes:
+18.02.25 09:22 – Remote analysis
+• Access tested with affected user → reproducible
+• SharePoint Online reachable
+• Other project folders accessible
+• Only folder “2025_Migration” affected
+• Permission view in SharePoint shows: Access via group “SP_Project_IT”
+Comparison with working user:
+This user is member of “SP_Project_IT_Lead”
+Suspicion: Group membership inconsistent
+18.02.25 10:05 – Entra ID review
+• User is member of Azure AD group “IT-Projekte”
+• This group is nested in “SP_Project_IT”
+• Notable: “SP_Project_IT” was newly created last week
+History checked:
+Old group “SP_Project_IT_v1” was deactivated
+18.02.25 11:40 – Test measure
+User added directly to “SP_Project_IT”
+→ Access works immediately
+After removing the direct assignment → access denied again
+Conclusion: Nesting not functioning correctly
+19.02.25 08:55 – Further analysis
+Review of group structure:
+IT-Projekte
+└── SP_Project_IT_v1 (deactivated)
+└── SP_Project_IT (new)
+“IT-Projekte” was still nested in the old group, not in the new one.
+Therefore, users did not receive effective permissions on the new SharePoint folder.
+19.02.25 10:20 – Adjustment
+• Nesting corrected
+• “IT-Projekte” properly integrated into “SP_Project_IT”
+• Old group removed
+• Synchronization awaited
+20.02.25 – Monitoring
+Multiple users tested
+Access consistently possible
+25.02.25 14:30 – Customer feedback
+Access works again for all employees without restriction.
+Ticket closure
+25.02.25 14:38
+Dear Contact Person 03
+The root cause was incorrect group nesting in Entra ID after the creation of the new SharePoint permission group.
+The structure was cleaned up and tested.
+Access has been restored.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,Your external-auditor upload issue (hang → fail / WinSCP timeout) resembles past FTP/secure-drop problems that required firewall analysis and coordination with core/network teams and server-side checks rather than purely desktop troubleshooting,"=== CITED SOURCES ===
+SOURCE 34:
+ Server @ KF14 #001065157 NO-REPLY Employee 27
+Hello Ramez
+The ticket TI-1394201 is no longer in your responsibility.
+It has been transferred from Admin, CRM to Employee 26.
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+Link: KF14: Question FileZilla Server @ KF14
+02.12.24 10:50 Ticket assigned: KF14: Question FileZilla Server @ KF14 #001065158 NO-REPLY Employee 26
+The ticket TI-1394201 has been assigned to you.
+Company: Customer Company 14 AG
+Contact: Contact Person 16
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+TI-1394201
+13.12.24 14:58 Ticket closure: TI-1394201 | KF14: Question FileZilla Server @ KF14 #001071074 HELPDESK Contact Person 16
+Ticket Information
+Dear Contact Person 16 Contact Person 16,
+Your ticket from 29.11.24 07:49 has been closed.
+If you have any questions regarding this ticket, you may contact our Helpdesk at any time quoting ticket no. TI-1394201.
+Your ticket details:
+Ticket no.
+TI-1394201
+Subject
+KF14: Question FileZilla Server @ KF14
+Priority
+Normal
+External ticket no.
+Closure description
+Ticket can be closed
+Ticket link
+It is important to us to continuously improve our collaboration with you.
+Help us support you better by providing brief feedback on your completed ticket.
+Simply click the link below and answer two questions – it takes only about 30 seconds. Thank you very much for your time.
+To the survey
+Kind regards,
+Consulting Sample Company – Helpdesk
+Consulting Sample Company AG
+Street 1
+CH-1111 City
+T +41 000 00 00 00
+helpdesk@ConsultingSampleCompany.example
+www.ConsultingSampleCompany.com/ConsultingSampleCompany
+
+Notes:
+Created on | Author | Title | Text
+29.11.24 07:49 Admin, CRM WEB Ticket opened on 29.11.24 at 07:49 by Employee 16.
+29.11.24 07:52 Employee 16 Could you please check who set up the FileZilla Server and support Mr. Contact Person 16? Thank you very much.
+29.11.24 07:53 Admin, CRM WEB Ticket assigned to BU Customer Services Run.
+29.11.24 08:02 Admin, CRM WEB Ticket assigned to Employee 27.
+29.11.24 16:01 Employee 27 Mr. Contact Person 16 was contacted.
+The case was discussed with the customer.
+Troubleshooting performed on the customer workstation:
+– Login tests performed on FTP / SFTP and with WinSCP.
+– FTP settings on the client machine checked.
+Information:
+Server: KF14azedi01
+FTP IP: 10.10.10.10 Port 21
+UserName: Ct_001680
+Clarifications with the Network Team:
+– Firewall analysis performed.
+Clarifications with the Core Team:
+– FTP settings + Site Settings (FileZilla) checked.
+Further analyses were performed together with the Core Team on the customer workstation.
+Ticket remains in troubleshooting.
+29.11.24 16:03 ApplicationUser, CRM Development WEB Ticket scheduled for 02.12.
+02.12.24 10:50 Admin, CRM WEB Ticket assigned to Employee 26.
+17.12.24 07:22 Employee 28 WEB Decommissioning of external FTP access, firewall policy removed.
+17.12.24 07:23 Employee 28 Screenshot 2024-12-17 072002.png
+
+
+
+SOURCE 33:
+﻿
+Ticket Summary:
+Ticket name: KF14: Question FileZilla Server @ KF14
+Ticket number: TI-1394201
+Company: Customer Company 14 AG
+Contact person: Contact Person 16
+Owner: Employee 26
+Origin: Email
+Type: Support Request
+Created on: 29.11.24 07:49
+Closure
+Closure date: 13.12.24 14:58
+Closure text: Ticket can be closed
+Activities
+Emails:
+Created on | Subject | From | To | Description
+28.11.24 23:49 Question FileZilla Server @ KF14 Contact Person 16 HELPDESK, Consulting Sample Company, Helpdesk
+Hello everyone
+Could the responsible person please contact me who set up the FileZilla Server on the virtual server at KF14?
+We are experiencing difficulties with FTP access and I need support.
+Thank you and kind regards
+Contact Person 16
+Schedule meeting / Termin vereinbaren
+29.11.24 07:51 RE: Question FileZilla Server @ KF14 #035403412 Employee 16 Contact Person 16
+Good morning Mr. Contact Person 16
+Thank you very much for your inquiry.
+I will gladly forward the ticket to the responsible System Engineer.
+Kind regards
+Employee 16
+------------------- Original message -------------------
+From: Contact Person 16 ContactPerson16@CustomerCompany14.example
+Received: Thu Nov 28 2024 23:49:25 GMT+0100 (Central European Standard Time)
+To: Consulting Sample Company, Helpdesk helpdesk@ConsultingSampleCompany.example; HELPDESK helpdesk@ConsultingSampleCompany.example
+Subject: Question FileZilla Server @ KF14
+Hello everyone
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14?
+We are having problems with FTP access and I need assistance.
+Thank you and best regards
+Contact Person 16
+Schedule meeting / Termin vereinbaren
+29.11.24 07:53 Ticket no longer in your responsibility | TI-1394201 | KF14: Question FileZilla Server @ KF14 #001063824 NO-REPLY Employee 16
+Hello Employee 16
+The ticket TI-1394201 is no longer in your area of responsibility.
+It has been forwarded by Admin, CRM to BU Customer Services Run.
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+Link: KF14: Question FileZilla Server @ KF14
+29.11.24 07:53 Ticket assigned: KF14: Question FileZilla Server @ KF14 assigned to BU Customer Services Run #001063825 NO-REPLY
+The ticket TI-1394201 has been assigned to the department BU Customer Services Run.
+Ticket details:
+Company: Customer Company 14 AG
+Priority: Normal
+Assigned by: Admin, CRM
+TI-1394201
+29.11.24 07:55 Ticket creation: TI-1394201 | KF14: Question FileZilla Server @ KF14 #001063827 HELPDESK Contact Person 16
+Ticket notification
+Good day Contact Person 16 Contact Person 16,
+Your support request has been received and registered in our system under ticket number TI-1394201.
+Details of your ticket:
+Ticket no.
+TI-1394201
+Subject
+KF14: Question FileZilla Server @ KF14
+Priority
+Normal
+Contact
+BU Customer Services Run
+Ticket link
+You can view the current processing status at any time in the
+Consulting Sample Company Portal.
+We will contact you as soon as possible and are happy to assist you with any questions.
+Kind regards,
+Consulting Sample Company – Helpdesk
+Consulting Sample Company AG
+Street 1
+CH-1111 City
+T +41 000 00 00 00
+helpdesk@ConsultingSampleCompany.example
+www.ConsultingSampleCompany.com/ConsultingSampleCompany
+29.11.24 08:02 Ticket assigned: KF14: Question FileZilla Server @ KF14 #001063833 NO-REPLY Employee 27
+The ticket TI-1394201 has been assigned to you.
+Company: Customer Company 14 AG
+Contact: Contact Person 16
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+TI-1394201
+02.12.24 09:02 Ticket: KF14: Question FileZilla Server @ KF14 set to status: ""In Progress"" #027089820 NO-REPLY Employee27@ConsultingSampleCompany.example
+Hello Ramez
+The ticket KF14: Question FileZilla Server @ KF14, number TI-1394201, has been set to status “In Progress”.
+Link: KF14: Question FileZilla Server @ KF14
+02.12.24 10:50 Ticket no longer in your responsibility | TI-1394201 | KF14: Question FileZilla Server @ KF14 #001065157 NO-REPLY Employee 27
+Hello Ramez
+The ticket TI-1394201 is no longer in your responsibility.
+It has been transferred from Admin, CRM to Employee 26.
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+Link: KF14: Question FileZilla Server @ KF"
+Is the statement supported by the evidence?,"Parts of your ticket (Teams camera and mic disappearance) map to cases that were resolved at first-level using standard “Blueprint” checks (OS privacy permissions, app permissions, Teams restart). For example, a missing camera in Teams was fixed by enabling OS camera permissions and app access per the Blueprint","=== CITED SOURCES ===
+SOURCE 42:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Camera not detected
+Ticket number: TI-1615042
+Company: Customer Company 52 AG
+Contact person: Contact Person 09
+Owner: Employee 33
+Origin: Email
+Type: Incident
+Created on: 07.10.25 09:12
+Closure
+Closure date: 07.10.25 11:06
+Closure text: Camera available again in Teams. Root cause was missing operating system permission and blocked device setting. Steps performed according to Blueprint.
+Activities
+07.10.25 09:05 – Email from Contact Person 09
+Good morning
+For one user, the camera is no longer working in Teams. No camera is displayed in the Teams device settings. In other apps it also appears to be partially unavailable. Could you please assist?
+Kind regards
+07.10.25 09:12
+Ticket created and assigned to Employee 33.
+07.10.25 09:30 – Helpdesk inquiry
+Good day
+Could you please confirm whether the user is using Windows or Mac and whether the camera is available in the browser (e.g., Teams Web)?
+Thank you.
+07.10.25 09:48 – Customer response
+Windows 11. The camera also does not work in the browser.
+07.10.25 10:25 – Internal note
+Connected to the user via remote session. The camera is visible in Device Manager, but Teams has no access. In Windows privacy settings, camera access for apps is disabled. Additionally, Teams is not enabled in the list of allowed apps.
+According to “Blueprint – Teams Client Devices & Permissions – Version 1.2”, the standard checks were performed (OS privacy settings, app permissions, Teams restart).
+07.10.25 10:55 – Customer feedback
+User confirms that the camera is now displayed in Teams and the test call is successful.
+07.10.25 11:06 – Ticket closure
+Dear Contact Person 09
+The camera was blocked by operating system permissions. After adjusting the camera and app permissions according to the Blueprint, the camera is available again in Teams.
+Kind regards
+Consulting Sample Company
+
+
+"
+Is the statement supported by the evidence?,A sensitivity label enforced encryption and restricted access to an Azure AD group different from the SharePoint permission group; engineers escalated and investigated potential conflicts between SharePoint permissions and AIP encryption,"=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+"
+Is the statement supported by the evidence?,An access-denied case for a SharePoint folder was caused by incorrect group nesting in Entra ID; fixing the nesting and synchronizing restored access,"=== CITED SOURCES ===
+SOURCE 20:
+﻿Ticket summary:
+Ticket name: KF25: SharePoint – Access to project folder denied
+Ticket number: TI-1569482
+Company: Customer Company 25 AG
+Contact person: Contact Person 03
+Owner: Employee 18
+Origin: Email
+Type: Incident
+Created on: 18.02.25 09:06
+Closure
+Closure date: 25.02.25 14:38
+Closure text: Root cause identified (group nesting in Entra ID). Permission structure cleaned up. Access restored.
+Activities
+Emails:
+18.02.25 08:59
+Subject: No access to project folder “2025_Migration”
+From: Contact Person 03
+To: HELPDESK
+Good morning
+Several employees from the team “IT-Projekte” receive the following message when accessing the SharePoint folder
+/Projects/2025_Migration
+Access denied – You do not have the required permissions
+Access was working until last week.
+Please review.
+Kind regards
+Contact Person 03
+18.02.25 09:06
+Ticket TI-1569482 created
+Assigned to: Employee 18
+Status: In Progress
+Notes:
+18.02.25 09:22 – Remote analysis
+• Access tested with affected user → reproducible
+• SharePoint Online reachable
+• Other project folders accessible
+• Only folder “2025_Migration” affected
+• Permission view in SharePoint shows: Access via group “SP_Project_IT”
+Comparison with working user:
+This user is member of “SP_Project_IT_Lead”
+Suspicion: Group membership inconsistent
+18.02.25 10:05 – Entra ID review
+• User is member of Azure AD group “IT-Projekte”
+• This group is nested in “SP_Project_IT”
+• Notable: “SP_Project_IT” was newly created last week
+History checked:
+Old group “SP_Project_IT_v1” was deactivated
+18.02.25 11:40 – Test measure
+User added directly to “SP_Project_IT”
+→ Access works immediately
+After removing the direct assignment → access denied again
+Conclusion: Nesting not functioning correctly
+19.02.25 08:55 – Further analysis
+Review of group structure:
+IT-Projekte
+└── SP_Project_IT_v1 (deactivated)
+└── SP_Project_IT (new)
+“IT-Projekte” was still nested in the old group, not in the new one.
+Therefore, users did not receive effective permissions on the new SharePoint folder.
+19.02.25 10:20 – Adjustment
+• Nesting corrected
+• “IT-Projekte” properly integrated into “SP_Project_IT”
+• Old group removed
+• Synchronization awaited
+20.02.25 – Monitoring
+Multiple users tested
+Access consistently possible
+25.02.25 14:30 – Customer feedback
+Access works again for all employees without restriction.
+Ticket closure
+25.02.25 14:38
+Dear Contact Person 03
+The root cause was incorrect group nesting in Entra ID after the creation of the new SharePoint permission group.
+The structure was cleaned up and tested.
+Access has been restored.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,FTP/secure-file delivery problems have previously required firewall and core-team analysis as part of troubleshooting (FileZilla/FTP ticket history),"=== CITED SOURCES ===
+SOURCE 34:
+ Server @ KF14 #001065157 NO-REPLY Employee 27
+Hello Ramez
+The ticket TI-1394201 is no longer in your responsibility.
+It has been transferred from Admin, CRM to Employee 26.
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+Link: KF14: Question FileZilla Server @ KF14
+02.12.24 10:50 Ticket assigned: KF14: Question FileZilla Server @ KF14 #001065158 NO-REPLY Employee 26
+The ticket TI-1394201 has been assigned to you.
+Company: Customer Company 14 AG
+Contact: Contact Person 16
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+TI-1394201
+13.12.24 14:58 Ticket closure: TI-1394201 | KF14: Question FileZilla Server @ KF14 #001071074 HELPDESK Contact Person 16
+Ticket Information
+Dear Contact Person 16 Contact Person 16,
+Your ticket from 29.11.24 07:49 has been closed.
+If you have any questions regarding this ticket, you may contact our Helpdesk at any time quoting ticket no. TI-1394201.
+Your ticket details:
+Ticket no.
+TI-1394201
+Subject
+KF14: Question FileZilla Server @ KF14
+Priority
+Normal
+External ticket no.
+Closure description
+Ticket can be closed
+Ticket link
+It is important to us to continuously improve our collaboration with you.
+Help us support you better by providing brief feedback on your completed ticket.
+Simply click the link below and answer two questions – it takes only about 30 seconds. Thank you very much for your time.
+To the survey
+Kind regards,
+Consulting Sample Company – Helpdesk
+Consulting Sample Company AG
+Street 1
+CH-1111 City
+T +41 000 00 00 00
+helpdesk@ConsultingSampleCompany.example
+www.ConsultingSampleCompany.com/ConsultingSampleCompany
+
+Notes:
+Created on | Author | Title | Text
+29.11.24 07:49 Admin, CRM WEB Ticket opened on 29.11.24 at 07:49 by Employee 16.
+29.11.24 07:52 Employee 16 Could you please check who set up the FileZilla Server and support Mr. Contact Person 16? Thank you very much.
+29.11.24 07:53 Admin, CRM WEB Ticket assigned to BU Customer Services Run.
+29.11.24 08:02 Admin, CRM WEB Ticket assigned to Employee 27.
+29.11.24 16:01 Employee 27 Mr. Contact Person 16 was contacted.
+The case was discussed with the customer.
+Troubleshooting performed on the customer workstation:
+– Login tests performed on FTP / SFTP and with WinSCP.
+– FTP settings on the client machine checked.
+Information:
+Server: KF14azedi01
+FTP IP: 10.10.10.10 Port 21
+UserName: Ct_001680
+Clarifications with the Network Team:
+– Firewall analysis performed.
+Clarifications with the Core Team:
+– FTP settings + Site Settings (FileZilla) checked.
+Further analyses were performed together with the Core Team on the customer workstation.
+Ticket remains in troubleshooting.
+29.11.24 16:03 ApplicationUser, CRM Development WEB Ticket scheduled for 02.12.
+02.12.24 10:50 Admin, CRM WEB Ticket assigned to Employee 26.
+17.12.24 07:22 Employee 28 WEB Decommissioning of external FTP access, firewall policy removed.
+17.12.24 07:23 Employee 28 Screenshot 2024-12-17 072002.png
+
+
+
+SOURCE 33:
+﻿
+Ticket Summary:
+Ticket name: KF14: Question FileZilla Server @ KF14
+Ticket number: TI-1394201
+Company: Customer Company 14 AG
+Contact person: Contact Person 16
+Owner: Employee 26
+Origin: Email
+Type: Support Request
+Created on: 29.11.24 07:49
+Closure
+Closure date: 13.12.24 14:58
+Closure text: Ticket can be closed
+Activities
+Emails:
+Created on | Subject | From | To | Description
+28.11.24 23:49 Question FileZilla Server @ KF14 Contact Person 16 HELPDESK, Consulting Sample Company, Helpdesk
+Hello everyone
+Could the responsible person please contact me who set up the FileZilla Server on the virtual server at KF14?
+We are experiencing difficulties with FTP access and I need support.
+Thank you and kind regards
+Contact Person 16
+Schedule meeting / Termin vereinbaren
+29.11.24 07:51 RE: Question FileZilla Server @ KF14 #035403412 Employee 16 Contact Person 16
+Good morning Mr. Contact Person 16
+Thank you very much for your inquiry.
+I will gladly forward the ticket to the responsible System Engineer.
+Kind regards
+Employee 16
+------------------- Original message -------------------
+From: Contact Person 16 ContactPerson16@CustomerCompany14.example
+Received: Thu Nov 28 2024 23:49:25 GMT+0100 (Central European Standard Time)
+To: Consulting Sample Company, Helpdesk helpdesk@ConsultingSampleCompany.example; HELPDESK helpdesk@ConsultingSampleCompany.example
+Subject: Question FileZilla Server @ KF14
+Hello everyone
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14?
+We are having problems with FTP access and I need assistance.
+Thank you and best regards
+Contact Person 16
+Schedule meeting / Termin vereinbaren
+29.11.24 07:53 Ticket no longer in your responsibility | TI-1394201 | KF14: Question FileZilla Server @ KF14 #001063824 NO-REPLY Employee 16
+Hello Employee 16
+The ticket TI-1394201 is no longer in your area of responsibility.
+It has been forwarded by Admin, CRM to BU Customer Services Run.
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+Link: KF14: Question FileZilla Server @ KF14
+29.11.24 07:53 Ticket assigned: KF14: Question FileZilla Server @ KF14 assigned to BU Customer Services Run #001063825 NO-REPLY
+The ticket TI-1394201 has been assigned to the department BU Customer Services Run.
+Ticket details:
+Company: Customer Company 14 AG
+Priority: Normal
+Assigned by: Admin, CRM
+TI-1394201
+29.11.24 07:55 Ticket creation: TI-1394201 | KF14: Question FileZilla Server @ KF14 #001063827 HELPDESK Contact Person 16
+Ticket notification
+Good day Contact Person 16 Contact Person 16,
+Your support request has been received and registered in our system under ticket number TI-1394201.
+Details of your ticket:
+Ticket no.
+TI-1394201
+Subject
+KF14: Question FileZilla Server @ KF14
+Priority
+Normal
+Contact
+BU Customer Services Run
+Ticket link
+You can view the current processing status at any time in the
+Consulting Sample Company Portal.
+We will contact you as soon as possible and are happy to assist you with any questions.
+Kind regards,
+Consulting Sample Company – Helpdesk
+Consulting Sample Company AG
+Street 1
+CH-1111 City
+T +41 000 00 00 00
+helpdesk@ConsultingSampleCompany.example
+www.ConsultingSampleCompany.com/ConsultingSampleCompany
+29.11.24 08:02 Ticket assigned: KF14: Question FileZilla Server @ KF14 #001063833 NO-REPLY Employee 27
+The ticket TI-1394201 has been assigned to you.
+Company: Customer Company 14 AG
+Contact: Contact Person 16
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+TI-1394201
+02.12.24 09:02 Ticket: KF14: Question FileZilla Server @ KF14 set to status: ""In Progress"" #027089820 NO-REPLY Employee27@ConsultingSampleCompany.example
+Hello Ramez
+The ticket KF14: Question FileZilla Server @ KF14, number TI-1394201, has been set to status “In Progress”.
+Link: KF14: Question FileZilla Server @ KF14
+02.12.24 10:50 Ticket no longer in your responsibility | TI-1394201 | KF14: Question FileZilla Server @ KF14 #001065157 NO-REPLY Employee 27
+Hello Ramez
+The ticket TI-1394201 is no longer in your responsibility.
+It has been transferred from Admin, CRM to Employee 26.
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+Link: KF14: Question FileZilla Server @ KF"
+Is the statement supported by the evidence?,"Teams camera missing from settings was resolved by first-tier steps (OS privacy settings, enabling Teams in allowed apps, Teams restart) following the documented Blueprint","=== CITED SOURCES ===
+SOURCE 42:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Camera not detected
+Ticket number: TI-1615042
+Company: Customer Company 52 AG
+Contact person: Contact Person 09
+Owner: Employee 33
+Origin: Email
+Type: Incident
+Created on: 07.10.25 09:12
+Closure
+Closure date: 07.10.25 11:06
+Closure text: Camera available again in Teams. Root cause was missing operating system permission and blocked device setting. Steps performed according to Blueprint.
+Activities
+07.10.25 09:05 – Email from Contact Person 09
+Good morning
+For one user, the camera is no longer working in Teams. No camera is displayed in the Teams device settings. In other apps it also appears to be partially unavailable. Could you please assist?
+Kind regards
+07.10.25 09:12
+Ticket created and assigned to Employee 33.
+07.10.25 09:30 – Helpdesk inquiry
+Good day
+Could you please confirm whether the user is using Windows or Mac and whether the camera is available in the browser (e.g., Teams Web)?
+Thank you.
+07.10.25 09:48 – Customer response
+Windows 11. The camera also does not work in the browser.
+07.10.25 10:25 – Internal note
+Connected to the user via remote session. The camera is visible in Device Manager, but Teams has no access. In Windows privacy settings, camera access for apps is disabled. Additionally, Teams is not enabled in the list of allowed apps.
+According to “Blueprint – Teams Client Devices & Permissions – Version 1.2”, the standard checks were performed (OS privacy settings, app permissions, Teams restart).
+07.10.25 10:55 – Customer feedback
+User confirms that the camera is now displayed in Teams and the test call is successful.
+07.10.25 11:06 – Ticket closure
+Dear Contact Person 09
+The camera was blocked by operating system permissions. After adjusting the camera and app permissions according to the Blueprint, the camera is available again in Teams.
+Kind regards
+Consulting Sample Company
+
+
+"
+Is the statement supported by the evidence?,"Escalate the ticket to M365 / Identity (Entra ID) with the SharePoint folder details, the sensitivity label name, and timestamps of when the label was applied. (Recommended; informed by the prior escalation in TI-1578891","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+"
+Is the statement supported by the evidence?,"Ask the Identity team to check (a) whether the AIP/sensitivity label enforces encryption to a different Azure AD group than the SharePoint permission group, and (b) group nesting/replication status in Entra ID—both were root causes in similar incidents","=== CITED SOURCES ===
+SOURCE 30:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Project folder “Compliance_Review” partially not visible
+Ticket number: TI-1578891
+Company: Customer Company 25 AG
+Contact person: Contact Person 02
+Owner: Employee 27
+Origin: Email
+Type: Incident
+Created on: 18.03.25 08:43
+Activities
+18.03.25 08:36
+Subject: Access to Compliance_Review folder missing for some users
+From: Contact Person 02
+Good morning
+As part of our internal audit, we have identified that some employees do not have access to the folder
+/Projects/Compliance_Review_2025
+Others can see it without issue.
+Please review.
+Kind regards
+Contact Person 02
+18.03.25 08:43
+Ticket created
+Assigned to: Employee 27
+Status: In Progress
+Notes
+18.03.25 09:15
+Helpdesk asks:
+• Which users exactly are affected?
+• Since when?
+• Screenshot of error message?
+• Access via browser or Teams?
+18.03.25 10:02
+Customer responds:
+Affected users:
+• M. Keller
+• S. Braun
+• T. Widmer
+Error message:
+Item not found
+Access via browser (Edge).
+Noticed since last week, but unclear exactly since when.
+18.03.25 10:25
+Helpdesk asks further:
+• Are users members of the project group?
+• Were permissions recently changed?
+• Does it affect only this folder or others as well?
+18.03.25 11:18
+Customer:
+We restructured several project groups last week.
+New groups were created:
+• COMPLIANCE_TEAM
+• COMPLIANCE_EXT
+Folder may have been newly inherited.
+Other folders work.
+18.03.25 13:05
+Helpdesk checks SharePoint permissions:
+• Folder has Unique Permissions
+• Permission via group “SP_Compliance_Main”
+• This group contains “COMPLIANCE_TEAM”
+Test with working user → access OK
+Test with affected user → no access
+19.03.25 09:12
+Helpdesk asks:
+Are the users possibly assigned via multiple groups?
+Were there recent role changes (HR)?
+19.03.25 10:40
+Customer responds:
+Two users changed departments internally (Finance → Risk).
+One works 50% in both teams.
+Could that be relevant?
+19.03.25 11:05
+Helpdesk checks group memberships:
+All three users are members of “COMPLIANCE_TEAM”.
+No obvious differences.
+19.03.25 14:55
+Customer reports:
+One user had access briefly today, then not again.
+After restart it did not work.
+20.03.25 08:20
+Helpdesk asks:
+Are users accessing from different devices?
+Company laptop or private device?
+With or without VPN?
+20.03.25 09:03
+Customer:
+Two via company laptop
+One via private device
+VPN not required (cloud-only environment).
+20.03.25 10:45
+Helpdesk checks:
+• Clear browser cache
+• Test in Incognito mode
+• Test in another browser
+Result:
+Incognito → access partially possible
+20.03.25 15:10
+Customer:
+After signing out of all Office apps, it worked briefly.
+Later not visible again.
+21.03.25 08:55
+Helpdesk asks:
+Was the folder possibly moved or renamed?
+Was the Sensitivity Label changed?
+Is the document library fully loaded?
+21.03.25 10:18
+Customer:
+Folder was renamed 2 weeks ago from “Compliance_Audit” to “Compliance_Review_2025”.
+Sensitivity Label “Confidential – Internal” applied.
+21.03.25 13:30
+Helpdesk checks:
+Label requires:
+• Encryption
+• Access only for group “Compliance_Core”
+Notable:
+“Compliance_Core” is not identical to “COMPLIANCE_TEAM”.
+However, according to SharePoint, permission is still managed via “SP_Compliance_Main”.
+Unclear correlation.
+21.03.25 16:10
+Ticket remains open due to inconsistent behavior.
+Status: In Progress
+22.03.25 09:05
+Internal note – Employee 27
+Since the behavior remains inconsistent (partial access, partial denial, partial access only in Incognito mode), the ticket is escalated for in-depth analysis.
+Assigned Group changed to: BU Infrastructure – M365 / Identity
+22.03.25 09:12
+Ticket taken over by: System Engineer 11
+Status: In Progress
+22.03.25 10:25
+Analysis by System Engineer 11
+Step 1 – Sensitivity Label review
+Label “Confidential – Internal” checked:
+• Encryption active
+• Access only for members of Azure AD group “Compliance_Core”
+• Automatic inheritance for folders enabled
+Notable:
+Folder “Compliance_Review_2025” has Unique Permissions.
+Label was applied AFTER renaming.
+Hypothesis: Conflict between SharePoint permissions and AIP label encryption.
+22.03.25 11:40
+Test:
+• User added directly to “Compliance_Core”
+→ Access immediately possible
+After removal from “Compliance_Core”
+→ Access denied again
+However:
+Other users WITHOUT “Compliance_Core” membership have access.
+Hypothesis rejected – not purely group-based.
+24.03.25 08:55
+Analysis Azure AD Sign-In Logs
+For affected users:
+• Token contains claim for “COMPLIANCE_TEAM”
+• No claim for “Compliance_Core”
+• Conditional Access evaluation successful
+No blocking visible.
+24.03.25 10:10
+In-depth review via Microsoft Purview / Information Protection
+
+
+SOURCE 20:
+﻿Ticket summary:
+Ticket name: KF25: SharePoint – Access to project folder denied
+Ticket number: TI-1569482
+Company: Customer Company 25 AG
+Contact person: Contact Person 03
+Owner: Employee 18
+Origin: Email
+Type: Incident
+Created on: 18.02.25 09:06
+Closure
+Closure date: 25.02.25 14:38
+Closure text: Root cause identified (group nesting in Entra ID). Permission structure cleaned up. Access restored.
+Activities
+Emails:
+18.02.25 08:59
+Subject: No access to project folder “2025_Migration”
+From: Contact Person 03
+To: HELPDESK
+Good morning
+Several employees from the team “IT-Projekte” receive the following message when accessing the SharePoint folder
+/Projects/2025_Migration
+Access denied – You do not have the required permissions
+Access was working until last week.
+Please review.
+Kind regards
+Contact Person 03
+18.02.25 09:06
+Ticket TI-1569482 created
+Assigned to: Employee 18
+Status: In Progress
+Notes:
+18.02.25 09:22 – Remote analysis
+• Access tested with affected user → reproducible
+• SharePoint Online reachable
+• Other project folders accessible
+• Only folder “2025_Migration” affected
+• Permission view in SharePoint shows: Access via group “SP_Project_IT”
+Comparison with working user:
+This user is member of “SP_Project_IT_Lead”
+Suspicion: Group membership inconsistent
+18.02.25 10:05 – Entra ID review
+• User is member of Azure AD group “IT-Projekte”
+• This group is nested in “SP_Project_IT”
+• Notable: “SP_Project_IT” was newly created last week
+History checked:
+Old group “SP_Project_IT_v1” was deactivated
+18.02.25 11:40 – Test measure
+User added directly to “SP_Project_IT”
+→ Access works immediately
+After removing the direct assignment → access denied again
+Conclusion: Nesting not functioning correctly
+19.02.25 08:55 – Further analysis
+Review of group structure:
+IT-Projekte
+└── SP_Project_IT_v1 (deactivated)
+└── SP_Project_IT (new)
+“IT-Projekte” was still nested in the old group, not in the new one.
+Therefore, users did not receive effective permissions on the new SharePoint folder.
+19.02.25 10:20 – Adjustment
+• Nesting corrected
+• “IT-Projekte” properly integrated into “SP_Project_IT”
+• Old group removed
+• Synchronization awaited
+20.02.25 – Monitoring
+Multiple users tested
+Access consistently possible
+25.02.25 14:30 – Customer feedback
+Access works again for all employees without restriction.
+Ticket closure
+25.02.25 14:38
+Dear Contact Person 03
+The root cause was incorrect group nesting in Entra ID after the creation of the new SharePoint permission group.
+The structure was cleaned up and tested.
+Access has been restored.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,"Escalate/coordinate with the Network/Core team for the auditor upload/WinSCP timeouts so they can run firewall/session traces and server-side FTP checks, as similar FTP tickets involved firewall and core-team work","=== CITED SOURCES ===
+SOURCE 34:
+ Server @ KF14 #001065157 NO-REPLY Employee 27
+Hello Ramez
+The ticket TI-1394201 is no longer in your responsibility.
+It has been transferred from Admin, CRM to Employee 26.
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+Link: KF14: Question FileZilla Server @ KF14
+02.12.24 10:50 Ticket assigned: KF14: Question FileZilla Server @ KF14 #001065158 NO-REPLY Employee 26
+The ticket TI-1394201 has been assigned to you.
+Company: Customer Company 14 AG
+Contact: Contact Person 16
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+TI-1394201
+13.12.24 14:58 Ticket closure: TI-1394201 | KF14: Question FileZilla Server @ KF14 #001071074 HELPDESK Contact Person 16
+Ticket Information
+Dear Contact Person 16 Contact Person 16,
+Your ticket from 29.11.24 07:49 has been closed.
+If you have any questions regarding this ticket, you may contact our Helpdesk at any time quoting ticket no. TI-1394201.
+Your ticket details:
+Ticket no.
+TI-1394201
+Subject
+KF14: Question FileZilla Server @ KF14
+Priority
+Normal
+External ticket no.
+Closure description
+Ticket can be closed
+Ticket link
+It is important to us to continuously improve our collaboration with you.
+Help us support you better by providing brief feedback on your completed ticket.
+Simply click the link below and answer two questions – it takes only about 30 seconds. Thank you very much for your time.
+To the survey
+Kind regards,
+Consulting Sample Company – Helpdesk
+Consulting Sample Company AG
+Street 1
+CH-1111 City
+T +41 000 00 00 00
+helpdesk@ConsultingSampleCompany.example
+www.ConsultingSampleCompany.com/ConsultingSampleCompany
+
+Notes:
+Created on | Author | Title | Text
+29.11.24 07:49 Admin, CRM WEB Ticket opened on 29.11.24 at 07:49 by Employee 16.
+29.11.24 07:52 Employee 16 Could you please check who set up the FileZilla Server and support Mr. Contact Person 16? Thank you very much.
+29.11.24 07:53 Admin, CRM WEB Ticket assigned to BU Customer Services Run.
+29.11.24 08:02 Admin, CRM WEB Ticket assigned to Employee 27.
+29.11.24 16:01 Employee 27 Mr. Contact Person 16 was contacted.
+The case was discussed with the customer.
+Troubleshooting performed on the customer workstation:
+– Login tests performed on FTP / SFTP and with WinSCP.
+– FTP settings on the client machine checked.
+Information:
+Server: KF14azedi01
+FTP IP: 10.10.10.10 Port 21
+UserName: Ct_001680
+Clarifications with the Network Team:
+– Firewall analysis performed.
+Clarifications with the Core Team:
+– FTP settings + Site Settings (FileZilla) checked.
+Further analyses were performed together with the Core Team on the customer workstation.
+Ticket remains in troubleshooting.
+29.11.24 16:03 ApplicationUser, CRM Development WEB Ticket scheduled for 02.12.
+02.12.24 10:50 Admin, CRM WEB Ticket assigned to Employee 26.
+17.12.24 07:22 Employee 28 WEB Decommissioning of external FTP access, firewall policy removed.
+17.12.24 07:23 Employee 28 Screenshot 2024-12-17 072002.png
+
+
+
+SOURCE 33:
+﻿
+Ticket Summary:
+Ticket name: KF14: Question FileZilla Server @ KF14
+Ticket number: TI-1394201
+Company: Customer Company 14 AG
+Contact person: Contact Person 16
+Owner: Employee 26
+Origin: Email
+Type: Support Request
+Created on: 29.11.24 07:49
+Closure
+Closure date: 13.12.24 14:58
+Closure text: Ticket can be closed
+Activities
+Emails:
+Created on | Subject | From | To | Description
+28.11.24 23:49 Question FileZilla Server @ KF14 Contact Person 16 HELPDESK, Consulting Sample Company, Helpdesk
+Hello everyone
+Could the responsible person please contact me who set up the FileZilla Server on the virtual server at KF14?
+We are experiencing difficulties with FTP access and I need support.
+Thank you and kind regards
+Contact Person 16
+Schedule meeting / Termin vereinbaren
+29.11.24 07:51 RE: Question FileZilla Server @ KF14 #035403412 Employee 16 Contact Person 16
+Good morning Mr. Contact Person 16
+Thank you very much for your inquiry.
+I will gladly forward the ticket to the responsible System Engineer.
+Kind regards
+Employee 16
+------------------- Original message -------------------
+From: Contact Person 16 ContactPerson16@CustomerCompany14.example
+Received: Thu Nov 28 2024 23:49:25 GMT+0100 (Central European Standard Time)
+To: Consulting Sample Company, Helpdesk helpdesk@ConsultingSampleCompany.example; HELPDESK helpdesk@ConsultingSampleCompany.example
+Subject: Question FileZilla Server @ KF14
+Hello everyone
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14?
+We are having problems with FTP access and I need assistance.
+Thank you and best regards
+Contact Person 16
+Schedule meeting / Termin vereinbaren
+29.11.24 07:53 Ticket no longer in your responsibility | TI-1394201 | KF14: Question FileZilla Server @ KF14 #001063824 NO-REPLY Employee 16
+Hello Employee 16
+The ticket TI-1394201 is no longer in your area of responsibility.
+It has been forwarded by Admin, CRM to BU Customer Services Run.
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+Link: KF14: Question FileZilla Server @ KF14
+29.11.24 07:53 Ticket assigned: KF14: Question FileZilla Server @ KF14 assigned to BU Customer Services Run #001063825 NO-REPLY
+The ticket TI-1394201 has been assigned to the department BU Customer Services Run.
+Ticket details:
+Company: Customer Company 14 AG
+Priority: Normal
+Assigned by: Admin, CRM
+TI-1394201
+29.11.24 07:55 Ticket creation: TI-1394201 | KF14: Question FileZilla Server @ KF14 #001063827 HELPDESK Contact Person 16
+Ticket notification
+Good day Contact Person 16 Contact Person 16,
+Your support request has been received and registered in our system under ticket number TI-1394201.
+Details of your ticket:
+Ticket no.
+TI-1394201
+Subject
+KF14: Question FileZilla Server @ KF14
+Priority
+Normal
+Contact
+BU Customer Services Run
+Ticket link
+You can view the current processing status at any time in the
+Consulting Sample Company Portal.
+We will contact you as soon as possible and are happy to assist you with any questions.
+Kind regards,
+Consulting Sample Company – Helpdesk
+Consulting Sample Company AG
+Street 1
+CH-1111 City
+T +41 000 00 00 00
+helpdesk@ConsultingSampleCompany.example
+www.ConsultingSampleCompany.com/ConsultingSampleCompany
+29.11.24 08:02 Ticket assigned: KF14: Question FileZilla Server @ KF14 #001063833 NO-REPLY Employee 27
+The ticket TI-1394201 has been assigned to you.
+Company: Customer Company 14 AG
+Contact: Contact Person 16
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+TI-1394201
+02.12.24 09:02 Ticket: KF14: Question FileZilla Server @ KF14 set to status: ""In Progress"" #027089820 NO-REPLY Employee27@ConsultingSampleCompany.example
+Hello Ramez
+The ticket KF14: Question FileZilla Server @ KF14, number TI-1394201, has been set to status “In Progress”.
+Link: KF14: Question FileZilla Server @ KF14
+02.12.24 10:50 Ticket no longer in your responsibility | TI-1394201 | KF14: Question FileZilla Server @ KF14 #001065157 NO-REPLY Employee 27
+Hello Ramez
+The ticket TI-1394201 is no longer in your responsibility.
+It has been transferred from Admin, CRM to Employee 26.
+Description:
+Could the responsible person please contact me who installed the FileZilla Server on the virtual server at KF14? We are experiencing problems with FTP access and I need support.
+Link: KF14: Question FileZilla Server @ KF"
+Is the statement supported by the evidence?,"For the Teams camera/mic issues: have first-level perform the Blueprint checks (OS privacy/app permissions, Teams restart); if the camera/mic do not reappear after those checks, escalate to second-level with remote session logs. The camera case was resolved at first-level via the Blueprint in the record cited","=== CITED SOURCES ===
+SOURCE 42:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Camera not detected
+Ticket number: TI-1615042
+Company: Customer Company 52 AG
+Contact person: Contact Person 09
+Owner: Employee 33
+Origin: Email
+Type: Incident
+Created on: 07.10.25 09:12
+Closure
+Closure date: 07.10.25 11:06
+Closure text: Camera available again in Teams. Root cause was missing operating system permission and blocked device setting. Steps performed according to Blueprint.
+Activities
+07.10.25 09:05 – Email from Contact Person 09
+Good morning
+For one user, the camera is no longer working in Teams. No camera is displayed in the Teams device settings. In other apps it also appears to be partially unavailable. Could you please assist?
+Kind regards
+07.10.25 09:12
+Ticket created and assigned to Employee 33.
+07.10.25 09:30 – Helpdesk inquiry
+Good day
+Could you please confirm whether the user is using Windows or Mac and whether the camera is available in the browser (e.g., Teams Web)?
+Thank you.
+07.10.25 09:48 – Customer response
+Windows 11. The camera also does not work in the browser.
+07.10.25 10:25 – Internal note
+Connected to the user via remote session. The camera is visible in Device Manager, but Teams has no access. In Windows privacy settings, camera access for apps is disabled. Additionally, Teams is not enabled in the list of allowed apps.
+According to “Blueprint – Teams Client Devices & Permissions – Version 1.2”, the standard checks were performed (OS privacy settings, app permissions, Teams restart).
+07.10.25 10:55 – Customer feedback
+User confirms that the camera is now displayed in Teams and the test call is successful.
+07.10.25 11:06 – Ticket closure
+Dear Contact Person 09
+The camera was blocked by operating system permissions. After adjusting the camera and app permissions according to the Blueprint, the camera is available again in Teams.
+Kind regards
+Consulting Sample Company
+
+
+"

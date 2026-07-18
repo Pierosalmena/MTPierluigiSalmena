@@ -1,0 +1,48 @@
+Summary — what the indexed records show (explicitly documented)
+- The four symptoms you describe match a known set of incidents during KF70’s second migration wave: (a) cloud sign-in works but on‑prem apps fail because on‑prem UPNs were overwritten to a new suffix; (b) cloud group membership remained the old groups because the new groups were placed outside the AAD Connect OU filter; (c) built‑in mobile mail clients failed because tenant Modern Authentication was enforced and those clients tried Basic Auth; (d) scheduled tasks using service accounts failed because those accounts were included in the tenant Conditional Access (MFA) target group and were synced/licensed unexpectedly. These root causes and their fixes are documented in tickets TI-1700001, TI-1700002, TI-1700003 and TI-1700004 [Data: Sources (22, 53, 4, 49)].
+
+Step‑by‑step resolution based on the documented fixes
+Below are the concrete steps that were performed in the recorded incidents. If you want us to perform these for your environment we can follow the same sequence; where the records show actions taken I cite the ticket.
+
+1) Fix “can sign into M365 but not on‑prem apps” (UPN suffix mismatch)
+- Verify whether affected users’ on‑prem userPrincipalName was changed to the new cloud suffix (kf70group.local) while on‑prem apps still expect kf70.local — this mismatch was the documented root cause [Data: Sources (22)].
+- If UPNs were overwritten, revert the on‑prem userPrincipalName values to the original kf70.local form for affected accounts (the record shows this was done for 25 users) [Data: Sources (22)].
+- Trigger a full Azure AD Connect synchronization after the reversion to ensure on‑prem and cloud attributes align [Data: Sources (22)].
+- Validate by testing 2–3 affected users against the on‑prem applications (the ticket validation step used 3 users before wider validation) [Data: Sources (22)].
+
+2) Fix cloud/on‑prem group membership divergence (AAD Connect OU filter)
+- Confirm whether the new group objects for the second wave were created in an OU outside the Azure AD Connect sync scope (the documented OU name was Migration_Phase2) [Data: Sources (53, 54)].
+- Update the Azure AD Connect OU filter to include the OU containing the new group structure (the engineers added Migration_Phase2 to the sync scope in the record) [Data: Sources (53, 54)].
+- Run an initial delta then a full sync to bring group objects and memberships into Entra ID and propagate member relationships [Data: Sources (53, 54)].
+- Validate that affected users now show the intended group memberships in Microsoft 365 and that downstream access (SharePoint, apps) evaluates correctly [Data: Sources (53, 54)].
+
+3) Fix mobile built‑in mail clients failing (Modern Auth / EAS Basic Auth blocked)
+- Confirm that Modern Authentication is enforced tenant‑wide (this was enabled as part of the migration baseline) and that affected clients (iOS built‑in Mail, Android Gmail using EAS) are attempting Basic Auth [Data: Sources (4)].
+- For affected users, remove the old cached credentials on the device and re‑add the account using a client/method that supports OAuth (Outlook mobile or updated built‑in client with modern auth). In the record they instructed customers to update the mobile clients to use modern auth and to re‑enroll affected devices in Intune where appropriate [Data: Sources (4)].
+- Validate by confirming those devices can connect and that Outlook mobile continues to work for any users who use it [Data: Sources (4)].
+
+4) Fix scheduled tasks failing with authentication errors (service accounts & Conditional Access)
+- Check whether service accounts were moved into the tenant target group (KF70-AllUsers-Hybrid) that the baseline Conditional Access policy KF70-Require-MFA targets; sign‑in logs were used to confirm “Failed - Conditional Access requires MFA” in the documented case [Data: Sources (49, 50)].
+- Create a dedicated exclusion group for service accounts (the record shows KF70-ServiceAccounts-NoMFA was created), add the service accounts to it, and add that group as an explicit exclusion to the Conditional Access policy so MFA is not applied to non‑interactive logons [Data: Sources (49, 50)].
+- Re‑evaluate the Azure AD Connect filter to avoid unintentionally syncing service accounts (which led to license assignment and subtle auth path changes in the documented case) [Data: Sources (49, 50)].
+- Validate by confirming scheduled tasks run successfully overnight (the customer confirmed success in the ticket) [Data: Sources (49, 50)].
+
+Validation and documentation steps that were performed in the incidents
+- After reverting UPNs the engineers triggered a full sync and validated a sample of users (3 users) before wider validation, then confirmed all 25 users could sign in to both cloud and on‑prem apps [Data: Sources (22)].
+- After updating OU filters they ran delta/full syncs and the customer validated group memberships and SharePoint permissions [Data: Sources (53, 54)].
+- After changing CA exclusions and AAD Connect scope, scheduled tasks ran successfully and the migration runbook was updated to require explicit service‑account handling [Data: Sources (49, 50)].
+- Mobile client fix required user device action (remove/re‑add account, re‑enrol) and confirmation that Outlook mobile continued to work [Data: Sources (4)].
+
+What the indexed records do not contain / additional information we need from you (recommended)
+The prior cases show that similar fixes worked, but to apply them to your environment we need the same basic diagnostic inputs that were requested in those tickets. The records show the engineers asked for these items before acting — please provide them so we can proceed safely:
+- 2–3 sample affected user UPNs and the exact error messages returned by the on‑prem applications (Employee 30 requested sample UPNs in TI‑1700001) [Data: Sources (22)]. Recommended.
+- Names of the affected groups and the OU where the new group objects were created (TI‑1700002 used UserA/UserB and Migration_Phase2 as examples) [Data: Sources (53, 54)]. Recommended.
+- A list of the service accounts used by scheduled tasks (for example svc‑kf70‑rpt, svc‑kf70‑bkp01, svc‑kf70‑monitor were provided in TI‑1700004) so we can check their group membership, CA evaluation, and sync status [Data: Sources (49)]. Recommended.
+- Mobile device details (OS versions, whether the built‑in client or Outlook mobile is in use) so we can determine whether a client update or re‑enrolment is required (TI‑1700003 recorded that affected clients were built‑in iOS/Android and that Outlook mobile worked) [Data: Sources (4)]. Recommended.
+- If you can, provide Azure AD Connect configuration export (current OU filter), a sample of affected user on‑prem attributes (userPrincipalName), and the applicable Conditional Access policy details — these were used in the documented investigations and are required to make the same changes safely [Data: Sources (22, 53, 49)].
+
+If you want, I can:
+- Apply the same sequence of fixes documented above (revert UPNs where overwritten → full sync; update OU filter → full sync; create service‑account exclusion and adjust CA; instruct users/devices to move to modern auth), or
+- Produce a runbook of the exact commands and UI steps to execute these changes in your environment (note: the indexed records describe what was done but do not contain verbatim command lists; any specific commands would be produced as a recommended next step and are not verbatim in the records).
+
+If you want me to proceed with the documented fixes, provide the diagnostic items listed above and I will follow the documented steps and report results back.

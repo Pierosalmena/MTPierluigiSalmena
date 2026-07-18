@@ -1,0 +1,21 @@
+Recommendation — classification
+- second_level_support
+
+Rationale (evidence from prior cases)
+- The desktop mail symptom (messages stuck in Outlook Outbox; web/OWA sending OK) matches a documented Exchange/SMTP-auth problem that was escalated and fixed by engineering: in KF22 the root cause was SMTP AUTH being disabled by a tenant Security Default policy; engineers selectively re-enabled SMTP AUTH and adjusted Conditional Access to restore sending [Data: Sources (32)].
+- The Scan-to‑Mail symptom (large scans reported “sent” but not delivered) matches a prior KF60 incident where external delivery failed because the printer VLAN/IP range was not allowed by the SMTP relay; resolution required SMTP relay and DNS configuration changes performed by infrastructure teams [Data: Sources (6)].
+- The Basel printer symptom (print jobs disappearing from the queue; printer unreachable from the print server) matches a KF60 case where a new printer VLAN had been created without allowing routing from the print server; the fix required a firewall/routing rule change coordinated with the Network Team and updates to meet the Print & Scanning Infrastructure Standard [Data: Sources (22)].
+- Multiple, simultaneous failures across messaging, presence/chat, and print infrastructure mirror other multi‑system incidents that were escalated beyond first‑line handling (for example, a global Financial Reports outage required system‑engineer level actions and a DataMart reset/escalation to Microsoft) [Data: Sources (0)].
+
+Notes about the chat/presence issue
+- I did not find a matching prior ticket in the indexed records that documents external chat contacts shown as “Offline” while actually online (presence/calendar/chat latency) — there is no explicit example for that symptom in the provided data. Therefore I cannot point to a documented remediation for this specific symptom from the records.
+
+Conclusion and brief justification
+- Because at least three of the four symptoms map directly to prior incidents that required system‑engineer or network/infrastructure team involvement (Exchange SMTP/Auth, SMTP relay/DNS for scan‑to‑mail, and network/firewall routing for print VLANs), this ticket should be classified as second_level_support. The prior cases show these problems were not resolved by routine first‑line actions alone and required configuration changes and coordination with specialist teams [Data: Sources (32, 6, 22, 0)].
+
+Recommended next steps (these are my recommendations, not items documented in the indexed records)
+- Recommended: Open a consolidated, second‑level incident and triage per service owner (Exchange/mailflow team, Network/Firewall team, Print/Scanning team, and the chat/application owner) so each symptom can be investigated in parallel.
+- Recommended: Collect and attach key logs/traces to the incident: Outlook client error codes and event logs, Exchange/SMTP logs and message trace, SMTP relay logs, printer/logs for scan jobs, and network reachability tests from both print server and client subnets.
+- Recommended: Because previous resolutions required changes to tenant security (SMTP AUTH/Conditional Access), relay allow‑lists, and firewall/routing rules, plan to involve the appropriate specialists early.
+
+If you want, I can produce a short incident‑triage checklist (which teams to contact and what logs to request) — note that would be a recommendation and is not taken from the indexed records.

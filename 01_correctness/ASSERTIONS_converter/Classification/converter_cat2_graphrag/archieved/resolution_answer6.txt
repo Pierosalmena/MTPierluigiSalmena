@@ -1,0 +1,90 @@
+Below I use only what the indexed incident records actually show (explicitly documented symptoms, root causes and worked remediations) and then I list recommended next actions where the records do not contain the exact artifact you asked for. Every statement that is supported by the indexed corpus is cited. I mark anything that goes beyond those records as “Recommended (not in records)”.
+
+Executive summary (diagnosis from the indexed records)
+- The pattern you describe (many Windows laptops suddenly flagged non‑compliant; Wi‑Fi/profile not arriving; Outlook‑iOS onboarding loops; partial app rollouts) is the same sequence recorded when an Intune/BitLocker compliance rule was tightened and then evaluated against the fleet. That Intune policy change produced a large spike in “non‑compliant” device state, removed devices from the compliance‑driven dynamic group used for Wi‑Fi and app assignment, and caused App‑Protection (MAM) gating for iOS to block email setup — the documented remediation was: relax the escrow/time window, deploy an Intune remediation (re‑escrow) script, and re‑scope essential manageability assignments off the compliance dynamic group [This mapping and remediation are documented in the incident corpus] [Data: Sources (114, 10, 87, 20, 9)].
+
+What the records explicitly document (facts you can rely on)
+- A tightened BitLocker / device‑compliance policy caused a large, sudden spike in non‑compliant Windows devices; remediation recorded in TI‑1700009: policy relaxed (30 days → 365 days) and an Intune remediation script deployed to force re‑escrow; compliance returned toward baseline after that work [Data: Reports (10); Sources (114)].
+- Wi‑Fi/profile and app delivery were targeted to a compliance‑based dynamic group (KF90‑Compliant‑Devices); when many devices lost compliance they were removed from that group and the Wi‑Fi/profile/app assignments evaluated as “not applicable.” The operational remediation used in the records was to assign essential manageability artifacts to a static group (KF90‑Corp‑Devices / KF90‑Managed‑Devices) until compliance stabilized [Data: Sources (87); Sources (9)].
+- Outlook for iOS (App Protection / MAM) onboarding loops were caused by App Protection gating on device compliance; investigators validated the symptom on sample iPhones and documented re‑enrollment / re‑add‑account or using Outlook Mobile as effective fixes for affected users until device compliance restored [Data: Sources (20); Sources (19)].
+- Partial app/update rollouts were correlated to dynamic‑group membership/Intune compliance state; re‑scoping assignments and re‑running Intune deployments (after compliance correction) were recorded as the fix in similar tickets [Data: Sources (9); Sources (114)].
+- In a related class of incidents, Identity/AAD Connect/provisioning problems (UPN suffix / OU filter changes) produced different but sometimes co‑occurring symptoms; those required identity team actions (revert on‑prem UPNs, update OU filter, run delta then full AAD Connect sync) — documented as the remediation when synchronization/identity mismatch was the root cause [Data: Sources (23); Sources (53); Sources (54)].
+- When scheduled jobs or non‑interactive accounts were impacted by CA enforcement after sync changes, the recorded remediation included creating a service‑account exclusion group and updating the Conditional Access policy (KF70‑SERVICEACCOUNTS‑NOMFA) — documented in TI‑1700004 [Data: Sources (50); Reports (5)].
+
+Step‑by‑step resolution plan (drawn from the indexed records)
+Below are the actions that were actually performed and recorded as effective in prior, matching incidents. I list each step, then cite the record(s) that document that step being performed successfully.
+
+Immediate containment (stop further user workarounds and reduce risk)
+1) Ask Helpdesk to block user workarounds that increase risk (temporary use of personal hotspots for corporate Wi‑Fi / data exfiltration) and route impacted users to the incident team for controlled remediation.  
+   - Rationale in records: previous incidents noted users attempting workarounds (personal tethering) that increased exposure; the runbooks and tickets show Helpdesk and Endpoint teams coordinated user communication while engineers remediated policies [Data: Sources (114, 10)].
+
+Documented corrective actions to perform next (ordered)
+2) If the root cause is an Intune BitLocker/escrow policy change: revert or relax the strict escrow‑age requirement to the interim value used in the recorded remediation (the incident record shows using 365 days as the temporary remediation) while you validate device state. Then deploy an Intune remediation script to force BitLocker re‑escrow for affected devices. Validate on samples before broad rollout.  
+   - Evidence (this exact remediation was performed and recorded): “policy revised to 365 days; Intune remediation script deployed and validated on sample devices” [Data: Reports (10); Sources (114)].
+
+3) For essential manageability artifacts (Wi‑Fi profile, app delivery, critical LOB configs): move those assignments off the compliance‑driven dynamic group to a static, managed device group (e.g., KF90‑Managed‑Devices / KF90‑Corp‑Devices) while device compliance is being fixed. The records show this rescoping restored Wi‑Fi/profile delivery and app rollout to the affected devices.  
+   - Evidence: the Wi‑Fi profile was reassigned to a static group and Wi‑Fi was restored in the KF90 tickets [Data: Sources (87); Sources (88)].
+
+4) For users with Outlook on iOS stuck in the device‑approval loop: validate/enforce device enrollment and compliance, or (as interim) advise re‑adding the account as “Microsoft Exchange” (which triggers an OAuth flow on modern iOS) or use Outlook Mobile (documented fallback). Re‑enroll the affected iOS devices in Intune where needed and validate App Protection assignment.  
+   - Evidence: investigators tested a sample iOS device and documented that removing & re‑adding the account as Microsoft Exchange or using Outlook Mobile resolved the loop; re‑enrollment in Intune was used as part of remediation [Data: Sources (20); Sources (19)].
+
+5) Re‑run Intune app/profile deployments (or reclone the assignments) after devices re‑enter the compliance group (or after re‑scoping assignments), then monitor completion rates. The recorded remediation reports that re‑scoping and re‑deploying fixed partial rollout issues [Data: Sources (9); Sources (114)].
+
+6) If any scheduled jobs / automation stopped working (non‑interactive service accounts): check whether those run‑as accounts were synchronized into Azure (became hybrid/cloud) and were evaluated by Conditional Access; if so, create a scoped exclusion group for service accounts and add the affected accounts (pattern recorded in TI‑1700004: KF70‑SERVICEACCOUNTS‑NOMFA) and update the CA policy exclusion; validate Task Scheduler runs.  
+   - Evidence: service‑account outage remediated by creating KF70‑SERVICEACCOUNTS‑NOMFA and updating the CA policy; AAD Connect scope correction applied as well [Data: Sources (50); Reports (5)].
+
+Identity/sync validation (documented)
+7) If the incident suggests any identity/sync contribution (e.g., UPNs changed, group/object collisions): have Identity (AAD Connect owners) inspect the AAD Connect OU filter, provisioning template used during the migration window, and run a delta then a full sync after fixes; if on‑prem UPNs were overwritten, revert the on‑prem userPrincipalName values as was done in TI‑1700001 and then run full sync to reconcile [Data: Sources (23); Sources (53); Sources (54); Reports (50)].
+
+Validation and acceptance criteria (what the records used to close tickets)
+- Successful verification examples recorded in the incidents included: Intune compliance returning to baseline (e.g., ~2% non‑compliant after fix) and overnight monitoring of app/profile deployment success; Azure AD Sign‑in logs showing CA evaluation no longer blocking service accounts; Task Scheduler runs for service accounts succeeding after CA exclusion; representative users can create their Outlook on iOS account successfully after re‑enrollment or change of client [Data: Reports (10); Sources (50); Sources (114); Sources (20)].
+
+Artifacts you should collect now (recommended, but explicitly motivated by the records)
+The indexed investigations used these artifacts repeatedly; the records show they were decisive in RCA. I recommend you collect and attach them to this ticket (labelled recommended because the exact export is not embedded in the indexed corpus):
+
+- Intune device compliance export for affected devices (fields: deviceId, deviceName, userUPN, lastCheckin, lastComplianceEvaluation, complianceState, nonComplianceReasons, BitLocker escrow timestamp) — used in TI‑1700009 [Data: Sources (114)]. (Recommended)
+- Dynamic group membership snapshot for the compliance‑based group (KF90‑Compliant‑Devices) before/after the policy change — used to see devices leaving the group [Data: Sources (87)]. (Recommended)
+- Azure AD Sign‑in logs for representative users/service accounts covering the policy-change window (include conditionalAccessStatus/result, failureReason, timestamp) — used to confirm CA blocks in TI‑1700004 and to validate aftermath [Data: Sources (50); Sources (97)]. (Recommended)
+- AAD Connect sync run history (delta/full run timestamps) and OU‑filter change record if any identity changes were made in the same window — used in UPN/OU incidents [Data: Sources (23); Sources (53)]. (Recommended)
+- Task Scheduler event(s) for any failed scheduled job (Event text: “Logon failure: the user has not been granted the requested logon type at this computer”) if you have scheduled-task problems — this was the primary diagnostic evidence in TI‑1700004 [Data: Sources (49)]. (Recommended)
+
+Who to involve / escalation (documented ownership in the records)
+- Endpoint Management / Mobile Security (Endpoint owner — Employee 34 / Employee 35 in the records) for Intune exports, remediation script deployment, and device re‑enrollment actions; they led TI‑1700009 and the remediation [Data: Sources (114); Reports (10)].
+- Identity / AAD Connect engineering (BU Infrastructure — Identity, Employee 30) if you find any AAD Connect / UPN / group/object sync problems; they handled the UPN reversion and OU-filter updates in the migration incidents [Data: Sources (23); Sources (53); Sources (54)].
+- Security / SOC should be CC’d if users are using risky workarounds (personal hotspots), and to approve temporary CA/assignment changes as required (documented incident flows referenced Security/Consulting roles) [Data: Reports (114)].
+
+What the indexed records do NOT contain (limitations)
+- The indexed records do not contain your tenant’s raw logs or the exact timestamps you asked for (I cannot pull them from the corpus). They also do not contain a single, universal redaction/re‑identification policy for tickets — I therefore recommend the separate secure mapping approach if you plan automation or external sharing [Data: Sources (114); Reports (119, 14)].
+
+Recommended (not in records) short playbook you can execute now
+(These are operational recommendations only — they are not verbatim, documented procedures from the indexed tickets; where the records show similar actions were effective I cite them.)
+
+A. Immediate (first 2 hours)
+- Tell Helpdesk to stop user workarounds and route impacted users to a central incident queue. (Recommended; records show Helpdesk/Endpoint coordinated during TI‑1700009) [Data: Sources (114)].
+- Identify 3 representative sample devices/users (e.g., one Windows laptop that flipped, one new user laptop, one iPhone looping), and ask Endpoint to export Intune compliance rows for those samples for the ±48h window. (Recommended — matches how samples were used in the indexed incidents) [Data: Sources (114); Sources (20)].
+
+B. Contain & remediate (3–24 hours) — actions that were actually performed in prior fixes
+- Relax the strict BitLocker escrow requirement temporarily (the incident recorded changing 30d→365d), then deploy the Intune re‑escrow remediation script; validate on samples and then expand. (Documented remediation in TI‑1700009) [Data: Reports (10); Sources (114)].
+- Re‑scope critical Wi‑Fi and manageability assignments off the compliance dynamic group to a static group until device state stabilizes (documented in TI‑1700010 / TI‑1700012). (Documented) [Data: Sources (87); Sources (9)].
+- For iOS Outlook loops: re‑enroll or remove & re‑add account as “Microsoft Exchange” or use Outlook Mobile as interim; validate onboarding completes (documented) [Data: Sources (20); Sources (19)].
+
+C. Identity checks (if artifacts indicate sync/UPN issues)
+- Ask Identity team to check AAD Connect OU/filter and provisioning template used during the prior migration wave; if on‑prem UPNs were overwritten revert them and run a full sync (documented in TI‑1700001/TI‑1700002). (Documented) [Data: Sources (23); Sources (53); Sources (54)].
+
+D. Validate & close (24–72 hours)
+- Verify Intune compliance returns to baseline and the dynamic group has re‑populated; verify Wi‑Fi/profile assignments apply; verify Outlook iOS onboarding succeeds for the sample users; monitor app rollout completion metrics overnight. The records show these validation steps were used to close tickets [Data: Reports (10); Sources (114); Sources (9)].
+
+Suggested contents to attach to this ticket now (recommended)
+- Small Intune compliance CSV for 3 sample devices (fields per above).  
+- One exported Sign‑in log row for a sample service account/device showing conditionalAccessStatus in the ±5m clinic for an observed failure (redacted IP if needed).  
+- If you have them, the AAD Connect run timestamps for any delta/full syncs that occurred in the window.  
+(These are recommended and match the artifacts that previous teams used; the records do not contain your tenant logs) [Data: Sources (50, 114, 23)].
+
+Final note on support tier and next owner
+- Based on the indexed cases that match this incident, this is a second_level_support issue requiring coordination between Endpoint (Intune) and Identity (AAD Connect) engineering teams. In prior incidents Employee 34 (Endpoint) and Employee 30 (Identity) executed the same cross‑team remediation steps [Data: Sources (114); Sources (23); Reports (10, 50)].
+
+If you want I will:
+- Produce the exact copy‑paste request you can send to your Endpoint team to pull the Intune export (I prepared a draft earlier and can finalize it with the precise timestamps you provide). (Recommended)
+- Or: produce the exact Microsoft Graph / Entra UI steps to extract the sign‑in + compliance rows for the windows/iOS sample pairs you choose (recommended if you have a Global Admin to run it).
+
+Which do you want me to prepare now — (A) the ready‑to‑send export request to Endpoint (CSV header + wording), or (B) the Graph/portal extraction steps?

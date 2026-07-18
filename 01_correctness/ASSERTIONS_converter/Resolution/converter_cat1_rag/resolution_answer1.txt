@@ -1,0 +1,79 @@
+Summary (what the records explicitly show)
+- The “desktop mail client can’t send; webmail works” symptom matches a documented Exchange/SMTP-AUTH issue where SMTP AUTH was disabled by a tenant security change (Security Defaults), causing legacy Outlook clients’ send attempts to fail with authentication errors. In that prior case the team recreated profiles and performed client checks, then escalated to an Exchange specialist; the root cause was “SMTP AUTH disabled due to Security Default Policy” and the fix was to selectively enable SMTP AUTH for affected users and adjust Conditional Access. This is documented in ticket TI-1548823 (KF22) [Data: Sources (32)].  
+- The “scan-to-mail: small scans work, big scans dropped” symptom is similar in part to a documented scan-to-mail incident where the printer VLAN was not allowed by the SMTP relay and external delivery was denied (“Relay denied”). The resolution there was to update the SMTP relay allow list for the printer VLAN and then re-test sending; after the change external scans were delivered again. This is documented in ticket TI-1624175 (KF60) [Data: Sources (6)].  
+- The Basel printer that briefly accepts jobs then nothing prints (jobs vanish) matches a documented location-printer incident where the print server could not reach printers after the printers were moved to a new VLAN; the root cause was a missing network/firewall allowance between the print server and the printer VLAN. The fix was to adjust routing/firewall rules so the print server can reach the printer; printing was then restored. This is documented in ticket TI-1622483 (KF60) [Data: Sources (22)].  
+- There are also several simple printer-related fixes in the records that are quick checks: a paused queue (resolved by reactivating the queue) and an explicit “Deny” permission on a queue (removed), both of which immediately restored printing in their respective cases [Data: Sources (27, 3)].
+
+What the records do NOT document (insufficient evidence)
+- The dataset contains no documented incident that specifically explains “external partners shown as Offline in the chat tool / delayed chats / calls not ringing.” I cannot identify a prior ticket in the indexed records that diagnosed or resolved presence/federation/calling problems for your chat tool. Therefore I cannot state a documented root cause or a documented step-by-step fix for the chat presence/calls issue from the records. (No data source supports a chat-presence resolution.)
+- The records do not document a case where large-but-not-small scanned PDFs are dropped while small scans are delivered due to a relay size limit. The scan-to-mail record shows relay-denied behaviour due to an IP/VLAN allow-list problem, not an attachment-size cutoff. So there is no documented evidence in the indexed records that size-limits were the cause or how they were changed.
+
+Step‑by‑step resolution plan based on documented procedures and prior fixes
+Below are steps that replicate the diagnostic and remediation actions actually performed in the prior tickets. Each step cites the ticket(s) that recorded that action.
+
+1) Email – desktop Outlook clients: reproduce the documented troubleshooting and remediation from TI-1548823 (KF22)
+   - Confirm affected scope and clients: verify the problem affects users with locally installed Outlook (Windows) while OWA/mobile works (as in the prior case) [Data: Sources (32)].  
+   - Perform client-side checks already documented: recreate the Outlook profile; remove and re-add the account; verify SMTP port (587 + STARTTLS); disable antivirus SMTP-scanning temporarily; check client firewall — these were performed in the prior incident as initial troubleshooting [Data: Sources (32)].  
+   - Check server-side logs (Exchange server event log) for authentication failures such as “535 5.7.3 Authentication unsuccessful” which were observed in the prior case and pointed to SMTP AUTH being disabled [Data: Sources (32)].  
+   - Validate tenant security setting: confirm whether Security Defaults / a Conditional Access policy was changed that effectively disabled SMTP AUTH for legacy clients (this was the documented root cause in the prior case) [Data: Sources (32)].  
+   - If the same root cause is confirmed, apply the documented remediation used previously: selectively enable SMTP AUTH for the affected mailbox accounts and adjust the Conditional Access policy to allow those legacy clients to authenticate (this resolved the issue in TI-1548823) [Data: Sources (32)].  
+   - After changes, test sending from affected Outlook clients and monitor mailflow for 24 hours as done in the prior case (the prior ticket monitored mailflow and confirmed no further errors) [Data: Sources (32)].
+
+2) Scan-to-Mail – large scans dropped; small scans delivered: follow the documented checks from TI-1624175 (KF60)
+   - Gather facts: check whether scan-to-mail succeeds to internal mailboxes but fails to external addresses (in the prior case internal worked and external was “Relay denied”) [Data: Sources (6)].  
+   - Check SMTP relay logs for the printer’s IP and look for “Relay denied” or other relay rejections (this is the logged symptom in the prior incident) [Data: Sources (6)].  
+   - Verify printer IP / VLAN and whether that IP range is included in the SMTP relay’s allowed list (in TI-1624175 the printer VLAN was missing from the relay allow list and adding it fixed the issue) [Data: Sources (6)].  
+   - If the relay is blocking the printer IP/VLAN, update the SMTP relay configuration to allow the printer VLAN and then retest scanning to external recipients (this is the documented remediation from the prior case) [Data: Sources (6)].  
+   - Document: after adjustment, in the prior case tests to external Gmail and partner addresses succeeded and the ticket was closed [Data: Sources (6)].
+
+   Note about “large” scans specifically: the indexed records do not contain a documented case where scan size caused selective failure. Checking relay logs and the allow list is explicitly documented; looking for size/attachment limits or gateway timeouts is not documented in the records. If relay allow-list changes do not resolve the large-scan symptom, further investigation into gateway/content-filter attachment limits or timeouts is recommended — this is a recommendation (not documented in the records).
+
+3) Basel printer – jobs vanish from queue: replicate the documented network/queue checks in TI-1622483 (KF60) and the quick checks in TI-1621044 / TI-1623488
+   - Quick checks (fast wins, documented in other tickets): confirm the print queue is not paused; confirm Print Spooler service is running; test a print directly from the print server to the device (in another ticket a paused queue was reactivated and printing restored) [Data: Sources (27, 22)].  
+   - If print jobs appear then disappear or do not reach the device, test network reachability: ping from the print server to the printer. In the documented Basel case, the print server could not ping the printer while a client in the printer VLAN could — indicating segmentation/firewall blocking between server and printer [Data: Sources (22)].  
+   - If segmentation is observed, coordinate with the Network Team to verify routing/firewall rules and add the required allow rules so the print server can reach the printer VLAN (this is the exact remediation applied in TI-1622483) [Data: Sources (22)].  
+   - Additional checks if access errors occur for single users: confirm there are no explicit “Deny” permissions on the printer queue for affected user accounts (removing an explicit Deny fixed a single-user case in TI-1623488) [Data: Sources (3)].  
+   - After making network or permission changes, reactivate the queue if it was paused and restart pending print jobs; confirm successful printing (documented in the prior cases) [Data: Sources (27, 22, 3)].
+
+4) Chat presence / federation / calling (no prior record)
+   - There is no documented resolution for chat-presence/calling problems in the indexed records, so I cannot provide a documented, evidence-based step-by-step resolution from the knowledge graph for this item. (No ticket in the records describes chat presence or federation troubleshooting.)  
+   - Recommended next steps (these are not drawn from the indexed records; they are recommendations): collect exact chat client/service (e.g., Teams/other), confirm whether partner domains are federated, check presence/calling service health and federation settings, verify network/firewall rules and QoS for the chat service, and check whether any security change (Conditional Access, IP restriction) affected federation/trust. Marking these as recommended because they are not documented in the records.
+
+Ticket classification and escalation (based on how similar incidents were handled)
+- The Exchange SMTP AUTH issue in TI-1548823 (KF22) was escalated to a System Engineer / Exchange Specialist and processed by BU Infrastructure Engineering; the documented remediation required tenant/security-policy changes and selective SMTP AUTH re-enablement. That indicates this type of mail-sending problem is a 2nd‑level (infrastructure/Exchange specialist) issue [Data: Sources (32)].  
+- The Basel printer problem required Network Team involvement to change firewall/routing rules and was handled by Infrastructure/Network (2nd‑level) in the prior incident [Data: Sources (22)].  
+- The scan-to-mail incident involved coordination with Network and Mail teams to update the SMTP relay (2nd‑level) [Data: Sources (6)].  
+Conclusion: because your report includes Exchange SMTP/Auth effects, network connectivity between servers and printer VLANs, and SMTP-relay/scan-to-mail impacts — all of which were handled as 2nd‑level infrastructure/network/mail-team issues in the records — classify this ticket as 2nd‑level and escalate to Infrastructure Engineering (Exchange specialist), Network Team, and Mail/Print Team for coordinated resolution [Data: Sources (32, 22, 6)].
+
+Concrete immediate checklist (mix of documented actions and recommended steps — items from records are marked as “documented”)
+- Documented (do these first, per the prior tickets):
+  1. Confirm affected scope: identify all affected users, clients (Outlook desktop versions), printers and VLANs, and which external partners show presence issues [Data: Sources (32, 22, 6)].  
+  2. For the Outlook send-fail: perform the documented client checks (recreate profile, re-add account, check SMTP port, disable AV SMTP scan) and examine Exchange event logs for 535 errors; if tenant security/Conditional Access changed, escalate to Exchange specialist to selectively enable SMTP AUTH and adjust Conditional Access (documented sequence) [Data: Sources (32)].  
+  3. For scan-to-mail: check SMTP relay logs for “Relay denied”, confirm printer IP/VLAN is in the relay allow list; if missing, update relay allow list and retest (documented sequence) [Data: Sources (6)].  
+  4. For Basel printing: check queue paused, spooler, attempt direct server-to-printer print and ping from print server; if server cannot reach the printer but clients can, escalate to Network Team to add routing/firewall allowances as in TI-1622483 (documented sequence) [Data: Sources (27, 22)].  
+  5. For quick access-deny symptoms, check printer queue permissions for explicit Deny entries and remove if present (documented in TI-1623488) [Data: Sources (3)].
+
+- Recommended (NOT documented in the indexed records; do these if the documented fixes do not resolve an item):
+  - If large scans still fail after adding the printer VLAN to the relay allow-list: check SMTP relay / mail gateway attachment-size limits, timeouts, and content-filter logs; check if the multifunction device is timing out on larger uploads. (Recommendation only — no supporting record in the indexed data.)  
+  - For chat presence/calling: gather logs from the chat service, confirm federation/trust with partner domains, check firewall/port rules and Conditional Access policies that might affect presence, and open a vendor incident if required. (Recommendation only — no supporting record in the indexed data.)
+
+What I cannot confirm from the records
+- I cannot confirm the root cause of the chat presence/offline status from any recorded ticket.  
+- I cannot confirm whether an attachment-size limit is responsible for the large-scan drop from the indexed tickets. Both of these require further diagnostics beyond the available records.
+
+Suggested immediate assignment and next actions (practical, based on how prior tickets were routed)
+- Escalate this consolidated ticket to 2nd‑level Infrastructure Engineering / Exchange Specialist (for the SMTP/Auth issue) and simultaneously open coordinated tasks with Network Team (Basel printer reachability) and Mail/Print Team (SMTP relay and scan-to-mail) — this mirrors how the separate incidents were handled in the records [Data: Sources (32, 22, 6)].  
+- Provide the teams with the following artifacts when escalating: affected user list (Outlook client versions), printer VLAN IDs and IP addresses, SMTP relay logs for the printer IPs (showing any “Relay denied”), Exchange event logs showing 535 events, and a concise timeline of when the tenant security/Conditional Access changes were applied.
+
+If you want, I can:
+- Produce a concise escalation brief (one page) containing the symptoms mapped to the documented prior fixes and the exact logs/artifacts to hand to the Exchange, Network and Print teams (I will draw the remediation steps only from the records above).  
+- Or, if you prefer immediate next steps executed in your environment, indicate which items you would like to prioritize (email, Basel printing, scan-to-mail, chat) and I’ll produce a prioritized action list distinguishing documented fixes vs. recommended diagnostics.
+
+References (tickets cited above)
+- Email / SMTP AUTH: TI-1548823 (KF22) [Data: Sources (32)]  
+- Scan-to-Mail / SMTP relay: TI-1624175 (KF60) [Data: Sources (6)]  
+- Basel printer / VLAN segmentation: TI-1622483 (KF60) [Data: Sources (22)]  
+- Queue paused quick-fix: TI-1621044 (KF60) [Data: Sources (27)]  
+- Explicit Deny permission on printer queue (single user): TI-1623488 (KF60) [Data: Sources (3)]
+
+If you want me to draft the escalation brief now, tell me which logs and IP addresses you can attach and I will prepare it (the brief will follow the same documented steps and cite the tickets above).

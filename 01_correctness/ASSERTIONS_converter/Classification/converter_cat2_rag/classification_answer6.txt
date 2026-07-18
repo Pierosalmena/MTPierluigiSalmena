@@ -1,0 +1,20 @@
+Classification: second_level_support
+
+Reasoning (comparison to past cases)
+- The symptom where migrated users can sign into cloud services but on-prem applications report “user not found / not recognized” matches a documented UPN-suffix / provisioning error that required reversing on-prem userPrincipalName changes and running a full Azure AD Connect sync to restore on‑prem authentication (TI-1700001). This was not a simple helpdesk fix in the record but required identity‑team changes to AAD Connect/provisioning [Data: Sources (22)].
+- The inconsistent group memberships (on‑prem shows new groups while cloud still shows old groups) matches a case where the new group objects were placed in an OU outside the AAD Connect sync scope; the fix was to update the AAD Connect OU filter and perform a full sync (TI-1700002) — an infrastructure change handled by engineers [Data: Sources (54)].
+- The built-in mobile clients failing while Outlook mobile worked corresponds to a tenant-level Modern Authentication enforcement issue that required switching clients to modern auth and re-enrolling devices (TI-1700003) — again handled by engineers/endpoint team and not a pure first-line password reset [Data: Sources (4)].
+- Scheduled tasks run by service accounts failing due to authentication aligns with a case where service accounts were unintentionally targeted by a tenant Conditional Access policy requiring MFA; resolution involved creating an exclusion group and adjusting CA/AAD Connect handling (TI-1700004). That required changes to CA configuration and AAD Connect scope by the identity/infra team [Data: Sources (50)].
+
+Because your ticket contains multiple issues that in the indexed records were each resolved by identity/infra engineers performing configuration changes to Azure AD Connect, Conditional Access, device enrollment/modern-auth settings, and on‑prem attribute remediation, it aligns with second_level_support rather than a routine first‑level fix.
+
+What the records explicitly document (actions actually taken in similar incidents)
+- TI-1700001: reverted affected on‑prem userPrincipalName values to the original suffix and triggered a full Azure AD Connect synchronization; validated users regained access to on‑prem apps [Data: Sources (22)].
+- TI-1700002: updated AAD Connect OU filter to include the new OU containing migration group objects and performed a full sync so group memberships propagated correctly to the cloud [Data: Sources (54)].
+- TI-1700003: resolved mobile client failures by moving clients to modern authentication and re‑enrolling affected devices in Intune; documented the consequence of tenant modern-auth enforcement for built-in mail clients [Data: Sources (4)].
+- TI-1700004: created a KF70-ServiceAccounts-NoMFA exclusion group, added service accounts, updated the Conditional Access policy to exclude that group, and reviewed AAD Connect sync scope; validated scheduled tasks resumed [Data: Sources (50)].
+
+Recommended next step (this is a recommendation, not a record-backed action)
+- Recommend escalating this ticket to the identity/infra engineering team (second level) to (a) review AAD Connect provisioning/OU and UPN handling for the second migration wave, (b) examine Conditional Access targeting and exclude non-interactive service accounts if needed, and (c) assess tenant modern-auth impact on built-in mobile clients and coordinate re-enrollment — all actions consistent with the fixes documented above. (Recommendation only — not pulled verbatim from the records.)
+
+If you want, I can prepare a short list of the specific records above to attach to the escalation for the engineers.

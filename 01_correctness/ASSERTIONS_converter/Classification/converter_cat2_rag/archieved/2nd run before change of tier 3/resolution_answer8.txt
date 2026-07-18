@@ -1,0 +1,79 @@
+Summary
+- The indexed incident records show four separate, documented root causes and fixes for issues that match each of your four symptoms. The problems were treated independently in prior tickets; nothing in the records indicates a single common root cause tying all four together. The documented resolution steps and ownership differ per symptom. The relevant source tickets are cited per step below [Data: Sources (0, 1, 8, 16, 19)].
+
+Per-issue, step-by-step resolutions (what the records explicitly document)
+
+1) D365 Finance & Operations — Financial Reports: errors / “unknown” authors / “report cannot be found”
+Documented symptoms and diagnostics:
+- Issue reproducible for multiple users and in multiple environments; network and ADFS initially excluded; Report Designer sometimes extremely slow on AOS servers; AOS nodes showed different responsiveness. A Data Mart Reset and FRDB recreation were attempted; a Microsoft support ticket was opened when initial measures did not resolve it [Data: Sources (1, 0)].
+
+Documented remediation steps that led to closure:
+- Best-practice cipher suites were activated using IIS Crypto and AOS servers were restarted. After those changes the ticket was closed as resolved [Data: Sources (0)].
+
+Concrete steps based on the record (these steps are documented as actually performed in the prior case):
+- Recreate FRDB / perform Data Mart Reset (documented attempt) [Data: Sources (1)].
+- If issue persists, open a Microsoft support ticket (documented) [Data: Sources (1)].
+- Activate best-practice cipher suites (performed with IISCRYPTO) and restart AOS servers (documented closure action) [Data: Sources (0)].
+
+2) New hotline numbers not reaching users (carrier says calls reach edge)
+Documented symptoms and diagnostics:
+- Carrier reports INVITEs reach the edge/SBC but calls are not forwarded internally; SBC logs showed INVITE received but immediately answered with “404 Not Found” for affected number ranges. Investigation found the new number range was not included in the SBC translation table / routing rules [Data: Sources (8)].
+
+Documented remediation steps that led to closure in the prior case:
+- Extend/adjust routing and translation rules on the SBC to include the new number range; test calls confirmed correct signalling and delivery after the temporary rule and final adjustment [Data: Sources (8)].
+
+Concrete steps based on the record:
+- Check SBC signalling logs for the affected number range (look for INVITE/404 behaviour) [Data: Sources (8)].
+- Verify translation table and routing rules on the SBC include the new number range; if missing, add/extend the translation rules accordingly [Data: Sources (8)].
+- Test calls; revert/adjust as needed and then apply final routing rule changes per voice architecture [Data: Sources (8)].
+
+3) Basel office — external calls drop after ~30 seconds
+Documented symptoms and diagnostics:
+- External calls disconnect after ~29–31 seconds; SBC logs show BYE after ~30s. Investigation found Session-Expires header/session timer set to 30s on SBC and Basel’s new Voice VLAN used a NAT policy with UDP session timeout of 30s (deviation vs other sites where timeout was 180s) [Data: Sources (16)].
+
+Documented remediation steps that led to closure in the prior case:
+- Temporarily adjusted session parameters on the SBC to validate the hypothesis (calls stayed stable). Then coordinated with network team and changed the NAT session timeout and SBC/session parameters to match architecture specification; tests confirmed stability afterwards [Data: Sources (16)].
+
+Concrete steps based on the record:
+- Review SBC call logs and Session-Expires/session timers (documented diagnostic) [Data: Sources (16)].
+- Compare NAT/UDP session timeout on the Basel firewall/NAT policy with other locations / architecture spec (documented finding) [Data: Sources (16)].
+- Adjust session timer/NAT session timeout to the value used in working sites (documented: change from 30s to 180s in example) and/or adjust SBC session parameters; validate with test calls [Data: Sources (16)].
+
+4) Teams notifications (no pop-ups on laptop; phone OK)
+Documented symptoms and diagnostics:
+- Messages are delivered but banner/pop-up notifications not shown on laptop; phones OK. Windows Update ran recently and at least one user had Focus Assist active. Remote check found Teams banner notifications disabled plus Windows Focus Assist active [Data: Sources (19)].
+
+Documented remediation steps that led to closure in the prior case:
+- Per the “Blueprint – Teams Notifications Standard”, checks and changes were performed: re-enable Teams banner notifications, disable Focus Assist (or adjust Windows notification center), restart Teams. After settings were adjusted per blueprint, pop-ups returned and ticket was closed [Data: Sources (19)].
+
+Concrete steps based on the record:
+- Verify Teams notification type for affected users (Banner enabled) and enable it if disabled [Data: Sources (19)].
+- Check Windows Notification Center and disable Focus Assist or adjust its rules so Teams banners are allowed [Data: Sources (19)].
+- Restart Teams and confirm notifications appear; final verification with user [Data: Sources (19)].
+
+Ownership / support level classification (what the records show)
+- D365 Financial Reports: handled by System Engineer and required server-level changes and/or Microsoft support escalation in the documented case — this aligns with 2nd-level / specialist support (system engineer / vendor escalation) [Data: Sources (1, 0)].
+- New hotline numbers reaching edge but not users: required SBC translation/routing changes and voice architecture adjustments — handled by voice/telephony specialists / infrastructure engineering — 2nd-level / specialist support [Data: Sources (8)].
+- Basel calls dropping after ~30s: required SBC/session timer and network NAT timeout changes coordinated with the network team — 2nd-level / specialist support [Data: Sources (16)].
+- Teams notifications: handled and resolved by Helpdesk using the standard “Blueprint – Teams Notifications Standard” checks — 1st-level support is appropriate for this symptom [Data: Sources (19)].
+
+Are these connected?
+- The indexed records show each of these problems had independent root causes and separate remediation activities (AOS/cipher suites, SBC routing, NAT/session timers, Teams/Focus Assist). The historical tickets treated them separately; nothing in the records documents a single cause connecting all four issues. Therefore, based on the indexed evidence, they should be treated as multiple separate incidents, routed to different teams [Data: Sources (0, 1, 8, 16, 19)].
+
+Recommended immediate actions (these are recommendations — not literal extracts from the records)
+- Open separate tickets (or sub-tickets) for each symptom and assign to the teams indicated above:
+  - D365 FO Financial Reports → System Engineer / Application/Infrastructure team (2nd-level). Include recent AOS responsiveness metrics, FRDB/Data Mart reset history, and screenshots/logs. (Recommendation)
+  - Hotline new numbers → Voice/SBC team (2nd-level). Provide carrier trace, SBC logs for the affected numbers, and the new number ranges. (Recommendation)
+  - Basel call drops → Network + SBC team (2nd-level). Provide SBC session logs, firewall/NAT policy details for the Basel Voice VLAN including UDP session timeout. (Recommendation)
+  - Teams notification pop-ups → Helpdesk (1st-level). Ask affected laptop users to run the standard checks (Teams banner setting, Windows Notification Center, Focus Assist) and report results; apply blueprint steps if necessary. (Recommendation)
+
+If you want, I can:
+- Produce four concise ticket templates (one per issue) you can paste into your IT system, including required logs and the exact diagnostic checks that were performed/required in the prior cases (recommended next-action text). (Recommendation)
+
+If you need copies of the prior case references
+- D365 Financial Reports incident and resolution (Data Mart Reset, FRDB recreation, IISCRYPTO + AOS restart and Microsoft ticket): [Data: Sources (1, 0)].
+- Hotline new number range / SBC translation missing → routing and translation rules adjusted: [Data: Sources (8)].
+- Basel 30s disconnects → session timer and NAT/UDP timeout mismatch resolved by adjusting NAT timeout and SBC session params: [Data: Sources (16)].
+- Teams notifications blocked by Teams banner setting and Windows Focus Assist → standard blueprint checks and resolution: [Data: Sources (19)].
+
+If any of the incidents need full runbooks or the exact configuration values used in prior fixes, say so. Note: the records contain the actions performed and the high-level parameters changed (e.g., enabling best-practice cipher suites, adjusting NAT/UDP timeout and SBC session timers, updating SBC translation rules, re-enabling Teams banners / disabling Focus Assist) but do not include low-level, site-specific configuration commands or the exact firewall/SBC configuration lines in the indexed text. If you want those exact configuration items, you will need to request them from the infrastructure/voice teams or pull the configuration backups — I do not have further low-level commands in the indexed records.

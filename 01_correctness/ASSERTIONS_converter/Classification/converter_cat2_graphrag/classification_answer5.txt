@@ -1,0 +1,40 @@
+## Classification (recommended)
+second_level_support
+
+## Short rationale
+The symptom set in this ticket — simultaneous browser “untrusted connection” warnings for multiple internal HTTPS sites, VPN clients failing with “cannot verify server identity”, executive S/MIME signing/reading failures after credential/credential‑provisioning activity, and multiple internal apps unable to use the protected (LDAPS/TLS) channel to the account system — matches prior incidents that were root‑caused to PKI / certificate/template / CA‑publishing problems and that required PKI, network and identity engineers to fix. Those past incidents required template/CA changes, certificate re‑issuance or AIA publishing, DC re‑enrollment, and coordinated cross‑team remediation rather than routine front‑line steps, so this should be handled by second‑level engineering (PKI + Identity + Network) [Data: Reports (13); Sources (104); Reports (112)].
+
+## What the indexed records explicitly document (most relevant parallels)
+- Missing/incorrect CA publication or template changes produced browser certificate‑chain trust failures and required PKI owner intervention to republish the issuing CA / fix AIA distribution and re‑deploy certs [Data: Reports (13)].  
+- A certificate‑template change that omitted required EKUs caused large numbers of remote VPN users to fail mutual‑auth (IKEv2) and required certificate/template correction and re‑issuance [Data: Sources (104)].  
+- Executive S/MIME (sign/verify) stopped working when private‑key delivery/archival or certificate provisioning failed during a rollout; resolution required PKI key‑recovery and secure delivery of PFXs under controlled procedures [Data: Reports (112)].  
+- Applications (e.g., domain controllers, LDAPS consumers) lost secure‑channel connectivity where the recent certificate/template changes produced incompatible DC certificates — remediation included template rollback/reissue and DC re‑enrollment [Data: Reports (13)].
+
+These documented incident types map directly to the four concurrent failure modes you describe (browser TLS trust, VPN server identity verification, S/MIME signing/reading, and LDAPS/protected‑channel failures) and in prior cases required specialist engineering escalation and cross‑team fixes [Data: Reports (13); Sources (104); Reports (112)].
+
+## Why this is not first_level_support
+- The combination of PKI/CA, VPN mutual‑auth, S/MIME private‑key delivery, and LDAPS failures points at certificate lifecycle/template/AIA issues (or similar root causes) rather than routine user/client resets or single‑app configuration errors. In the indexed incidents with the same constellation of failures, front‑line steps (clear browser cache, restart, re‑enroll device) were insufficient; engineer actions (fix CA/template, re‑publish AIA, re‑issue certificates, perform key recovery) were required and recorded [Data: Reports (13); Sources (104); Reports (112)].
+
+## Recommended next steps (these are recommendations — NOT direct excerpts of prior tickets)
+Label these as “immediate evidence to collect and hand to PKI/Identity/Network engineers”:
+
+- Capture an HTTPS chain for one affected internal HR site: browser screenshot of the warning, server certificate chain (export DER/PEM), and server hostname/FQDN and timestamp.  
+- Collect VPN client logs from several affected remote users and VPN concentrator logs showing the server‑identity / certificate verification failure (include timestamps and sample client IPs).  
+- For leadership S/MIME cases: list affected leader UPNs, sample signed/received message headers showing failure, and note whether new credentials were issued and when; also ask PKI whether key archive/escrow shows the expected private keys.  
+- From the failing applications (HR app / SharePoint / NAC): export the application TLS/LDAPS error messages and the server‑side certificate presented by the account system (thumbprint, subject, EKU, validity dates).  
+- Ask PKI owners to confirm whether the issuing CA and intermediate certificates are published to the internal AIA/CRL endpoints and whether any certificate templates or EKUs were changed around the weekend maintenance window.  
+- Provide the exact maintenance window date(s) and any change‑ticket ids so engineers can correlate with CA/template changes and AAD/AD CS activity logs.
+
+(These evidence items reflect what prior incidents used to diagnose and prove CA/template/AIA failures; the above collection list is a recommended immediate triage package — not a verbatim runbook item in the indexed tickets.)  
+
+## Who should own / be engaged
+Escalate to second_level_support (identity/PKI/network): engage PKI/CA owners, the Identity/AAD team, and Network/VPN engineers simultaneously. Prior incidents required coordinated actions across these teams (PKI to fix templates/publish AIA and reissue, Identity to re‑enroll domain/AD certificates or reconcile cert usage, Network to validate VPN server cert chain) [Data: Reports (13); Sources (104); Reports (112)].
+
+## Supporting citations (selected)
+- PKI / CA publish and DC / LDAPS / app TLS failures required CA/template fixes and re‑issuance in prior incidents [Data: Reports (13)].  
+- VPN IKEv2 mutual‑auth outages following a template/EKU change were fixed by correcting the template and re‑deploying certs in prior cases [Data: Sources (104)].  
+- Executive S/MIME private‑key provisioning failures were remedied via PKI key‑recovery and secure PFX delivery in prior cases [Data: Reports (112)].
+
+---
+
+If you want, I can now draft a concise evidence‑request message you can send to the application, VPN and PKI owners (a template listing the exact logs/certs/timestamps to provide). That text would be a recommended operational next step and is not itself drawn verbatim from the indexed incident logs — say “draft evidence request” and I will prepare it.

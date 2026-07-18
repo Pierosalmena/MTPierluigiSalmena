@@ -1,0 +1,46 @@
+ Sorry you hit all three — I’ll help triage and (if you want) open the required tickets and coordinate Network / UC / Identity / Print teams. Below I summarize the most likely causes from the Zurich incident records, give short, prioritized remediation steps you or on site staff can run immediately, list the exact artifacts I need to continue, and propose the escalations I will open for you.
+
+What’s most likely (based on past Zurich incidents)
+- Teams external calls silent (they hear you; you hear nothing): this matches a known Media Bypass + firewall hardening interaction where outbound UDP/session timeouts or missing RTP port ranges at the site edge caused RTP to be blocked or torn down (signalling completed but media died) [Data: Sources (5, 23)]. Opening the broader Teams media UDP range temporarily restored two way audio in earlier tests.  
+- ERP_Upgrade access suddenly denied: this typically comes from token caching / Conditional Access / group membership or AD sync changes after a transfer (user’s group membership removed or a different group object applied), or stale tokens requiring a full sign out/re auth [Data: Sources (38, 30, 13)].  
+- Scanner showed green check but vendor never received email: commonly the MFD accepted the job locally while the SMTP relay rejected or dropped it (examples: “Relay denied” for a printer VLAN not allow listed, or “Message size exceeds fixed limit” for large PDFs). Investigation requires the printer job log and SMTP/relay logs to correlate [Data: Sources (6, 36)].
+
+Immediate steps you (or an on site tech) can run now (fastest way to confirm / get you working)
+1) Voice (priority — so you can take vendor calls)
+- Quick isolation: try the same external call from (a) Teams web client (https://teams.microsoft.com) and (b) your mobile phone on cellular (hotspot or Teams mobile). If web/mobile works while desktop is silent, that points to desktop→site network/media path or client media bypass issue [Data: Sources (23, 5)].  
+- Run a Teams Test Call (Settings → Devices → Make a test call) and report whether it records/plays back your voice (this validates local mic/device) [Data: Sources (37)].  
+- If you can, ask a network engineer to temporarily open the full Teams media UDP range (or align UDP/session timeouts to the 180s blueprint baseline) and re test — historically a temporary opening immediately restored audio during tests [Data: Sources (5, 23)].
+
+2) ERP_Upgrade intranet access
+- Force token refresh: sign out of all Office apps and browsers, close browsers, then sign back in (or test in a private/incognito browser). Many access losses resolved after a full sign out because new tokens contain current group claims [Data: Sources (38, 30)].  
+- If that doesn’t restore access, have Identity/Helpdesk check your Azure AD group membership and any recent AD sync or provisioning changes (they should check whether you were removed from, or the group object changed for, the ERP access group) [Data: Sources (13, 30)].
+
+3) Scan to Mail (printer showed success but vendor got nothing)
+- Do a quick one page test to an internal mailbox and to an external Gmail/personal account and note which arrive. If internal arrives but external fails, this strongly indicates SMTP relay allow list or external filter blocking the printer VLAN [Data: Sources (6)].  
+- Ask the printer owner (or Print Admin) to export the MFD Job/Send log and SMTP transaction log for the time you scanned. Those logs show the RCPT TO and any SMTP rejection reason (e.g., Relay denied, size limit) — they’re the primary evidence used in prior troubleshooting [Data: Sources (36, 6, 41)]. I can provide a ready email template to send to the printer owner (if you’d like).
+
+What I need from you to continue (do not share passwords / MFA)
+Please paste these non sensitive items here (or into the ticket you want me to open):  
+- Your corporate username / UPN (e.g., alice@yourcompany.com). This lets us locate Azure AD sign in events and token claims [Data: Sources (30, 38)].  
+- Exact local timestamps (date + time + timezone) for: one failed external call attempt, one time you attempted to open ERP_Upgrade and got denied, and the time you sent the scanned contract. If you don’t know exact minutes, a ±15 min window is OK. Those let UC, SBC and Mail teams correlate logs quickly [Data: Sources (5, 23, 36)].  
+- The vendor phone number(s) you dialed (E.164 format, e.g. +41...) so UC/SBC can find the SIP trace; if sensitive, send via the secure ticket. The UC team used those numbers to locate SBC traces in previous incidents [Data: Sources (8, 5)].  
+- Printer identifier or location (hostname or IP if available, or photo of the device screen) and the vendor email address you sent to — mailbox/relay logs will be searched for that source IP and RCPT TO [Data: Sources (6, 36)].  
+- Tell me whether you were on Zurich wired LAN or Wi Fi for the calls and for the scan (this matters because site VLANs and firewall rules differ) [Data: Sources (23, 6)].
+
+What I will do if you approve / next steps I’ll take
+- I can open three coordinated high priority tickets: Unified Communications (SBC/Media/Firewall), Identity (Azure AD group membership / token claims), and Print/Mail (MFD job + SMTP relay). I’ll include the exact log artifacts the teams need and request fast response. Planned actions mirror the successful remediation steps used previously: align firewall/UDP timeouts to 180s or open RTP port ranges, refresh group membership/tokens, and whitelist printer VLAN or adjust relay size/policies as required [Data: Sources (5, 23, 36, 6)].  
+- Draft and send the urgent change/check message to Network/Firewall owner asking for: (a) firewall rule diff for Zurich, (b) NAT/session timeout values, and (c) temporary test window to open media ports. I will include your timestamps and the caller number(s). This is the exact escalation path used successfully in earlier Zurich cases [Data: Sources (23, 5)].  
+- Coordinate a quick test plan: reproduce a failing call on wired LAN while capturing Teams logs (client), SBC trace and firewall logs, and request SMTP relay lines for the scan timestamp.
+
+If you want me to act now
+- Paste your UPN, one timestamp for each symptom, the vendor phone number and vendor email, and say “Please open tickets” — I’ll prepare the ticket text and the exact log/pcap checklist for each team. If you prefer to keep any of those details private, tell me and I’ll give you a short secure message you can paste into your helpdesk portal.
+
+If you want to try quick self fixes first
+- For voice: run Teams web test + mobile hotspot; run Teams Test Call and report results (I’ll interpret). If web/mobile works, don’t escalate network yet — collect logs and we’ll pass them to UC [Data: Sources (37, 23)].  
+- For ERP: sign out completely and test in Incognito. If access returns, tell me and we’ll treat it as token/CA; if not, provide your UPN so I can request sign in logs [Data: Sources (38)].  
+- For scan: resend a one page scan to an internal mailbox + external Gmail and capture the printer job ID/time; ask print owner to export job + SMTP log for that time [Data: Sources (6, 36, 41)].
+
+Final note — why these steps
+- The combination of symptoms you report (one way external audio only; sudden intranet ACL denial after a transfer; printer reporting success but relay rejecting/dropping) matches the multi team incident pattern documented for Zurich and was resolved previously by coordinating Network/UC/Identity/Print teams and correlating firewall/SBC/SMTP logs to the user timestamps [Data: Sources (5, 23, 6, 36, 38)].
+
+Would you like me to open the three tickets now? If yes, paste your UPN + the three timestamps + the vendor phone & email and I’ll draft and submit the tickets and include the log checklist for each team.

@@ -1,0 +1,35 @@
+Summary
+- Your symptom (incoming calls from one specific new number block are not delivered at all; callers hear busy tone or the call drops after a few seconds; nothing appears in Teams Admin Center) matches a known Direct Routing / SBC translation issue we have seen before [Data: Sources (8)].  
+- Short answer: this should be handled as a 2nd‑level (specialist/UC/Direct Routing) ticket — not a pure 1st‑level desk fix. Reasoning and recommended triage steps are below.
+
+Why this is 2nd-level
+- In the matching case the carrier confirmed calls were delivered to the customer SBC, but the SBC either returned “404 Not Found” for the affected numbers or did not forward the calls internally — i.e. the problem was in SBC translation/routing, not the carrier nor the Teams client [Data: Sources (8)].  
+- Similar incidents required changes to voice routing / SBC translation tables, or changes to infrastructure (session timers, NAT, firewall rules) and were resolved by the UC/Direct‑Routing team following the internal routing/Direct‑Routing blueprints [Data: Sources (8, 9, 16, 5)]. These actions typically require privileged access to SBCs, voice routing policies and coordination with network/identity teams — beyond normal 1st‑level scope.
+
+Immediate triage checklist (1st‑level can perform before escalation)
+1. Collect example numbers in the affected range (give at least two numbers) and exact timestamps of failed calls — this was requested and used in the prior ticket to reproduce the issue [Data: Sources (8)].  
+2. Confirm whether the issue began immediately after the provider delivered the new number block and whether the customer migrated numbers — in the prior case the new block had been introduced the week before and partially migrated, which was crucial information [Data: Sources (8)].  
+3. Verify whether all users are affected or only specific locations/users (prior case: all employees were affected) [Data: Sources (8)].  
+4. Check Teams Admin Center and note whether any incoming call attempts are logged (in the referenced case nothing appeared in Teams for affected numbers) [Data: Sources (8)].  
+5. Ask the carrier for a call trace showing delivery to the SBC (carrier in prior case confirmed delivery to SBC) — capture the carrier’s timestamped SIP INVITE if possible [Data: Sources (8)].  
+
+What the 2nd‑level team should check / do
+- Review SBC signaling logs for the affected INVITEs (look for 404 or other immediate responses and compare SIP flow for working vs affected numbers) — this exact SBC log behavior was observed in the case we have on file [Data: Sources (8)].  
+- Compare SBC number translation tables and voice routing rules against the Direct‑Routing blueprint; ensure the new number range is included in translation and routing rules (temporary rule change fixed the calls in the prior case) [Data: Sources (8)].  
+- If routing looks correct, coordinate with carrier to compare SIP traces end‑to‑end and validate the call was forwarded to the expected SBC trunk/translation pattern [Data: Sources (8)].  
+- If changes were made recently to provisioning, Azure AD groups or routing policy assignment, validate policy assignments (other tickets show problems where group/provisioning changes or wrong voice routing policy caused related call problems) [Data: Sources (9)].  
+- If the call is dropping after a few seconds rather than never delivered, also check session timers, NAT and firewall timeouts (we have seen 30s session/NAT timeouts and media/firewall port restrictions cause related problems) [Data: Sources (16, 5)].
+
+Suggested ticket classification and priority
+- Classification: 2nd‑level / UC / Direct Routing / SBC specialist (requires access to SBC logs and routing/translation configuration). This classification is supported by the resolution steps in the comparable incident [Data: Sources (8, 9)].  
+- Priority: Escalate to high if the number block is customer‑facing and many callers are affected; include customer impact (number of affected callers/users) and whether business‑critical numbers are in the block.
+
+What to include when you escalate (copy into the 2nd‑level ticket)
+- Example affected numbers (2+), sample timestamps, any SIP traces from the carrier, screenshots/logs showing no incoming call in Teams Admin Center, description of recent changes (provider delivered new number range; numbers migrated) — these items were actionable in the referenced incident [Data: Sources (8)].  
+- Contact details for carrier support and one troubleshooting contact on the customer side for test calls.
+
+If you want, I can:
+- Draft the 2nd‑level ticket text with the exact fields and evidence to paste into your ticket system, or  
+- If you provide a sample affected number and a timestamp, recommend the exact SBC log lines / SIP headers the UC team should look for (INVITE/200/404 and any translation patterns).
+
+Would you like me to draft the escalation ticket now (I’ll include the check list and exact log/SIP items to request)?

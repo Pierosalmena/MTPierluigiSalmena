@@ -1,0 +1,35 @@
+Recommended classification
+- second_level_support
+
+Why (brief, evidence‑backed)
+- This ticket reports simultaneous, reproducible faults across multiple platform tiers — a tenant app (D365 / Financial Reports) unusable in PROD+TEST, inbound numbers that reach the edge but never reach users, site‑specific ~30s call drops, and client notification abnormalities. Prior incidents with the same cross‑system pattern were escalated to engineering teams (identity/infra/UC/Core Engineering) rather than resolved by first‑line runbooks. For example:
+  - High‑impact reporting/app outages required AOS/IIS/TLS and vendor escalation (engineer‑level actions) in the Management Reports / Data Mart incident [This is the documented pattern] [Data: Sources (0)].
+  - SBC/Direct‑Routing faults where new number ranges were missing from translation tables or where carrier delivery reached the edge but calls failed at the SBC were diagnosed and fixed by UC/System Engineers using SBC traces and translation‑table changes [This matches your “new numbers dead / carrier says it reaches the edge” symptom] [Data: Sources (8)].
+  - Site‑specific ~30s disconnects were previously traced to Voice‑VLAN NAT/session‑timeout or SBC/session‑timer mismatches and required network/SBC configuration changes by engineers [This mirrors your Basel symptom] [Data: Sources (16)].
+  - VM restore / print‑server incidents (where OS/VM/host changes caused multi‑service impact) required Core Engineering actions (host restore, share toggles, forensic collection) rather than first‑line steps [Analogy for an infrastructure‑level cause affecting multiple services] [Data: Sources (28)].
+  - Provisioning/automation defects that changed policy assignment (e.g., group→voice policy scripts) were corrected by Identity/Provisioning engineers, not by helpdesk alone — relevant where a group/provisioning change could explain multiple downstream failures [Data: Sources (9)].
+
+What the indexed records explicitly document (facts you can rely on)
+- Multi‑tier outages that span identity/provisioning, UC/SBC, and server/host layers have required second‑level engineering escalation and hands‑on fixes in the indexed corpus [Data: Sources (0, 8, 16, 28, 9)].
+- The artifacts and owners that proved decisive in those past escalations included: AOS/IIS and application server diagnostics and vendor involvement for reporting outages [Data: Sources (0)]; SBC SIP/RTP traces and translation‑table edits for number‑range reachability problems [Data: Sources (8)]; network/NAT/session‑timeout and firewall rule adjustments for ~30s drops [Data: Sources (16)]; and host/VM snapshot, spooler and network‑share manipulations for print‑server outages [Data: Sources (28)]. Provisioning script fixes were performed by Identity teams when automation misassigned policies [Data: Sources (9)].
+
+What I am recommending (clearly marked as recommendations; not taken as performed in the records)
+- Recommendation: treat this ticket as second_level_support and escalate immediately to:
+  - Application/Platform (D365/AOS/IIS) engineering to collect app server traces, AOS/IIS error logs and to validate whether a backend change or TLS/cipher/AOS regression aligns to the Financial Reports failures.
+  - Identity/Provisioning (Azure AD / Entra / provisioning scripts) to check recent group/provisioning changes, Azure AD Connect syncs, and policy provisioning runs (because provisioning changes have caused multi‑service side effects in prior cases).
+  - Unified Communications / SBC and Network teams to extract SBC SIP traces, RTP statistics, SBC translation tables, and firewall/NAT/session‑timeout configs for the affected carrier inbound numbers and for Basel site media path.
+  - Core Engineering / Infrastructure to preserve any recent VM/host restore snapshots and host logs if any server/VM changes were performed in the incident window (this follows the printserver precedent).
+- Recommendation: collect and attach these artifacts to the escalated incident (these are recommended — they mirror the logs used in the cited past cases): D365/AOS/IIS server logs and recent deployments, Azure AD sign‑in + provisioning sync logs, Microsoft Graph group membership snapshots, SBC SIP traces and translation-table config, firewall/NAT change logs and Voice VLAN NAT timeout values, and any VM/host snapshot IDs + event logs.
+
+Concise rationale in one sentence
+- Because this is a simultaneous, reproducible, cross‑service outage that maps closely to previously recorded incidents requiring hands‑on engineering (application platform + identity + UC + infrastructure), the indexed precedent and artifact usage support escalation to second_level_support [Data: Sources (0, 8, 16, 28, 9)].
+
+Top source records relied on (examples)
+- Management Reporting / AOS / vendor escalation (engineer work) [Data: Sources (0)]  
+- SBC / Direct Routing number‑range & translation‑table incident (carrier→SBC reached but not delivered) [Data: Sources (8)]  
+- Basel call‑drops tied to NAT/session timeout (≈30s BYE) [Data: Sources (16)]  
+- SAP printserver VM‑restore / network‑share remediation (Core Engineering hands‑on) [Data: Sources (28)]  
+- Provisioning script → voice‑policy misassignment corrected by Identity team (automation caused telephony failures) [Data: Sources (9)]
+
+If you want I can now:
+- Draft the minimal, evidence‑focused escalation note to paste into your ticket (which exact artifacts to attach and which teams to notify) — this would be a recommended operational template (not itself extracted from the incident records).

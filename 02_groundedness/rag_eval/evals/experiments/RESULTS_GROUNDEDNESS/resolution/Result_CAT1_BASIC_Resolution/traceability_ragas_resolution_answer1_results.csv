@@ -1,0 +1,3449 @@
+dataset,question,answer,context,is_recommendation,is_rec_reason,groundedness,groundedness_reason
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"For quick access-deny symptoms, check printer queue permissions for explicit Deny entries and remove if present (documented in TI-1623488)","=== CITED SOURCES ===
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+",yes,"Uses imperative directive ('check... and remove if present'), recommending an action to resolve access-deny symptoms.",supported,"Ticket TI-1623488 describes an 'Access denied' print error caused by an explicit Deny entry on the printer queue, and removing that Deny restored printing, directly supporting the recommendation."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Scan-to-Mail / SMTP relay: TI-1624175 (KF60),"=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",no,"This is a brief label/reference (Scan-to-Mail / SMTP relay: TI-1624175 (KF60)) and contains no recommendation, suggestion, or forward-looking instruction.",supported,"The CONTEXT shows ticket TI-1624175 (KF60) titled 'Scan-to-Mail works only for internal recipients' and documents SMTP relay 'Relay denied' and relay configuration adjustments restoring Scan-to-Mail, directly supporting the label."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Explicit Deny permission on printer queue (single user): TI-1623488 (KF60),"=== CITED SOURCES ===
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+",yes,"The phrase 'Explicit Deny permission on printer queue (single user)' is a directive proposing an action to change permissions, so it constitutes a recommendation/instruction.",supported,"The ticket TI-1623488 (KF60) explicitly states an entry with a “Deny” permission for the affected user was found on the printer queue, was removed, and the closure notes the root cause was that explicit “Deny.”"
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"If the relay is blocking the printer IP/VLAN, update the SMTP relay configuration to allow the printer VLAN and then retest scanning to external recipients (this is the documented remediation from the prior case)","=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,"Contains conditional, directive instructions to update SMTP relay configuration and retest (explicit remediation suggestion).",supported,Ticket TI-1624175 shows the SMTP relay logged “Relay denied” because the new printer VLAN was not in the relay's allowed IP ranges; the relay configuration was updated per the Print & Scanning Infrastructure Standard to include the VLAN and subsequent tests to external recipients succeeded.
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"If print jobs appear then disappear or do not reach the device, test network reachability: ping from the print server to the printer. In the documented Basel case, the print server could not ping the printer while a client in the printer VLAN could — indicating segmentation/firewall blocking between server and printer","=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+",yes,"Contains conditional and directive advice ('If... then...', 'test network reachability: ping from the print server to the printer'), which is a recommendation for action.",supported,"The Basel ticket explicitly reports print jobs appearing then disappearing, shows the print server could not ping the printer while a client in the printer VLAN could, and concludes this indicates segmentation/firewall blocking—supporting the recommended ping test."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Confirm affected scope and clients: verify the problem affects users with locally installed Outlook (Windows) while OWA/mobile works (as in the prior case),"=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+",yes,"Uses imperative directive verbs ('Confirm', 'verify') instructing to perform checks, so it is a recommendation to take action.",supported,"The ticket notes ""Issue affects only users with locally installed Outlook (Windows 11)"" and also states ""Webmail (OWA) works"" and ""Mobile devices (iOS) work"", so verifying that scope (Outlook clients affected while OWA/mobile work) matches the prior case."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Basel printer / VLAN segmentation: TI-1622483 (KF60),"=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+",no,"This is a terse reference/title with a ticket ID and topic (Basel printer / VLAN segmentation) and contains no recommendation, directive, or forward-looking instruction.",supported,The ticket TI-1622483 (KF60) is titled 'Location printer Basel not responding to print jobs' and details that printers were moved into a separate VLAN causing segmentation (missing network allowance/firewall rule) which was corrected per the Print & Scanning Infrastructure Standard.
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Check server-side logs (Exchange server event log) for authentication failures such as “535 5.7.3 Authentication unsuccessful” which were observed in the prior case and pointed to SMTP AUTH being disabled,"=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+",yes,"The sentence uses a directive verb ('Check') instructing the reader to perform an action (inspect server-side logs for authentication failures), which is a recommendation.",supported,"SOURCE 32 shows Exchange Server event log entry “535 5.7.3 Authentication unsuccessful” and notes SMTP AUTH was disabled for affected users, so checking server-side logs for such authentication failures is supported by the context."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"Document: after adjustment, in the prior case tests to external Gmail and partner addresses succeeded and the ticket was closed","=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",no,"The sentence reports past events (tests succeeded and the ticket was closed) and contains no directive, suggestion, or forward-looking recommendation.",supported,"The ticket log shows the SMTP relay was adjusted, and on 17.12.25 tests to an external Gmail address and a partner company succeeded; the ticket was closed on 18.12.25 confirming Scan-to-Mail worked for internal and external recipients."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Validate tenant security setting: confirm whether Security Defaults / a Conditional Access policy was changed that effectively disabled SMTP AUTH for legacy clients (this was the documented root cause in the prior case),"=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+",yes,"The statement uses imperative verbs ('Validate', 'confirm') and directs the reader to check tenant security settings, which is a recommendation to perform an action.",supported,"The cited ticket (TI-1548823) explicitly states Security Default was enabled, which disabled SMTP AUTH for legacy clients, and that Conditional Access and SMTP AUTH settings were adjusted to resolve the issue—so the recommendation matches the documented root cause."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Additional checks if access errors occur for single users: confirm there are no explicit “Deny” permissions on the printer queue for affected user accounts (removing an explicit Deny fixed a single-user case in TI-1623488),"=== CITED SOURCES ===
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+",yes,The statement uses directive language ('confirm there are no explicit “Deny” permissions') and recommends an action (additional checks and removing an explicit Deny) based on a prior fix.,supported,"Ticket TI-1623488 shows an explicit 'Deny' entry on the affected user's printer queue that was removed and printing was restored, directly supporting the recommendation to check for and remove explicit Deny permissions."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Gather facts: check whether scan-to-mail succeeds to internal mailboxes but fails to external addresses (in the prior case internal worked and external was “Relay denied”),"=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement uses directive language ('Gather facts: check whether...') instructing the reader to perform checks, so it is a recommendation.",supported,"The ticket shows tests where internal scans were successful while external delivery failed, and the SMTP log explicitly records “Relay denied,” which directly supports the described check and prior-case observation."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Email / SMTP AUTH: TI-1548823 (KF22),"=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+",no,"No — this is a terse identifier or ticket title referencing 'Email / SMTP AUTH' and a reference number, with no suggestion, directive, or forward-looking advice.",supported,"The cited ticket TI-1548823 (KF22) describes emails stuck in Outbox and documents that SMTP AUTH was disabled by a Security Default policy and was selectively re-enabled as the root cause/action, directly supporting the 'Email / SMTP AUTH' label."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"For scan-to-mail: check SMTP relay logs for “Relay denied”, confirm printer IP/VLAN is in the relay allow list; if missing, update relay allow list and retest (documented sequence)","=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,"It gives step-by-step directives and conditional advice (check, confirm, update, retest) for handling scan-to-mail.",supported,"Supported — the ticket shows the SMTP log entry “Relay denied”, analysis identified the printer's new VLAN/IP was not in the relay allow list, the SMTP relay was updated to include the IP range, and subsequent external scan-to-mail tests succeeded."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"There are also several simple printer-related fixes in the records that are quick checks: a paused queue (resolved by reactivating the queue) and an explicit “Deny” permission on a queue (removed), both of which immediately restored printing in their respective cases","=== CITED SOURCES ===
+SOURCE 27:
+﻿
+Ticket summary:
+Ticket name: KF60: Print job remains stuck in queue
+Ticket number: TI-1621044
+Company: Customer Company 60 AG
+Contact person: Contact Person 04
+Owner: Employee 12
+Origin: Phone
+Type: Incident
+Created on: 21.10.25 09:11
+Closure
+Closure date: 21.10.25 09:38
+Closure text: Printer queue paused. Queue activated and print jobs restarted.
+Activities
+21.10.25 09:05 – Phone report
+Ms. Contact Person 04 reports that documents are not printing.
+In Windows, the print job is displayed, but nothing happens.
+Other colleagues using the same printer are also unable to print.
+21.10.25 09:11
+Ticket created and assigned to Employee 12.
+21.10.25 09:20 – Remote check
+Connection established with affected user.
+Print job is located in the queue.
+Queue status shows “Paused”.
+Queue activated and all print jobs restarted.
+Test print performed → successful.
+21.10.25 09:32 – Customer feedback
+Printing is working again for all affected employees.
+21.10.25 09:38 – Ticket closure
+Dear Contact Person 04
+The printer queue was paused.
+After activating the queue and restarting the print jobs, printing is functioning properly again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+",no,"The statement describes recorded fixes and their outcomes (paused queue reactivated, Deny permission removed) rather than recommending or instructing the reader to take action.",supported,"Source 27 documents a paused printer queue that was reactivated and printing restored, and Source 3 documents an explicit 'Deny' permission removed which immediately allowed printing—both claims are directly reflected in the CONTEXT."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Verify printer IP / VLAN and whether that IP range is included in the SMTP relay’s allowed list (in TI-1624175 the printer VLAN was missing from the relay allow list and adding it fixed the issue),"=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,The statement is an imperative recommendation using directive verbs ('Verify...') that proposes checking and modifying network settings to resolve the issue.,supported,"TI-1624175 documents checking the printer IP/VLAN, finding the printer on a new VLAN that was not in the SMTP relay allow list, and that adding the VLAN/IP range to the relay restored external Scan-to-Mail delivery."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"If segmentation is observed, coordinate with the Network Team to verify routing/firewall rules and add the required allow rules so the print server can reach the printer VLAN (this is the exact remediation applied in TI-1622483)","=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement gives conditional, directive remediation instructions ('If segmentation is observed, coordinate..., verify..., add the required allow rules'), i.e., explicit recommendation for action.",supported,"Ticket TI-1622483 documents segmentation between the server and printer VLAN, internal coordination with the Network Team, and that the firewall/routing rule was adjusted to allow the print server to reach the printer VLAN with printing restored, matching the stated remediation."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"If the same root cause is confirmed, apply the documented remediation used previously: selectively enable SMTP AUTH for the affected mailbox accounts and adjust the Conditional Access policy to allow those legacy clients to authenticate (this resolved the issue in TI-1548823)","=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+",yes,The statement issues conditional directives and action verbs ('If... apply... enable... adjust') that recommend specific remediation steps based on a confirmed root cause.,supported,"Ticket TI-1548823 documents that SMTP AUTH was selectively enabled for affected users and the Conditional Access policy was adjusted, tests were successful and the ticket was closed, so the recommended remediation matches the documented fix."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,The Basel printer that briefly accepts jobs then nothing prints (jobs vanish) matches a documented location-printer incident where the print server could not reach printers after the printers were moved to a new VLAN; the root cause was a missing network/firewall allowance between the print server and the printer VLAN. The fix was to adjust routing/firewall rules so the print server can reach the printer; printing was then restored. This is documented in ticket TI-1622483 (KF60),"=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+",no,"This is a report of a documented incident and the past fix (adjusting routing/firewall rules), not a recommendation or forward-looking instruction.",supported,"Ticket TI-1622483 (KF60) explicitly reports jobs briefly appear then vanish, printers were moved to a new VLAN, the print server could not ping the printers due to a firewall rule blocking server access, the rule was adjusted (routing/firewall) and printing was restored."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"After changes, test sending from affected Outlook clients and monitor mailflow for 24 hours as done in the prior case (the prior ticket monitored mailflow and confirmed no further errors)","=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+",yes,"The statement issues direct instructions to 'test sending' and 'monitor mailflow for 24 hours', i.e., actionable guidance mirroring the prior case.",supported,"The cited ticket shows that after changes (SMTP AUTH enabled and Conditional Access adjusted) a 'Test sending successful' was performed and 'Mailflow monitored for 24 hours' with 'No further errors in logs', directly supporting the recommendation."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"For the Outlook send-fail: perform the documented client checks (recreate profile, re-add account, check SMTP port, disable AV SMTP scan) and examine Exchange event logs for 535 errors; if tenant security/Conditional Access changed, escalate to Exchange specialist to selectively enable SMTP AUTH and adjust Conditional Access (documented sequence)","=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+",yes,"The statement contains imperative, step-by-step instructions (perform checks, examine logs, escalate, enable/adjust settings), which are explicit recommendations for action.",supported,"The ticket documents the client checks (recreated profile, removed/re-added account, checked SMTP port 587 with STARTTLS, disabled antivirus SMTP scanning), Exchange event logs showing '535 5.7.3 Authentication unsuccessful', and escalation where SMTP AUTH was selectively enabled and the Conditional Access policy adjusted to resolve the issue."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Queue paused quick-fix: TI-1621044 (KF60),"=== CITED SOURCES ===
+SOURCE 27:
+﻿
+Ticket summary:
+Ticket name: KF60: Print job remains stuck in queue
+Ticket number: TI-1621044
+Company: Customer Company 60 AG
+Contact person: Contact Person 04
+Owner: Employee 12
+Origin: Phone
+Type: Incident
+Created on: 21.10.25 09:11
+Closure
+Closure date: 21.10.25 09:38
+Closure text: Printer queue paused. Queue activated and print jobs restarted.
+Activities
+21.10.25 09:05 – Phone report
+Ms. Contact Person 04 reports that documents are not printing.
+In Windows, the print job is displayed, but nothing happens.
+Other colleagues using the same printer are also unable to print.
+21.10.25 09:11
+Ticket created and assigned to Employee 12.
+21.10.25 09:20 – Remote check
+Connection established with affected user.
+Print job is located in the queue.
+Queue status shows “Paused”.
+Queue activated and all print jobs restarted.
+Test print performed → successful.
+21.10.25 09:32 – Customer feedback
+Printing is working again for all affected employees.
+21.10.25 09:38 – Ticket closure
+Dear Contact Person 04
+The printer queue was paused.
+After activating the queue and restarting the print jobs, printing is functioning properly again.
+Kind regards
+Consulting Sample Company
+
+",no,"This is a brief status note reporting that a quick-fix was paused for ticket TI-1621044, not proposing or recommending any action.",supported,"Supported — ticket TI-1621044 (KF60) documents the print queue was ""Paused"" and was resolved by activating the queue and restarting all print jobs, with successful test print and ticket closure."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,The Basel printer problem required Network Team involvement to change firewall/routing rules and was handled by Infrastructure/Network (2nd‑level) in the prior incident,"=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+",no,"This is a factual past-tense description of how a prior incident was handled and contains no recommendation, directive, or forward-looking advice.",partially_supported,"The ticket (TI-1622483) documents internal coordination with the Network Team and that a firewall/routing rule was adjusted to restore printer connectivity, supporting the first part; however the context does not explicitly label the handler as 'Infrastructure/Network (2nd-level)'."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"Quick checks (fast wins, documented in other tickets): confirm the print queue is not paused; confirm Print Spooler service is running; test a print directly from the print server to the device (in another ticket a paused queue was reactivated and printing restored)","=== CITED SOURCES ===
+SOURCE 27:
+﻿
+Ticket summary:
+Ticket name: KF60: Print job remains stuck in queue
+Ticket number: TI-1621044
+Company: Customer Company 60 AG
+Contact person: Contact Person 04
+Owner: Employee 12
+Origin: Phone
+Type: Incident
+Created on: 21.10.25 09:11
+Closure
+Closure date: 21.10.25 09:38
+Closure text: Printer queue paused. Queue activated and print jobs restarted.
+Activities
+21.10.25 09:05 – Phone report
+Ms. Contact Person 04 reports that documents are not printing.
+In Windows, the print job is displayed, but nothing happens.
+Other colleagues using the same printer are also unable to print.
+21.10.25 09:11
+Ticket created and assigned to Employee 12.
+21.10.25 09:20 – Remote check
+Connection established with affected user.
+Print job is located in the queue.
+Queue status shows “Paused”.
+Queue activated and all print jobs restarted.
+Test print performed → successful.
+21.10.25 09:32 – Customer feedback
+Printing is working again for all affected employees.
+21.10.25 09:38 – Ticket closure
+Dear Contact Person 04
+The printer queue was paused.
+After activating the queue and restarting the print jobs, printing is functioning properly again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+",yes,"Contains directive verbs ('confirm', 'test') and a list of actionable 'quick checks' recommending steps to perform.",supported,"All suggested quick checks appear in the provided tickets: SOURCE 27 documents a paused queue being reactivated and printing restored, and SOURCE 22 shows checking the Print Spooler service and attempting a test print directly from the print server."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,The Exchange SMTP AUTH issue in TI-1548823 (KF22) was escalated to a System Engineer / Exchange Specialist and processed by BU Infrastructure Engineering; the documented remediation required tenant/security-policy changes and selective SMTP AUTH re-enablement. That indicates this type of mail-sending problem is a 2nd‑level (infrastructure/Exchange specialist) issue,"=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+",no,The statement reports past actions and classifies the issue as a 2nd-level problem without proposing or recommending any future actions.,supported,"The ticket notes an escalation at 14.01.25 11:12 to a System Engineer (Exchange Specialist) and forwarding to BU Infrastructure Engineering, and the System Engineer's notes record tenant security policy/Conditional Access adjustments and selective SMTP AUTH re-enablement, which supports classifying it as a 2nd‑level infrastructure/Exchange specialist issue."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Perform client-side checks already documented: recreate the Outlook profile; remove and re-add the account; verify SMTP port (587 + STARTTLS); disable antivirus SMTP-scanning temporarily; check client firewall — these were performed in the prior incident as initial troubleshooting,"=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+",yes,"It issues direct action commands ('Perform', 'recreate', 'verify', 'disable', 'check') recommending specific troubleshooting steps, even while noting they were done previously.",supported,"The ticket's 'Client-side troubleshooting' actions explicitly list recreating the Outlook profile, removing/re-adding the account, checking SMTP port 587 with STARTTLS, disabling antivirus SMTP scanning, and checking the client firewall as performed during initial troubleshooting."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Check SMTP relay logs for the printer’s IP and look for “Relay denied” or other relay rejections (this is the logged symptom in the prior incident),"=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,"Direct instruction using directive verbs ('Check', 'look for') telling the reader to perform actions to investigate SMTP relay logs.",supported,"The ticket's mail log analysis explicitly shows the SMTP log entry “Relay denied” and the activity notes include checking the printer IP/VLAN, so checking SMTP relay logs for the printer's IP and looking for relay rejections matches the documented symptom."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"The “scan-to-mail: small scans work, big scans dropped” symptom is similar in part to a documented scan-to-mail incident where the printer VLAN was not allowed by the SMTP relay and external delivery was denied (“Relay denied”). The resolution there was to update the SMTP relay allow list for the printer VLAN and then re-test sending; after the change external scans were delivered again. This is documented in ticket TI-1624175 (KF60)","=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",no,This only describes a past incident and its documented resolution (updating the SMTP relay allow list and re-testing) rather than explicitly recommending or instructing the reader to take action.,partially_supported,"TI-1624175 documents an external delivery failure with SMTP log 'Relay denied' because the new printer VLAN was not in the relay allow list, and updating the relay to include the VLAN restored external scan delivery; however, the CONTEXT does not mention any distinction between 'small scans' and 'big scans', so that part of the symptom comparison is unsupported."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,The scan-to-mail incident involved coordination with Network and Mail teams to update the SMTP relay (2nd‑level),"=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",no,This is a past-tense description of coordinated actions that reports what occurred (updating the SMTP relay) rather than offering any recommendation or directive.,partially_supported,"The ticket log explicitly records 'Coordination with Network and Mail Team' and that the SMTP relay configuration was updated, but the CONTEXT does not state this was handled at '2nd‑level' support, so that part is unsupported."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"Confirm affected scope: identify all affected users, clients (Outlook desktop versions), printers and VLANs, and which external partners show presence issues","=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+
+
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement uses directive verbs ('Confirm', 'identify') to instruct actions to determine scope, making it a recommendation/suggestion.",supported,"The tickets show agents identified affected users and Outlook desktop versions (Source 32), investigated printers and printer VLAN routing/allow lists (Sources 22 and 6), and checked external recipient/partner delivery issues (Source 6), so each recommended scope item is present in the CONTEXT."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,". Conclusion: because your report includes Exchange SMTP/Auth effects, network connectivity between servers and printer VLANs, and SMTP-relay/scan-to-mail impacts — all of which were handled as 2nd‑level infrastructure/network/mail-team issues in the records — classify this ticket as 2nd‑level and escalate to Infrastructure Engineering (Exchange specialist), Network Team, and Mail/Print Team for coordinated resolution","=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+
+
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement explicitly directs classifying the ticket as 2nd-level and escalating it to specific teams (Infrastructure/Exchange, Network, Mail/Print) for coordinated resolution.",supported,"The cited tickets show Exchange SMTP/AUTH issues were escalated to Infrastructure Engineering/an Exchange specialist (Source 32), printer VLAN connectivity was handled by the Network Team (Source 22), and SMTP-relay/scan-to-mail was coordinated with Network and Mail/Print teams (Source 6), so classifying as 2nd‑level and escalating to those teams is supported by the records."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"The “desktop mail client can’t send; webmail works” symptom matches a documented Exchange/SMTP-AUTH issue where SMTP AUTH was disabled by a tenant security change (Security Defaults), causing legacy Outlook clients’ send attempts to fail with authentication errors. In that prior case the team recreated profiles and performed client checks, then escalated to an Exchange specialist; the root cause was “SMTP AUTH disabled due to Security Default Policy” and the fix was to selectively enable SMTP AUTH for affected users and adjust Conditional Access. This is documented in ticket TI-1548823 (KF22)","=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+",no,"The text recounts a prior incident and the corrective actions taken (recreating profiles, enabling SMTP AUTH and adjusting Conditional Access) as documented facts, rather than issuing a recommendation or directive.",supported,"Ticket TI-1548823 documents that locally installed Outlook clients could not send while OWA worked, logs showed '535 5.7.3 Authentication unsuccessful' and SMTP AUTH was disabled after Security Defaults were enabled; the ticket notes client checks (recreated profiles) and escalation to an Exchange specialist and the fix of selectively enabling SMTP AUTH and adjusting Conditional Access."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,Escalate this consolidated ticket to 2nd‑level Infrastructure Engineering / Exchange Specialist (for the SMTP/Auth issue) and simultaneously open coordinated tasks with Network Team (Basel printer reachability) and Mail/Print Team (SMTP relay and scan-to-mail) — this mirrors how the separate incidents were handled in the records,"=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+
+
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement uses directive verbs ('Escalate', 'open') proposing specific actions (escalate ticket and open coordinated tasks), which is explicit forward-looking advice.",supported,Each element is documented in the cited tickets: the Exchange Outbox incident was escalated to BU Infrastructure Engineering / a System Engineer (Exchange Specialist) and involved SMTP/AUTH changes (Source 32); the Basel printer issue was resolved via Network Team firewall/routing adjustments (Source 22); the scan-to-mail issue involved coordination with Mail and Network teams and SMTP relay configuration updates (Source 6).
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"For Basel printing: check queue paused, spooler, attempt direct server-to-printer print and ping from print server; if server cannot reach the printer but clients can, escalate to Network Team to add routing/firewall allowances as in TI-1622483 (documented sequence)","=== CITED SOURCES ===
+SOURCE 27:
+﻿
+Ticket summary:
+Ticket name: KF60: Print job remains stuck in queue
+Ticket number: TI-1621044
+Company: Customer Company 60 AG
+Contact person: Contact Person 04
+Owner: Employee 12
+Origin: Phone
+Type: Incident
+Created on: 21.10.25 09:11
+Closure
+Closure date: 21.10.25 09:38
+Closure text: Printer queue paused. Queue activated and print jobs restarted.
+Activities
+21.10.25 09:05 – Phone report
+Ms. Contact Person 04 reports that documents are not printing.
+In Windows, the print job is displayed, but nothing happens.
+Other colleagues using the same printer are also unable to print.
+21.10.25 09:11
+Ticket created and assigned to Employee 12.
+21.10.25 09:20 – Remote check
+Connection established with affected user.
+Print job is located in the queue.
+Queue status shows “Paused”.
+Queue activated and all print jobs restarted.
+Test print performed → successful.
+21.10.25 09:32 – Customer feedback
+Printing is working again for all affected employees.
+21.10.25 09:38 – Ticket closure
+Dear Contact Person 04
+The printer queue was paused.
+After activating the queue and restarting the print jobs, printing is functioning properly again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+",yes,"The text contains directive verbs ('check', 'attempt', 'escalate'), a conditional 'if... then...' structure, and explicit instructions to perform actions (escalate to Network Team), so it is a recommendation.",supported,"All recommended steps are documented in the context: TI-1621044 shows resolving a paused queue, and TI-1622483 records checking the spooler, attempting direct server-to-printer prints and pings (server failing while clients succeed), then involving the Network Team to adjust routing/firewall rules per the Print & Scanning Infrastructure Standard."
+traceability_ragas_resolution_answer1,Is the statement supported by the evidence?,"After making network or permission changes, reactivate the queue if it was paused and restart pending print jobs; confirm successful printing (documented in the prior cases)","=== CITED SOURCES ===
+SOURCE 27:
+﻿
+Ticket summary:
+Ticket name: KF60: Print job remains stuck in queue
+Ticket number: TI-1621044
+Company: Customer Company 60 AG
+Contact person: Contact Person 04
+Owner: Employee 12
+Origin: Phone
+Type: Incident
+Created on: 21.10.25 09:11
+Closure
+Closure date: 21.10.25 09:38
+Closure text: Printer queue paused. Queue activated and print jobs restarted.
+Activities
+21.10.25 09:05 – Phone report
+Ms. Contact Person 04 reports that documents are not printing.
+In Windows, the print job is displayed, but nothing happens.
+Other colleagues using the same printer are also unable to print.
+21.10.25 09:11
+Ticket created and assigned to Employee 12.
+21.10.25 09:20 – Remote check
+Connection established with affected user.
+Print job is located in the queue.
+Queue status shows “Paused”.
+Queue activated and all print jobs restarted.
+Test print performed → successful.
+21.10.25 09:32 – Customer feedback
+Printing is working again for all affected employees.
+21.10.25 09:38 – Ticket closure
+Dear Contact Person 04
+The printer queue was paused.
+After activating the queue and restarting the print jobs, printing is functioning properly again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 3:
+﻿
+Ticket summary:
+Ticket name: KF60: Single user cannot print – others in same office without issue
+Ticket number: TI-1623488
+Company: Customer Company 60 AG
+Contact person: Contact Person 20
+Owner: Employee 27
+Origin: Phone
+Type: Incident
+Created on: 02.12.25 09:03
+Closure
+Closure date: 03.12.25 10:21
+Closure text: Permission on printer queue corrected according to Print & Scanning Infrastructure Standard. Printing possible again.
+Activities
+02.12.25 08:55 – Phone report
+Mr. Contact Person 20 reports that one employee in the Basel office cannot print documents.
+All other employees in the same room can print without issue.
+The affected user receives the message “Access denied” when attempting to print.
+02.12.25 09:03
+Ticket created and assigned to Employee 27.
+02.12.25 09:20 – Initial analysis
+Remote connection established with the affected user.
+Printer “MFP-Basel-01” is visible.
+When sending a print job, “Access denied” appears immediately.
+Print job is not displayed in the queue.
+02.12.25 09:45 – Comparison with another user
+Test performed with colleague in the same office.
+Printing works without restriction.
+User account checked.
+Membership in location group “PRT-Basel” confirmed.
+02.12.25 10:30 – Further review
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+It specifies:
+• Printer permissions are assigned exclusively via AD groups
+• No individual user permissions at queue level
+• NTFS and share permissions must be consistent
+Review of the printer queue on the print server shows:
+• AD group “PRT-Basel” has print permission
+• Additionally, there is an explicit entry for the affected user with “Deny”
+This entry originates from a previous test configuration.
+02.12.25 11:10 – Test
+Explicit deny permission removed.
+User logged in again.
+Test print successful.
+03.12.25 09:40 – Customer feedback
+Printing works normally again.
+Additional tests within the team successful.
+03.12.25 10:21 – Ticket closure
+Dear Contact Person 20
+The root cause was an explicit “Deny” permission on the printer queue for the affected user.
+The permission structure was cleaned up according to the “Print & Scanning Infrastructure Standard”.
+Printing is now fully functional again.
+Kind regards
+Consulting Sample Company
+
+",yes,"Uses directive verbs and imperative instructions ('reactivate', 'restart', 'confirm') telling the reader to perform actions after changes.",supported,"Source 27 documents activating a paused queue, restarting jobs and a successful test print; Sources 3 and 22 show fixing permissions or network configuration followed by test prints, supporting the recommendation to restart/confirm printing after such changes."

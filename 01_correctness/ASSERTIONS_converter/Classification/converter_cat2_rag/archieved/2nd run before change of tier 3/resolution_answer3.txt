@@ -1,0 +1,57 @@
+Summary — what the records document
+- A 502 Bad Gateway for an externally reachable portal can be caused by a Reverse Proxy / WAF configuration change after a security patch that removed a required header rewrite and enabled TLS inspection; in one prior incident the external FQDN returned 502 while internal access worked, and disabling TLS inspection made the site work until the proxy configuration was fixed to forward X-Forwarded-Proto and use the correct HTTP profile/template [Data: Sources (15)].
+- “Unhealthy” sensors on authentication/domain controllers (MS Defender Identity) have been observed after changes; prior cases show the issue resolved when the Defender/agent was fully removed and reinstalled on the affected DCs, after which sensors returned to green and were monitored for recurrence [Data: Sources (14)].
+- ERP/report/printing outages have been resolved in prior incidents by two different actions depending on root cause: (a) if printing via a print server was broken after a Windows update / VM restore, disabling and re‑enabling the network share for the printer queues caused pending documents to print and restored operations [Data: Sources (28)]; (b) if report generation in F&O/Financial Reports failed globally, actions taken included FRDB recreation and a Data Mart reset and escalation to Microsoft when that did not immediately fix the issue [Data: Sources (0), (1)].
+
+Conclusion from the documented incidents
+- The pattern you describe (external 502 + authentication servers unhealthy + ERP delivery-printing/reporting failures) is consistent with multiple different effects observed after weekend maintenance in the records: a firewall/WAF/security patch overwrote custom proxy templates and broke header forwarding (causing 502) [Data: Sources (15)]; Windows updates and VM restores caused print‑server network share issues (causing halted SAP/printing) [Data: Sources (28)]; and agent/monitoring sensors on DCs became unhealthy and were fixed by reinstalling agents (causing SOC alarms) [Data: Sources (14)].
+- The records therefore support a plausible link to weekend work (firewall/WAF patch or Windows/VM maintenance), but the indexed records do not provide live logs for your environment and so cannot prove the exact single root cause or confirm that all three outages are caused by the same change. You will need the actual change log and live diagnostics to confirm a single common cause. (Indexed evidence that such maintenance can produce each of these failures is provided above.) [Data: Sources (15), (28), (14)]
+
+Step‑by‑step actions based on documented prior resolutions
+Below are steps that were actually performed in prior cases (listed with their source). Follow these steps in your environment and collect results/logs at each step. If you cannot perform a step exactly as shown in your environment, stop and escalate with the evidence gathered.
+
+1) Customer portal — 502 Bad Gateway (documented troubleshooting and fix)
+- Verify externally: confirm DNS, certificate, HTTPS reachability and that the backend app server is reachable internally (these checks were performed early in the KF40 incident) [Data: Sources (15)].
+- Test direct-to-reverse-proxy IP and FQDN to reproduce the 502. In the prior case direct-to-reverse-proxy IP worked while FQDN returned 502, indicating header/path rewrite issues [Data: Sources (15)].
+- Temporarily disable TLS inspection on the WAF/Reverse Proxy to validate whether TLS inspection is the trigger; in the prior incident disabling TLS inspection restored logins, re-enabling it reproduced the 502 [Data: Sources (15)].
+- If TLS inspection is implicated, confirm whether header X-Forwarded-Proto is forwarded; the app expected X-Forwarded-Proto: https and the header was being stripped under TLS inspection in the incident [Data: Sources (15)].
+- Compare the current WAF/Reverse Proxy configuration to the documented architecture/blueprint (for KF40: “Blueprint: Secure Web Publishing – KF40 – Version 3.2”) and restore the custom header rewrite rule / HTTP profile template that the blueprint requires — the prior incident discovered the patch had reloaded a default profile and removed the custom rewrite rule and inspection template [Data: Sources (15)].
+- After restoring the documented configuration, test external access and monitor for 24 hours as documented in the closure [Data: Sources (15)].
+
+2) Authentication servers “unhealthy” / SOC alarms (documented troubleshooting and fix)
+- Check the Defender/monitoring sensor status on each affected authentication server/Domain Controller and review recent change activity (patches, agent updates) — the prior ticket showed sensors turned red following changes and then recovered after agent reinstall [Data: Sources (14)].
+- If sensors are red/unhealthy on DCs, remove and reinstall the Defender/monitoring agent on the affected servers (this was the action taken that returned sensors to green in the KF10 case) [Data: Sources (14)].
+- After reinstall, monitor sensors for recurrence for multiple days as the case kept the ticket on hold while monitoring; if the issue recurs, repeat reinstall on other affected nodes and consider escalation to RMA/RAR as previously recorded [Data: Sources (14)].
+
+3) ERP cannot produce physical delivery notes (triage and two documented remediation paths)
+- First determine whether the failure is in ERP report generation or in printing the generated document (the records show both cause similar symptoms and were fixed differently).
+  - Evidence needed: error messages when generating delivery notes, whether PDF/preview is produced on the ERP server, whether print jobs are queued on the print server, and whether only physical printing is blocked while generation works.
+- If it is a printing issue (print jobs queued but not printed; scenario similar to KF13):
+  - Check print server(s) involved, especially if a Windows update or VM restore was performed over the weekend. In the KF13 incident a Windows update and subsequent VM restore caused the print server’s network share to misbehave [Data: Sources (28)].
+  - Disable and re-enable the network share for the affected printer queues on the print server; in the prior incident that action caused all pending documents to be printed and restored operations [Data: Sources (28)].
+- If it is report/delivery-note generation at application level (no document produced; scenario similar to KF11):
+  - Check whether report services, Data Mart or FRDB are healthy. In the KF11 incidents, the team recreated FRDB and performed a Data Mart Reset; when unresolved they opened a Microsoft ticket (Microsoft ticket #2404050050000982 was created) [Data: Sources (0), (1)].
+  - If Data Mart Reset / FRDB recreation does not resolve, escalate to Microsoft support per the prior case [Data: Sources (1)].
+
+Are these connected to the weekend work? (what records say)
+- The records explicitly document examples where a weekend/security patch on the firewall/WAF overwrote templates and header rules creating a 502 for external login (KF40) [Data: Sources (15)].
+- They also document Windows updates/VM restores that affected print server network shares and caused printing to stop (KF13) [Data: Sources (28)].
+- And they document monitoring/agent problems that were resolved by agent reinstall on DCs (KF10) [Data: Sources (14)].
+- These examples indicate that changes applied during a weekend maintenance window (firewall/WAF patch, Windows update/VM restore, or agent changes) are plausible causes for each of your three outages. The indexed records do not contain the change log from your specific weekend maintenance window, so they cannot prove that the same change caused all three outages in your environment — you must corroborate with your change records and live logs.
+
+Recommended immediate next steps (these are recommended actions to take now; some match documented fixes above)
+- Collect change log and rollout notes from the weekend maintenance (WAF/Firewall changes, TLS inspection toggles, Windows updates, VM restores, agent updates). (recommended)
+- Run the evidence-based tests in parallel:
+  - For portal 502: perform the DNS/cert/HTTPS/backend checks, then temporarily disable TLS inspection on the WAF to see if external access returns. If it returns, restore the blueprint header rewrite and HTTP profile per the architecture doc and re-test [Documented steps: KF40] [Data: Sources (15)].
+  - For SOC/auth servers: check Defender/agent health on DCs and reinstall the agent(s) on any unhealthy servers, then monitor [Documented steps: KF10] [Data: Sources (14)].
+  - For ERP/delivery notes: confirm whether the failure is printing or generation. If printing, check print queues and re-enable the printer network share on the print server(s) (documented fix) [Data: Sources (28)]. If generation, consider Data Mart / FRDB actions and escalate to Microsoft if needed (documented for Financial Reports issue) [Data: Sources (0), (1)].
+- Correlate timestamps of the failures with the time of each weekend change (recommended). If the timestamps align with a specific change (e.g., WAF patch or print server VM restore), that will support a single root cause and speed remediation.
+
+What the indexed knowledge cannot tell us
+- The records do not include your environment’s change log, live system logs, or the specific WAF/print server/agent configuration in your environment, so we cannot definitively say which single weekend change caused all three outages. The records only show that the same types of maintenance actions have caused similar outages in prior cases [Data: Sources (15), (28), (14)].
+
+If you want, I can now:
+- Produce a concise checklist of the exact diagnostic commands/logs and the order to run them (this would be a recommended operational runbook and is not verbatim in the indexed cases — I will mark it as recommended), or
+- Draft a short post‑mortem template to use once you have correlated change logs with the outage timeline (recommended).
+
+Tell me which you prefer and provide the weekend change log and a brief timeline of when each outage was first observed; I will map those to the documented fixes and produce next actions and an escalation bundle.

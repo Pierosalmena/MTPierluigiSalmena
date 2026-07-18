@@ -1,0 +1,61 @@
+FINAL ANSWER:
+ Answer — short summary
+- This looks like multiple related symptoms that are best treated as a coordinated multi‑system incident (not a single client fault). Some items point to tenant/identity or shared backend changes (D365 Financial Reports), and the telephony symptoms point to edge/SBC and site‑edge network changes (new hotline numbers / Basel ~30s drops). Teams banner suppression looks endpoint‑level (Focus Assist / Teams banner setting) but could be a GPO/tenant policy if widespread. Treat this as a 2nd‑level, cross‑team incident requiring Apps (D365), Identity, UC/SBC, Network and Endpoint teams to work together. [Data: Sources (0); Sources (8); Sources (16); Sources (19)].
+
+What the records say about each symptom (concise)
+- D365 Financial Reports: multiple users (UAT + PROD) see errors or infinite spinner; older report authors appear as “unknown”; reports “not found” in some attempts. This pattern in the records was associated with shared backend/metadata/auth issues (AOS/IIS/TLS, Data Mart/FRDB or identity/service account problems) rather than a single-client problem. Recommended evidence: AOS/app‑tier logs, IIS/Schannel events, FRDB/SQL errors and any recent tenant/identity changes. [Data: Sources (0); Reports (56); Reports (25)].
+
+- New hotline numbers dead: carrier says calls are delivered to your SIP trunk/SBC, but SBC logs showed INVITEs for the new range were locally answered with 404 until a temporary translation rule was applied; adding the correct translation/routing for the new range restored calls in the documented case. Ask SBC + carrier for SIP traces and translation‑table exports. [Data: Sources (8); Reports (74, 76)].
+
+- Basel ~30s external call drops: recorded pattern is call connects briefly then drops ~29–31s. Prior investigations in the dataset traced this to a Voice‑VLAN NAT/UDP session timeout (30s) and SBC session‑timer interaction (SBC BYE at ~29–31s). Remedy was to align NAT/session timeout to the Direct Routing blueprint and/or adjust SBC session timers. [Data: Sources (16); Reports (75)].
+
+- Teams desktop banners missing: documented example shows single laptop where Teams banner was disabled in the client and Windows Focus Assist was active; disabling Focus Assist and re‑enabling Teams banner fixed toasts. The ticket noted a Windows Update had run on that laptop during the prior week (but the dataset does not list KB IDs). If multiple laptops are affected, check GPO/Intune policy changes as well. [Data: Sources (19); Reports (46)].
+
+Why these may be related (and why they may not be)
+- Related: a tenant‑wide provisioning / identity or centrally applied configuration change (TLS/cipher policy, Conditional Access, AAD group/provisioning script) can simultaneously cause: report metadata/auth lookups to fail (authors show “unknown”), cross‑tenant app failures, and voice‑policy/provisioning mismatches. The Financial Reports incidents in the records were resolved after inspecting TLS/AOS/IIS and identity pieces, which is consistent with a centrally applied change affecting multiple environments. [Data: Reports (56); Reports (25)].
+
+- Separate/edge: telephony symptoms (new DIDs dead, Basel 30s drops) align strongly with SBC translation/routing and site edge NAT/firewall settings. In the recorded cases carriers confirmed delivery to the SBC but the SBC translation table omitted the new ranges (404s) and Basel drops were caused by a 30s NAT timeout on the voice VLAN — these are edge or SBC/network domain fixes, not D365 backend fixes. [Data: Sources (8); Reports (74); Sources (16); Reports (75)].
+
+Immediate triage actions (ordered)
+1. Open a coordinated incident bridge (2nd‑level) and assign owners: Apps/D365, Identity/AAD, UC/SBC (owner for SBC config), Network (firewall/NAT/VLAN), and Endpoint/Desktop teams. Collect timestamps and affected-user lists first. [Data: Reports (56); Reports (75)].
+
+2. For D365 Financial Reports (Apps team) — high priority:
+   - Collect: AOS trace logs for implicated nodes (e.g., the AOS hosts cited in the records), IIS logs/FREB, FRDB/SQL errorlog, LCS diagnostic output, and Azure AD sign‑in/audit logs covering the incident window. Capture user screenshots and exact client timestamps. [Data: Sources (0); Reports (56)].
+
+3. For hotline DIDs (UC/SBC team) — high priority:
+   - Ask carrier for SIP traces/CDRs for failed calls (Call‑ID, timestamps) and confirm trunk destination IP:port + transport.
+   - Ask SBC owner to export SIP traces for the same Call‑IDs, the current translation/normalization table (and the temp rule used in testing), and any config change audit. Correlate carrier Call‑ID ↔ SBC trace to prove delivery and whether SBC returned 404s. [Data: Sources (8); Reports (74, 76, 154)].
+
+4. For Basel ~30s drops (Network + UC):
+   - Collect SBC traces showing INVITE/200/ACK and BYE at ~30s; collect firewall/NAT logs for the Basel Voice VLAN and the NAT/UDP session timeout settings. Run controlled test calls and capture pcaps at SBC/trunk interface. Align NAT session timeout to recommendations (compare to 180s baseline) while testing. [Data: Sources (16); Reports (75)].
+
+5. For Teams banners (Endpoint/1st line):
+   - On affected laptops, check Windows Focus Assist, Teams client -> Notifications (Banner enabled), local Teams logs (Ctrl+Alt+Shift+1), and installed Windows update history (Get‑HotFix or Event logs). If only single devices are affected, apply runbook (enable Teams banner + disable Focus Assist) and confirm. If many devices show same change, escalate to Intune/GPO/Identity to check policy pushes. [Data: Sources (19); Reports (46)].
+
+Evidence to collect before further escalations
+- D365: AOS/IIS/FREB traces, SQL ERRORLOGs, FRDB metadata extract (author ids), Azure AD sign‑in logs for affected users. [Data: Reports (56)]  
+- SBC/UC: SBC SIP traces and pcap (carrier‑facing and Teams/internal), SBC translation-table export, SBC config change audit, carrier SIP traces/CDRs (with Call‑IDs). [Data: Sources (8); Reports (74, 76)]  
+- Network: BAS EL VLAN NAT profiles (UDP timeout), firewall rule audit entries and config diffs around when the voice VLAN was changed. [Data: Sources (16); Reports (75)]  
+- Endpoints: Teams logs, Windows Update history/KBs, gpresult/RSOP for GPO effects. [Data: Sources (19); Reports (46)]
+
+Classification recommendation (1st vs 2nd level)
+- Classify this as a 2nd‑level (specialist) multi‑team incident now. Rationale: multiple subsystems (application platform, identity, SBC/Direct Routing and site network) are implicated and the prior tickets for equivalent symptoms required 2nd‑level UC/SBC and Network ownership plus Apps/Identity escalation. Assign a single incident lead to coordinate triage and carrier engagement. [Data: Sources (8); Reports (56); Reports (75)].
+
+Short practical next‑steps to send to teams now (copy/paste)
+- Apps: "Collect AOS and IIS logs for Financial Reports (server names indicated in runbook), FRDB metadata export for recent reports, and Azure AD sign‑in logs for affected users covering the last 48h. Place artifacts in incident share." [Data: Sources (0); Reports (56)]  
+- UC/SBC: "Provide SBC SIP traces for sample failed calls (include Call‑ID and timestamps), export translation/normalization table and change audit, and produce pcap of trunk interface for a failing test call." [Data: Sources (8); Reports (74, 76)]  
+- Network (Basel): "Export firewall/NAT config for Basel voice VLAN (show UDP session timeout), and provide recent change ticket and syslog for NAT session events around the test calls." [Data: Sources (16); Reports (75)]  
+- Endpoint: "On affected laptops, run Get‑HotFix and gpresult /h, collect Teams logs (Ctrl+Alt+Shift+1) and confirm Focus Assist/Teams Banner states; attach outputs." [Data: Sources (19); Reports (46)]
+
+Offer to help
+- If you provide sanitized SBC SIP traces (one failing and one succeeding) and the SBC translation export, I will point to the exact log lines showing the lookup/404 and advise the minimal permanent change. If you upload AOS/IIS/FRDB excerpts I will highlight TLS/auth errors or SQL issues to help scope D365 remediation. [Data: Sources (8); Reports (56)]
+
+If useful, I can draft the exact artifact request emails (carrier, SBC owner, Apps/DB owners, Network), or a short incident bridge agenda and checklist to run through during the 2nd‑level call.
+
+References (examples from the incident corpus)
+- Carrier delivery to SBC + SBC answered INVITEs with 404 until temporary translation rule applied (new hotline case) [Data: Sources (8); Reports (74, 76)].  
+- Basel ~29–31s BYE correlated to a 30s NAT/UDP session timeout on the Voice VLAN; aligning timeout and SBC session timers fixed the symptom [Data: Sources (16); Reports (75)].  
+- Financial Reports failures across UAT and PROD tied to AOS/IIS/TLS and Data Mart / identity metadata issues in the management‑reporting runbook [Data: Sources (0); Reports (56); Reports (25)].  
+- Teams banner suppression resolved by disabling Focus Assist and enabling Teams banner on the client (single‑laptop example) [Data: Sources (19); Reports (46)].
+
+If you want, I will now: (A) draft the carrier + SBC trace request email, or (B) produce a one‑page incident checklist for the 2nd‑level bridge. Which do you prefer?

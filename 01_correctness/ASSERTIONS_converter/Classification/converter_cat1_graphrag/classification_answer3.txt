@@ -1,0 +1,38 @@
+Recommendation: second_level_support
+
+Short rationale
+- The ticket describes simultaneous, cross‑domain failures: a single SharePoint folder suddenly denying access (after a folder rename + sensitivity label), inconsistent access that depends on browser session/token state, an external auditor’s SFTP/WinSCP transfer failing, and Teams device (camera + mic) problems during the same window. In the indexed corpus, that pattern — identity/group/label changes producing downstream effects across SharePoint, provisioning, and other services — was repeatedly escalated to identity/system engineers rather than resolved by routine first‑line fixes. [Data: Sources (13); Sources (30); Sources (20)]
+
+What the records explicitly document (relevant precedents)
+- Cloud vs on‑prem group/object collisions (same display name, different ObjectIDs) can exclude cloud guests and cause SharePoint folder access to break; remediation required group consolidation and a full Azure AD Connect sync and was performed by identity/system engineers (example: COMPLIANCE_TEAM case). [Data: Sources (13)]
+- Sensitivity‑label vs ACL mismatches (label referencing a different group than the folder ACL) caused exactly the inconsistent “some users can open it, others denied / Incognito works” symptoms; prior remediation included re‑aligning label → group, reapplying the label and invalidating tokens — actions handled by identity/Compliance and engineering teams. [Data: Sources (30)]
+- Project‑folder nesting errors (SP_Project_IT / SP_Project_IT_v1) required correcting group nesting and were not simple single‑step helpdesk fixes in the records. [Data: Sources (20)]
+- Provisioning automation / script changes have caused downstream, non‑local symptoms (e.g., voice routing misassignment); when provisioning or sync logic is implicated investigators escalated to the Identity/provisioning owners and engineers. That shows cross‑system automation defects historically require second‑level involvement. [Data: Sources (9)]
+- Token caching / Conditional Access timing produced intermittent access until tokens were refreshed; sign‑in logs and token claims were used by engineers to prove and fix these behaviours. [Data: Sources (38)]
+
+Why this maps to second_level_support
+- The incident spans the identity/control plane (labels, group/object identity, token claims) and endpoint/media plane (Teams camera/mic). Prior tickets with the same multi‑vector signature required identity engineering (Azure AD / Entra ID / AD Connect / Purview) plus cross‑team coordination (M365/Compliance, network/transport, Unified Communications). These are beyond standard runbook desktop fixes and were handled by system engineers in the indexed cases. [Data: Sources (13); Sources (30); Sources (9)]
+
+What the indexed records do NOT show
+- The records do not (and cannot from here) prove causality for this specific, live ticket (i.e., I cannot confirm whether a single org change or a sync ran “last night” in your tenant). The citations above are precedent cases showing what was required when similar symptoms occurred, not a direct forensic readout of your environment. [Data: Sources (13); Sources (30)]
+
+Recommended next steps (these are recommendations — not claims from the records)
+- Collect and attach the following artifacts into the escalation (Identity / M365 / System Engineers and Security):  
+  1) SharePoint folder permission view and the applied Sensitivity Label configuration for the affected folder (show which group/object each references).  
+  2) Azure AD group object exports (displayName + objectId + onPremises source) for the groups referenced by the folder/label.  
+  3) Azure AD sign‑in log entries for a few affected users, including token claim snippets and CA evaluation results (timestamps).  
+  4) A sample WinSCP/SFTP transfer attempt trace from the auditor (timestamps + server‑side logs) showing the failure.  
+  5) Teams diagnostics from affected clients (desktop logs, Test Call results, and the affected user’s Teams client logs) and a note that Device Manager shows the camera present.  
+  (These collection steps mirror the diagnostic artifacts engineers used in the cited incidents but are recommended actions for your live triage.) [Data: Sources (13); Sources (30); Sources (38)]
+
+Concise recommended routing
+- Escalate to BU Infrastructure – Identity (Entra/Azure AD / Azure AD Connect owners) and M365/Compliance engineering immediately, and open a cross‑functional bridge with Network/Print/UC/Deskside as needed — this is the escalation pattern shown in prior, similar cases. [Data: Sources (13); Sources (30)]
+
+Key supporting records referenced
+- COMPLIANCE_TEAM / Azure AD Connect collision → consolidation + full sync (engineer‑led) [Data: Sources (13)].  
+- Sensitivity‑label vs ACL investigations; label reapply + token invalidation performed by identity/M365 engineers (incidents with intermittent access / Incognito symptom) [Data: Sources (30)].  
+- SP_Project_IT nesting outage / group‑nesting correction (project folder access) [Data: Sources (20)].  
+- Provisioning/script causing cross‑service misassignment (voice policy) and engineer remediation (shows automation can propagate changes across services) [Data: Sources (9)].  
+- Token caching / Conditional Access timing used to explain intermittent access (engineers used sign‑in logs) [Data: Sources (38)].
+
+If you want, I can now draft the single‑paragraph escalation note (paste‑ready) with the minimum artifacts and ticket links to hand to Identity/Core Engineering — that would be a recommended next action (not a record extract).

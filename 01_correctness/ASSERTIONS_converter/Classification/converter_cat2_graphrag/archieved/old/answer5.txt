@@ -1,0 +1,74 @@
+FINAL ANSWER:
+ ## Executive summary — what’s most likely happening right now
+Based on the incident patterns in the reports you provided, this set of symptoms (non interactive/background sign ins failing while browser/interactive logins continue to work; intermittent SharePoint access for external guests; desktop mail clients stuck in Outbox while OWA works; device portal / certificate bridge unhealthy) strongly fits a tenant wide identity / token issuance and policy problem rather than isolated client or network issues. In prior cases this exact symptom cluster was caused by identity/federation changes (AD FS / client registration flags that changed token format or delegated MFA), Conditional Access / device compliance evaluation changes, and/or certificate/federation metadata actions that affected non browser and daemon flows [Data: Reports (2); Sources (11,12); Reports (31); Sources (38)].
+
+Short answer: escalate as a 2nd level (Identity / Authentication / Platform) incident now. The identity owners (AD FS / Entra ID / Azure AD Connect), Network/WAF (if AD FS is fronted by a WAF), and device management/Intune owners must be engaged in parallel. This classification has been used for the same symptom set in the supplied incidents [Data: Reports (2); Sources (10)].
+
+---
+
+## Why I say this (key evidence from the corpus)
+- A prior TRAIN CE outage was caused by an AD FS client registration having EnableJWT and RequestMFAFromClaimsProviders enabled; that change made AD FS emit JWTs and delegate MFA, which broke non browser/background integrations while browsers still worked [Data: Reports (2); Sources (11,12)].  
+- Intermittent SharePoint access that clears after re auth or after re adding a user has been traced to token claim mismatches (tokens missing the required claim used by the sensitivity label) and to Azure AD Connect group/object collisions (cloud vs on prem group with the same name) — both cause temporary allow/deny behaviour until tokens refresh or sync is corrected [Data: Sources (30); Reports (31); Sources (13)].  
+- Desktop mail stuck in Outbox while OWA can send is a classic symptom when tenant Security Defaults / Conditional Access or SMTP AUTH controls block non interactive/legacy SMTP flows; a documented case was resolved by applying a targeted CA/SMTP AUTH exception for affected users [Data: Sources (32); Reports (6)].  
+- Device portal “certificate bridge” unhealthy has recurred in incidents where NDES/Intune connector, network/proxy or certificate lifecycle (connector certs / AD CS) issues prevented SCEP/cert issuance — connector reinstall and firewall/proxy adjustments were used previously to restore health [Data: Sources (35); Reports (1); Reports (4)].
+
+(Each of the bullets above is supported by the cited incident records. See the referenced report/ticket entries for full timelines and remediation steps.)
+
+---
+
+## Immediate actions — who to involve and what to do first (0–60 minutes)
+Priority: open a single, high urgency 2nd level incident and immediately notify Identity/Authentication (AD FS/Entra), Platform/Network (WAF/proxy), Exchange/SMTP owner, and Intune/device management owners.
+
+1. Escalate to Identity/AD FS + Entra (required). Ask them to:
+   - Confirm whether any AD FS client registration(s) were changed in PROD (particularly EnableJWT or RequestMFAFromClaimsProviders) and whether any federation metadata or token signing/service certificates were rotated in the last 24 hours [Data: Reports (2); Sources (11,12)].  
+   - Immediately snapshot and (if safe) revert any AD FS client registration flags that differ from TEST for the affected client(s), or align PROD to TEST while you investigate [Data: Reports (2)].  
+2. Ask Entra/Identity to check Conditional Access / Security Defaults:
+   - Look for CA policy changes or Security Defaults toggles in the last 24 hours (notably policies that require “compliant device” or that block legacy auth) and identify policies that target the impacted apps/users. If a CA change is found and is likely causing the block, prepare a tightly scoped emergency exception while you troubleshoot [Data: Sources (38); Sources (32)].  
+3. Ask Network/WAF owners to confirm whether any perimeter WAF / TLS inspection template reload or proxy changes happened over the weekend or this morning (these have caused header rewrite and inspection issues before) [Data: Sources (15)].  
+4. Device/intune owners: validate NDES/Intune connector and certificate/AD CS connectivity and firewall rules; check connector health and recent reinstall/Proxy changes if the certificate bridge shows “unhealthy” [Data: Sources (35); Reports (1)].
+
+---
+
+## Diagnostics to collect immediately (what to gather and why)
+Collect one representative failure for each symptom (DevOps background login, SharePoint guest failure, SMTP send from desktop) and attach correlation IDs:
+
+- AD FS: AD FS Admin and Tracing logs (Applications and Services Logs → AD FS → Admin/Traces) around the failure timestamps; include EventID, Message, and any correlation/request GUIDs [Data: Reports (28); Sources (11,10)].  
+- Azure/Entra: export the Sign in logs for the affected users/apps (last 1–2 hours), capturing createdDateTime, correlationId, clientAppUsed, result/error code, conditionalAccessStatus, deviceDetail and token claims (if available) [Data: Reports (31); Sources (38)].  
+- Token exchange: capture one failing token endpoint HTTP transaction (sanitise secrets). Include timestamp, POST body (client_id=CLIENT_REDACTED, grant_type), response status, WWW Authenticate header and response JSON/error_description — this will show whether the error is invalid_grant / interaction_required / invalid_client / invalid_token, etc. (If you paste a sanitized example I can parse it) [Data: Reports (28); Reports (2)].  
+- AD FS client registration snapshot: export the ADFS client / relying party registration flags (EnableJWT, RequestMFAFromClaimsProviders, token types) for the impacted client(s) to compare PROD vs TEST [Data: Reports (2); Sources (11)].  
+- Azure AD Connect: export the Connect sync run history and any group object changes if SharePoint guest access is implicated (to see if a cloud group was overwritten by a synced on prem group) [Data: Sources (13); Reports (8)].  
+- Exchange/SMTP: collect Message Trace for stuck messages and the client’s SMTP log/os error (desktop Outlook) showing the server response code; check whether SMTP AUTH is blocked by policy [Data: Sources (32); Reports (6)].  
+- NDES / Intune connector: connector health, connector logs, and firewall/proxy logs for the connector host for the certificate bridge failures [Data: Sources (35); Reports (1)].
+
+Suggested quick commands to run (examples from runbooks in the dataset):
+- curl -I https://<adfs-host>/FederationMetadata/2007-06/FederationMetadata.xml  (check Last Modified/ETag) [Data: Reports (116); Sources (12)].  
+- On AD FS server: Get AdfsCertificate -CertificateType Token Signing / Service Communications to list thumbprint and NotAfter [Data: Reports (116); Sources (10)].  
+- On AD FS server: Get WinEvent -LogName "AD FS/Admin" -StartTime (Get-Date).AddHours(-4) | Export Csv C:\temp\adfs_admin_recent.csv  [Data: Reports (28); Sources (11,10)].
+
+(If you want, I can provide a one click set of PowerShell/Kusto/Graph queries to run and a collection template to paste into the incident ticket.)
+
+---
+
+## Short mitigations you can apply now (while you collect evidence)
+- For business continuity, instruct affected teams to use browser access where possible — browser/interactive flows are likely still working and this is an acceptable temporary workaround [Data: Reports (2)].  
+- If you confirm a tenant CA or Security Defaults change blocked SMTP AUTH for desktop clients, apply a narrowly scoped, timeboxed CA exception to restore critical SMTP send for the Sales group while you remediate permanently [Data: Sources (32); Reports (6)].  
+- If an AD FS client registration change (EnableJWT / RequestMFAFromClaimsProviders) is found in PROD and you have a safe rollback procedure, revert those flags to the previously working values or align to TEST. Do this in a controlled window with testing because changing ADFS client registrations impacts multiple flows [Data: Reports (2); Sources (11,12)].  
+- For SharePoint guest outages caused by group sync collisions: if urgent, add the external guest directly to the SharePoint permission as a short term fix, then reconcile group objects and run a full Azure AD Connect sync [Data: Sources (13)].  
+- For NDES/connector “unhealthy” state: check connector health page, temporarily reapply firewall rules that previously allowed connector traffic, or re install the connector without proxy as was successful in prior remediation (but co ordinate with device team) [Data: Sources (35); Reports (1)].
+
+---
+
+## Classification and escalation (final recommendation)
+This should be treated as a 2nd level / Identity & Platform incident (Identity / AD FS / Entra / AAD Connect + Network/WAF + Exchange + Intune). The pattern of multiple background/non browser flows failing while interactive browser flows remain functional has been triaged as an identity/token issuance or federation issue in the provided incident history and required Identity/Architecture involvement to remediate [Data: Reports (2); Sources (10,11)]. Open a high priority incident, include the logs/artifacts listed above, and ask Identity to own the immediate remediation steps and rollback where appropriate.
+
+---
+
+## If you want, next steps I can do for you
+- Provide the exact Microsoft Graph / Kusto / PowerShell queries to extract the Sign in logs, ADFS events and Audit logs for the relevant time window (tell me whether you prefer Portal steps or scripted extraction).  
+- Review sanitized failed token exchange(s) or one exported AD FS Admin event (paste the correlation id + event text) and map the error to the specific AD FS/Entra cause and recommended fix.
+
+One concrete artifact that will speed diagnosis: paste a single sanitized failing token exchange (timestamp, token endpoint URL host, grant_type, client_id redacted, HTTP status, response headers incl. WWW Authenticate, response body error_description). I will parse it and map it to the exact remediation steps.
+
+---
+
+If you want me to produce the specific extraction queries now, tell me which you prefer (Azure Portal export, Microsoft Graph API, Log Analytics KQL, or PowerShell to run on your AD FS hosts) and I’ll produce them next.

@@ -1,0 +1,53 @@
+Summary (what the records show)
+- The Zurich “silent on external Teams calls” scenario in prior incidents was caused by a firewall rule that restricted outbound media (RTP) ports while the location used Media Bypass. Allowing the full media port range per the Direct Routing architecture immediately restored two‑way audio; the fix was implemented by the Unified Communications / Network team and the ticket was handled at System Engineer level and above [Data: Sources (5, 23)].
+- Basel printing incidents in the record set were resolved by three different root‑cause actions depending on the symptom: (a) missing network routing/allowance between print server and printer VLAN — adjusted by the Network team so the print server could reach the printers [Data: Sources (22)]; (b) an explicit “Deny” ACE on a printer queue for one user — removed on the print server so the user could print again [Data: Sources (3)]; and (c) a paused printer queue — reactivated and jobs restarted to clear blocked jobs [Data: Sources (27)].
+
+Interpretation / ticket classification (based on the records)
+- The Teams external-silence issue required Unified Communications and Network team involvement and was worked by System Engineers (2nd‑level) in the documented case [Data: Sources (5, 23)].
+- The Basel printing problems in the records were resolved by print‑server and network changes (print server/queue permissions, network routing/firewall rules) — these actions were performed by System Engineers / Network teams (2nd‑level). Individual simple fixes (e.g., unpausing a queue or removing an explicit Deny) were done by Service/Run teams but still on server side [Data: Sources (22, 3, 27)].
+- Conclusion: per the documented precedent, treat both problems as 2nd‑level (escalate to Unified Communications + Network for Teams; Print/Server + Network for printing) rather than pure 1st‑level end‑user support [Data: Sources (5, 23, 22, 3, 27)].
+
+Step‑by‑step resolution plan (items explicitly supported by the records)
+A. Zurich — “external Teams calls: other party can hear us but we hear nothing”
+1. Confirm scope (who/where/only external?) — do the same quick checks used in the prior incident: verify it is only external PSTN calls, which locations/users are affected, and whether internal Teams calls work [Data: Sources (5, 23)].
+2. Reproduce and basic client checks (first‑line steps that were performed in the record): perform an internal Teams call (should work), perform an external PSTN test call, clear Teams cache / reinstall client and verify drivers (these were attempted and did not resolve the historic case) [Data: Sources (5, 23)].
+3. Capture signaling and media diagnostics: check Teams Admin Center / SBC logs to confirm SIP signaling and whether RTP is bidirectional. In the documented case SIP/SDP were OK but RTP from clients was not consistently visible to the SBC [Data: Sources (5, 23)].
+4. Check firewall rules for media ports and Media Bypass behavior: compare the Zurich firewall rules to the Direct Routing / media flow specification. The historic failure was that the firewall allowed only STUN/TURN (UDP 3478–3481) but not the dynamic RTP port range, while the location used Media Bypass (so client→SBC RTP must be allowed) [Data: Sources (23)].
+5. Test by temporarily opening the wider UDP port range for media (temporary test): in the record a temporary opening of the wider UDP RTP port range restored audio immediately — use this as a diagnostic step to prove the firewall is the cause [Data: Sources (5, 23)].
+6. Implement permanent firewall change per the Direct Routing architecture (apply documented media port ranges and location‑specific rules). After implementation the team monitored and confirmed stable two‑way audio and closed the ticket [Data: Sources (5, 23)].
+
+B. Basel — multiple printing symptoms (printer unreachable / no printers visible for one user / access denied / jobs stuck)
+1. Triage by symptom and follow the prior incident actions:
+   - If print jobs appear in the queue but nothing prints: check the print server queue state (Paused?), check Print Spooler service, and try printing directly from the print server to the printer. In a recorded case the queue was paused and reactivating it plus restarting jobs fixed the issue [Data: Sources (27)].
+   - If printers are not reachable from the print server (print jobs appear then disappear, server cannot ping the printer): verify network reachability between the print server and the printer. In the Basel case a new device VLAN had been created and the print server lacked routing/allowance to the printer VLAN; adjusting the network rule restored function [Data: Sources (22)].
+   - If a single user gets “Access denied” while colleagues can print: check the printer queue permissions on the print server for explicit Deny entries and AD group membership. In the recorded single‑user case the user had an explicit Deny ACE on the queue which was removed and printing was restored [Data: Sources (3)].
+2. Apply the fixes that matched the documented root causes:
+   - For network segmentation: coordinate with Network team to open routing/firewall rules between print server and printer VLAN per the “Print & Scanning Infrastructure Standard” (this was the resolution in the record) [Data: Sources (22)].
+   - For per‑user permission errors: on the print server remove the explicit Deny and ensure permissions are assigned via the AD group according to the Print & Scanning standard [Data: Sources (3)].
+   - For paused queues: reactivate the queue and restart jobs [Data: Sources (27)].
+3. After changes, run test prints from server and multiple user workstations and monitor for successful completion; in the records these tests validated the fixes before ticket closure [Data: Sources (22, 3, 27)].
+
+Actions to assign / teams to involve (as in the records)
+- Teams silence (Zurich): escalate to Unified Communications (Direct Routing / SBC team) and Network team / firewall admins — these were the teams involved and effected the fix in the documented case [Data: Sources (5, 23)].
+- Printing (Basel): involve Print/Server team (to inspect queues and permissions) and Network team (if printers are unreachable due to VLAN/routing) — both roles were required across the documented Basel tickets [Data: Sources (22, 3, 27)].
+
+Items not fully covered by the indexed records (I cannot prove these from the records; these are recommendations)
+- The record set does not explicitly document a step‑by‑step procedure for the exact symptom “a new colleague has no printers showing up at all while others in same room can print.” The closest relevant records show (a) network reachability issues between print server and printer VLAN and (b) per‑user permission deny cases [Data: Sources (22, 3)]. These do not fully cover all causes of “no printers mapped on one client” (GPO/printer deployment issues, client‑side driver mapping, or AD‑group membership errors may also be involved).
+- Recommended next checks (recommended, not directly documented in the indexed incidents):
+  - Confirm AD group membership and that whatever printer deployment mechanism you use (GPO / print management / SCCM) targeted that new colleague.
+  - On the client: verify printer list after logging off/on, and test mapping the network printer manually (if permitted).
+  - If the client sees no printers at all but others can: capture client event logs for print/subsystem errors and check Group Policy application status (gpresult) to confirm printer policies were applied.
+  - These are recommendations only because the records do not document this exact “no printers visible for new colleague” scenario and its troubleshooting steps.
+
+Suggested immediate next steps you can perform now (mix of documented steps and recommended checks; I label which are supported by records)
+- For Zurich Teams audio (documented): Escalate to Unified Communications and Network, reproduce an external call while collecting SBC/Teams Admin logs, and have Network temporarily open the wider UDP RTP port range to prove/resolve the issue; then implement the architectural firewall change per Direct Routing (allow dynamic RTP range for Media Bypass) and monitor [supported by records: Sources (5, 23)].
+- For Basel printing (documented): 
+  - Check print server queue status (Paused?) and spooler service, and unpause / restart jobs if needed [supported by records: (27)].
+  - If jobs disappear or printer unreachable, have Network verify routing/firewall between print server and printer VLAN; apply allowance per Print & Scanning Infrastructure Standard [supported by records: (22)].
+  - If an individual gets Access Denied, inspect printer queue ACEs on the print server and remove explicit Deny entries and validate AD group membership per the Print & Scanning standard [supported by records: (3)].
+- For the new colleague with no printers visible (recommended — not explicitly in the records): check printer deployment (GPO/SCCM), AD group membership, and client GP application status and drivers. If those checks are inconclusive, escalate to Print/Server team for targeted investigation (this escalation path is consistent with who handled similar printing incidents in the records) [related records: (22, 3) but these specific steps are recommendations].
+
+If you want, I can:
+- Prepare an exact escalation packet to Unified Communications + Network (for Zurich) and to Print/Server + Network (for Basel) containing the reproductions, times, and sample logs to accelerate their work (this would be a recommended action; the records show escalation to those teams worked previously) [Data: Sources (5, 23, 22, 3, 27)].
+
+If any of the above steps should be executed now by your helpdesk, tell me which one(s) and I will draft the exact information to hand to the respective 2nd‑level teams.

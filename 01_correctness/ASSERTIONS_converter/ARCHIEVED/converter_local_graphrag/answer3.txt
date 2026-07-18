@@ -1,0 +1,59 @@
+FINAL ANSWER:
+ Short answer — start as 1st‑level (helpdesk) triage, escalate to 2nd‑level only if one of the escalation triggers below is met.
+
+Rationale
+- When Device Manager shows the camera but Teams (desktop) and Teams in the browser cannot use it, the pattern most commonly points to an OS‑level permission/configuration issue (Windows privacy settings or app permissions) or a driver/service regression triggered by an update. In the documented case the camera was visible in Device Manager but app access was blocked by Windows privacy settings and the helpdesk restored camera access by enabling the OS/app permissions; that ticket was handled and closed at first line [Data: Sources (42); Reports (5)].
+- The user‑reported recent Windows Update makes an update/drivers hypothesis plausible, but the specific camera ticket does not record a KB ID; checking the device’s update history is part of triage rather than proof of causation [Data: Sources (42); Sources (19)].
+
+1st‑level (what to try and collect before escalating)
+Do these checks and capture the artifacts below — these are routine helpdesk actions and in the referenced incident they restored camera access without escalation [Data: Sources (42)]:
+
+Quick tests (try in this order)
+1. Open Windows Camera app — does it show a live image? (If yes, hardware/driver are likely OK; focus on Teams/browser permissions.)  
+2. Settings → Privacy & security → Camera — ensure “Camera access for this device”, “Let apps access your camera” and “Let desktop apps access your camera” are ON and Teams/browser are allowed. After changing, restart Teams and re‑test. (This exact fix resolved the documented ticket) [Data: Sources (42)].  
+3. Test Teams in an Incognito/private browser window (to exclude cached tokens/extensions) and check browser site camera permissions.  
+4. In Teams desktop: sign out, clear cache (or Repair app), restart, and test again.  
+5. Device Manager: try Disable → Enable the camera; inspect Properties → Driver for Provider / Driver Version / Driver Date. Capture those values if present. If Device Manager shows a warning or error code, collect it (that pushes toward escalation).  
+6. Temporarily close virtual‑camera apps and check AV/endpoint webcam‑protection settings (do not leave AV disabled longer than necessary). If disabling webcam protection restores access, capture AV logs/settings.
+
+Useful commands / quick collections to paste into the ticket
+- Get driver metadata (PowerShell):  
+  Get-CimInstance Win32_PnPSignedDriver | Where-Object { $_.DeviceName -match "(?i)camera" } | Select DeviceName, Manufacturer, DriverVersion, DriverDate  
+- Get most recent installed update (PowerShell): Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 3  
+- Collect Teams logs (user): press Ctrl+Alt+Shift+1 while reproducing the issue (creates a logs ZIP in Downloads).  
+(These collection steps are part of the recommended evidence set used in the runbook) [Data: Sources (42); Sources (19)].
+
+Escalation (when to treat as 2nd‑level)
+Escalate to 2nd/endpoint engineering when any of the following apply — these are the documented escalation triggers in the runbooks and incidents:
+- The Windows privacy setting is greyed out, reverts after change, or gpresult/rsop shows a policy disabling camera access (i.e., GPO/Intune enforcement).  
+- Device Manager reports driver errors (Code 10, driver failing to start) or driver reinstall/rollback is required and needs admin/vendor driver packages.  
+- Evidence the recent Windows update or a pushed driver caused a regression and requires rollback or vendor escalation.  
+- Multiple users or many devices in the same OU/MDM group show identical symptoms (suggests a deployment/policy issue).  
+- Event Viewer shows CameraFrameServer/driver/kernel errors that need deeper debugging.  
+When escalating, include the artifacts below — they speed the 2nd‑level investigation [Data: Reports (5); Reports (131)].
+
+Artifacts to attach to the escalation ticket
+- Device Manager screenshot plus a screenshot of the Driver tab (Provider, Version, Date).  
+- Windows Settings → Privacy → Camera screenshot showing the toggles and allowed apps.  
+- Teams desktop Devices pane screenshot (showing “no camera” or missing options).  
+- Teams logs.zip (Ctrl+Alt+Shift+1) and the exact reproduction timestamps (timezone).  
+- Event Viewer exports (.evtx) for System and the CameraFrameServer/DeviceSetupManager logs covering the reproduce window.  
+- Output of Get-HotFix (or a screenshot of Settings → Update history) showing recent KBs.  
+- Short note whether the device is Intune/SCCM enrolled or domain‑joined (dsregcmd /status, presence of Company Portal, or SMS/CcmExec).  
+(These are the items the documented runbook & tickets recommend collecting) [Data: Sources (42); Reports (5)].
+
+Notes & practical advice
+- Start as 1st‑level: the referenced incident was resolved by enabling OS camera/app permissions at helpdesk level, which is a standard first‑line activity and should be attempted first [Data: Sources (42)].  
+- Do not assume the Windows Update is the cause until you can correlate an installed KB/driver date with the symptom — the camera ticket did not include a KB, so collection of Get-HotFix / Update History is important before deciding rollback [Data: Sources (42); Sources (19)].  
+- If AV/webcam‑shield or virtual camera apps are present, include their logs/settings in your triage; the camera ticket did not show AV as the cause, but AV/virtual cams are common interveners and should be checked before escalation [Data: Sources (42)].
+
+If you want, I’ll produce:
+- A one‑page, copy‑pasteable 1st‑level checklist you can give the technician, and  
+- A short escalation template (exact filenames, commands and a list of artifacts to attach) you can paste into your 2nd‑level handover.
+
+References (examples from the incident corpus)
+- The specific camera case was resolved by enabling Windows app camera permissions and handled at helpdesk (Employee 33) [Data: Sources (42)].  
+- The runbook/triage guidance and escalation triggers described above match the Teams Client Devices & Permissions blueprint and related incident summaries [Data: Reports (5); Reports (131)].  
+- Where a Windows Update was mentioned separately in the corpus, staff were advised to collect the KB via Get‑HotFix or Update History to correlate with endpoint failures [Data: Sources (19); Sources (42)].
+
+If you want the 1st‑level checklist and escalation template now, say which ticketing fields your team uses (owner, severity, attachments) and I’ll format them for copy/paste.

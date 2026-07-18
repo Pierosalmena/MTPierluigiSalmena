@@ -1,0 +1,28 @@
+FINAL ANSWER:
+ Short summary
+- Your symptom (you can hear others, others can’t hear you; Teams shows the USB headset selected but the mic/input bar never moves and Test Call records nothing) most commonly indicates a local hardware or OS-level capture problem — often fixed by first-line (helpdesk) actions. In one documented case the headset was visible to Teams and Windows but the mic cable inside the headset was not fully inserted; reseating that cable immediately restored the Windows input meter and the Teams Test Call succeeded [Data: Sources (37); Reports (44)].
+
+Immediate steps to run now (do these in order)
+1. Check the Windows input meter first: Settings → System → Sound → Input (or Control Panel → Sound → Recording). Speak and watch whether any input bar moves.  
+2. If the Windows meter is flat: fully unplug the headset, reseat any detachable mic/boom connector on the headset (if present), and plug the headset directly into a PC USB port (bypass hubs/docks). Try a different physical USB port (rear/host port preferred). Reseating the mic cable fixed the cited case [Data: Sources (37); Reports (44)].  
+3. If still flat, test the same headset on another PC (and/or try a known-good headset on this PC) to isolate headset vs. PC. The results of these swaps determine next steps.  
+4. If the Windows meter moves but Teams still records nothing: verify Windows Microphone privacy (Settings → Privacy & security → Microphone) and ensure Teams is allowed to use the mic, then restart Teams and re-run a Test Call. OS privacy settings have caused similar device-access issues in our records [Data: Sources (42)].  
+5. If you reach driver/port ambiguity: check Device Manager → Audio inputs and outputs / Sound controllers for errors and note any warning icons (capture screenshots for escalation).
+
+Is this a 1st‑level or 2nd‑level ticket?
+- Start as a 1st‑level (helpdesk) ticket. The typical L1 runbook is hardware-first: reseat mic connector, port swap, test on another PC, check Windows input meter, verify privacy permissions, run Teams Test Call — many cases (including the one referenced) were resolved by first-line via a hardware reseat and Test Call validation [Data: Sources (37); Reports (44)].  
+- Escalate to 2nd‑level (UC/network or endpoint engineering) if ANY of the following apply: the Windows input meter remains flat after trying multiple ports and another known-good headset; Device Manager shows driver errors you can’t resolve; multiple users at the same site have identical symptoms (site/network/media path issue); or the OS shows input but Teams still won’t transmit after permissions and client checks. Site‑wide or Direct‑Routing/SBC/firewall media issues required 2nd‑level/UC and network work in other incidents [Data: Sources (23); Sources (5); Sources (16)].
+
+What to send/helpdesk evidence to speed resolution
+- Short answers to: Windows input meter moved? (Yes/No). Have you tried another USB port, the PC’s direct port vs dock, and another PC/headset?  
+- Attach screenshots: Teams → Settings → Devices (showing mic selection and input bar) and Windows Sound → Input (showing device and meter). If you escalate, also include Device Manager screenshot(s) for “Audio inputs and outputs” and any warning icons. In similar tickets those screenshots + a Test Call result sped escalation or closure [Data: Sources (37)].  
+
+If you want, I will
+- Provide a one‑page L1 checklist you can paste to your helpdesk or the user, and/or draft the exact escalation text (including which screenshots/logs to attach) if you confirm the results of the steps above.
+
+References (examples from prior incidents)
+- Single‑user USB headset mic was selected in Teams and Windows but showed no input until the headset mic cable was reseated; reseat fixed Test Call immediately [Data: Sources (37); Reports (44)].  
+- OS app privacy blocking devices has caused camera/mic access problems that were fixed by enabling microphone access for apps/Teams [Data: Sources (42)].  
+- Multi-user / site‑wide one‑way audio or session drop issues were escalated to UC/network teams (firewall/SBC/NAT/session timers) in other incidents [Data: Sources (23); Sources (5); Sources (16)].
+
+Tell me the Windows input‑meter result (yes/no), whether you’re plugged via dock/hub or directly, and whether you’ve tried another PC or headset — I’ll tell you the exact next action and, if needed, produce the escalation text.

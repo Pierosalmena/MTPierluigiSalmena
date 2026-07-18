@@ -1,0 +1,1694 @@
+dataset,question,answer,context,is_recommendation,is_rec_reason,groundedness,groundedness_reason
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,Print server network share issue after Windows update + VM restore; disabled/re-enabled network share for queues and printed pending documents — TI-931293 (KF13),"=== CITED SOURCES ===
+SOURCE 28:
+﻿
+Ticket summary:
+Ticket name: KF13: PRIO HIGH - Printing from SAP not possible
+Ticket number: TI-931293
+Company: Customer Company 13
+Contact person: Contact Person 11
+Owner: Employee 17
+Origin: Phone
+Type: Support Request
+Created on: 18.07.24 17:16
+
+Closure
+Closure date: 19.07.24 16:48
+Closure text: After a Windows update and the subsequent VM restore, the printer network share caused issues. These were corrected and operations were restored.
+
+Activities
+Emails:
+19.07.24 09:01 | Ticket: KF13: PRIO HIGH - Printing from SAP not possible set to status ""In Progress"" #027064349 | NO-REPLY | BU_CustomerServices_RUN@ConsultingSampleCompany.ch
+Hello BU Customer Services Run,
+The ticket KF13: PRIO HIGH - Printing from SAP not possible, number TI-931293, has been set to status ""In Progress"".
+Link: KF13: PRIO HIGH - Printing from SAP not possible
+
+19.07.24 12:52 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+I would like to briefly check whether the issue with printing from SAP has been resolved in the meantime.
+Kind regards
+Employee 18
+
+19.07.24 13:01 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Contact Person 12 | Employee 18
+Hi everyone,
+Unfortunately, it is still not working.
+Kind regards
+Contact Person 12
+Head of Customer Services, Customer Company 13 AG
+Phone: +41 00 000 00 00
+
+19.07.24 13:24 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+Thank you for your feedback. I will inform the responsible department that the issue still persists.
+I will keep you updated on further progress.
+Kind regards
+Employee 18
+
+19.07.24 16:38 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17 | Contact Person 11
+Dear all,
+I would like to inform you that we have identified the root cause and resolved the incident. Printing via both print servers through SAP is now functioning properly again. Mr. Contact Person 12 has confirmed that SAP print jobs are being executed correctly.
+After the Windows update and the restore of the two VMs, all printers had issues with the network share on print server VRINFRGERPRNT03. After disabling and re-enabling the network share for all printer queues, all pending documents on the affected printers were successfully printed.
+No further actions are currently required, and we will now close the ticket.
+Should you require further assistance or have any questions, please do not hesitate to contact us.
+Kind regards and have a nice weekend,
+Employee 17
+Senior System Engineer Core Engineering
+Consulting Sample Company AG
+
+19.07.24 16:44 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17
+FYI
+
+19.07.24 16:55 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello everyone,
+THANK YOU VERY MUCH!!! TOP SERVICE!!!
+We are very satisfied 😊
+Wishing you both a very nice weekend as well!
+Best regards
+Tom
+Head of IT Switzerland Informatics, Customer Company 13
+
+19.07.24 17:16 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello Giusi,
+You were not included in the distribution list, I only just noticed that.
+Best regards
+Tom
+
+22.07.24 07:56 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 19
+Hello @Employee 17 and @Employee 20,
+Thank you very much for your great support last Friday on this ticket. This was highly appreciated by KF13, including Contact Person 11, and they were truly grateful for your efforts.
+Especially for Giusi and Employee 20, here again Tom’s praise.
+Kind regards
+Employee 19
+Service Manager
+
+22.07.24 09:19 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 26
+Nice one 😊 That’s a great way to start the week.
+Employee 26
+Head of Core Engineering
+
+Notes:
+18.07.24 17:17 | Admin, CRM | WEB
+Ticket opened on 18.07.24 17:16 by Employee 23.
+18.07.24 17:22 | ApplicationUser, CRM Development | WEB
+Classified as PRIO HIGH because no orders could be printed from SAP, preventing deliveries.
+18.07.24 17:24 | Employee 23 | WEB
+Printing from SAP via VRINFRGERPRNT03 and VRINFRGERPRNT04 not possible. Normal printing works via other print servers with follow-me solution. Contact Person 11 requests rollback of the Windows version on the print servers.
+18.",no,"This is a factual report of an incident and actions taken (disabled/re-enabled network share, printed pending documents) and does not propose or recommend any future action.",supported,"The ticket closure states that after a Windows update and VM restore the printers had network share issues on VRINFRGERPRNT03, and that disabling and re-enabling the network share for all printer queues caused all pending documents to be printed (TI-931293, KF13)."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,Rationale: this mirrors the diagnostic steps used in the documented printer incident where a remote user session confirmed incorrect default printer and comparison to a correctly-configured user was performed,"=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",no,Describes past diagnostic steps and findings from a documented incident rather than proposing or recommending any action.,supported,"The ticket's initial analysis documents a remote connection with an affected user confirming the default printer was MFP‑Zuerich‑01 and explicitly notes a comparison with a user from another department showing the correct location printer, matching the ANSWER's claims."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,re-run the remediation used in prior incidents (group fix + gpupdate; or re-enable network shares if VM restore / Windows update affected shares),"=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement uses directive verbs and explicitly proposes actions ('re-run', 're-enable') as remediation steps, so it is a recommendation.",partially_supported,"Supported: the prior ticket documents removing incorrect AD group membership and running gpupdate /force to fix the default-printer issue. Not supported: the CONTEXT contains no information about network shares, VM restores, or Windows updates affecting shares, so re-enabling shares is ungrounded."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,A print server network share broke after a Windows update + VM restore; the engineers fixed the network share (disabled/re-enabled the share for all queues) and pending documents printed successfully,"=== CITED SOURCES ===
+SOURCE 28:
+﻿
+Ticket summary:
+Ticket name: KF13: PRIO HIGH - Printing from SAP not possible
+Ticket number: TI-931293
+Company: Customer Company 13
+Contact person: Contact Person 11
+Owner: Employee 17
+Origin: Phone
+Type: Support Request
+Created on: 18.07.24 17:16
+
+Closure
+Closure date: 19.07.24 16:48
+Closure text: After a Windows update and the subsequent VM restore, the printer network share caused issues. These were corrected and operations were restored.
+
+Activities
+Emails:
+19.07.24 09:01 | Ticket: KF13: PRIO HIGH - Printing from SAP not possible set to status ""In Progress"" #027064349 | NO-REPLY | BU_CustomerServices_RUN@ConsultingSampleCompany.ch
+Hello BU Customer Services Run,
+The ticket KF13: PRIO HIGH - Printing from SAP not possible, number TI-931293, has been set to status ""In Progress"".
+Link: KF13: PRIO HIGH - Printing from SAP not possible
+
+19.07.24 12:52 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+I would like to briefly check whether the issue with printing from SAP has been resolved in the meantime.
+Kind regards
+Employee 18
+
+19.07.24 13:01 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Contact Person 12 | Employee 18
+Hi everyone,
+Unfortunately, it is still not working.
+Kind regards
+Contact Person 12
+Head of Customer Services, Customer Company 13 AG
+Phone: +41 00 000 00 00
+
+19.07.24 13:24 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+Thank you for your feedback. I will inform the responsible department that the issue still persists.
+I will keep you updated on further progress.
+Kind regards
+Employee 18
+
+19.07.24 16:38 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17 | Contact Person 11
+Dear all,
+I would like to inform you that we have identified the root cause and resolved the incident. Printing via both print servers through SAP is now functioning properly again. Mr. Contact Person 12 has confirmed that SAP print jobs are being executed correctly.
+After the Windows update and the restore of the two VMs, all printers had issues with the network share on print server VRINFRGERPRNT03. After disabling and re-enabling the network share for all printer queues, all pending documents on the affected printers were successfully printed.
+No further actions are currently required, and we will now close the ticket.
+Should you require further assistance or have any questions, please do not hesitate to contact us.
+Kind regards and have a nice weekend,
+Employee 17
+Senior System Engineer Core Engineering
+Consulting Sample Company AG
+
+19.07.24 16:44 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17
+FYI
+
+19.07.24 16:55 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello everyone,
+THANK YOU VERY MUCH!!! TOP SERVICE!!!
+We are very satisfied 😊
+Wishing you both a very nice weekend as well!
+Best regards
+Tom
+Head of IT Switzerland Informatics, Customer Company 13
+
+19.07.24 17:16 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello Giusi,
+You were not included in the distribution list, I only just noticed that.
+Best regards
+Tom
+
+22.07.24 07:56 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 19
+Hello @Employee 17 and @Employee 20,
+Thank you very much for your great support last Friday on this ticket. This was highly appreciated by KF13, including Contact Person 11, and they were truly grateful for your efforts.
+Especially for Giusi and Employee 20, here again Tom’s praise.
+Kind regards
+Employee 19
+Service Manager
+
+22.07.24 09:19 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 26
+Nice one 😊 That’s a great way to start the week.
+Employee 26
+Head of Core Engineering
+
+Notes:
+18.07.24 17:17 | Admin, CRM | WEB
+Ticket opened on 18.07.24 17:16 by Employee 23.
+18.07.24 17:22 | ApplicationUser, CRM Development | WEB
+Classified as PRIO HIGH because no orders could be printed from SAP, preventing deliveries.
+18.07.24 17:24 | Employee 23 | WEB
+Printing from SAP via VRINFRGERPRNT03 and VRINFRGERPRNT04 not possible. Normal printing works via other print servers with follow-me solution. Contact Person 11 requests rollback of the Windows version on the print servers.
+18.
+
+SOURCE 29:
+07.24 17:22 | ApplicationUser, CRM Development | WEB
+Classified as PRIO HIGH because no orders could be printed from SAP, preventing deliveries.
+18.07.24 17:24 | Employee 23 | WEB
+Printing from SAP via VRINFRGERPRNT03 and VRINFRGERPRNT04 not possible. Normal printing works via other print servers with follow-me solution. Contact Person 11 requests rollback of the Windows version on the print servers.
+18.07.24 17:36 | Employee 23 | WEB
+Print spooler restarted. Employee 20 checks whether there is a SAP-side cause.
+18.07.24 18:46 | Employee 23 | WEB
+Infrastructure on-call activated:
+SAP print servers VRINFRGERPRNT03 and VRINFRGERPRNT04 to be restored to state before maintenance window on 17.07 at 21:00.
+Suspected that Windows update affected print functionality. Restart of server and print spooler unsuccessful. Customer also requests restore.
+18.07.24 19:33 | Employee 23 | WEB
+Restore performed with Mister X of Inter12203 and Inter12204. Contact Person 11 will test printing the next morning. Information sent to early shift.
+19.07.24 08:33 | Employee 18 | WEB
+Call with Contact Person 11: Printing still not working; instead, blue screens occur. Employee 19 analyzes the issue.
+19.07.24 08:46 | Employee 18 | WEB
+Employee 19 contacted. He takes over the case.
+Quote: “Let’s wait until noon to see if the bluescreen issue can be resolved, then we’ll continue with the printer topic.”
+19.07.24 14:01 | Employee 18 | WEB
+Case reviewed together with Employee 17; he will discuss the matter directly with Contact Person 12.
+19.07.24 15:38 | Employee 18 | WEB
+After consultation with Employee 17, the ticket is now handed over to him.
+19.07.24 15:38 | Admin, CRM | WEB
+Ticket assigned to Employee 17.
+
+",no,"Descriptive past-tense account of actions taken and outcome (engineers fixed the share and printing succeeded) with no recommendation, suggestion, or directive language.",supported,"The ticket notes that after a Windows update and VM restore the printer network share on VRINFRGERPRNT03 had issues, and that disabling and re-enabling the network share for all printer queues caused all pending documents to be successfully printed (closure and activity entries)."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,"Check whether they were moved into a new AD group, or their prior group was deactivated (the documented printer case explicitly showed the old group was deactivated during reorg)","=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",yes,It's an explicit directive ('Check whether...') instructing verification of AD group changes based on the documented printer case.,supported,"The ticket explicitly states the Finance team was moved into a new AD group and 'the old group was deactivated', and the analysis links this reorg to the incorrect default printer, directly supporting the suggested check."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,ADFS client parameter misconfiguration causing connectivity failures; resolved by aligning parameters with TEST environment (EnableJWT & RequestMFAFromClaimsProviders) — TI-1385257 (KF11),"=== CITED SOURCES ===
+SOURCE 11:
+Understood. Below is the **plain English translation**, with **only personal and company names replaced by “Employee <number>”**, **employee numbers kept**, and **no formatting, no headings, no extra structure** beyond what is already implicit in the text.
+
+---
+
+Ticket summary:
+Ticket name: KF11: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket number: TI-1385257
+Company: Customer company 11AG
+Contact person: Employee 14
+Owner: Employee 24
+Source: Email
+Type: Support Request
+Created on: 26.11.24 10:07
+
+Closure
+Closure date: 18.12.24 00:33
+Closure text: Parameters adjusted on ADFS as in the TEST environment
+
+Activities
+Emails:
+
+26.11.24 09:58 Customer company 11CE TRAIN: Connection error from DevOps and FO Employee 14 Helpdesk
+Hi,
+we are experiencing connectivity issues with the TRAIN CE server. A restart of the application server has already been performed, but it did not help.
+The user account works in the browser frontend, so the password is correct.
+Thank you very much and kind regards
+Employee 14
+
+26.11.24 10:12 Ticket created: TI-1385257 | Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket confirmation
+Dear Employee 14,
+Your request has been successfully received and recorded in our system under the ticket number TI-1385257.
+Ticket details:
+Ticket number: TI-1385257
+Subject: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Priority: Normal
+Contact person: Employee 16
+We will contact you as soon as possible.
+
+26.11.24 10:18 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 16,
+The ticket TI-1385257 is no longer in your area of responsibility.
+It was transferred from Employee to Employee 14.
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:18 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:21 Re: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Dear Employee 14,
+Thank you for your inquiry.
+The ticket has been forwarded to the responsible system engineer.
+Kind regards
+Employee 16
+
+26.11.24 10:48 Portal note added
+Employee mentioned it could be the user KF11\001-svc-axavaobt-tra as this is the account currently configured.
+Is it possible to get an overview of all interfaces and their corresponding users and passwords?
+
+26.11.24 13:36 Portal note added
+Employee mentioned again KF11\001-svc-axavaobt-tra. Was the password changed?
+
+27.11.24 13:29 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+
+27.11.24 13:29 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 14,
+The ticket TI-1385257 is no longer in your responsibility.
+It was transferred from Admin to Employee 24.
+
+28.11.24 09:01 Ticket status changed to In Progress
+The ticket TI-1385257 was set to status In Progress.
+
+09.12.24 15:58 Re: Ticket created: TI-1385257
+Hi,
+we cannot connect to the CE TRAIN server again. Could you please reopen this ticket?
+Thank you and best regards
+Employee 14
+
+18.12.24 00:33 Ticket closed | TI-1385257
+Dear Employee 14,
+Your ticket from 26.11.24 10:07 has been closed.
+Closure description:
+Parameters adjusted on ADFS as in the TEST environment.
+
+18.12.24 00:34 Re: TRAIN-CE/FO integration / MFA
+Dear Employee 7,
+During the joint analysis of the issue, we identified that two parameters were not correctly set during the ADFS client registration. In the new client application used specifically for the MFA request of the Toolbox on the Train system, the following parameters were set to true:
+EnableJWT
+RequestMFAFromClaimsProviders
+
+EnableJWT activates the issuance of JSON Web Tokens in the authentication process. If enabled, ADFS issues JWTs instead of other token formats such as SAML. These tokens are evaluated by the target application. If the target system does not support JWTs or cannot validate their signature, authentication fails.
+
+RequestMFAFromClaimsProviders forwards MFA requirements to configured claims providers. This delegates MFA execution to external providers and increases complexity in authentication flow, logging, and auditing.
+
+The combination of these parameters can lead to login failures if the target system is not designed to handle JWTs or external MFA claims.
+
+We have documented the configuration to avoid future issues. From our perspective, no further problems are expected after adjusting the parameters. If MFA works stably and the Train environment is reachable again, the login topic can be considered resolved.
+
+Kind regards
+Employee 21
+
+Notes:
+26.11.24 Ticket opened by Employee 16.
+26.11.24 Ticket assigned",no,"This is a factual report of a past misconfiguration and its resolution (aligned parameters with TEST), not phrased as a recommendation or directive.",supported,"The ticket TI-1385257 (KF11) closure notes that ADFS parameters were adjusted to match the TEST environment, and the follow-up explains two mis-set ADFS client parameters (EnableJWT and RequestMFAFromClaimsProviders) that could cause login/connectivity failures."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,Printer unreachable due to missing firewall rule between print server and new printer VLAN; adjusted rule per standard — TI-1622483 (KF60),"=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+",no,"The statement reports a past connectivity issue and that the firewall rule was adjusted per standard, with no recommendation or directive.",supported,"The ticket TI-1622483 states the new printer VLAN blocked access from the print server (missing network allowance / firewall rule) and that the rule was adjusted according to the Print & Scanning Infrastructure Standard, restoring printing."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,The most likely documented cause for the Zurich invoices printing in Basel is inconsistent AD group membership after the reorganisation (documented and fixed previously) — follow the documented group‑membership correction and GPO re-application workflow immediately,"=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",yes,"The phrase 'follow the documented group‑membership correction and GPO re-application workflow immediately' is an imperative directive instructing specific actions, so it constitutes a recommendation.",supported,"The ticket explicitly identifies the root cause as inconsistent AD group membership after a reorganisation and documents the remediation (removal of the incorrect group membership, gpupdate /force, and correction per the Print & Scanning Infrastructure Standard), so both the cause and the recommended fix are shown in the CONTEXT."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,"Force a policy refresh and test: in the documented case the team removed the incorrect group membership, ran a policy refresh, user re-login and the default printer persisted correctly [Documented action and proof: user tested, default printer remained]","=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement begins with the imperative 'Force a policy refresh and test', a direct action recommendation, with the remainder presented as supporting evidence.",supported,"The ticket activities state the incorrect AD group membership was temporarily removed, gpupdate /force was executed, the user re-logged in and the default printer remained “MFP-Basel-01”; subsequent testing with multiple users confirmed the default persisted, matching the ANSWER's claim."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,Check whether a Windows update/VM restore affected the print server shares. The documented fix in one case was to disable and re-enable the network share for the affected printer queues which released and printed pending documents,"=== CITED SOURCES ===
+SOURCE 28:
+﻿
+Ticket summary:
+Ticket name: KF13: PRIO HIGH - Printing from SAP not possible
+Ticket number: TI-931293
+Company: Customer Company 13
+Contact person: Contact Person 11
+Owner: Employee 17
+Origin: Phone
+Type: Support Request
+Created on: 18.07.24 17:16
+
+Closure
+Closure date: 19.07.24 16:48
+Closure text: After a Windows update and the subsequent VM restore, the printer network share caused issues. These were corrected and operations were restored.
+
+Activities
+Emails:
+19.07.24 09:01 | Ticket: KF13: PRIO HIGH - Printing from SAP not possible set to status ""In Progress"" #027064349 | NO-REPLY | BU_CustomerServices_RUN@ConsultingSampleCompany.ch
+Hello BU Customer Services Run,
+The ticket KF13: PRIO HIGH - Printing from SAP not possible, number TI-931293, has been set to status ""In Progress"".
+Link: KF13: PRIO HIGH - Printing from SAP not possible
+
+19.07.24 12:52 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+I would like to briefly check whether the issue with printing from SAP has been resolved in the meantime.
+Kind regards
+Employee 18
+
+19.07.24 13:01 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Contact Person 12 | Employee 18
+Hi everyone,
+Unfortunately, it is still not working.
+Kind regards
+Contact Person 12
+Head of Customer Services, Customer Company 13 AG
+Phone: +41 00 000 00 00
+
+19.07.24 13:24 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+Thank you for your feedback. I will inform the responsible department that the issue still persists.
+I will keep you updated on further progress.
+Kind regards
+Employee 18
+
+19.07.24 16:38 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17 | Contact Person 11
+Dear all,
+I would like to inform you that we have identified the root cause and resolved the incident. Printing via both print servers through SAP is now functioning properly again. Mr. Contact Person 12 has confirmed that SAP print jobs are being executed correctly.
+After the Windows update and the restore of the two VMs, all printers had issues with the network share on print server VRINFRGERPRNT03. After disabling and re-enabling the network share for all printer queues, all pending documents on the affected printers were successfully printed.
+No further actions are currently required, and we will now close the ticket.
+Should you require further assistance or have any questions, please do not hesitate to contact us.
+Kind regards and have a nice weekend,
+Employee 17
+Senior System Engineer Core Engineering
+Consulting Sample Company AG
+
+19.07.24 16:44 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17
+FYI
+
+19.07.24 16:55 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello everyone,
+THANK YOU VERY MUCH!!! TOP SERVICE!!!
+We are very satisfied 😊
+Wishing you both a very nice weekend as well!
+Best regards
+Tom
+Head of IT Switzerland Informatics, Customer Company 13
+
+19.07.24 17:16 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello Giusi,
+You were not included in the distribution list, I only just noticed that.
+Best regards
+Tom
+
+22.07.24 07:56 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 19
+Hello @Employee 17 and @Employee 20,
+Thank you very much for your great support last Friday on this ticket. This was highly appreciated by KF13, including Contact Person 11, and they were truly grateful for your efforts.
+Especially for Giusi and Employee 20, here again Tom’s praise.
+Kind regards
+Employee 19
+Service Manager
+
+22.07.24 09:19 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 26
+Nice one 😊 That’s a great way to start the week.
+Employee 26
+Head of Core Engineering
+
+Notes:
+18.07.24 17:17 | Admin, CRM | WEB
+Ticket opened on 18.07.24 17:16 by Employee 23.
+18.07.24 17:22 | ApplicationUser, CRM Development | WEB
+Classified as PRIO HIGH because no orders could be printed from SAP, preventing deliveries.
+18.07.24 17:24 | Employee 23 | WEB
+Printing from SAP via VRINFRGERPRNT03 and VRINFRGERPRNT04 not possible. Normal printing works via other print servers with follow-me solution. Contact Person 11 requests rollback of the Windows version on the print servers.
+18.
+
+SOURCE 29:
+07.24 17:22 | ApplicationUser, CRM Development | WEB
+Classified as PRIO HIGH because no orders could be printed from SAP, preventing deliveries.
+18.07.24 17:24 | Employee 23 | WEB
+Printing from SAP via VRINFRGERPRNT03 and VRINFRGERPRNT04 not possible. Normal printing works via other print servers with follow-me solution. Contact Person 11 requests rollback of the Windows version on the print servers.
+18.07.24 17:36 | Employee 23 | WEB
+Print spooler restarted. Employee 20 checks whether there is a SAP-side cause.
+18.07.24 18:46 | Employee 23 | WEB
+Infrastructure on-call activated:
+SAP print servers VRINFRGERPRNT03 and VRINFRGERPRNT04 to be restored to state before maintenance window on 17.07 at 21:00.
+Suspected that Windows update affected print functionality. Restart of server and print spooler unsuccessful. Customer also requests restore.
+18.07.24 19:33 | Employee 23 | WEB
+Restore performed with Mister X of Inter12203 and Inter12204. Contact Person 11 will test printing the next morning. Information sent to early shift.
+19.07.24 08:33 | Employee 18 | WEB
+Call with Contact Person 11: Printing still not working; instead, blue screens occur. Employee 19 analyzes the issue.
+19.07.24 08:46 | Employee 18 | WEB
+Employee 19 contacted. He takes over the case.
+Quote: “Let’s wait until noon to see if the bluescreen issue can be resolved, then we’ll continue with the printer topic.”
+19.07.24 14:01 | Employee 18 | WEB
+Case reviewed together with Employee 17; he will discuss the matter directly with Contact Person 12.
+19.07.24 15:38 | Employee 18 | WEB
+After consultation with Employee 17, the ticket is now handed over to him.
+19.07.24 15:38 | Admin, CRM | WEB
+Ticket assigned to Employee 17.
+
+",yes,"Uses a directive ('Check whether...') and describes a remedial action (disable and re-enable the network share) as a fix, which constitutes a recommendation.",supported,"Ticket TI-931293 (SOURCE 28) explicitly states that after a Windows update and VM restore the printer network share had issues, and that disabling and re-enabling the network share for all printer queues released and printed the pending documents."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,"The freelancers’ access issue is plausibly the same class of problem (AD group membership change); remediate by restoring correct group assignments (recommended, based on the printer incident precedent)","=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement explicitly recommends action—'remediate by restoring correct group assignments' and even includes '(recommended, based on ... precedent)', which is directive advice.",partially_supported,"The cited printer incident shows an AD group-membership change caused incorrect resource mapping and was resolved by correcting group assignments, supporting the recommended remediation; however the CONTEXT does not mention any freelancers or their access issue, so applying that precedent to 'freelancers’ access' is speculative."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,"A recent organisational/group change caused default printers to be reassigned because AD group membership was inconsistent after the reorganisation. In that prior incident the root cause was “inconsistent group membership following an organizational adjustment”; remediation was to correct group membership according to the Print & Scanning Infrastructure Standard, run a policy refresh and confirm the default stayed correct","=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",yes,"The statement includes explicit remediation steps—correct group membership, run a policy refresh, and confirm the default—which are direct recommendations.",supported,"The ticket explicitly states the Finance team was moved into a new AD group and the new group’s membership caused Zurich to be mapped and set as default; the closure names the root cause as “inconsistent group membership following an organizational adjustment,” and remediation steps (correction according to the Print & Scanning Infrastructure Standard, gpupdate /force, and verification that the default remained correct) are documented in the activities and closure."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,Open an AD/Identity ticket to list all AD-group changes since the HR update and to restore any mistakenly removed memberships (documented fix in the printer case was to correct group membership),"=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",yes,"The sentence uses imperative directives ('Open an AD/Identity ticket', 'to restore any mistakenly removed memberships') that recommend specific actions to be taken.",partially_supported,"The context shows the printer issue was caused by inconsistent AD group membership and was fixed by correcting group memberships, supporting that part of the suggestion; however the CONTEXT does not document opening an AD/Identity ticket to list all AD-group changes since the HR update or performing a bulk restore of memberships, so that recommended action is an extrapolation rather than explicitly supported."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,"Check network reachability between print servers and printers (ping/tests). If a new VLAN/segment was introduced, verify firewall/routing rules allow the print server to reach the printer VLAN. In the documented VLAN case, adjusting the firewall rule per the standard fixed the issue","=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+",yes,"The text uses directive verbs and conditional advice ('Check', 'verify', 'If... then...') instructing actions to test and adjust network/firewall settings.",supported,"The ticket shows ping/tests were used (print server ping unsuccessful, client ping successful), the customer reported printers moved to a new VLAN, and the network team confirmed a firewall rule blocked server access which was adjusted according to the Print & Scanning Infrastructure Standard — after which printing was restored."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,Printer default changed after reorg; corrected by fixing AD group membership and re-applying Print & Scanning Infrastructure Standard — TI-1623017 (KF60),"=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",no,"This describes a past corrective action that was taken (fixed AD group membership and re-applied the standard), not a recommendation or forward-looking instruction.",supported,"The ticket TI-1623017 (KF60) documents that the Finance team was moved into a new AD group during an organizational change, the new group membership caused the Zurich printer to be set as default via GPO, temporary removal of the incorrect group membership corrected the default, and the issue was fixed ""according to Print & Scanning Infrastructure Standard."""
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,"If the dialer uses ADFS and you see authentication errors, consider whether ADFS client registration parameters differ from a working environment: a documented resolution in a different ticket was to align ADFS client parameters between environments (EnableJWT and RequestMFAFromClaimsProviders) which had restored connectivity for another application [Documented example: parameter adjustment fixed connectivity]","=== CITED SOURCES ===
+SOURCE 11:
+Understood. Below is the **plain English translation**, with **only personal and company names replaced by “Employee <number>”**, **employee numbers kept**, and **no formatting, no headings, no extra structure** beyond what is already implicit in the text.
+
+---
+
+Ticket summary:
+Ticket name: KF11: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket number: TI-1385257
+Company: Customer company 11AG
+Contact person: Employee 14
+Owner: Employee 24
+Source: Email
+Type: Support Request
+Created on: 26.11.24 10:07
+
+Closure
+Closure date: 18.12.24 00:33
+Closure text: Parameters adjusted on ADFS as in the TEST environment
+
+Activities
+Emails:
+
+26.11.24 09:58 Customer company 11CE TRAIN: Connection error from DevOps and FO Employee 14 Helpdesk
+Hi,
+we are experiencing connectivity issues with the TRAIN CE server. A restart of the application server has already been performed, but it did not help.
+The user account works in the browser frontend, so the password is correct.
+Thank you very much and kind regards
+Employee 14
+
+26.11.24 10:12 Ticket created: TI-1385257 | Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket confirmation
+Dear Employee 14,
+Your request has been successfully received and recorded in our system under the ticket number TI-1385257.
+Ticket details:
+Ticket number: TI-1385257
+Subject: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Priority: Normal
+Contact person: Employee 16
+We will contact you as soon as possible.
+
+26.11.24 10:18 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 16,
+The ticket TI-1385257 is no longer in your area of responsibility.
+It was transferred from Employee to Employee 14.
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:18 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:21 Re: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Dear Employee 14,
+Thank you for your inquiry.
+The ticket has been forwarded to the responsible system engineer.
+Kind regards
+Employee 16
+
+26.11.24 10:48 Portal note added
+Employee mentioned it could be the user KF11\001-svc-axavaobt-tra as this is the account currently configured.
+Is it possible to get an overview of all interfaces and their corresponding users and passwords?
+
+26.11.24 13:36 Portal note added
+Employee mentioned again KF11\001-svc-axavaobt-tra. Was the password changed?
+
+27.11.24 13:29 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+
+27.11.24 13:29 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 14,
+The ticket TI-1385257 is no longer in your responsibility.
+It was transferred from Admin to Employee 24.
+
+28.11.24 09:01 Ticket status changed to In Progress
+The ticket TI-1385257 was set to status In Progress.
+
+09.12.24 15:58 Re: Ticket created: TI-1385257
+Hi,
+we cannot connect to the CE TRAIN server again. Could you please reopen this ticket?
+Thank you and best regards
+Employee 14
+
+18.12.24 00:33 Ticket closed | TI-1385257
+Dear Employee 14,
+Your ticket from 26.11.24 10:07 has been closed.
+Closure description:
+Parameters adjusted on ADFS as in the TEST environment.
+
+18.12.24 00:34 Re: TRAIN-CE/FO integration / MFA
+Dear Employee 7,
+During the joint analysis of the issue, we identified that two parameters were not correctly set during the ADFS client registration. In the new client application used specifically for the MFA request of the Toolbox on the Train system, the following parameters were set to true:
+EnableJWT
+RequestMFAFromClaimsProviders
+
+EnableJWT activates the issuance of JSON Web Tokens in the authentication process. If enabled, ADFS issues JWTs instead of other token formats such as SAML. These tokens are evaluated by the target application. If the target system does not support JWTs or cannot validate their signature, authentication fails.
+
+RequestMFAFromClaimsProviders forwards MFA requirements to configured claims providers. This delegates MFA execution to external providers and increases complexity in authentication flow, logging, and auditing.
+
+The combination of these parameters can lead to login failures if the target system is not designed to handle JWTs or external MFA claims.
+
+We have documented the configuration to avoid future issues. From our perspective, no further problems are expected after adjusting the parameters. If MFA works stably and the Train environment is reachable again, the login topic can be considered resolved.
+
+Kind regards
+Employee 21
+
+Notes:
+26.11.24 Ticket opened by Employee 16.
+26.11.24 Ticket assigned",yes,Contains explicit advisory language ('consider whether...') and proposes an action (align ADFS client registration parameters) as a recommended resolution.,supported,"Ticket TI-1385257 documents that adjusting ADFS client registration parameters (EnableJWT and RequestMFAFromClaimsProviders) to match the TEST environment resolved connectivity/login failures, directly supporting the recommendation to check differing ADFS client parameters when seeing authentication errors."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,A newly introduced printer VLAN blocked the print server because a firewall rule did not allow the print-server network to reach the printer VLAN; adjusting the firewall/routing per the Print & Scanning Infrastructure Standard restored printing,"=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+",no,No — it reports a past remediation (firewall/routing was adjusted per the standard) that restored printing rather than recommending or advising future action.,supported,"The ticket states printers were moved into a separate VLAN and pings from the print server failed; internal coordination confirmed a new firewall rule blocked server access, the rule was adjusted according to the Print & Scanning Infrastructure Standard, and printing was restored."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,"After change, have a test user sign in to the shared workspace to confirm access is restored. Note: the general approach above is extrapolated from the documented printer/group incident (source 2). The records do not show a ticket of freelancers locked out of shared workspaces, so these steps are recommended actions based on the prior group‑membership fix","=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",yes,"The text contains explicit recommendations and directive verbs (e.g., 'have a test user sign in…') and even states these are 'recommended actions' based on prior fixes.",partially_supported,"The recommendation to have a test user sign in is extrapolated from the printer/group incident where users logged in to verify the fix (Source 2), but the CONTEXT contains no direct record of freelancers locked out of shared workspaces or a workspace-specific test, so the workspace-specific recommendation is not directly evidenced."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,Authentication/connectivity problems caused by misconfigured ADFS client parameters (EnableJWT and RequestMFAFromClaimsProviders) were resolved by aligning ADFS client parameters with the TEST environment; that change restored connectivity for the affected application,"=== CITED SOURCES ===
+SOURCE 11:
+Understood. Below is the **plain English translation**, with **only personal and company names replaced by “Employee <number>”**, **employee numbers kept**, and **no formatting, no headings, no extra structure** beyond what is already implicit in the text.
+
+---
+
+Ticket summary:
+Ticket name: KF11: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket number: TI-1385257
+Company: Customer company 11AG
+Contact person: Employee 14
+Owner: Employee 24
+Source: Email
+Type: Support Request
+Created on: 26.11.24 10:07
+
+Closure
+Closure date: 18.12.24 00:33
+Closure text: Parameters adjusted on ADFS as in the TEST environment
+
+Activities
+Emails:
+
+26.11.24 09:58 Customer company 11CE TRAIN: Connection error from DevOps and FO Employee 14 Helpdesk
+Hi,
+we are experiencing connectivity issues with the TRAIN CE server. A restart of the application server has already been performed, but it did not help.
+The user account works in the browser frontend, so the password is correct.
+Thank you very much and kind regards
+Employee 14
+
+26.11.24 10:12 Ticket created: TI-1385257 | Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket confirmation
+Dear Employee 14,
+Your request has been successfully received and recorded in our system under the ticket number TI-1385257.
+Ticket details:
+Ticket number: TI-1385257
+Subject: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Priority: Normal
+Contact person: Employee 16
+We will contact you as soon as possible.
+
+26.11.24 10:18 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 16,
+The ticket TI-1385257 is no longer in your area of responsibility.
+It was transferred from Employee to Employee 14.
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:18 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:21 Re: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Dear Employee 14,
+Thank you for your inquiry.
+The ticket has been forwarded to the responsible system engineer.
+Kind regards
+Employee 16
+
+26.11.24 10:48 Portal note added
+Employee mentioned it could be the user KF11\001-svc-axavaobt-tra as this is the account currently configured.
+Is it possible to get an overview of all interfaces and their corresponding users and passwords?
+
+26.11.24 13:36 Portal note added
+Employee mentioned again KF11\001-svc-axavaobt-tra. Was the password changed?
+
+27.11.24 13:29 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+
+27.11.24 13:29 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 14,
+The ticket TI-1385257 is no longer in your responsibility.
+It was transferred from Admin to Employee 24.
+
+28.11.24 09:01 Ticket status changed to In Progress
+The ticket TI-1385257 was set to status In Progress.
+
+09.12.24 15:58 Re: Ticket created: TI-1385257
+Hi,
+we cannot connect to the CE TRAIN server again. Could you please reopen this ticket?
+Thank you and best regards
+Employee 14
+
+18.12.24 00:33 Ticket closed | TI-1385257
+Dear Employee 14,
+Your ticket from 26.11.24 10:07 has been closed.
+Closure description:
+Parameters adjusted on ADFS as in the TEST environment.
+
+18.12.24 00:34 Re: TRAIN-CE/FO integration / MFA
+Dear Employee 7,
+During the joint analysis of the issue, we identified that two parameters were not correctly set during the ADFS client registration. In the new client application used specifically for the MFA request of the Toolbox on the Train system, the following parameters were set to true:
+EnableJWT
+RequestMFAFromClaimsProviders
+
+EnableJWT activates the issuance of JSON Web Tokens in the authentication process. If enabled, ADFS issues JWTs instead of other token formats such as SAML. These tokens are evaluated by the target application. If the target system does not support JWTs or cannot validate their signature, authentication fails.
+
+RequestMFAFromClaimsProviders forwards MFA requirements to configured claims providers. This delegates MFA execution to external providers and increases complexity in authentication flow, logging, and auditing.
+
+The combination of these parameters can lead to login failures if the target system is not designed to handle JWTs or external MFA claims.
+
+We have documented the configuration to avoid future issues. From our perspective, no further problems are expected after adjusting the parameters. If MFA works stably and the Train environment is reachable again, the login topic can be considered resolved.
+
+Kind regards
+Employee 21
+
+Notes:
+26.11.24 Ticket opened by Employee 16.
+26.11.24 Ticket assigned",no,"The statement reports a past corrective action and its outcome, not proposing or recommending any future action.",partially_supported,"The CONTEXT states two ADFS client parameters (EnableJWT and RequestMFAFromClaimsProviders) were misconfigured and that parameters were adjusted to match the TEST environment, which supports the root cause and the remediation; however, the record does not explicitly confirm that connectivity was empirically restored—only that the parameters were changed and the ticket closed/expected to be resolved."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,"For the dialer there is no matching documented incident in the indexed records; open a Telephony/CTI ticket and investigate authentication/service‑account changes. If the dialer relies on ADFS-based authentication you may consider applying the same ADFS-parameter alignment approach used in TI-1385257, but that is a recommended diagnostic avenue rather than a documented fix for dialers","=== CITED SOURCES ===
+SOURCE 11:
+Understood. Below is the **plain English translation**, with **only personal and company names replaced by “Employee <number>”**, **employee numbers kept**, and **no formatting, no headings, no extra structure** beyond what is already implicit in the text.
+
+---
+
+Ticket summary:
+Ticket name: KF11: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket number: TI-1385257
+Company: Customer company 11AG
+Contact person: Employee 14
+Owner: Employee 24
+Source: Email
+Type: Support Request
+Created on: 26.11.24 10:07
+
+Closure
+Closure date: 18.12.24 00:33
+Closure text: Parameters adjusted on ADFS as in the TEST environment
+
+Activities
+Emails:
+
+26.11.24 09:58 Customer company 11CE TRAIN: Connection error from DevOps and FO Employee 14 Helpdesk
+Hi,
+we are experiencing connectivity issues with the TRAIN CE server. A restart of the application server has already been performed, but it did not help.
+The user account works in the browser frontend, so the password is correct.
+Thank you very much and kind regards
+Employee 14
+
+26.11.24 10:12 Ticket created: TI-1385257 | Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket confirmation
+Dear Employee 14,
+Your request has been successfully received and recorded in our system under the ticket number TI-1385257.
+Ticket details:
+Ticket number: TI-1385257
+Subject: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Priority: Normal
+Contact person: Employee 16
+We will contact you as soon as possible.
+
+26.11.24 10:18 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 16,
+The ticket TI-1385257 is no longer in your area of responsibility.
+It was transferred from Employee to Employee 14.
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:18 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:21 Re: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Dear Employee 14,
+Thank you for your inquiry.
+The ticket has been forwarded to the responsible system engineer.
+Kind regards
+Employee 16
+
+26.11.24 10:48 Portal note added
+Employee mentioned it could be the user KF11\001-svc-axavaobt-tra as this is the account currently configured.
+Is it possible to get an overview of all interfaces and their corresponding users and passwords?
+
+26.11.24 13:36 Portal note added
+Employee mentioned again KF11\001-svc-axavaobt-tra. Was the password changed?
+
+27.11.24 13:29 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+
+27.11.24 13:29 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 14,
+The ticket TI-1385257 is no longer in your responsibility.
+It was transferred from Admin to Employee 24.
+
+28.11.24 09:01 Ticket status changed to In Progress
+The ticket TI-1385257 was set to status In Progress.
+
+09.12.24 15:58 Re: Ticket created: TI-1385257
+Hi,
+we cannot connect to the CE TRAIN server again. Could you please reopen this ticket?
+Thank you and best regards
+Employee 14
+
+18.12.24 00:33 Ticket closed | TI-1385257
+Dear Employee 14,
+Your ticket from 26.11.24 10:07 has been closed.
+Closure description:
+Parameters adjusted on ADFS as in the TEST environment.
+
+18.12.24 00:34 Re: TRAIN-CE/FO integration / MFA
+Dear Employee 7,
+During the joint analysis of the issue, we identified that two parameters were not correctly set during the ADFS client registration. In the new client application used specifically for the MFA request of the Toolbox on the Train system, the following parameters were set to true:
+EnableJWT
+RequestMFAFromClaimsProviders
+
+EnableJWT activates the issuance of JSON Web Tokens in the authentication process. If enabled, ADFS issues JWTs instead of other token formats such as SAML. These tokens are evaluated by the target application. If the target system does not support JWTs or cannot validate their signature, authentication fails.
+
+RequestMFAFromClaimsProviders forwards MFA requirements to configured claims providers. This delegates MFA execution to external providers and increases complexity in authentication flow, logging, and auditing.
+
+The combination of these parameters can lead to login failures if the target system is not designed to handle JWTs or external MFA claims.
+
+We have documented the configuration to avoid future issues. From our perspective, no further problems are expected after adjusting the parameters. If MFA works stably and the Train environment is reachable again, the login topic can be considered resolved.
+
+Kind regards
+Employee 21
+
+Notes:
+26.11.24 Ticket opened by Employee 16.
+26.11.24 Ticket assigned",yes,"The text issues explicit directives (open a Telephony/CTI ticket; investigate authentication/service-account changes) and uses suggestive phrasing ('you may consider', 'recommended diagnostic avenue'), so it is a recommendation.",partially_supported,"TI-1385257 documents ADFS parameter adjustments and service-account/password checks, supporting the recommendation to investigate authentication and to consider applying the same ADFS-parameter alignment; however the context contains no dialer-specific incident nor any record that a Telephony/CTI ticket should be opened, so the assertion that no matching dialer incident exists and the ticketing instruction are not supported."
+traceability_ragas_resolution_answer2,Is the statement supported by the evidence?,"Rationale from records: printer misassignment was caused by the Finance team being moved into a new AD group and the old group being deactivated, resulting in GPOs mapping the Zurich printer as default","=== CITED SOURCES ===
+SOURCE 2:
+﻿
+Ticket summary:
+Ticket name: KF60: Incorrect printer automatically set as default
+Ticket number: TI-1623017
+Company: Customer Company 60 AG
+Contact person: Contact Person 18
+Owner: Employee 23
+Origin: Email
+Type: Incident
+Created on: 18.11.25 08:49
+Closure
+Closure date: 24.11.25 15:11
+Closure text: Printer assignment and default configuration corrected according to Print & Scanning Infrastructure Standard. Behavior stable.
+Activities
+18.11.25 08:35 – Email from Contact Person 18
+Good morning
+Several employees in the Finance department report that their default printer automatically switches to “MFP-Zuerich-01”, although they work at the Basel location.
+They must manually select the correct printer before each print job.
+The issue seems to have started last week.
+Kind regards
+18.11.25 08:49
+Ticket created and assigned to Employee 23.
+18.11.25 09:20 – Initial analysis
+Remote connection established with an affected user.
+Default printer is indeed “MFP-Zuerich-01”.
+Both Basel and Zurich printers are visible in the printer list.
+Comparison with a user from another department shows the correct location printer set.
+18.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent organizational changes or group adjustments in the Finance department?
+Kind regards
+18.11.25 10:40 – Customer response
+Yes, the Finance team was moved into a new AD group last week.
+The old group was deactivated.
+19.11.25 09:10 – GPO assignment analysis
+Comparison with “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Printer Provisioning it is defined that:
+• Printer assignments are location-based via AD groups
+• Default printers per location are set via GPO
+• No parallel groups with identical function may exist
+Review shows that the new Finance group is additionally a member of a higher-level Zurich location group.
+As a result, the Zurich printer is also mapped via GPO and set as default.
+19.11.25 11:30 – Test
+Temporary removal of the incorrect group membership.
+gpupdate /force executed.
+User logged in again.
+Default printer now correctly remains “MFP-Basel-01”.
+20.11.25 – Coordination with customer
+Confirmation that the group structure had not been fully cleaned up during the reorganization.
+Correction performed according to blueprint specification.
+24.11.25 14:50 – Customer feedback
+Multiple users tested.
+Default printer remains correct.
+No further automatic switching.
+24.11.25 15:11 – Ticket closure
+Dear Contact Person 18
+The root cause was an inconsistent group membership following an organizational adjustment.
+Printer assignment was corrected according to the “Print & Scanning Infrastructure Standard”.
+The correct location printer now remains permanently set as default.
+Kind regards
+Consulting Sample Company
+
+",no,"This is a descriptive explanation of past events (causal rationale) and contains no recommendations, directives, or forward-looking advice.",supported,"The ticket notes the Finance team was moved to a new AD group and the old group deactivated, and the GPO analysis explicitly states the new group was member of a higher-level Zurich location group causing the Zurich printer to be mapped and set as default."

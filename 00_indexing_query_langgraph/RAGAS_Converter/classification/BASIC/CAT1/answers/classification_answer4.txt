@@ -1,0 +1,28 @@
+Recommendation
+I recommend classifying this ticket as second_level_support.
+
+Reasoning (mapping each reported symptom to similar documented cases)
+- D365 Financial Reports unusable (errors, “unknown” authors, “report cannot be found”, affects TEST and PROD): This closely matches ticket KF11 / TI-722511 where Financial Reports failed reproducibly across environments and users; the case required Data Mart/FRDB work and a Microsoft support ticket was opened for further analysis [Data: Sources (0, 1)].
+
+- New hotline numbers “dead” (carrier says calls reach your edge but they never land): This matches KF52 / TI-1612036 where incoming calls from a new number range were not delivered because the SBC translation/routing table lacked the new range; resolution required adjusting translation/routing rules per the Direct Routing blueprint (engineering change) [Data: Sources (8)].
+
+- Basel external calls disconnect ~30 seconds after connect (internal calls OK; other sites OK; recent change to voice/VLAN): This mirrors KF52 / TI-1604879 where calls dropped after ~30s due to a 30s NAT/session timeout and session-timer settings; remediation required SBC/session parameter changes and NAT timeout adjustments (coordination with network/voice engineering) [Data: Sources (16)].
+
+- Teams message pop-ups missing on laptops (messages arrive but no pop-up; phones OK; Focus/Windows updates recently): This matches KF52 / TI-1615096 where notifications were blocked by Teams banner settings and Windows Focus Assist; the issue was resolved by standard first-level checks and adjusting notification/Focus Assist settings per the “Blueprint – Teams Notifications Standard” [Data: Sources (19)].
+
+Why second level overall
+- Three of the four symptoms in this ticket correspond to past incidents that required systems/voice engineering changes or escalation to vendor support (D365 Microsoft ticket; SBC routing/translation changes; NAT/session timer and firewall/NAT timeout adjustments) rather than pure helpdesk-only fixes [Data: Sources (0, 1, 8, 16)]. Only the Teams notification symptom in the bundle maps to a routine first-level fix [Data: Sources (19)]. Given the presence of multiple service domains and multiple items that historically required engineer-level intervention, the overall ticket should be escalated as second_level_support.
+
+What the records explicitly document
+- D365 Financial Reports: reproducible failures across users/environments; attempted Data Mart Reset and FRDB recreation; Microsoft support ticket opened for deeper analysis [Data: Sources (0, 1)].
+- Incoming calls from new numbers: SBC lacked translation for the new number range; temporary tests and final adjustment of routing/translation rules per Direct Routing blueprint resolved the issue [Data: Sources (8)].
+- 30s call drops (Basel): session timer and NAT/UDP timeout misconfiguration (30s) caused BYE after ~30s; adjusting session timers/NAT timeout on SBC/firewall resolved the problem [Data: Sources (16)].
+- Teams notifications: blocked by disabled Teams banner notifications and Windows Focus Assist; standard checks from the Teams Notifications blueprint fixed it [Data: Sources (19)].
+
+Recommended next steps (these are recommendations, not documented steps from the records)
+- Split the combined report into service-specific tickets (D365, Voice—incoming routing, Voice—Basel session drops, Teams notifications) and assign to the corresponding engineering teams to avoid conflicting changes and to allow parallel work. (recommended)
+- For D365: escalate to application/system engineers; consider Data Mart/FRDB reset steps and vendor (Microsoft) escalation if initial engineering actions don’t restore functionality. (recommended)
+- For telephony: escalate to Voice/SBC and Network teams to review SBC translation/routing tables (new number ranges), and to verify NAT/session timer and firewall UDP session timeouts for Basel. (recommended)
+- For Teams notifications: run first-level checks (Teams banner setting, Windows Notification Center/Focus Assist) and resolve locally where applicable. (recommended)
+
+If you want, I can draft a short escalation summary (one-paragraph) for your second-level engineers that includes the specific parallels from each cited ticket and the most likely teams to assign.

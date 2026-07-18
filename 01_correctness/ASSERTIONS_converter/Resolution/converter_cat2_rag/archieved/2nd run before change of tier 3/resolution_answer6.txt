@@ -1,0 +1,68 @@
+Summary — what the indexed records explicitly document
+- A phishing vector was found where two PDF files contained links to a fake Microsoft login page that exfiltrated credentials to algina[.]co before redirecting to Microsoft — the likely purpose being credential harvesting [Data: Sources (4)].
+- The customer asked to route all users without MFA through a geolocation control (target countries: CH, DE, AT, IT) and listed exceptions (several service accounts and D365IntPROD) and asked that Microsoft service‑initiated sign-ins not be blocked [Data: Sources (4)].
+- Prior incidents in the records show that policy/configuration changes that affect authentication flows can break automation and integrations:
+  - ADFS client parameters (EnableJWT and RequestMFAFromClaimsProviders) set to true caused background authentication failures; adjusting those parameters to the TEST environment settings resolved the issue [Documented action in TI-1385257] [Data: Sources (11)].
+  - Enabling tenant Security Defaults caused SMTP AUTH to be disabled and legacy Outlook/automated senders to fail; selective re‑enabling of SMTP AUTH and Conditional Access adjustments restored mail flow [Documented action in TI-1548823] [Data: Sources (32)].
+  - A reverse proxy / WAF reload after a security patch removed a required header (X-Forwarded-Proto) and caused external logins to fail; restoring the custom HTTP profile/header rewrite per the architecture blueprint resolved access [Documented action in TI-1594408] [Data: Sources (15)].
+- The KF12 ticket was classified as Priority HIGH and the notes propose a Lessons‑Learned meeting and SOC/ModernSecOps topics, indicating this situation was treated as a significant security incident [Data: Sources (4)].
+
+Interpreting your four symptoms from the indexed records
+- Credential harvesting via a convincing fake login (item 1) is documented in KF12 and should be treated as a possible credential compromise event [Data: Sources (4)].
+- The emergency reaction to force non‑MFA logins through geolocation controls (item 2) is the exact control requested in KF12 but the record does not document the final applied configuration or outcomes — however, the other tickets show that such policy/configuration changes commonly cause legitimate breakage when applied broadly (examples: TLS inspection missing headers, Security Defaults disabling legacy auth, ADFS param changes) [Data: Sources (4, 15, 32, 11)].
+- Automated accounts and scheduled jobs failing (item 3) match prior incidents where policy changes (Security Defaults / Conditional Access or SMTP AUTH) prevented non‑interactive/legacy authentication; the Exchange case shows selective enabling of SMTP AUTH and Conditional Access adjustments fixed that class of failure [Data: Sources (32)].
+- Integrations that work in browser UI but fail in background (item 4) match the ADFS/JWT/MFA misconfiguration incident where interactive browser logins succeeded but background/service authentication failed due to token/MFA delegation settings; adjusting the ADFS client parameters resolved it [Data: Sources (11)].
+
+Ticket classification recommendation (documented evidence + reasoning)
+- The indexed records show: (a) confirmed credential‑harvesting phishing activity (TI‑858473 / KF12), (b) this class of incident was treated as HIGH priority and discussed as requiring lessons learned and SOC topics (TI‑858473), and (c) resolving related authentication breaks required system‑engineer / specialist escalation in other incidents (TI‑1385257, TI‑1548823, TI‑1594408). On that basis, this should be treated as at least a 2nd‑level / security‑incident ticket (escalate to Security/SOC and System Engineers), not a pure 1st‑level support call [Data: Sources (4, 11, 32, 15)].
+- This is a recommendation based on how similar incidents were handled in the indexed records (escalations and specialist actions). The records do not contain a formal “1st vs 2nd level” policy mapping for this exact scenario; the above is an interpretation supported by the examples cited [Data: Sources (4, 11, 32, 15)].
+
+Step‑by‑step resolution plan — actions documented in the records (map to this case)
+(Each step below cites the ticket(s) where that action or finding was actually performed.)
+
+1) Treat as a security incident and escalate to Security/SOC and System Engineering
+   - Rationale / precedent: KF12 was priority HIGH and marked for Lessons‑Learned/SOC topics; other authentication incidents were forwarded to System Engineers (Exchange Specialist, ADFS specialist) for fixes [Data: Sources (4, 11, 32, 15)].
+
+2) Triage & evidence gathering (documented methods used in prior tickets)
+   - Collect sign‑in logs / Azure AD sign‑in data for the suspected accounts and affected users to determine unusual locations/IPs and confirm which accounts used the fake page [Analogous method used in SharePoint/Sign‑in analysis] [Data: Sources (30)].
+   - For Exchange/SMTP failures, review Exchange mailflow queues and server event logs for 535/SMTP AUTH failures (this is what was done in TI‑1548823) [Data: Sources (32)].
+   - For integration/background failures, review ADFS / client registration settings and application logs to identify token errors or MFA delegation problems (as in TI‑1385257) [Data: Sources (11)].
+
+3) Contain likely‑compromised accounts (recommended action informed by records, but not fully specified there)
+   - The KF12 record documents credential harvesting but does not list containment steps performed. In similar high‑risk cases in the corpus, escalation and targeted policy adjustments were used (e.g., policy changes in TI‑1548823 and TI‑1385257). The record does not show a documented password reset or global block for KF12, so the indexed knowledge is insufficient to state a specific containment action was taken in KF12 [Data: Sources (4, 32, 11)].
+   - Recommended (not directly documented): Immediately disable or enforce MFA/reset passwords for confirmed compromised accounts and monitor sign‑in logs. (Marking explicitly as recommended — see next section.)
+
+4) Restore business‑critical automated accounts while maintaining security — follow documented fixes that match your symptoms
+   - If mail/automation fails due to tenant policy changes disabling legacy auth (Security Defaults / Conditional Access), apply the documented fix: selectively re‑enable SMTP AUTH for the affected accounts and adjust Conditional Access policies so automation can continue while minimizing exposure [Documented remediation in TI‑1548823] [Data: Sources (32)].
+   - If an integration/authentication fails in background but interactive browser login works, check ADFS client registration for EnableJWT and RequestMFAFromClaimsProviders. In TI‑1385257 these parameters were incorrectly set to true and adjusting them to match TEST environment fixed the problem — replicate that check for the failing integration’s ADFS client [Documented remediation in TI‑1385257] [Data: Sources (11)].
+
+5) Review and adjust geolocation / MFA routing rule to avoid legitimate lockouts
+   - The KF12 ticket requested routing non‑MFA logins through geolocation and explicit exceptions (service accounts). The record does not show the exact firewall/WAF implementation or whether it was applied. Other tickets show that policy/template reloads after patches can overwrite exceptions and break access (TI‑1594408). Therefore:
+     - Documented precedent: Compare current reverse proxy / WAF / firewall configuration to the architectural blueprint and reapply custom header/profile or exceptions as documented; in the portal case, restoring the custom header rewrite and profile restored external access [Data: Sources (15)].
+     - Ensure you implement the geolocation/MFA control only for interactive sign‑ins and explicitly exempt machine/service accounts (the KF12 request included such exceptions) [Data: Sources (4)].
+   - The indexed records do not contain the exact WAF/firewall rules you applied here, so you must verify which template or profile was overwritten and reapply the documented blueprint settings if relevant (as in TI‑1594408) [Data: Sources (15, 4)].
+
+6) Validate and monitor
+   - After changes, monitor sign‑ins and mailflow for 24+ hours as done in TI‑1548823 and TI‑1594408; get customer confirmation that business processes work again and close ticket only after monitoring is stable [Data: Sources (32, 15)].
+
+Where the indexed knowledge is insufficient
+- The KF12 record documents the phishing vector and the customer’s requested mitigation but does not contain a complete, documented remediation flow (no universal containment steps, no record of password resets, no final geolocation rule implementation) — so the indexed knowledge alone is insufficient to fully resolve this incident end‑to‑end for your environment. The records provide close analogues (ADFS param fix, SMTP AUTH/Conditional Access adjustments, WAF header/profile restore) that map to your symptoms, but they do not provide the exact commands, policy names, or the final applied firewall/WAF rule set for your tenant [Data: Sources (4, 11, 32, 15)].
+- Therefore, you will need to: collect current logs and configuration (ADFS client settings, Conditional Access policies, WAF/firewall templates and header rewrite rules, Azure AD sign‑in logs, Exchange send connector/auth settings) and escalate to Security/SysEng to take the concrete remediation steps listed above. The indexed tickets show those are the relevant components to check and the successful prior remediations for similar root causes [Data: Sources (11, 32, 15, 30)].
+
+Concise operational checklist (which steps are documented in prior tickets vs which are recommended)
+- Documented in records and to be performed now where matching symptom exists:
+  1. Check ADFS client parameters (EnableJWT, RequestMFAFromClaimsProviders) for the failing integration — fix if set incorrectly (documented resolution in TI‑1385257) [Data: Sources (11)].
+  2. Check whether tenant Security Defaults / Conditional Access disabled SMTP AUTH and, if so, selectively re‑enable SMTP AUTH for affected automation or adjust policies (documented resolution in TI‑1548823) [Data: Sources (32)].
+  3. Review reverse proxy/WAF templates and header rewrite rules if external access is broken after a patch — reapply blueprint profile and header forwarding as done in TI‑1594408 (X‑Forwarded‑Proto example) [Data: Sources (15)].
+  4. Review Azure AD sign‑in logs to identify suspicious sign‑ins and which accounts may be compromised (approach used in TI‑1578891/SharePoint analysis) [Data: Sources (30)].
+
+- Recommended actions not explicitly performed in the KF12 record (you must treat these as steps to execute now):
+  - Immediate containment for confirmed compromised credentials (disable or reset, enforce MFA).
+  - Escalate to SOC / Incident Response team for forensic analysis and disclosure obligations.
+  - Apply the geolocation/MFA control only after validating exceptions and testing effect on service accounts and traveling users.
+
+If you want, I can:
+- Produce a prioritized action list you can hand to the SOC and System Engineers (marking which items are directly supported by the records and which are recommended), or
+- Draft the exact investigative questions and logs to collect (sign‑in log queries, event log entries to retrieve, Conditional Access policy names to check) — note: the indexed records do not contain the specific queries, so those will be a recommended next step rather than a quotation of prior tickets.
+
+Which of those would you like me to prepare next?

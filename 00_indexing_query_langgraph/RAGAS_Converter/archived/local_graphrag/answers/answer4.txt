@@ -1,0 +1,62 @@
+FINAL ANSWER:
+ Below is a concise diagnosis, priority checklist and next steps you can use immediately. Short summary first, then an ordered list of checks and what to collect for escalation.
+
+Summary / quick diagnosis
+- This looks like a platform/infrastructure problem (AOS/IIS/TLS + Financial Reporting Data Mart / FRDB / service‑account identity resolution) that is preventing the Financial Reports / Report Designer stack from reading report metadata (creators showing as “unknown”) and from opening/creating reports. Multiple EMEA users and both UAT and PROD are affected, so treat this as a cross‑environment, business‑impacting incident [Data: Reports (55); Sources (0)].  
+- The incident history shows a prior successful remediation pattern: applying a best‑practice TLS/cipher profile (IISCRYPTO) and restarting AOS/IIS returned service — which strongly points at TLS/cipher negotiation or Schannel differences as a prime suspect, but the dataset does not prove a prior baseline push caused the outage (the recorded cipher change is the corrective action, not a proven pre‑incident change) [Data: Reports (55); Sources (25)].
+- The AOS nodes 001‑SRV‑AOS72 (reported “fast” node) and 001‑SRV‑AOS73 (sluggish) were specifically called out during triage and should be compared first for configuration drift [Data: Reports (53); Sources (1)].  
+- FRDB / Data Mart work was performed in the integration environment (D365FO_INTE) during the investigation (FRDB recreation and Data Mart Reset were recorded) — this confirms DB/Data Mart checks were part of triage, but the final fix in the ticket was the TLS/cipher + AOS restart combo [Data: Reports (53); Sources (1); Reports (55)].
+
+Support classification
+- Classify as a 2nd‑level (platform/infrastructure) incident. Rationale: multi‑user, multi‑environment impact; root‑cause touches AOS/IIS/TLS, identity lookups and the FRDB backend; previous work required infra changes and vendor escalation. This is beyond desktop/browser 1st‑line troubleshooting [Data: Reports (55); Sources (0); Sources (25)].
+
+Immediate (priority) checklist — do these in order
+1. Capture scope/data (high priority)
+   - Collect screenshots, example report names/IDs, affected usernames, exact timestamps (UTC if possible), and which environment(s). These artifacts are essential for log correlation and vendor escalation [Data: Reports (53); Sources (0)].
+2. Compare TLS / cipher suite and Schannel settings across IIS and each AOS node (especially 001‑SRV‑AOS72 vs 001‑SRV‑AOS73)
+   - Configuration drift here frequently produces node‑specific behavior (one node works, others fail). If you have IISCrypto, export the profile on the IIS host; on each AOS run Get‑TlsCipherSuite and check the registry SSL Functions key. If you find mismatches, align them and then restart AOS/IIS (see step 4) [Data: Reports (55); Reports (141); Sources (25)].
+3. Verify service‑account / identity resolution and AAD sync
+   - “Creators shown as ‘unknown’” commonly indicates the reporting service cannot resolve author identities (service account token failures, AAD/AD lookup problems). Validate the service account credentials/permissions and check Azure AD/Azure AD Connect sync or token errors for the service account and affected users [Data: Sources (25); Reports (56)].
+4. Restart order (if you change TLS/cipher settings)
+   - If you apply or revert cipher/TLS changes, perform them synchronously across IIS and all AOS nodes and then restart AOS and IIS per runbook. AOS restart is required for Schannel/cipher changes to fully take effect; the incident history shows this sequence resolved a prior outage [Data: Reports (55); Sources (25)].
+5. Validate FRDB / Data Mart and SQL connectivity
+   - Confirm FRDB is ONLINE, that report metadata tables contain expected rows (sample the metadata rows), and that the Financial Reporting service can connect as the service account. The team did recreate FRDB in integration and ran Data Mart resets during triage, so DB-level state must be checked and correlated with service/auth logs [Data: Reports (53); Sources (1)].
+6. If smoke tests still fail, escalate to Microsoft with a reproducible package
+   - Gather the artifacts below and open vendor case with exact repro steps, timestamps and the collected logs [Data: Reports (55)].
+
+Short actionable steps you can run now (low risk)
+- Recycle the Financial Reporting IIS app‑pool(s) or do an IIS reset on one node (preferably in a maintenance window) and retest. If that fixes the symptom temporarily, it indicates a worker‑process / cached credential or TLS session issue; if not, proceed to the TLS/FRDB checks above. Note: because this spans PROD and UAT and affects business users, coordinate the action with ops and test on one node first [Data: Reports (53); Sources (1)].
+- On the two AOS nodes (001‑SRV‑AOS72 and 001‑SRV‑AOS73) run a direct test: RDP to each server and launch Report Designer locally. Compare behavior (this node‑vs‑node test was used in triage previously) [Data: Reports (53); Sources (1)].
+
+Logs and artifacts to collect (essential for root‑cause)
+- From each AOS node and IIS host (time window around a failing attempt + a buffer):
+  - Windows System and Application event logs (include Schannel events).  
+  - Get-TlsCipherSuite output and registry export of the SSL Functions key (or IISCrypto export).  
+  - IIS W3C logs + Failed Request Tracing (FREB) for the reporting site; HTTPERR if present.  
+  - AOS service/application traces and the Financial Reporting service logs.  
+  - SQL Server ERRORLOG for the FRDB and SQL Agent job history (to spot connectivity/login failures or restores).  
+  - Optional: short network capture (netsh trace) during a repro to show TLS ClientHello / ServerHello and cipher negotiation.  
+These artifacts are the ones the incident analysis says to collect to prove TLS handshakes, node drift and FRDB access errors [Data: Reports (55); Reports (53); Sources (25)].
+
+Example quick collection commands (run as Administrator) — use only if you can
+- Export cipher suites:
+  - Get-TlsCipherSuite | Sort Name > C:\temp\CipherSuites_$(hostname).txt  
+- Export Schannel events (last 200):
+  - Get-WinEvent -LogName System -FilterXPath "*[System[Provider[@Name='Schannel']]]" -MaxEvents 200 | Format-List TimeCreated, Id, Message > C:\temp\Schannel_$(hostname).txt  
+- IIS logs: copy C:\inetpub\logs\LogFiles\W3SVC* files for the time range.  
+(If you want the full script used previously by the incident team to collect across all nodes, say so and I’ll produce it.)  
+[Data: Reports (141); Reports (55); Sources (25)]
+
+What the records do NOT confirm (so don’t assume yet)
+- I cannot confirm from the provided records that a “security baseline” change was the explicit root cause — the tickets record that PROD had modifications over a weekend and that a baseline was mentioned by someone, but the corpus does not include a pre‑incident change log proving a baseline push immediately preceded the failure. The documented cipher change was recorded as the corrective action during remediation, not as the proven trigger in the artifacts you shared [Data: Sources (0); Reports (55)].
+
+Who to involve / escalation path
+- Immediately involve 2nd‑level platform/ops (IIS, AOS, Windows infra), the DBA(s) owning FRDB/SQL, and the identity team (AAD / Azure AD Connect) for service‑account checks and token/claim analysis. Open an escalation to Microsoft if you can reproduce after collecting the artifact bundle (the prior incident used Microsoft support during the same outage) [Data: Reports (55); Sources (1)].
+
+If you want me to help now
+- I can: (A) provide a small PowerShell script to collect cipher lists, event exports and Schannel snippets from the three key hosts (IIS + AOS72 + AOS73) for you to run and paste the outputs here; or (B) if you paste the three exported files (cipher lists + Schannel + a short IIS log sample) I will diff the TLS/cipher settings and point to the exact mismatch and recommend precise suites to enable/disable and the restart order [Data: Reports (55); Reports (141); Sources (25)].
+
+Bottom line
+- Treat as 2nd‑level / platform incident. First focus: compare TLS/cipher settings across IIS and AOS nodes (001‑SRV‑AOS72 vs 001‑SRV‑AOS73), verify service‑account identity resolution and FRDB connectivity, collect Schannel/IIS/AOS/SQL logs and then perform coordinated cipher alignment + AOS/IIS restarts per the Management Reporting runbook. The incident history shows that sequence fixed a prior occurrence, so it’s the highest‑probability remediation path to test after you gather the logs [Data: Reports (55); Reports (53); Sources (25)].
+
+If you want the ready‑to‑run collection script or want me to review logs you collect, say which hosts/timestamps you can share and I’ll produce the next artifact set and an annotated plan for the maintenance window.

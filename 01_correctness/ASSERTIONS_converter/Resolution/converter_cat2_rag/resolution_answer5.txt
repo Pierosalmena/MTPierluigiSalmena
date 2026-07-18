@@ -1,0 +1,59 @@
+Summary (what the indexed records explicitly document)
+- The pattern you describe (browser TLS trust errors for internal HTTPS sites, VPN mutual-authentication failures, executive S/MIME signing/decryption failure, and LDAP-S binds failing for applications) matches a set of incidents that all began after an internal PKI/CA renewal or certificate-template change over a weekend. The prior incidents attribute these symptoms to CA/template changes and related side effects, not to application code changes [Data: Sources (55, 104, 36, 13)].
+- Specific root causes and factual remediations recorded in those incidents:
+  - Internal HTTPS services showed broken chains because the issuing (intermediate) CA certificate was not presented / published to distribution points; remediation was to publish the issuing CA into AIA/CRL distribution points and validate services [Data: Sources (55)].
+  - VPN server certificate was reissued from a refreshed template that dropped a required EKU; remediation was to reissue the server certificate from a template including the correct EKU and deploy new certs to VPN servers and clients (deployed via GPO/SCEP) [Data: Sources (104)].
+  - Executive S/MIME stopped working because new user certificates were issued without the corresponding private keys being available on the client: private keys had been generated on the CA side and key-archive/recovery plus local private-key import were required; remediation was new S/MIME cert issuance and private-key recovery/import on executive devices [Data: Sources (36)].
+  - LDAP-S (LDAPS) binds failed because Domain Controller certificates were auto-enrolled/renewed from the old issuing CA / template behavior; a fix to the auto-enrollment/template and re-enrollment of DC certificates restored LDAP-S connectivity [Data: Sources (13)].
+
+What was actually done in the prior cases (concrete steps recorded)
+1. Published intermediate (issuing) CA certificate to the AIA/CRL distribution points so client TLS chains could be validated, then validated affected HTTPS services [Data: Sources (55)].
+2. Reissued the VPN server certificate from a corrected template including the required IPsec/IKE EKU, deployed the corrected certificate to the VPN servers, and reissued/deployed or validated client certificates where needed; affected remote users regained VPN access [Data: Sources (104)].
+3. For S/MIME: performed key-archive recovery and re-imported the private keys to executive devices (and/or issued new S/MIME certs), then validated signed/decrypted mail operations [Data: Sources (36)].
+4. For LDAP-S: fixed the Group Policy / auto-enrollment template behavior and re-enrolled Domain Controller "Domain Controller Authentication" certificates from the issuing CA; applications could again bind over LDAPS (636) [Data: Sources (13)].
+
+Step-by-step resolution plan for your ticket (mapped to the documented fixes)
+Below are the actions to take, phrased as steps that mirror the actions that resolved the prior incidents. Each step cites the record that documents that action having been performed successfully.
+
+1) Confirm PKI/CA activity and scope
+   - Verify whether the issuing CA (intermediate) and/or certificate templates were changed or renewed in the maintenance window. This is the common trigger in the records [Data: Sources (55, 104, 36, 13)].
+   - (Note: prior tickets show the issuing CA was renewed and templates refreshed during the weekend PKI work) [Data: Sources (55, 104, 36)].
+
+2) Fix broken TLS chains for internal HTTPS services (HR, SharePoint, others)
+   - Publish the issuing (intermediate) CA certificate correctly to the AIA and CRL distribution points so clients can build a complete chain to a trusted root. Prior case: intermediate CA certificate published to AIA/CRL distribution points; affected services were validated afterwards [Data: Sources (55)].
+   - After publishing, validate from representative clients that the browser chain is complete and warnings are gone (the prior ticket documents "affected services validated" after publishing) [Data: Sources (55)].
+
+3) Resolve VPN authentication failures for remote users (~80)
+   - Confirm whether the VPN server certificate was reissued from a refreshed template that omitted the required EKU. In a documented case the template omitted the "IP security IKE intermediate" EKU and caused IKEv2 authentication failures [Data: Sources (104)].
+   - Reissue the VPN server certificate from a template that includes the correct EKU(s) required by your VPN concentrator. Deploy the corrected certificate to the VPN server(s). In the prior incident, the new certificate with corrected EKU was deployed and clients were validated [Data: Sources (104)].
+   - If client/user certificates were required or need reissuance/deployment (SCEP/GPO), ensure they are reissued or available; the prior case redeployed client certs as needed via GPO and validated users [Data: Sources (104)].
+
+4) Restore S/MIME signing/decryption for executives
+   - Confirm whether the executives’ S/MIME certificates were auto-renewed and whether the private keys are present on the client. The recorded incident showed new certs were present but Outlook reported "you do not have the private key" because the private key material was not on the devices [Data: Sources (36)].
+   - Use key-archive / recovery to obtain the private keys or issue new S/MIME certificates with private keys that are properly provisioned to user devices. The recorded remediation was: new S/MIME certificates issued and key-archive recovery performed; private keys re-imported on executive devices; signed emails validated [Data: Sources (36)].
+
+5) Restore LDAP-S (LDAPS) for internal apps that bind to DCs
+   - Check whether the Domain Controllers’ "Domain Controller Authentication" certs were auto-enrolled/renewed from the CA/template change and whether the renewed certs are trusted by the application clients. The prior ticket shows auto-enrollment renewal behaviour triggered renewals and that auto-enrollment/template configuration needed correction [Data: Sources (13)].
+   - Correct the auto-enrollment/template settings via Group Policy (fix the template configuration), then re-enroll the DC certificates from the issuing CA so the DCs present valid domain controller authentication certificates. Prior remediation: DC certificates re-enrolled after auto-enrollment template fix and LDAP-S restored [Data: Sources (13)].
+
+6) Validate and close
+   - After each fix, re-validate the affected functions:
+     - Browsers: no more certificate trust warnings against internal sites [Data: Sources (55)].
+     - VPN: affected remote users can establish IKEv2/certificate-based VPN connections [Data: Sources (104)].
+     - S/MIME: executives can sign outgoing mail and decrypt received sealed mail; previously-signed messages can be opened [Data: Sources (36)].
+     - LDAP-S: applications can bind over LDAPS (port 636) to DCs without TLS handshake errors [Data: Sources (13)].
+   - The prior tickets explicitly record validation steps and note services/users were validated after remediation [Data: Sources (55, 104, 36, 13)].
+
+What the indexed records do NOT contain (gaps you should be aware of)
+- The records document the types of corrective actions and their successful results, but they do not contain your environment-specific details (which exact CA was renewed in your environment, the precise certificate template names/settings you use, or the exact commands/scripts used to publish or re-enroll certificates). The tickets show the corrective actions but not the low-level procedure text that would be executed in your environment [Data: Sources (55, 104, 36, 13)].
+- The records do not show any single-runbook that covers all four problems as a coordinated remediation plan for a multi-symptom outage in one customer; they are separate tickets that were resolved individually but with similar PKI-rooted causes [Data: Sources (55, 104, 36, 13)].
+
+Recommended next step (not directly documented but necessary because the records lack your environment details)
+- Convene the PKI team (owner of the issuing CA) plus owners of Network/VPN, Identity/AD (for DC certs), and Application owners to:
+  - Confirm which CA and templates were changed during the maintenance window.
+  - Apply the documented fixes above (publish intermediate CA to AIA/CRL, correct VPN cert template EKUs and reissue/deploy, perform key-archive recovery / reissue S/MIME certs and import private keys, fix auto-enrollment and re-enroll DC certs).
+  - Execute the validation checks listed in step 6.
+  These coordination and environment-specific execution steps are recommended because the tickets show these exact fixes worked, but your environment specifics are required to perform them [Data: Sources (55, 104, 36, 13)].
+
+If you want, I can:
+- Produce a concise checklist mapping each of the four symptoms to the exact remediation step and the corresponding ticket number that documents success (ready for handing to your PKI/Network/Identity teams). This would be based only on the indexed records cited above. Would you like that checklist?

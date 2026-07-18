@@ -1,0 +1,28 @@
+Short answer
+- Classify this as a 1st‑level support ticket. A very similar incident was resolved by first‑line actions (adjusting Windows camera/app permissions and restarting Teams), without needing deeper engineering [Data: Sources (42)].
+
+Why (evidence)
+- In the comparable case, the camera was visible in Device Manager but Teams had no access. The root cause was OS privacy settings (camera access for apps disabled) and Teams not enabled in the allowed apps list. Adjusting those settings per the Teams Client Devices & Permissions blueprint restored the camera in Teams [Data: Sources (42)].
+
+1st‑level troubleshooting checklist (follow these before escalating)
+1. Confirm OS and scope
+   - Ask whether the user is on Windows or Mac and whether the camera also fails in Teams web (browser) — this was done in the ticket and is helpful to narrow down cause [Data: Sources (42)].
+2. Verify device visibility
+   - Confirm the camera appears in Device Manager (your note says it does) — that usually indicates the hardware/driver is present [Data: Sources (42)].
+3. Check Windows privacy settings and app permissions
+   - In Windows Settings → Privacy → Camera: ensure “Allow apps to access your camera” is enabled and that Teams is allowed in the list of apps. In the referenced incident these settings were blocking Teams and changing them fixed the issue [Data: Sources (42)].
+4. Restart and test
+   - Restart Teams (and perform a Teams test call) after adjusting permissions — this was part of the standard checks that resolved the case [Data: Sources (42)].
+5. Remote session
+   - If the user can’t make the changes themselves, perform a remote session and apply the blueprint checks (this is what was done in the ticket) [Data: Sources (42)].
+
+When to escalate to 2nd‑level
+- Escalate if the above blueprint checks do not restore camera access (i.e., permissions changed but Teams still shows no camera).
+- Escalate if you identify driver/agent problems or need to perform system‑level reinstallations or changes to domain/group policies that require elevated privileges or coordination with the OS/Infrastructure team. (A different ticket shows reinstalling an agent resolved a deeper sensor problem, illustrating that some fixes go beyond normal helpdesk changes) [Data: Sources (14)].
+
+Suggested ticket fields / notes to include
+- Symptom summary: “Camera visible in Device Manager; no camera option in Teams or Teams web; Windows updated recently.”
+- Actions taken: OS checked, browser checked, Device Manager confirmed, Windows privacy/app permissions reviewed/changed (state before/after), Teams restarted, test call results, remote session performed (if applicable).
+- Outcome or reason for escalation (if escalated).
+
+If you want, I can draft the exact text to put into your ticket or walk through the checklist with you step‑by‑step.

@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.key
+
+# IDE and operating system
+.DS_Store
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# GraphRAG generated files
+output/
+cache/
+lancedb/
+*.parquet
+
+# Temporary files
+tmp/
+temp/
+
+# Archived project files
+/archived/
+
+
+# Large generated GraphRAG results
+00_index_query/GraphRAG-Index1/RESULTS/**/drift/

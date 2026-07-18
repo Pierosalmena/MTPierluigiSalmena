@@ -1,0 +1,15 @@
+Summary recommendation
+- Classification: second_level_support.
+
+What the records explicitly document (evidence)
+- External Teams calls with one‑way audio (internal OK, external silent) in Zurich were previously diagnosed as a media/firewall/NAT configuration issue affecting media ports or session timers. Resolution required Unified Communications/SBC and network adjustments according to the Direct Routing architecture (changes made by engineers; tests with SBC/session parameters; firewall/NAT timeouts adjusted). This is documented in tickets TI-1602241 and TI-1604879 [Data: Sources (5, 16, 23)].  
+- Multiple types of printing failures (printer not responding after printers were moved into a new VLAN; single user “Access denied” from an explicit deny on the printer queue; default printer switching because of AD/GPO group membership; SAP printing broken after VM restore causing print‑share issues) were diagnosed and resolved by system engineers or required coordination with the Network/Core teams. Remediations included adjusting routing/firewall rules between server and printer VLAN, removing explicit deny permissions on the print queue, cleaning up AD group memberships or re‑enabling network shares on print servers — all actions done per the Print & Scanning Infrastructure Standard or by engineering staff [Data: Sources (22, 3, 2, 28)].
+
+Why this ticket should be second_level_support
+- The Zurich Teams symptom matches prior cases that were not solvable by client‑side steps (reinstalling, changing headsets, rebooting) and required SBC/network session and firewall changes performed by specialists (Direct Routing / NAT / session timer work) [Data: Sources (5, 16, 23)].  
+- The Basel printing symptoms combine multiple failure modes seen before that required server/queue permission changes, AD/GPO corrections, or network/VLAN routing and firewall rule changes — each of which in the past involved system engineers and coordination with network/core teams, not just front‑line user fixes [Data: Sources (22, 3, 2, 28)].
+
+Recommended operational approach (this is my recommendation, not extracted from the records)
+- Treat this as a second‑level incident and escalate to Unified Communications (for the Teams one‑way audio) and to Print/Core + Network teams (for the multiple printing problems). Consider opening separate escalations for the Teams issue and the printing issues to allow parallel engineer workflows. (Recommended)
+
+If you want, I can draft an escalation summary you can paste into your ticket system that references the symptoms and asks for UC/SBC and Print/Core+Network involvement (marked as recommended).

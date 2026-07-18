@@ -1,0 +1,21 @@
+Hi — thanks for the clear description. Your symptoms match a recent helpdesk case where the root cause was a hardware connection issue and the ticket was handled and closed at 1st-level support.
+
+What happened in the matching case
+- The user could hear others, other media (chat/camera) worked, Teams showed the USB headset selected, and the Teams test call recorded nothing — the Teams input level stayed empty [Data: Sources (37)].  
+- During a remote session the helpdesk found the microphone cable on the headset itself was not fully inserted; after correctly plugging it in the input meter showed activity and the Teams test call recorded audio. The ticket was resolved by the helpdesk (Employee 33) in that single session [Data: Sources (37)].
+
+Immediate things to try (based on that case)
+- Confirm whether you use a USB headset or an integrated microphone (helpdesk asked this as first diagnostic) [Data: Sources (37)].  
+- In Teams > Settings > Devices confirm the correct microphone is selected (you already reported this) and check the input level there. Also check Windows Sound input to see if any signal is shown (this was verified in the ticket) [Data: Sources (37)].  
+- If your headset has a detachable mic cable or an inline connector, make sure that mic cable/plug is fully seated — even if you already unplugged/replugged the USB, the internal mic plug can still be loose; in the example that exact check fixed the issue immediately [Data: Sources (37)].  
+- If the above doesn’t help, a short remote session with helpdesk was sufficient to diagnose and fix this in the cited case — they reconnected the mic and verified the Teams test call afterwards [Data: Sources (37)].
+
+Support-level classification
+- This is a typical 1st-level (helpdesk) issue — it was resolved by the helpdesk during a single remote session in the referenced ticket (no escalation required) [Data: Sources (37)].
+
+If you’d like, I can open a 1st-level ticket for you and request a short remote session. Please confirm:
+- Headset model and whether the mic cable is detachable,  
+- Operating system (Windows/Mac), and  
+- A preferred time for a remote session.
+
+Would you like me to create the ticket and request immediate remote assistance?

@@ -1,0 +1,100 @@
+Below I use only the indexed incident records to (A) state what the archive explicitly documents about these symptom classes, (B) give a concise step‑by‑step remediation plan that mirrors what was actually done in prior incidents (with citations), and (C) mark recommended actions that go beyond the archived actions. I do not assume access to your tenant or make any unrecorded claims.
+
+If you want me to assemble the exact text to paste into your ticketing portal (one paragraph per escalation target + list of attachments), say so and I’ll prepare it.
+
+---
+
+1) What the indexed records explicitly document about these symptom classes
+- Teams one‑way / no‑audio for external calls was repeatedly caused by network/SBC/media‑path issues (firewall blocking RTP or NAT/session timeouts) rather than endpoint hardware in prior cases; investigators used Teams Admin Center + SBC SIP traces + firewall/NAT logs and validated fixes by temporary port openings and SBC parameter changes [This is documented] [Data: Sources (23); Sources (16); Sources (8)].
+- Simultaneous printing problems in other incidents were caused by several distinct directory/GPO and print‑path faults: AD/group nesting causing wrong location GPO/printer mapping; an explicit Deny ACE on a queue blocking a user; printers moved to a new PRINTER VLAN without the relay/routing allow‑list; and, for SAP flows, Windows print‑server SMB/share publishing broken after VM restore — remediation actions in prior cases included removing Deny ACEs, forcing GPO (gpupdate /force) and re‑enabling the print‑server network share (SAP case) [This is documented] [Data: Sources (2); Sources (3); Sources (22); Sources (28); Sources (39)].
+- When multiple subsystems failed after an org/group change, the indexed records consistently routed work to second‑level teams (Identity / BU Infrastructure – M365, Unified Communications / SBC engineers, and Core Engineering for print servers) rather than being resolved at first‑line only [This is documented and forms the historical escalation pattern] [Data: Sources (13); Sources (8); Sources (28)].
+
+---
+
+2) Immediate, evidence‑backed triage (do these steps first). Each step cites the prior case(s) that used the same action.
+
+A. Teams (Zurich training room) — triage steps (documented in prior incidents)
+1. Gather a representative failing call sample: timestamp (UTC), caller UPN/extension, called number, and the local client clock time when the UI shows “Connected → silent” [used by prior responders to align traces] [Data: Sources (23); Sources (8)].
+2. Pull Teams Admin Center call trace for that timestamp and the per‑call correlationId(s) [used as the control‑plane correlate in prior cases] [Data: Sources (8)].
+3. Request SBC SIP trace for the same call (full INVITE/200OK/ACK/SDP and final BYE) and include Call‑ID and timestamps — prior incidents used these traces to find BYE at ~29–31s or 404 routing responses [Data: Sources (8); Sources (16)].
+4. Request firewall/NAT logs for the same time window showing UDP/RTP flows and NAT session events (session creation and expiry) and any firewall change entries in the recent change window; prior Zurich/Basel incidents used firewall/NAT logs to prove blocked RTP or 30s NAT expiry [Data: Sources (23); Sources (16)].
+5. Correlate SBC BYE time with any NAT expiry or firewall deny entry; if BYE coincides with a 30s NAT timeout or a deny of RTP ports, that is the documented cause and the remedy is to align NAT/session timers or open the dynamic RTP range per the Direct Routing blueprint [Documented pattern and remedy] [Data: Sources (16); Sources (23)].
+
+(These are the same investigative artifacts and validation steps shown effective in TI‑1602241 / TI‑1604879 / TI‑1612036.) [Data: Sources (23,16,8)]
+
+B. Printing (Basel) — triage steps (documented in prior incidents)
+1. Capture example user evidence (for each symptom type): a) user who sees zero printers — screenshot of “Printers & scanners” and full Windows address bar + UPN; b) user who gets “Access denied” on print — screenshot of error and the targeted queue name; c) job that is stuck — server‑side queue snapshot (queued jobs with owner, document name, JobID) [prior cases recorded these artifacts as essential] [Data: Sources (39); Sources (3); Sources (27)].
+2. Export the affected users’ AD group membership (the membership set used by GPOs) and the group(s) that map to printers (location groups such as PRT‑Basel, ZURICH LOCATION AD GROUP). Prior Finance/Printer incidents showed incorrect nesting (Finance → Zurich) caused wrong default printer [Data: Sources (2); Sources (39)].
+3. On an affected workstation, force Group Policy refresh and re‑login (gpupdate /force + sign out/in) and record whether the printer mapping appears — this was the exact validation step in multiple resolved cases [Data: Sources (39)].
+4. On the print server(s): inspect queue ACLs for explicit Deny ACEs and remove after confirming intent (Basel explicit Deny case). If spooler shows paused queues, activate queue and restart jobs (documented remediation) [Data: Sources (3); Sources (27)].
+5. If jobs disappear from the Windows queue (or SAP printing is involved), check whether printers were moved into a PRINTER VLAN and whether the print server can reach the device (ping) and whether the VLAN IP is present in the SMTP relay allow‑list for Scan‑to‑Mail; prior VLAN moves required routing/firewall adjustments and SMTP allow‑list edits [Data: Sources (22); Sources (6)].
+6. If SAP print paths are used, identify the SAP print target → Windows queue mapping and, if the printserver was recently restored/updated, validate the SMB network‑share publishing state. In a documented SAP case, disabling and re‑enabling the network share on VRINFRGERPRNT03/04 released pending SAP jobs [Data: Sources (28); Sources (7)].
+
+(These steps mirror what Core Engineering / Print and Network teams did in the recorded print incidents.) [Data: Sources (28,22,3,39)]
+
+---
+
+3) Artifacts to gather NOW (explicitly supported by the records)
+Collect these and attach to the ticket before escalation — prior incident notes show these accelerate diagnosis:
+
+- Teams/UC: sample call timestamp (UTC), Teams Admin Center call trace/correlationId, SBC SIP trace for that call (INVITE/200/SDP/BYE), firewall/NAT logs for RTP ports and NAT session-timeouts for the same window [Data: Sources (8, 16, 23)].
+- Print: screenshots from affected users (Printers pane, Access denied), AD group membership export for affected users, print server queue snapshot (JobID, Owner, document name), print server event logs (PrintService operational EVTX) and queue ACL screenshot, and network/VLAN/routing allow‑list for printers — if SAP is involved, SAP spool IDs for the affected jobs and which Windows queue they mapped to [Data: Sources (39, 3, 27, 28, 22, 7)].
+- Identity/context: Azure AD sign‑in entries for a sample affected user (token claim list), and Azure AD Connect sync run history covering the suspected change window if you suspect group/object changes (prior investigations used these to prove overwrite) [Data: Sources (31, 13)].
+
+Cite these artifacts in the ticket and attach them: prior cases used them to get to root cause rapidly [Data: Sources (8); Sources (28); Sources (13)].
+
+---
+
+4) Immediate classification recommendation (supported by records)
+- Classify this incident: second_level_support. Rationale: simultaneous, cross‑domain failures (Unified Communications media + directory/GPO + print server) match prior incidents that required second‑line/system‑engineer escalation (Identity team for group/sync issues; UC/SBC and Network for media issues; Core Engineering for print‑server fixes) rather than being resolvable entirely by first‑line steps [Documented precedent: TI‑1583327, TI‑1602241, TI‑931293] [Data: Sources (13); Sources (23); Sources (28)].
+
+---
+
+5) Documented remediation examples you should reference (paste into ticket)
+(These are actions actually performed in archived incidents; list them so the receiving engineers see precedent.)
+
+- If SBC logs show INVITE→200 OK but no client RTP and firewall logs show blocked dynamic RTP ports → open dynamic RTP range per Direct Routing blueprint and validate with a Teams Test Call (temporary open to validate, then apply permanent rule) [Documented fix from Zurich incidents] [Data: Sources (23); Sources (5)].
+- If SBC shows BYE at ~29–31s correlated with NAT/UDP expiry → align NAT/session timeout with Direct Routing blueprint (increase from 30s to recommended value) and retest (shown in Basel case) [Documented] [Data: Sources (16)].
+- If a print queue has an explicit Deny ACE → remove the Deny ACE and test print (documented Basel case) [Documented] [Data: Sources (3)].
+- If new user sees zero printers but others in same room print → validate AD group membership and force GPO (gpupdate /force + re‑login) as documented remediation in several tickets [Documented] [Data: Sources (39)].
+- If SAP jobs are stuck after a VM update/restore → disable and re‑enable the printer network share on the SAP printserver (VRINFRGERPRNT03/04) to release queued SAP jobs — this was the recorded corrective action in a PRIO HIGH case [Documented] [Data: Sources (28); Sources (7)].
+
+Do not present these as generic commands — they are documented prior actions; attach the referenced ticket ids when you ask engineers to reuse the same fix path [Data: Sources (28); Sources (3); Sources (23); Sources (39)].
+
+---
+
+6) Recommended coordination / escalation (clearly marked as recommended)
+(These items are recommended operational steps — they are not claimed as done in the indexed records.)
+
+- Immediately escalate and open cross‑functional bridge/call with: UC/SBC owner (include SBC log owner), Network/Firewall owner, Identity / BU Infrastructure – M365, and Core Engineering / Print owner. Attach the artifacts listed in §3. (recommended)
+- For identity correlation, ask Identity to run Microsoft Graph membership exports and Azure AD sign‑in query for the time window you supply; if you cannot share logs here, ask them to paste the key lines showing token claims (COMPLIANCE_TEAM vs Compliance_Core) for the sample users. (recommended)
+- If you need an authoritative change rollback (e.g., remove a recent org/group change), request Identity/AD to produce Azure AD Connect run history and consider a conservative rollback plan only after cross-team validation. (recommended)
+
+These recommendations reflect the operational escalation pattern and evidence collected in the historical incidents [Data: Sources (13); Sources (8); Sources (28)].
+
+---
+
+7) Final checklist you can paste into your ticket now (copy/paste)
+(Use this to speed the handoff; items in [] should be filled in.)
+
+- Symptom summary (one line): Zurich — external Teams calls show “Connected” but no inbound audio (other side hears us). Basel — new user sees zero printers; another user gets “Access denied”; others’ jobs stuck. [Provided by reporter].
+- Classification: second_level_support — escalate to UC/SBC, Network, Identity, Core Engineering. [Supported: Sources (13,23,28)]
+- Required artifacts (attach):  
+  1) Teams: sample failing call time (UTC) + Teams Admin Center call trace/correlationId + SBC SIP trace INVITE→200→SDP→BYE for same call + firewall/NAT logs for RTP/NAT session timeframe [Data: Sources (8,16,23)].  
+  2) Printing: screenshots (Printers pane / Access denied), AD group membership export for affected users, print server queue snapshot (JobID/Owner/Document/Time), print server event logs (PrintService EVTX), and (if SAP) SAP spool IDs + target mapping [Data: Sources (39,3,27,28,7)].  
+  3) Identity: sample UPN(s) and time window for sign‑in log export (Azure AD sign‑in logs + Azure AD Connect sync runs) [Data: Sources (31,13)].
+- Short next steps (who to call): open bridge with UC/SBC owner (SBC logs), Network team (firewall/NAT), Identity (Graph + sign‑in logs), Core Engineering/Print (spooler/SMB/share). [Pattern documented: Sources (23, 13, 28)]
+- Attach precedent tickets: TI‑1602241 (Zurich media), TI‑1604879 (Basel 30s), TI‑1612036 (SBC translation/new numbers), TI‑931293 (SAP printing/VM restore) for your on‑call engineers to reference. [Data: Sources (23,16,8,28)]
+
+---
+
+8) If the indexed records do NOT contain enough to complete the fix
+- They do not contain your tenant’s live SBC trace files, firewall logs, print‑server EVTX or your Azure AD Connect run logs. You must collect and attach those artifacts (exact files and timestamps) to allow the same evidence‑driven steps shown in the records to be executed here. I cannot run those exports for you. This limitation is explicit in the indexed corpus (prior tickets referenced those artifacts but did not embed the raw traces in the indexed summaries) [Data: Sources (8,16,28,13)].
+
+---
+
+If you want I will now:
+- (A) draft the short bridge invitation text (one paragraph) that lists the attachments above and names the specialist teams to invite; or
+- (B) draft the exact, copy/paste log‑request messages for the SBC owner and for the Identity team (Graph + Azure AD sign‑in exports) including the specific incident windows I cited.
+
+Tell me which and I’ll produce it (that will be a recommended, actionable output based on the indexed precedents).

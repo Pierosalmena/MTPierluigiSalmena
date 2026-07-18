@@ -1,0 +1,36 @@
+## Recommendation
+Classify this ticket as **second_level_support**.
+
+## Reasoning (concise)
+- You describe simultaneous, cross‑service failures touching mail submission from desktop clients (desktop Outbox fails while web mail works), Teams presence/call failures to external partners, large‑scan SMTP relay failures, and printers/print‑server queue loss. In the indexed corpus the same symptom classes were handled as engineer‑level escalations rather than routine first‑line fixes: Exchange/SMTP AUTH / Conditional Access desktop send failures, Teams federation/presence incidents, Scan‑to‑Mail SMTP relay limits, and print‑server/VM‑restore printer outages all required specialist teams and cross‑team coordination to resolve. These prior incidents required investigator actions beyond standard first‑line playbooks (engineer changes, configuration/template restoration, connector reinstalls, VM/restore and forensic work) [Data: Sources (32, 26, 36, 28, 22)].
+
+## How the ticket maps to prior incidents (evidence from the records)
+- Desktop mail clients stuck in Outbox while webmail sends succeed — matches prior Exchange/SMTP AUTH / Conditional Access incidents that required engineering intervention (selective SMTP AUTH/tenant policy adjustments and connector review) [Data: Sources (32)].
+- External partners shown “Offline”, delayed chats and failing calls — maps to Teams federation/presence and Direct‑Routing incidents that required blueprint‑driven tenant/federation fixes and UC/Network engineer involvement [Data: Sources (26)].
+- Large 20–30 page scan sent but not received (small scans OK) — aligns with prior Scan‑to‑Mail incidents where SMTP relay policy or device scan/profile limits caused large messages to be rejected and required Mail Team / relay config changes [Data: Sources (36)].
+- Basel printer jobs disappearing from the queue — mirrors print/server incidents where spooler, share‑publishing or VM/host restore issues required infrastructure on‑call and server forensic actions (spooler restarts, VM snapshot/restore investigations) [Data: Sources (28, 22)].
+
+Because multiple domains are affected simultaneously and prior resolutions for these symptom classes required engineer work and cross‑team coordination, the proper classification is second_level_support [Data: Sources (32, 26, 36, 28, 22)].
+
+## Immediate (recommended) next steps — explicitly marked as recommendations (these are NOT documented as performed in the prior cases)
+- Recommended: escalate now to second‑level teams (Identity/Entra/AD, Exchange/Mail team, Unified Communications/Direct Routing, Network/Security, Infrastructure/VM/Print owners) and open a multi‑team incident bridge.
+- Recommended: collect and attach these artifacts (time‑bound around the security change window) for triage:
+  - Exchange/SMTP logs showing outbound 535/error lines and client‑side MAPI/SMTP client errors [recommended].
+  - Azure AD / Entra sign‑in and Conditional Access evaluation logs for affected senders and for representative users calling/chatting with external partners [recommended].
+  - Teams/Direct‑Routing/SBC logs and SIP/SDP traces for failed calls; RTP traces if available [recommended].
+  - SMTP relay logs (scan‑to‑mail) showing message‑size rejects and device MFP logs for the large scans [recommended].
+  - Print‑server spooler logs, Windows EventLog, and hypervisor/restore job IDs (if a VM restore was performed) for the Basel printer hosts [recommended].
+
+(These artifact requests are operational recommendations informed by the prior incidents; the indexed records show these artifact types were decisive in similar past cases but do not contain your environment’s actual files) [Data: Sources (32, 26, 36, 28)].
+
+## Short justification to hand to your ops lead
+- Multi‑domain failure pattern + coincidence with recent security changes = high likelihood of a configuration/regression or perimeter/identity policy change with cross‑service impact. Prior cases with this pattern required engineer escalation (second level) to modify tenant policies, restore templates, adjust relay/firewall rules, or perform server restores [Data: Sources (32, 26, 36, 28, 22)].
+
+## Key supporting references (top, from the indexed knowledge base)
+- Exchange / SMTP AUTH / desktop Outbox escalation examples [Data: Sources (32)].  
+- Teams federation / presence and Direct‑Routing incidents requiring blueprint fixes [Data: Sources (26)].  
+- Scan‑to‑Mail / SMTP relay size‑reject diagnostics and remediation [Data: Sources (36)].  
+- Print‑server / SAP printing and VM‑restore incidents where spooler/restore/BSOD forensic work was needed [Data: Sources (28)].  
+- Site printer and queue incidents (printer jobs vanishing; network/VLAN issues) [Data: Sources (22)].
+
+If you want, I can now (recommended) assemble a one‑page evidence request (ticket text) you can send to the owners of Mail, Identity, UC, Network and Infrastructure that lists the exact artifacts and time windows to collect — mark that as requested and I will produce it.

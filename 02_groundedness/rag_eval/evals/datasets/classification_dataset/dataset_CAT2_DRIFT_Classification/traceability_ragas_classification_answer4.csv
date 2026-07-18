@@ -1,0 +1,921 @@
+﻿question,answer,context
+Is the statement supported by the evidence?,Internal-only browser TLS trust warnings like your HR portal symptom were recorded in TI-1700005; root cause there was a renewed issuing/intermediate CA not being published to the internal AIA distribution point. Remediation recorded: publish the intermediate to AIA/CRL and force client refresh (gpupdate / certutil -pulse) which cleared client warnings,"=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+"
+Is the statement supported by the evidence?,"VPN authentication failures where clients “could not verify the server identity” match TI-1700006: CheckPoint IKEv2 logs showed an EKU mismatch because the post‑renewal VPN server certificate was issued from a template that omitted the required IPsec/IKE EKU. Remediation recorded: fix the template, re‑issue the server cert, deploy to the concentrator and restart — affected users recovered","=== CITED SOURCES ===
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now"
+Is the statement supported by the evidence?,"Office Wi‑Fi missing on new/replacement devices was documented as an Intune/profile scoping issue in prior cases: Wi‑Fi profiles assigned to a compliance‑based dynamic group were “not applicable” for devices flagged non‑compliant (e.g., after a tightened BitLocker escrow policy); resolving actions included changing assignment scope so new devices received the profile","=== CITED SOURCES ===
+SOURCE 87:
+Ticket summary:
+Ticket name: KF90: Office Wi-Fi configuration not deploying to some devices
+Ticket number: TI-1700010
+Company: Customer Company 90 AG
+Contact person: Contact Person 32
+Owner: Employee 34
+Source: Email
+Type: Support Request
+Created on: 04.03.25 11:30
+
+Closure
+Closure date: 13.03.25 16:48
+Closure text: Wi-Fi profile assignment scope adjusted to remove dependency on compliance state; devices receiving correct profile configuration.
+
+Activities
+Emails:
+
+04.03.25 11:30 KF90: New employees cannot connect to office Wi-Fi Contact Person 32 Helpdesk
+Hello,
+Several new joiners and a few users who recently received replacement laptops are reporting that they cannot connect to the office Wi-Fi (KF90-Corp). The Wi-Fi profile is supposed to deploy automatically via Intune.
+On their devices, the corporate Wi-Fi profile simply doesn't appear in the available networks list. Their devices are enrolled in Intune (visible in the portal) but the Wi-Fi profile is shown as ""not applicable"" in the Intune device-side configuration view.
+Affecting about 8 users currently. Could you investigate?
+Best regards
+Contact Person 32
+
+04.03.25 11:35 Ticket created: TI-1700010.
+
+04.03.25 11:50 Ticket assigned | TI-1700010
+Assigned to Employee 34 (BU Infrastructure - Endpoint Management).
+
+04.03.25 15:25 Re: KF90: Wi-Fi profile not deploying Employee 34 Contact Person 32
+Hello,
+Thanks. Could you please share:
+- 2-3 affected device names
+- The compliance status of those devices in Intune
+- The assignment scope of the Wi-Fi profile (which group is it targeted to?)
+
+05.03.25 09:30 Re: KF90: Wi-Fi profile not deploying Contact Person 32 Employee 34
+Hi,
+- Devices: KF90-LT-3001, KF90-LT-3002, KF90-LT-3003
+- Compliance: all three show ""non-compliant"" - flagged for ""BitLocker recovery key not escrowed within 30 days"" (we are looking at this in another ticket)
+- Wi-Fi profile is assigned to ""KF90-Compliant-Devices"" dynamic group
+
+13.03.25 16:48 Ticket closed | TI-1700010
+Closure description:
+Root cause: The Wi-Fi profile was deployed via assignment to a dynamic group ""KF90-Compliant-Devices"" whose membership rule was based on Intune compliance state. Devices affected by the BitLocker escrow compliance issue (see TI-1700009) had flipped to non-compliant and therefore dropped out of the dynamic group, which made the Wi-Fi profile assignment """
+Is the statement supported by the evidence?,Outlook on iOS setup loops tied to device-approval were recorded where App‑Protection/MAM required device compliance; affected iPhones were non‑compliant under a tightened device evaluation policy and onboarding looped until policy rescoping or remediation was applied (TI-1700011),"=== CITED SOURCES ===
+SOURCE 20:
+Ticket summary:
+Ticket name: KF90: Outlook on iOS not setting up email for some users
+Ticket number: TI-1700011
+Company: Customer Company 90 AG
+Contact person: Contact Person 32
+Owner: Employee 35
+Source: Email
+Type: Support Request
+Created on: 05.03.25 14:20
+
+Closure
+Closure date: 14.03.25 11:20
+Closure text: App Protection policy assignment for Outlook iOS rescoped; affected users completing email setup successfully.
+
+Activities
+Emails:
+
+05.03.25 14:20 KF90: Outlook on iPhone keeps asking to register device Contact Person 32 Helpdesk
+Hi,
+Some users report that when they try to add their work email to Outlook on iOS for the first time (or re-add after a phone reset), the app shows a screen saying their device must be registered/managed and then loops back to the email setup. They cannot complete the setup. The devices ARE enrolled in Intune already.
+About 12 users affected. Most are users who recently changed their phones or got new ones.
+Best regards
+Contact Person 32
+
+05.03.25 14:25 Ticket created: TI-1700011.
+
+05.03.25 14:40 Ticket assigned | TI-1700011
+Assigned to Employee 35 (BU Infrastructure - Mobile Security).
+
+06.03.25 09:50 Re: KF90: Outlook on iOS setup loop Employee 35 Contact Person 32
+Hello,
+Thanks. Could you please share:
+- 2 affected user UPNs
+- Are the affected users on personal devices (BYOD) or company-issued?
+- Confirm whether the affected users' devices show ""compliant"" or ""non-compliant"" in Intune
+
+06.03.25 14:30 Re: KF90: Outlook on iOS setup loop Contact Person 32 Employee 35
+Hi,
+- UserA@KF90.com, UserB@KF90.com
+- Both on company-issued iPhones
+- Both devices show as ""non-compliant"" - flagged for the same BitLocker-equivalent setting (we extended the policy to require iOS device encryption status to be evaluated within 30 days too)
+- Same root issue we are tracking in TI-1700009
+
+14.03.25 11:20 Ticket closed | TI-1700011
+Closure description:
+Root cause: Outlook for iOS was protected by an App Protection (MAM) policy that required the device to be marked as compliant in Intune before the protected work account could be added. Affected users' devices had recently flipped to non-compliant due to the tighter device-evaluation policy (related to TI-1700009 BitLocker compliance rollout). The MAM policy correctly enforced that work data could not be accessed on non-compliant devices, preventing email setup from completing.
+The ""loop"""
+Is the statement supported by the evidence?,Related incidents show SCEP/NDES and on‑prem PKI dependencies and connector issues were part of the same maintenance / PKI-change impact set; NDES connector logs and connector reinstall actions were recorded as part of other remediation efforts,"=== CITED SOURCES ===
+SOURCE 93:
+﻿
+Ticket summary:
+Ticket name: KF11: Intune NDES Connector lost communication
+Ticket number: TI-722423
+Company: Customer Company 11
+Contact person: Contact Person 8
+Owner: Employee 11
+Origin: Phone
+Type: Incident
+Created on: 27.03.24 12:04
+Closure
+Closure date: 14.06.24 16:10
+Closure text: Incident successfully resolved
+Activities
+Emails:
+27.03.24 13:10 | TI-722423 | KF11: Intune NDES Connector lost communication | Employee 11 | Contact Person 8
+Hello Contact Person 8, hello Contact Person 2,
+Together with the network team, I adjusted the firewall rules and then reinstalled the connector – this time without proxy configuration. After the reinstallation, the connector was displayed as “green” again in Azure (this step is required so that it can properly communicate with the Intune service).
+Since we had identified login issues, we temporarily excluded the service account from the MFA requirement.
+After completing the installation, I removed the “Intune Admin” role from the service account again. If we need to reinstall the connector, this role must be temporarily reassigned.
+During the installation, I followed the Microsoft guide
+“Configure infrastructure to support SCEP certificate profiles with Microsoft Intune.”
+Attached you will find logs to quickly verify whether the connector is operating correctly. See blueprint_1.
+Please do not make any changes to the settings without prior coordination.
+If issues occur during the Intune deployment, you may contact the Helpdesk or the WPS team at any time.
+
+
+"
+Is the statement supported by the evidence?,"The ticket’s combination of (a) internal TLS chain trust failures, (b) VPN server‑identity/EKU failures, (c) Intune/profile delivery issues for new devices, and (d) mobile App‑Protection onboarding loops maps directly to multiple prior incidents that required PKI, VPN/network, Endpoint/Intune and Mobile/App‑Protection engineering actions — not routine helpdesk steps. The indexed cases above were handled by infrastructure/PKI and endpoint teams and involved certificate/template fixes, CA/AIA publication, re‑issuance/deployment of server certs, and Intune policy/assignment changes","=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+
+
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now
+
+SOURCE 87:
+Ticket summary:
+Ticket name: KF90: Office Wi-Fi configuration not deploying to some devices
+Ticket number: TI-1700010
+Company: Customer Company 90 AG
+Contact person: Contact Person 32
+Owner: Employee 34
+Source: Email
+Type: Support Request
+Created on: 04.03.25 11:30
+
+Closure
+Closure date: 13.03.25 16:48
+Closure text: Wi-Fi profile assignment scope adjusted to remove dependency on compliance state; devices receiving correct profile configuration.
+
+Activities
+Emails:
+
+04.03.25 11:30 KF90: New employees cannot connect to office Wi-Fi Contact Person 32 Helpdesk
+Hello,
+Several new joiners and a few users who recently received replacement laptops are reporting that they cannot connect to the office Wi-Fi (KF90-Corp). The Wi-Fi profile is supposed to deploy automatically via Intune.
+On their devices, the corporate Wi-Fi profile simply doesn't appear in the available networks list. Their devices are enrolled in Intune (visible in the portal) but the Wi-Fi profile is shown as ""not applicable"" in the Intune device-side configuration view.
+Affecting about 8 users currently. Could you investigate?
+Best regards
+Contact Person 32
+
+04.03.25 11:35 Ticket created: TI-1700010.
+
+04.03.25 11:50 Ticket assigned | TI-1700010
+Assigned to Employee 34 (BU Infrastructure - Endpoint Management).
+
+04.03.25 15:25 Re: KF90: Wi-Fi profile not deploying Employee 34 Contact Person 32
+Hello,
+Thanks. Could you please share:
+- 2-3 affected device names
+- The compliance status of those devices in Intune
+- The assignment scope of the Wi-Fi profile (which group is it targeted to?)
+
+05.03.25 09:30 Re: KF90: Wi-Fi profile not deploying Contact Person 32 Employee 34
+Hi,
+- Devices: KF90-LT-3001, KF90-LT-3002, KF90-LT-3003
+- Compliance: all three show ""non-compliant"" - flagged for ""BitLocker recovery key not escrowed within 30 days"" (we are looking at this in another ticket)
+- Wi-Fi profile is assigned to ""KF90-Compliant-Devices"" dynamic group
+
+13.03.25 16:48 Ticket closed | TI-1700010
+Closure description:
+Root cause: The Wi-Fi profile was deployed via assignment to a dynamic group ""KF90-Compliant-Devices"" whose membership rule was based on Intune compliance state. Devices affected by the BitLocker escrow compliance issue (see TI-1700009) had flipped to non-compliant and therefore dropped out of the dynamic group, which made the Wi-Fi profile assignment ""
+
+SOURCE 20:
+Ticket summary:
+Ticket name: KF90: Outlook on iOS not setting up email for some users
+Ticket number: TI-1700011
+Company: Customer Company 90 AG
+Contact person: Contact Person 32
+Owner: Employee 35
+Source: Email
+Type: Support Request
+Created on: 05.03.25 14:20
+
+Closure
+Closure date: 14.03.25 11:20
+Closure text: App Protection policy assignment for Outlook iOS rescoped; affected users completing email setup successfully.
+
+Activities
+Emails:
+
+05.03.25 14:20 KF90: Outlook on iPhone keeps asking to register device Contact Person 32 Helpdesk
+Hi,
+Some users report that when they try to add their work email to Outlook on iOS for the first time (or re-add after a phone reset), the app shows a screen saying their device must be registered/managed and then loops back to the email setup. They cannot complete the setup. The devices ARE enrolled in Intune already.
+About 12 users affected. Most are users who recently changed their phones or got new ones.
+Best regards
+Contact Person 32
+
+05.03.25 14:25 Ticket created: TI-1700011.
+
+05.03.25 14:40 Ticket assigned | TI-1700011
+Assigned to Employee 35 (BU Infrastructure - Mobile Security).
+
+06.03.25 09:50 Re: KF90: Outlook on iOS setup loop Employee 35 Contact Person 32
+Hello,
+Thanks. Could you please share:
+- 2 affected user UPNs
+- Are the affected users on personal devices (BYOD) or company-issued?
+- Confirm whether the affected users' devices show ""compliant"" or ""non-compliant"" in Intune
+
+06.03.25 14:30 Re: KF90: Outlook on iOS setup loop Contact Person 32 Employee 35
+Hi,
+- UserA@KF90.com, UserB@KF90.com
+- Both on company-issued iPhones
+- Both devices show as ""non-compliant"" - flagged for the same BitLocker-equivalent setting (we extended the policy to require iOS device encryption status to be evaluated within 30 days too)
+- Same root issue we are tracking in TI-1700009
+
+14.03.25 11:20 Ticket closed | TI-1700011
+Closure description:
+Root cause: Outlook for iOS was protected by an App Protection (MAM) policy that required the device to be marked as compliant in Intune before the protected work account could be added. Affected users' devices had recently flipped to non-compliant due to the tighter device-evaluation policy (related to TI-1700009 BitLocker compliance rollout). The MAM policy correctly enforced that work data could not be accessed on non-compliant devices, preventing email setup from completing.
+The ""loop""
+
+SOURCE 93:
+﻿
+Ticket summary:
+Ticket name: KF11: Intune NDES Connector lost communication
+Ticket number: TI-722423
+Company: Customer Company 11
+Contact person: Contact Person 8
+Owner: Employee 11
+Origin: Phone
+Type: Incident
+Created on: 27.03.24 12:04
+Closure
+Closure date: 14.06.24 16:10
+Closure text: Incident successfully resolved
+Activities
+Emails:
+27.03.24 13:10 | TI-722423 | KF11: Intune NDES Connector lost communication | Employee 11 | Contact Person 8
+Hello Contact Person 8, hello Contact Person 2,
+Together with the network team, I adjusted the firewall rules and then reinstalled the connector – this time without proxy configuration. After the reinstallation, the connector was displayed as “green” again in Azure (this step is required so that it can properly communicate with the Intune service).
+Since we had identified login issues, we temporarily excluded the service account from the MFA requirement.
+After completing the installation, I removed the “Intune Admin” role from the service account again. If we need to reinstall the connector, this role must be temporarily reassigned.
+During the installation, I followed the Microsoft guide
+“Configure infrastructure to support SCEP certificate profiles with Microsoft Intune.”
+Attached you will find logs to quickly verify whether the connector is operating correctly. See blueprint_1.
+Please do not make any changes to the settings without prior coordination.
+If issues occur during the Intune deployment, you may contact the Helpdesk or the WPS team at any time.
+
+
+"
+Is the statement supported by the evidence?,Collect representative artifacts used successfully in the past: browser certificate‑chain screenshots and certutil -urlfetch -verify outputs for affected internal sites; VPN/CheckPoint IKE logs showing EKU/chain errors; per‑device Intune compliance‑evaluation history and Wi‑Fi/profile assignment applicability; iOS device enrollment/App‑Protection failure traces; and NDES connector logs if SCEP is in use. These are the same classes of diagnostics the prior incidents used to reach root cause [Recommended; based on practices recorded in the tickets],"=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+
+
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now
+
+SOURCE 87:
+Ticket summary:
+Ticket name: KF90: Office Wi-Fi configuration not deploying to some devices
+Ticket number: TI-1700010
+Company: Customer Company 90 AG
+Contact person: Contact Person 32
+Owner: Employee 34
+Source: Email
+Type: Support Request
+Created on: 04.03.25 11:30
+
+Closure
+Closure date: 13.03.25 16:48
+Closure text: Wi-Fi profile assignment scope adjusted to remove dependency on compliance state; devices receiving correct profile configuration.
+
+Activities
+Emails:
+
+04.03.25 11:30 KF90: New employees cannot connect to office Wi-Fi Contact Person 32 Helpdesk
+Hello,
+Several new joiners and a few users who recently received replacement laptops are reporting that they cannot connect to the office Wi-Fi (KF90-Corp). The Wi-Fi profile is supposed to deploy automatically via Intune.
+On their devices, the corporate Wi-Fi profile simply doesn't appear in the available networks list. Their devices are enrolled in Intune (visible in the portal) but the Wi-Fi profile is shown as ""not applicable"" in the Intune device-side configuration view.
+Affecting about 8 users currently. Could you investigate?
+Best regards
+Contact Person 32
+
+04.03.25 11:35 Ticket created: TI-1700010.
+
+04.03.25 11:50 Ticket assigned | TI-1700010
+Assigned to Employee 34 (BU Infrastructure - Endpoint Management).
+
+04.03.25 15:25 Re: KF90: Wi-Fi profile not deploying Employee 34 Contact Person 32
+Hello,
+Thanks. Could you please share:
+- 2-3 affected device names
+- The compliance status of those devices in Intune
+- The assignment scope of the Wi-Fi profile (which group is it targeted to?)
+
+05.03.25 09:30 Re: KF90: Wi-Fi profile not deploying Contact Person 32 Employee 34
+Hi,
+- Devices: KF90-LT-3001, KF90-LT-3002, KF90-LT-3003
+- Compliance: all three show ""non-compliant"" - flagged for ""BitLocker recovery key not escrowed within 30 days"" (we are looking at this in another ticket)
+- Wi-Fi profile is assigned to ""KF90-Compliant-Devices"" dynamic group
+
+13.03.25 16:48 Ticket closed | TI-1700010
+Closure description:
+Root cause: The Wi-Fi profile was deployed via assignment to a dynamic group ""KF90-Compliant-Devices"" whose membership rule was based on Intune compliance state. Devices affected by the BitLocker escrow compliance issue (see TI-1700009) had flipped to non-compliant and therefore dropped out of the dynamic group, which made the Wi-Fi profile assignment ""
+
+SOURCE 20:
+Ticket summary:
+Ticket name: KF90: Outlook on iOS not setting up email for some users
+Ticket number: TI-1700011
+Company: Customer Company 90 AG
+Contact person: Contact Person 32
+Owner: Employee 35
+Source: Email
+Type: Support Request
+Created on: 05.03.25 14:20
+
+Closure
+Closure date: 14.03.25 11:20
+Closure text: App Protection policy assignment for Outlook iOS rescoped; affected users completing email setup successfully.
+
+Activities
+Emails:
+
+05.03.25 14:20 KF90: Outlook on iPhone keeps asking to register device Contact Person 32 Helpdesk
+Hi,
+Some users report that when they try to add their work email to Outlook on iOS for the first time (or re-add after a phone reset), the app shows a screen saying their device must be registered/managed and then loops back to the email setup. They cannot complete the setup. The devices ARE enrolled in Intune already.
+About 12 users affected. Most are users who recently changed their phones or got new ones.
+Best regards
+Contact Person 32
+
+05.03.25 14:25 Ticket created: TI-1700011.
+
+05.03.25 14:40 Ticket assigned | TI-1700011
+Assigned to Employee 35 (BU Infrastructure - Mobile Security).
+
+06.03.25 09:50 Re: KF90: Outlook on iOS setup loop Employee 35 Contact Person 32
+Hello,
+Thanks. Could you please share:
+- 2 affected user UPNs
+- Are the affected users on personal devices (BYOD) or company-issued?
+- Confirm whether the affected users' devices show ""compliant"" or ""non-compliant"" in Intune
+
+06.03.25 14:30 Re: KF90: Outlook on iOS setup loop Contact Person 32 Employee 35
+Hi,
+- UserA@KF90.com, UserB@KF90.com
+- Both on company-issued iPhones
+- Both devices show as ""non-compliant"" - flagged for the same BitLocker-equivalent setting (we extended the policy to require iOS device encryption status to be evaluated within 30 days too)
+- Same root issue we are tracking in TI-1700009
+
+14.03.25 11:20 Ticket closed | TI-1700011
+Closure description:
+Root cause: Outlook for iOS was protected by an App Protection (MAM) policy that required the device to be marked as compliant in Intune before the protected work account could be added. Affected users' devices had recently flipped to non-compliant due to the tighter device-evaluation policy (related to TI-1700009 BitLocker compliance rollout). The MAM policy correctly enforced that work data could not be accessed on non-compliant devices, preventing email setup from completing.
+The ""loop""
+
+SOURCE 93:
+﻿
+Ticket summary:
+Ticket name: KF11: Intune NDES Connector lost communication
+Ticket number: TI-722423
+Company: Customer Company 11
+Contact person: Contact Person 8
+Owner: Employee 11
+Origin: Phone
+Type: Incident
+Created on: 27.03.24 12:04
+Closure
+Closure date: 14.06.24 16:10
+Closure text: Incident successfully resolved
+Activities
+Emails:
+27.03.24 13:10 | TI-722423 | KF11: Intune NDES Connector lost communication | Employee 11 | Contact Person 8
+Hello Contact Person 8, hello Contact Person 2,
+Together with the network team, I adjusted the firewall rules and then reinstalled the connector – this time without proxy configuration. After the reinstallation, the connector was displayed as “green” again in Azure (this step is required so that it can properly communicate with the Intune service).
+Since we had identified login issues, we temporarily excluded the service account from the MFA requirement.
+After completing the installation, I removed the “Intune Admin” role from the service account again. If we need to reinstall the connector, this role must be temporarily reassigned.
+During the installation, I followed the Microsoft guide
+“Configure infrastructure to support SCEP certificate profiles with Microsoft Intune.”
+Attached you will find logs to quickly verify whether the connector is operating correctly. See blueprint_1.
+Please do not make any changes to the settings without prior coordination.
+If issues occur during the Intune deployment, you may contact the Helpdesk or the WPS team at any time.
+
+
+"
+Is the statement supported by the evidence?,TI-1700005 (HR portal TLS chain / missing AIA publish),"=== CITED SOURCES ===
+SOURCE 55:
+Ticket summary:
+Ticket name: KF80: Internal portal showing TLS certificate errors after PKI renewal
+Ticket number: TI-1700005
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 32
+Source: Email
+Type: Support Request
+Created on: 11.02.25 08:30
+
+Closure
+Closure date: 19.02.25 11:48
+Closure text: Intermediate CA certificate published correctly to AIA/CRL distribution points; affected services validated.
+
+Activities
+Emails:
+
+11.02.25 08:30 KF80: Internal application throwing certificate errors Contact Person 31 Helpdesk
+Hello,
+Since this morning, our internal HR portal (https://hrportal.kf80.local) is showing certificate warnings in the browser when accessed from any client. The error in Chrome is ""NET::ERR_CERT_AUTHORITY_INVALID"" and in Edge it says the certificate is not trusted.
+The portal was working fine yesterday. The only change I am aware of is that our PKI team renewed the internal Certificate Authority certificates over the weekend, which we were told would be transparent to users.
+This is blocking access to HR records and the absence reporting system.
+Thanks
+Contact Person 31
+
+11.02.25 08:35 Ticket created: TI-1700005
+Confirmation.
+
+11.02.25 08:40 Ticket priority High - operational impact on internal services.
+
+11.02.25 08:55 Ticket assigned | TI-1700005
+Assigned to Employee 32 (BU Infrastructure - PKI/Network).
+
+11.02.25 13:15 Re: KF80: Internal application certificate errors Employee 32 Contact Person 31
+Hello Contact Person 31,
+Thanks. To investigate the post-renewal cert chain, could you please:
+- Confirm what was renewed on the weekend (the issuing CA, the root, both?)
+- Send the output of running on a client: certutil -urlfetch -verify against the portal cert (or just attach the cert chain shown in browser → Inspect → Security)
+- Confirm whether this affects only this portal or also other internal HTTPS services
+
+11.02.25 16:50 Re: KF80: Internal application certificate errors Contact Person 31 Employee 32
+Hi,
+The PKI team confirmed they renewed the issuing CA certificate (KF80-Issuing-CA-01) on Saturday evening. The root CA was not changed.
+Browser inspection shows: Certificate is signed by KF80-Issuing-CA-01, but the issuing CA cert in the chain shows ""Issuer's certificate not found"" and the chain breaks at the issuing CA.
+We checked two other internal HTTPS services and they are also showing similar warnings (one of them is our internal SharePoint farm).
+
+19.02.25 11:48 Ticket closed | TI-1700005
+Closure description:
+"
+Is the statement supported by the evidence?,TI-1700006 (CheckPoint VPN IKEv2 EKU mismatch and remediation),"=== CITED SOURCES ===
+SOURCE 104:
+Ticket summary:
+Ticket name: KF80: VPN authentication failing for users after weekend
+Ticket number: TI-1700006
+Company: Customer Company 80 AG
+Contact person: Contact Person 31
+Owner: Employee 33
+Source: Email
+Type: Support Request
+Created on: 11.02.25 09:45
+
+Closure
+Closure date: 18.02.25 14:25
+Closure text: VPN clients reissued certificates from a new template that includes the corrected EKU set; new certificates deployed via GPO; affected users validated.
+
+Activities
+Emails:
+
+11.02.25 09:45 KF80: VPN connection refusing to authenticate Contact Person 31 Helpdesk
+Hi,
+This morning many users from home are reporting that the company VPN no longer connects. The client (we use IKEv2 with certificate-based auth) shows ""authentication failed"" or ""could not validate server certificate"" errors depending on the client OS.
+About 80 home-working users are blocked. We use SCEP-issued user certificates from our internal PKI for VPN authentication.
+Note: yesterday IT mentioned they renewed something in the PKI over the weekend.
+Best regards
+Contact Person 31
+
+11.02.25 09:48 Ticket created: TI-1700006
+Confirmation. Priority High due to scope.
+
+11.02.25 09:55 Ticket assigned | TI-1700006
+Assigned to Employee 33 (BU Infrastructure - Network/Remote Access).
+
+11.02.25 12:30 Re: KF80: VPN authentication failing Employee 33 Contact Person 31
+Hello,
+Thanks. Helpful info to gather:
+- VPN concentrator make/model and version
+- Whether server-side cert was also renewed during the weekend PKI work
+- Sample IKEv2 negotiation log from the VPN concentrator for a failing connection (if available)
+- Whether any user certificates were re-issued during/after the PKI renewal
+
+11.02.25 17:20 Re: KF80: VPN authentication failing Contact Person 31 Employee 33
+Hi,
+- VPN concentrator: CheckPoint cluster, latest stable
+- Server-side cert: yes, renewed Saturday from the same internal CA
+- Logs show ""client cert chain validation failed"" / ""EKU mismatch""
+- User certs: PKI team says no user certs were re-issued; they have not expired
+
+18.02.25 14:25 Ticket closed | TI-1700006
+Closure description:
+Root cause: The new server-side VPN certificate was issued from a refreshed certificate template after the weekend PKI work. The new template inadvertently included only the ""Server Authentication"" Extended Key Usage (EKU) and dropped the ""IP security IKE intermediate"" EKU that the previous template had, which the CheckPoint VPN configuration required.
+The user-side certificates were unchanged but the IKEv2 mutual authentication step now"
+Is the statement supported by the evidence?,Intune / Wi‑Fi / profile assignment incidents (replacement laptops / compliance‑scoping),"=== CITED SOURCES ===
+SOURCE 87:
+Ticket summary:
+Ticket name: KF90: Office Wi-Fi configuration not deploying to some devices
+Ticket number: TI-1700010
+Company: Customer Company 90 AG
+Contact person: Contact Person 32
+Owner: Employee 34
+Source: Email
+Type: Support Request
+Created on: 04.03.25 11:30
+
+Closure
+Closure date: 13.03.25 16:48
+Closure text: Wi-Fi profile assignment scope adjusted to remove dependency on compliance state; devices receiving correct profile configuration.
+
+Activities
+Emails:
+
+04.03.25 11:30 KF90: New employees cannot connect to office Wi-Fi Contact Person 32 Helpdesk
+Hello,
+Several new joiners and a few users who recently received replacement laptops are reporting that they cannot connect to the office Wi-Fi (KF90-Corp). The Wi-Fi profile is supposed to deploy automatically via Intune.
+On their devices, the corporate Wi-Fi profile simply doesn't appear in the available networks list. Their devices are enrolled in Intune (visible in the portal) but the Wi-Fi profile is shown as ""not applicable"" in the Intune device-side configuration view.
+Affecting about 8 users currently. Could you investigate?
+Best regards
+Contact Person 32
+
+04.03.25 11:35 Ticket created: TI-1700010.
+
+04.03.25 11:50 Ticket assigned | TI-1700010
+Assigned to Employee 34 (BU Infrastructure - Endpoint Management).
+
+04.03.25 15:25 Re: KF90: Wi-Fi profile not deploying Employee 34 Contact Person 32
+Hello,
+Thanks. Could you please share:
+- 2-3 affected device names
+- The compliance status of those devices in Intune
+- The assignment scope of the Wi-Fi profile (which group is it targeted to?)
+
+05.03.25 09:30 Re: KF90: Wi-Fi profile not deploying Contact Person 32 Employee 34
+Hi,
+- Devices: KF90-LT-3001, KF90-LT-3002, KF90-LT-3003
+- Compliance: all three show ""non-compliant"" - flagged for ""BitLocker recovery key not escrowed within 30 days"" (we are looking at this in another ticket)
+- Wi-Fi profile is assigned to ""KF90-Compliant-Devices"" dynamic group
+
+13.03.25 16:48 Ticket closed | TI-1700010
+Closure description:
+Root cause: The Wi-Fi profile was deployed via assignment to a dynamic group ""KF90-Compliant-Devices"" whose membership rule was based on Intune compliance state. Devices affected by the BitLocker escrow compliance issue (see TI-1700009) had flipped to non-compliant and therefore dropped out of the dynamic group, which made the Wi-Fi profile assignment """
+Is the statement supported by the evidence?,Outlook-on‑iOS / App‑Protection setup‑loop incident (device approval loop),"=== CITED SOURCES ===
+SOURCE 20:
+Ticket summary:
+Ticket name: KF90: Outlook on iOS not setting up email for some users
+Ticket number: TI-1700011
+Company: Customer Company 90 AG
+Contact person: Contact Person 32
+Owner: Employee 35
+Source: Email
+Type: Support Request
+Created on: 05.03.25 14:20
+
+Closure
+Closure date: 14.03.25 11:20
+Closure text: App Protection policy assignment for Outlook iOS rescoped; affected users completing email setup successfully.
+
+Activities
+Emails:
+
+05.03.25 14:20 KF90: Outlook on iPhone keeps asking to register device Contact Person 32 Helpdesk
+Hi,
+Some users report that when they try to add their work email to Outlook on iOS for the first time (or re-add after a phone reset), the app shows a screen saying their device must be registered/managed and then loops back to the email setup. They cannot complete the setup. The devices ARE enrolled in Intune already.
+About 12 users affected. Most are users who recently changed their phones or got new ones.
+Best regards
+Contact Person 32
+
+05.03.25 14:25 Ticket created: TI-1700011.
+
+05.03.25 14:40 Ticket assigned | TI-1700011
+Assigned to Employee 35 (BU Infrastructure - Mobile Security).
+
+06.03.25 09:50 Re: KF90: Outlook on iOS setup loop Employee 35 Contact Person 32
+Hello,
+Thanks. Could you please share:
+- 2 affected user UPNs
+- Are the affected users on personal devices (BYOD) or company-issued?
+- Confirm whether the affected users' devices show ""compliant"" or ""non-compliant"" in Intune
+
+06.03.25 14:30 Re: KF90: Outlook on iOS setup loop Contact Person 32 Employee 35
+Hi,
+- UserA@KF90.com, UserB@KF90.com
+- Both on company-issued iPhones
+- Both devices show as ""non-compliant"" - flagged for the same BitLocker-equivalent setting (we extended the policy to require iOS device encryption status to be evaluated within 30 days too)
+- Same root issue we are tracking in TI-1700009
+
+14.03.25 11:20 Ticket closed | TI-1700011
+Closure description:
+Root cause: Outlook for iOS was protected by an App Protection (MAM) policy that required the device to be marked as compliant in Intune before the protected work account could be added. Affected users' devices had recently flipped to non-compliant due to the tighter device-evaluation policy (related to TI-1700009 BitLocker compliance rollout). The MAM policy correctly enforced that work data could not be accessed on non-compliant devices, preventing email setup from completing.
+The ""loop"""
+Is the statement supported by the evidence?,"NDES/NDES‑connector related log/remediation examples (connector logs, reinstall)","=== CITED SOURCES ===
+SOURCE 93:
+﻿
+Ticket summary:
+Ticket name: KF11: Intune NDES Connector lost communication
+Ticket number: TI-722423
+Company: Customer Company 11
+Contact person: Contact Person 8
+Owner: Employee 11
+Origin: Phone
+Type: Incident
+Created on: 27.03.24 12:04
+Closure
+Closure date: 14.06.24 16:10
+Closure text: Incident successfully resolved
+Activities
+Emails:
+27.03.24 13:10 | TI-722423 | KF11: Intune NDES Connector lost communication | Employee 11 | Contact Person 8
+Hello Contact Person 8, hello Contact Person 2,
+Together with the network team, I adjusted the firewall rules and then reinstalled the connector – this time without proxy configuration. After the reinstallation, the connector was displayed as “green” again in Azure (this step is required so that it can properly communicate with the Intune service).
+Since we had identified login issues, we temporarily excluded the service account from the MFA requirement.
+After completing the installation, I removed the “Intune Admin” role from the service account again. If we need to reinstall the connector, this role must be temporarily reassigned.
+During the installation, I followed the Microsoft guide
+“Configure infrastructure to support SCEP certificate profiles with Microsoft Intune.”
+Attached you will find logs to quickly verify whether the connector is operating correctly. See blueprint_1.
+Please do not make any changes to the settings without prior coordination.
+If issues occur during the Intune deployment, you may contact the Helpdesk or the WPS team at any time.
+
+
+"

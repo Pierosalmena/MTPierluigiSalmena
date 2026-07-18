@@ -1,0 +1,55 @@
+- The HR org chart update most likely changed identity/group mappings which 
+cascaded into three separate failure modes: (A) a cloud vs on prem group / Azure AD Connect collision that removed guest/freelancer membership from the SharePoint ACLs and caused the “locked out” errors; (B) automated provisioning mapped Sales users into the tenant “Global” voice routing policy (which has no PSTN Usage) so outbound PSTN calls failed (beep → drop); and (C) the NEW_FINANCE group became nested under the ZURICH location AD group so Zurich location GPOs (default printer MFP ZUERICH 01) flowed to Basel Finance users and confidential invoices printed in the wrong office. Each of those mechanisms is described and reproduced in your incident records [Data: Sources (13); Reports (64); Sources (9); Reports (48); Sources (2); Reports (136)].
+
+What the org chart update “broke” (detailed)
+1) Freelance consultants — SharePoint access lost
+- Mechanism: a cloud created group that contained the guest/freelancers was effectively replaced/overwritten by a synchronized on prem group with the same display name (different objectId). SharePoint evaluates the directory object identity, so guests that lived only in the cloud group were no longer present in the authoritative group and lost access. This is the exact collision documented and remediated previously by group consolidation + full AAD Connect sync [Data: Sources (13); Reports (64)].
+- Symptom signature in your records: “Item not found / Access denied” that was intermittent for some users due to cached tokens until tokens were refreshed [Data: Sources (30); Reports (31)].
+
+2) Sales dialer calls beep & drop (immediate failure)
+- Mechanism: provisioning automation assigned affected Sales members the tenant "Global" voice routing policy which does not reference any PSTN Usage (no external route). Direct Routing enabled endpoints assigned to a policy with no PSTN Usage cannot reach PSTN and will fail immediately; reassigning an affected user to DR Standard (which includes an External Route PSTN Usage) restored outbound calling in tests [Data: Sources (9); Reports (48)].
+- Note: the provisioning script → policy mapping is the proximate link between group membership changes and voice outages in the tickets [Data: Sources (9); Reports (50)].
+
+3) Finance invoices printing in Basel (wrong physical printer)
+- Mechanism: the NEW_FINANCE AD group was (inadvertently) nested under the ZURICH LOCATION AD GROUP so location scoped GPOs that set default printers (MFP ZUERICH 01) applied to Basel finance users. The GPO based printer assignment + nested membership produced the wrong default printer and printed confidential output in Basel [Data: Sources (2); Reports (136); Sources (41)].
+- The ticket record shows removing the unintended nested membership and forcing GP update returned Basel users to their correct printers [Data: Sources (2)].
+
+Immediate P0 triage checklist (do these now, in order)
+1) Stop further propagation
+   - Temporarily disable or pause the HR → AD/Azure provisioning / the Azure AD Connect sync (time boxed) to stop additional changes being applied while you triage. Capture a snapshot/export of current AD/Azure group membership before making changes. This prevents making the situation worse [Data: Sources (13)].
+2) Snapshot evidence (preserve before you change)
+   - Export Azure AD Audit logs, Azure AD Connect Operations (miisclient export), and the on prem AD Security logs for the incident window. Preserve SharePoint role assignment snapshots and any Purview/AIP label events. These were the decisive artifacts in prior investigations [Data: Sources (13); Reports (64); Sources (30)].
+3) Freelancers: restore immediate access
+   - Identify the SharePoint ACL group referenced on the affected folder; get that group’s objectId and member list. If the cloud group was overwritten, re create/restore cloud membership or temporarily add affected guest accounts directly to the resource group (test with one guest) to restore access quickly. After restore, run a full Azure AD Connect sync and invalidate sessions/tokens for affected users so new tokens contain correct claims [Data: Sources (13); Reports (64); Sources (31)].
+4) Sales: restore calling capability
+   - Enumerate users assigned Voice Routing Policy = “Global” and check PSTNUsages. Reassign affected Direct Routing users to a policy that contains PSTN Usage (e.g., DR Standard) and test outbound PSTN calls. This was validated as a fix in the incident notes [Data: Sources (9); Reports (48)].
+   - While you fix provisioning logic, apply a time boxed, documented manual policy reassign for impacted Sales users only.
+5) Finance printing: stop sensitive printing leakage
+   - Immediately remove the NEW_FINANCE group from the ZURICH location group (or remove the Zurich printer preference from the GPO) and force gpupdate /force for a test Basel user. That will stop new invoices printing to Zurich devices in Basel. Confirm by printing a test invoice in a safe environment [Data: Sources (2); Sources (41)].
+6) Check related network/media risks for telephony
+   - If call failures persist despite policy reassignment, validate site network (firewall/NAT/session timeout) and Media Bypass configuration — Zurich firewall hardening / UDP/session timeout changes have caused RTP drops and one way audio in prior incidents and must be checked if media is failing after signaling looks OK [Data: Sources (23); Reports (5)].
+7) Communicate & log
+   - Open an incident bridge, notify HR/Identity/Print/Sales owners, and post a short status to affected teams (what you’ve paused, expected ETA). Keep all temporary exceptions time boxed and logged for post incident cleanup.
+
+Why these steps are recommended (evidence)
+- Cloud vs on prem group collisions and full sync remediation restored guest access in previous cases — that is the precise pattern your freelance symptom matches [Data: Sources (13); Reports (64)].
+- Reassigning Sales users from the Global policy to DR Standard (which references an External Route PSTN Usage) restored outbound calling during tests in your records — that proves the policy assignment is the fault line [Data: Sources (9); Reports (48)].
+- Removing the unintended nested NEW_FINANCE → ZURICH membership and reapplying GPOs restored the correct Basel default printer in the finance incident notes [Data: Sources (2); Sources (41)].
+
+What to check next (for root cause & hardening)
+- Provisioning automation: examine the provisioning script/repo and recent commits that handle group→policy mapping (Enterprise Sales mapping) — the ticket shows a provisioning logic deviation caused the wrong policy assignment [Data: Sources (9); Reports (50)].
+- Azure AD Connect: check sync run type (delta vs full), run history and any object matching events for groups with identical display names (cloud vs on prem). If you find a collision, consolidate groups and re run full sync [Data: Sources (13); Reports (64)].
+- GPO targeting & group nesting: run gpresult /RSOP for affected Basel finance users to discover which GPO set the default printer and then correct group nesting and GPO filters. Use group objectIds rather than display names to avoid collisions [Data: Sources (2); Sources (41)].
+- Telephony network: verify SBC translation rules for number ranges, Session Expires headers and site NAT/UDP session timers, and firewall RTP/port ranges if media issues persist [Data: Sources (8); Reports (74); Sources (23); Reports (5)].
+
+If you want I will:
+- Produce the exact PowerShell / Graph commands to (a) list groups changed in the HR update window, (b) export the per group member lists (with objectId and onPremisesSyncEnabled), and (c) list users assigned to the “Global” voice routing policy so you can reassign them. I’ll also draft the short AD/SharePoint commands to capture the SharePoint ACL principal objectId and a Playbook for the safe temporary fixes above. Tell me which tenant/time window and whether you want Graph or AzureAD/AzureADPreview cmdlets.
+
+Evidence references (select)
+- Cloud vs on prem group overwrite (freelancers locked out) [Data: Sources (13); Reports (64)].
+- Sales assigned “Global” policy lacking PSTN Usage; DR Standard assignment restored calls [Data: Sources (9); Reports (48)].
+- NEW_FINANCE nested under ZURICH location causing Zurich GPO printer mapping to flow to Basel Finance users [Data: Sources (2); Reports (136); Sources (41)].
+- Token caching / sensitivity label mismatch can make SharePoint access intermittent until tokens refresh (useful for troubleshooting guest “intermittent” access) [Data: Sources (30); Reports (31)].
+- Zurich firewall/media issues and session timeout effects on Teams media (RTP blocked / early BYE) [Data: Sources (23); Reports (5)].
+
+If you want the runnable queries and a 30 minute remediation checklist I can send that now — say whether you prefer PowerShell (Graph module) or step by step portal actions and provide the HR update timestamp (UTC) so I can tailor the exact audit filters.

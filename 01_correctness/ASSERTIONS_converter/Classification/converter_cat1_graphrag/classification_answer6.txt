@@ -1,0 +1,33 @@
+Recommendation
+- Classify this ticket as: second_level_support.
+
+What the indexed records explicitly document (evidence)
+- D365 / Financial Reports outages like “Report Designer fails, authors become ‘unknown’ and reports missing in test+prod” required application‑team / vendor escalation in prior incidents (Data Mart / FRDB work and Microsoft support case opened) — these were not solved by routine desk steps [Data: Sources (0); Sources (11)].
+- Desktop Outlook send‑from‑Outbox while OWA/mobile works was previously tied to tenant auth policy/SMTP AUTH problems and was diagnosed from Exchange Event Log 535 entries; that case required selective Conditional Access / infrastructure action (System Engineer involvement) rather than only first‑line fixes [Data: Sources (32)].
+- Teams presence/federation and partner‑offline symptoms were previously resolved by tenant/federation policy changes and required Teams/tenant‑policy engineering checks (Get‑CsTenantFederationConfiguration, Admin Center) and blueprint‑aligned fixes [Data: Sources (26)].
+- One‑way audio at Zurich matched a documented site firewall/media change where outbound RTP/media port blocking caused zero audio; engineers validated with temporary port relax tests and applied a permanent firewall/SBC alignment per the Direct‑Routing blueprint [Data: Sources (23)].
+- Basel ~30s call drops matched a documented Voice VLAN / NAT session‑timeout issue where SBC/session timers and NAT settings were adjusted by engineering to stop ~30s BYEs [Data: Sources (16)].
+- Incoming calls to a new hotline number range failed in a prior case because the SBC translation/normalization table lacked the new range; the carrier confirmed delivery to the SIP trunk and engineers applied a temporary translation rule to validate, then applied a permanent translation/routing update [Data: Sources (8)].
+- Printing incidents in the corpus range from routine GPO/gpupdate fixes to high‑impact print‑server failures: examples include simple gpupdate/map fixes and ACL removals (first‑line remedies) and a SAP printing outage where spooler restarts/VM restore/BSOD and share re‑publishing required Core Engineering / infra on‑call involvement [Data: Sources (39,27,22,28,29)].
+
+Why this ticket maps to second_level_support
+- The current ticket describes simultaneous, cross‑domain failures across application (D365), mail/SMTP auth, Teams federation/media (site‑specific media and timer symptoms), SBC/trunk translation, and multi‑site printing. In the indexed knowledge base the same pattern (multiple domains affected at once) consistently required specialist engineering teams (App Ops/Microsoft, Unified Communications / SBC, Network/Firewall, Core Engineering for print servers). Examples above show these were handled as engineering escalations, not routine first‑line-only cases [Data: Sources (0); Sources (32); Sources (23,16,8); Sources (28,29)].
+- The records also show that single‑domain printing/GPO issues could be first‑line (gpupdate, queue unpause), but when printing failures coincide with server restores/BSODs or with broader tenant/perimeter changes the incidents were escalated [Data: Sources (39,27); Sources (28,29)].
+
+What the records do NOT prove (important limitation)
+- The indexed incidents do NOT contain a single definitive record proving every one of these symptoms in one tenant was caused by one single change applied to all systems in the same weekend. Prior cases document distinct change events that temporally overlapped (firewall/WAF hardening, NAT/session timeout edits, SBC translation omissions, tenant policy changes) rather than one universal root cause across every symptom [Data: Sources (23,16,8,26)].
+
+Recommended next steps (these are recommendations — they are not stated as prior actions in the records)
+- Escalate immediately to second‑level and open a cross‑team incident bridge that includes: D365/App Ops, Exchange/Identity, Unified Communications/SBC, Network/Firewall, and Print/Core Engineering. (recommended)
+- Collect and preserve evidence used in similar incidents: SBC SIP traces and Call‑IDs, carrier CDRs for the new hotline range, Teams call diagnostics and firewall change diffs, Exchange Event Log 535 entries and Message Trace, D365 server/FRDB logs and the Microsoft support package, and print‑server event logs / crash dumps and recent VM/restore metadata. (recommended)
+
+Primary supporting tickets / records used
+- D365 / Data Mart & Microsoft escalation example [Data: Sources (0); Sources (11)]  
+- Exchange SMTP AUTH / Outlook Outbox case [Data: Sources (32)]  
+- Zurich one‑way audio (firewall/media port blocking) [Data: Sources (23)]  
+- Basel ~30s drops (NAT/session timeout) [Data: Sources (16)]  
+- New number‑range / SBC translation omission (carrier delivered to trunk; SBC answered 404; temporary rule validated fix) [Data: Sources (8)]  
+- Printing: gpupdate/GPO and paused‑queue fixes vs SAP printserver VM restore/BSOD requiring Core Engineering [Data: Sources (39,27,22,28,29)]
+
+Bottom line
+- The symptom set and the precedent in the indexed records point to an infrastructure/engineering‑level problem spanning multiple domains. Classify and escalate this as second_level_support and engage the specialist teams above for coordinated log collection and rapid remediation.

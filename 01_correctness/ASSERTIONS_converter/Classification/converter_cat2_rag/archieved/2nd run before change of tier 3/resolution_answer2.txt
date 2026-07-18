@@ -1,0 +1,71 @@
+Summary — what the indexed records explicitly document
+- A recent organisational/group change caused default printers to be reassigned because AD group membership was inconsistent after the reorganisation. In that prior incident the root cause was “inconsistent group membership following an organizational adjustment”; remediation was to correct group membership according to the Print & Scanning Infrastructure Standard, run a policy refresh and confirm the default stayed correct [Data: Sources (2)].
+- Other prior printing incidents in the records show two additional, different causes and fixes you may want to keep in mind:
+  - A print server network share broke after a Windows update + VM restore; the engineers fixed the network share (disabled/re-enabled the share for all queues) and pending documents printed successfully [Data: Sources (28, 29)].
+  - A newly introduced printer VLAN blocked the print server because a firewall rule did not allow the print-server network to reach the printer VLAN; adjusting the firewall/routing per the Print & Scanning Infrastructure Standard restored printing [Data: Sources (22)].
+- Authentication/connectivity problems caused by misconfigured ADFS client parameters (EnableJWT and RequestMFAFromClaimsProviders) were resolved by aligning ADFS client parameters with the TEST environment; that change restored connectivity for the affected application [Data: Sources (11)].
+
+What the records do NOT document
+- There is no record in the indexed knowledge about a dialer/telephony system failing (calls beeping and dropping) caused by an org-chart/AD-group update. The indexed tickets do not document a prior dialer outage or a proven fix for that exact symptom. Therefore I cannot provide a documented, guaranteed fix for the dialer from the records.
+
+Concrete, step‑by‑step resolution plan (distinguish documented actions vs. recommended actions)
+
+A. Immediate triage (documented checks and actions to run first)
+1) Confirm which AD groups were changed by the HR/org‑chart update and which user accounts or groups were deactivated/created.
+   - Rationale from records: printer misassignment was caused by the Finance team being moved into a new AD group and the old group being deactivated, resulting in GPOs mapping the Zurich printer as default [Data: Sources (2)].
+2) For a sample of affected users (one from Freelancers, one Sales rep, one Zurich Finance user), check:
+   - their AD group memberships,
+   - which location GPOs apply (printer provisioning / default-printer GPO),
+   - whether their accounts are in any “unknown”/disabled state.
+   - Rationale: this mirrors the diagnostic steps used in the documented printer incident where a remote user session confirmed incorrect default printer and comparison to a correctly-configured user was performed [Data: Sources (2)].
+
+B. Remediate printing (documented remediation steps)
+3) If you find incorrect group membership mapping printers to the wrong location:
+   - Correct the AD group memberships to match the location/blueprint (remove the erroneous Zurich membership from Basel/Zurich users as appropriate).
+   - Apply the Print & Scanning Infrastructure Standard mapping (documented policy in the incident) and re-apply GPOs.
+   - Force a policy refresh and test: in the documented case the team removed the incorrect group membership, ran a policy refresh, user re-login and the default printer persisted correctly [Documented action and proof: user tested, default printer remained] [Data: Sources (2)].
+4) If instead the symptom is that print jobs are being queued or disappearing, or printers are unreachable:
+   - Check whether a Windows update/VM restore affected the print server shares. The documented fix in one case was to disable and re-enable the network share for the affected printer queues which released and printed pending documents [Data: Sources (28, 29)].
+   - Check network reachability between print servers and printers (ping/tests). If a new VLAN/segment was introduced, verify firewall/routing rules allow the print server to reach the printer VLAN. In the documented VLAN case, adjusting the firewall rule per the standard fixed the issue [Data: Sources (22)].
+
+C. Remediate access (Freelance consultants locked out) — precedent and recommended action
+5) Documented precedent: access issues tied to reorganisation were resolved by fixing AD group membership and ensuring the correct group assignments per the standard. Use the same approach to restore freelancers’ workspace access:
+   - Verify the freelancers’ user accounts still exist and are active.
+   - Check whether they were moved into a new AD group, or their prior group was deactivated (the documented printer case explicitly showed the old group was deactivated during reorg) [Data: Sources (2)].
+   - If they are missing the group membership that grants access to the shared workspaces, re-add the appropriate group membership or re-enable the original group according to your identity-provisioning blueprint.
+   - After change, have a test user sign in to the shared workspace to confirm access is restored.
+   Note: the general approach above is extrapolated from the documented printer/group incident (source 2). The records do not show a ticket of freelancers locked out of shared workspaces, so these steps are recommended actions based on the prior group‑membership fix [Data: Sources (2)].
+
+D. Investigate the sales dialer (no documented prior case — recommended investigation)
+6) Because the indexed records do not contain a prior dialer outage tied to AD/group changes, I cannot provide a documented fix from the records. Recommended next steps (explicitly recommended; not documented in the indexed tickets):
+   - Check whether the dialer/CTI uses AD authentication, a service account, or ADFS/OAuth for authentication. If it uses ADFS or client app authentication, compare parameters to a working environment (see ADFS example below).
+   - Verify the dialer’s service accounts were not moved/disabled by the org-chart change.
+   - Check dialer logs for authentication failures, and test placing calls while monitoring authentication and telephony logs.
+   - If the dialer uses ADFS and you see authentication errors, consider whether ADFS client registration parameters differ from a working environment: a documented resolution in a different ticket was to align ADFS client parameters between environments (EnableJWT and RequestMFAFromClaimsProviders) which had restored connectivity for another application [Documented example: parameter adjustment fixed connectivity] [Data: Sources (11)].
+   These dialer steps are recommendations because no direct precedent exists in the indexed records.
+
+E. Communications and rollback options (documented precedents and recommendations)
+7) Communicate the immediate mitigations to stakeholders:
+   - Inform HR to pause further org‑chart/AD automation until root cause is confirmed.
+   - For urgent printing of confidential invoices: temporarily redirect the Zurich finance print queue to a local secure printer or pause automatic printing until printer mapping is corrected. (There is no documented ticket showing a “temporary redirect” step; this is a recommended mitigation.)
+8) If changes were made by an automated process and cannot be quickly remediated, consider rolling back the AD-group change to previous state (if you have a tested rollback) — recommended, not documented in the set.
+
+What to log / tickets to open
+- Open an AD/Identity ticket to list all AD-group changes since the HR update and to restore any mistakenly removed memberships (documented fix in the printer case was to correct group membership) [Data: Sources (2)].
+- Open a Print/Infrastructure ticket to:
+  - confirm the printer GPO mappings,
+  - re-run the remediation used in prior incidents (group fix + gpupdate; or re-enable network shares if VM restore / Windows update affected shares) [Data: Sources (2), (28, 29)].
+- Open a Telephony/CTI ticket for the dialer and attach call-drop logs; escalate to the team owning the dialer because there is no documented dialer resolution in the indexed records.
+
+Quick reference to the most relevant prior tickets (for handoff)
+- Printer default changed after reorg; corrected by fixing AD group membership and re-applying Print & Scanning Infrastructure Standard — TI-1623017 (KF60) [Data: Sources (2)].
+- Print server network share issue after Windows update + VM restore; disabled/re-enabled network share for queues and printed pending documents — TI-931293 (KF13) [Data: Sources (28), (29)].
+- Printer unreachable due to missing firewall rule between print server and new printer VLAN; adjusted rule per standard — TI-1622483 (KF60) [Data: Sources (22)].
+- ADFS client parameter misconfiguration causing connectivity failures; resolved by aligning parameters with TEST environment (EnableJWT & RequestMFAFromClaimsProviders) — TI-1385257 (KF11) [Data: Sources (11)].
+
+Bottom line
+- The most likely documented cause for the Zurich invoices printing in Basel is inconsistent AD group membership after the reorganisation (documented and fixed previously) — follow the documented group‑membership correction and GPO re-application workflow immediately [Data: Sources (2)].
+- The freelancers’ access issue is plausibly the same class of problem (AD group membership change); remediate by restoring correct group assignments (recommended, based on the printer incident precedent) [Data: Sources (2)].
+- For the dialer there is no matching documented incident in the indexed records; open a Telephony/CTI ticket and investigate authentication/service‑account changes. If the dialer relies on ADFS-based authentication you may consider applying the same ADFS-parameter alignment approach used in TI-1385257, but that is a recommended diagnostic avenue rather than a documented fix for dialers [Data: Sources (11)].
+
+If you want, I can draft the exact set of queries/requests to raise to AD/Network/Print/Telephony teams (who to ask for the AD change history, which GPO mappings to check, what logs to gather) — those would be recommended procedures derived from the above records, and I will clearly label them as recommendations.

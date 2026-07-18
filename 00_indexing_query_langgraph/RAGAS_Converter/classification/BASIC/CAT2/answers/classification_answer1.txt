@@ -1,0 +1,20 @@
+Recommended classification: second_level_support
+
+Reasoning (summary)
+- The ticket describes three distinct, non-trivial failures: one-way audio on an external call from a desktop telephony app, unexpected loss of access to an intranet directory, and “scan to email” from a networked printer reporting success but the recipient never receives mail. Taken together these symptoms match past incidents that required engineering investigation and cross-team changes (network/firewall, AD/group and authentication configuration, print/scan infrastructure), not routine first-level fixes. This supports escalation to second-level support [Data: Sources (2, 22, 28, 11)].
+
+What the indexed records explicitly document (relevant examples)
+- Printer/scan delivery failures were caused by network segmentation / missing firewall rules between servers and printer VLANs; fixing firewall/routing according to the print standard restored function [Data: Sources (22)].  
+- Incorrect access, defaults or permissions that appeared after an organizational or configuration change were traced to AD group membership and GPO mapping; correcting group membership fixed the issue [Data: Sources (2)].  
+- Printing failures after a Windows update and VM restore were caused by broken network share settings on the print server; disabling/re-enabling the share (and restoring VMs) allowed print jobs to be processed again [Data: Sources (28)].  
+- Authentication/connectivity issues stemming from incorrect authentication server (ADFS) client parameters required parameter adjustments on ADFS (engineer action) to restore connectivity — showing similar authentication/permission issues can require second-level configuration changes [Data: Sources (11)].
+
+Why this ticket should be handled as second_level_support
+- The three failures likely span multiple technical domains (telephony/VoIP stack, AD/permissions/authentication, and networked printer/service delivery) and mirror past incidents where fixes required engineering actions: firewall/routing changes, AD/GPO corrections, ADFS parameter updates, or VM/print-server restore operations — all of which were handled by engineers in the referenced tickets rather than by routine front-line steps [Data: Sources (22, 2, 28, 11)].
+
+Recommended next steps (these are my recommendations, not items documented in the records)
+- Escalate to second-level / engineering and include Network, AD/Identity, and Print/Device teams.  
+- Ask the user for immediate context: name of the telephony client and version, exact intranet path and username, printer model and scan job ID/timestamp.  
+- Have engineering check (a) VoIP call logs and client audio settings, (b) the AD permissions/group memberships and recent changes affecting the ERP_Upgrade directory, and (c) the print/scan server logs and SMTP relay/firewall rules for the scanner-to-email path.
+
+If you want, I can draft the exact escalation note including the relevant symptom list and which teams to include.

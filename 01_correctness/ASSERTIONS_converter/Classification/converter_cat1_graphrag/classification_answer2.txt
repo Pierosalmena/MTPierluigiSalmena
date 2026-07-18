@@ -1,0 +1,25 @@
+Recommendation — classification
+- second_level_support
+
+What the indexed records explicitly document (relevant precedents)
+- A confirmed phishing/credential‑harvest incident where investigators found convincing fake Microsoft login pages and recommended emergency containment (geo/firewall controls) and account exceptions. The ticket records the phishing artifacts, the emergency mitigation proposal, and the need to carve out exceptions for critical accounts [This exact workflow is recorded in the phishing incident ticket] [Data: Sources (4)].
+- A case where an integration stopped authenticating in background while the same account still worked interactively in a browser: investigators found ADFS / client‑registration parameters were misconfigured (EnableJWT / RequestMFAFromClaimsProviders) and that change broke non‑browser/native automation while leaving interactive browser logins functional [Data: Sources (11)].
+- A tenant case where OWA (browser) continued to work but non‑browser SMTP/legacy clients failed because Conditional Access / SMTP AUTH policy interactions required scoped exceptions to restore service — this was handled by identity/mail teams and required policy adjustments rather than only helpdesk steps [Data: Sources (32)].
+- Cases where connector/automation failures (NDES/other connectors) and immediate network/configuration mitigations required multi‑team (identity, network, security) remediation and on‑call engineering activity, not simple first‑line fixes [Data: Sources (35)].
+
+Why this ticket matches second_level_support
+- Multiple independent subsystems failed simultaneously after a suspected phishing event: (a) credential compromise risk and emergency CA/geolocation changes that now block legitimate traveling users, (b) automated/service accounts failing, and (c) one integration where interactive browser auth still works but background/auth automation fails. The indexed incidents above show that this pattern (phishing → emergency containment changes → legitimate user/service disruption → non‑browser/integration auth failures) required coordinated engineer involvement (identity/AD/ADFS, Conditional Access, network/firewall, and application owners) to diagnose and safely remediate [Data: Sources (4); Sources (11); Sources (32); Sources (35)].
+- Prior tickets with the same set of symptoms were not resolved by routine first‑line steps: they required identity‑plane diagnostics (Azure AD/ADFS token/claim checks, provisioning/Client registration review), policy edits with careful exception scoping, and network/config changes that needed system engineers — i.e., second‑level work [Data: Sources (11); Sources (32); Sources (35)].
+
+What the records do NOT prove about your live incident
+- The indexed records show how similar events behaved and were resolved, but they do not contain your tenant’s live logs, firewall change timestamps, Conditional Access application timestamp, or confirmation that credentials were actually exfiltrated in your environment. The exact root cause in your case cannot be confirmed from the indexed corpus alone [Data: Sources (4)].
+
+Recommended next actions (these are recommendations — not extracted as performed in the records)
+- Escalate now to second_level_support / Identity & Security engineering and open a cross‑functional bridge between Identity, Network/Firewall, and the application/integration owners (recommended).
+- Collect and attach the high‑value evidence for engineers: Azure AD sign‑in logs for affected accounts, Conditional Access evaluation logs and change history, firewall/CAB change timestamps for the geo/block rule, list of impacted service/integration accounts and their error traces, and a sample integration failure trace showing interactive vs non‑interactive auth behavior (recommended).
+
+Concise rationale to present to your ops lead
+- This is a multi‑domain, high‑impact incident that matches prior cases (phishing → emergency CA/geoblocking → legitimate user/service disruption → non‑browser auth break) that required identity and network engineers to diagnose and safely remediate; classify as second_level_support and escalate immediately [Data: Sources (4); Sources (11); Sources (32); Sources (35)].
+
+If you want
+- I can draft the short escalation note and the exact list of logs/artifacts the identity/engineer team will need (recommended).

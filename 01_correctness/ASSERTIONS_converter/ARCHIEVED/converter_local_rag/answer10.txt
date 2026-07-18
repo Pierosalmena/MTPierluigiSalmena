@@ -1,0 +1,45 @@
+Short answer
+- Most likely root cause: an explicit “Deny” permission (an ACE) on the printer queue for that specific user. That produces an immediate “Access denied” before any job reaches the queue, and was the root cause in a matching incident from Basel [Data: Sources (3)].
+- First checks that should be run now: verify AD group membership, check the print-queue permissions on the print server (look for any explicit Deny entries), and confirm the GPO/assignment is applied. These are the standard first‑step checks in the Print & Scanning Infrastructure Standard [Data: Sources (41, 3)].
+- Triage level: start as a 1st‑level ticket (remote user checks and verification). Escalate to 2nd‑level / print‑server or AD team only if you must change server-side queue ACLs, AD group memberships, or involve the network/mail teams for VLAN or relay issues [Data: Sources (41, 3, 22)].
+
+What to check now (step‑by‑step)
+1. Confirm visibility and immediate behavior
+   - Confirm the printer appears in “Printers & Scanners” and that the "Access denied" appears immediately when printing (you already reported this) — this pattern matches a permission/ACL issue rather than a spooler/network delay [Data: Sources (3, 41)].
+
+2. Verify AD group membership
+   - Check the user is member of the correct location AD group (e.g., PRT-Basel). If group changes were recently made during the internal move, verify there are no unintended higher‑level or parallel group memberships that change effective assignments [Data: Sources (2, 41)].
+
+3. Check Group Policy application
+   - Run gpupdate /force (or confirm GPO applied) and have the user re-login; if the printer was not assigned because GPO didn’t apply, that will show here. (GPO mapping issues are a common cause when printers don’t map correctly) [Data: Sources (39, 41)].
+
+4. Inspect print‑server queue permissions
+   - From the print server, open the printer queue security settings and look for any explicit user-level ACEs with “Deny”. If present, remove the explicit deny and test again. The Basel case was resolved this way [Data: Sources (3, 41)].
+
+5. If print job never appears on the server, check reachability (only if permissions look correct)
+   - Ping / test connectivity from the print server to the physical printer and confirm the server can submit jobs. (If there was a network segmentation change, a missing route/firewall rule can cause jobs to disappear) [Data: Sources (22, 41)].
+
+When to escalate to 2nd level or other teams
+- Escalate to 2nd‑level / Print-Server Admin when you need to change queue ACLs on the print server or adjust network/firewall rules that require privileged access [Data: Sources (3, 22)].
+- Escalate to AD/Identity team when you identify problematic group memberships that must be changed in AD (e.g., nested groups or incorrect membership due to re-org) [Data: Sources (2, 41)].
+- Escalate to Network or Mail teams only if you find VLAN routing/firewall (printer VLAN) or SMTP relay issues respectively [Data: Sources (22, 6, 41)].
+
+What to include in the ticket to speed resolution
+- A short reproduction: user name, time of test, exact error text (“Access denied”), apps tested (Word/Outlook/Browser), and that reboot/remove/re-add were tried.
+- Confirmation of AD group membership (current groups) and recent group changes from HR/IT (if known).
+- A screenshot of the error and the user’s Printers & Scanners view.
+- If available, a remote session log or print‑server event/log entries showing denial (or absence) of the job.
+- Who is currently the owner of the print-server or AD group (to route escalation).
+
+Recommended immediate action (if you can do it now)
+- L1: remote into the user, confirm group membership and gpupdate, then have the print-server admin check and remove any explicit “Deny” ACE on the queue and ask the user to re-login and test. This sequence resolved the identical Basel incident [Data: Sources (3, 41)].
+
+If you want, I can:
+- Draft a short ticket template (including required fields and suggested assignment) you can paste into the helpdesk system, or
+- Walk you through the exact places in the print-server GUI / ACL dialog to check if you have access.
+
+References
+- Basel incident where an explicit “Deny” on the queue blocked one user; removal fixed the issue [Data: Sources (3)].
+- Print & Scanning Infrastructure Standard: permissions via AD groups, no individual user permissions at queue level, check GPO, VLAN and reachability checks and recommended troubleshooting flow [Data: Sources (41)].
+- Example of printer/default issues caused by AD group changes after a re‑org (shows group membership can cause printer mapping problems) [Data: Sources (2)].
+- Example of printer failures caused by network segmentation / VLAN rules between server and printer (alternative root cause if permissions look fine) [Data: Sources (22)].

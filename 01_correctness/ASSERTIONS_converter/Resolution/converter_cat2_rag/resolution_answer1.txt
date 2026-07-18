@@ -1,0 +1,39 @@
+Summary — what the records explicitly document
+- Scan-to-mail failing for external recipients can be caused by the printer being in a VLAN that is not allowed by the SMTP relay. In the documented case, the printer showed no error on its display (green check), the SMTP logs showed “Relay denied”, and the fix was to add the printer VLAN IP range to the relay allow list and verify DNS resolution. After that external delivery worked and the ticket was closed [Data: Sources (6)].
+- Users losing access while others keep access has been caused by explicit Deny ACEs applied to a resource (in the documented case a printer queue). Removing the explicit Deny and logging the user back in restored access [Data: Sources (3)].
+- Changes during a relocation or reorganization (new AD groups / group membership change) have produced permission and printer-default issues; correcting AD group membership according to the standard resolved those cases [Data: Sources (2, 3)].
+- Network segmentation changes (new VLANs or VM restores / Windows updates) have previously caused printing and share-access disruptions; fixes included adjusting routing/firewall rules and re-enabling network shares on print servers after a VM restore [Data: Sources (22, 28)].
+
+Step‑by‑step resolution plan (tasks that follow documented fixes)
+1) Resolve scan-to-mail (hallway printer → vendor email)
+   - Check the SMTP relay logs for the printer’s IP to see if the relay denied the message (look for “Relay denied”). The indexed record shows this exact symptom and log message in the prior case [Documented action]. This is supported by the case where the printer showed a green check but external delivery failed and the SMTP log showed “Relay denied” [Data: Sources (6)].
+   - Verify the printer’s IP and VLAN. In the prior case the printer was placed into a newly defined printer VLAN which was not in the relay allow list [Data: Sources (6)].
+   - If the printer VLAN is not in the SMTP relay allow list, add the VLAN’s IP range to the relay allow list and ensure DNS resolution is internal as required by the Print & Scanning Infrastructure Standard [Documented action]. After this change the prior case reported successful external delivery and ticket closure [Data: Sources (6)].
+   - Test: scan to an internal mailbox (should succeed) and scan to an external mailbox (Gmail/partner) — confirm external delivery [Documented action & test steps used previously] [Data: Sources (6)].
+
+2) Restore access to intranet directory 'ERP_Upgrade'
+   - Confirm the user’s AD group memberships and compare to the expected group(s) for Zurich branch access. The indexed records show that moves into different AD groups during reorganizations have caused access/default mapping issues and needed correction [Documented action]. This is supported by the documented group-change incident where group membership caused incorrect printer defaults until cleaned up [Data: Sources (2)].
+   - Check the folder ACL for explicit Deny entries for the user account. In a documented incident an explicit “Deny” ACE on a print queue for a user caused an immediate “Access denied” and removing that deny restored access [Documented action] [Data: Sources (3)].
+   - If an explicit Deny is present, remove it (and ensure permissions are assigned via AD groups as required by the standard). After change, have the user log off and log on again and then retry access [Documented action; analogous workflow in prior case] [Data: Sources (3)].
+   - If group membership is incorrect (e.g., user was added to a Zurich or restrictive group during the transfer), correct the group membership according to the organisation’s blueprint/standard, and then verify access [Documented action; group-cleanup resolution in prior case] [Data: Sources (2)].
+   - Test: user attempts to open ERP_Upgrade after relogin; confirm access.
+
+3) Voice call audio (desktop app): silent incoming audio
+   - The indexed records do not contain any documented cases or troubleshooting steps for VoIP/desktop-app one‑way audio or silent call legs. I do not have evidence in the indexed records to show how such issues were diagnosed or fixed in prior incidents. Therefore I cannot present a step‑by‑step remediation drawn from prior cases for this specific symptom. (No supporting sources available.)
+   - Recommended (not documented in the indexed records): run basic VoIP diagnostics — confirm the user’s location/AD group change didn’t alter network/firewall/NAT rules, verify headset/audio device settings and client audio outputs, capture a client-side call log and check for packet loss/codec negotiation problems, and escalate to the telephony team if network/codec issues are suspected. Marking these as recommended because they are NOT taken from the indexed records.
+
+Additional checks that are documented as relevant to relocation/change events
+- Because the user just transferred branches, configuration changes (AD group change, VLAN assignment, firewall/routing differences) are plausible causes for both the intranet permission issue and the scan-to-mail failure. Prior tickets show that relocation/group changes and VLAN/firewall rules were root causes in similar cases [Data: Sources (2, 6, 22)].
+- If server-side shares or print servers were recently restored/updated (VM restore or Windows update), network share re-enable steps were required for printers in at least one documented incident — if you see VM or patch events in the Zurich infrastructure timeline, consider verifying recent updates/restores on relevant servers and re-enabling shares if needed [Documented action] [Data: Sources (28)].
+
+What I can do now (based on documented procedures) and what I cannot
+- I can apply the documented, proven steps for the scan-to-mail problem: check SMTP logs, confirm printer VLAN, add VLAN to relay allow list, and re-test — this sequence fixed the previous incident [Data: Sources (6)].
+- I can apply the documented, proven steps for the access permission problem: inspect ACLs for explicit Deny ACEs and verify/correct AD group membership, then re-test after relogin — these actions fixed prior incidents [Data: Sources (3, 2)].
+- I cannot provide a remediation sequence taken from the indexed records for the VoIP silent audio symptom because no prior cases addressing desktop-app call audio are present in the indexed knowledge. Any troubleshooting steps I propose for the VoIP issue are recommendations only, not documented fixes from the records.
+
+Please confirm and authorize these immediate actions
+- Permission to check the SMTP relay logs and, if required, add the printer VLAN IP range to the relay allow list (I will record the change and request re-test) — supported by the documented fix [Data: Sources (6)].
+- Permission to inspect the ERP_Upgrade folder ACL and the user’s AD group memberships and to remove any explicit Deny or correct the group membership per the standard — supported by documented fixes [Data: Sources (3, 2)].
+- For the VoIP issue: do you want me to open an escalation to the telephony team and collect the client call logs (this is a recommended next step, not one documented in the indexed records)?
+
+If you want, I can proceed with the documented fixes for the printer/SMTP and the directory permissions now. If you prefer escalation for the VoIP audio, I will log a separate ticket and collect the necessary client logs and system info for the telephony team (recommended, not documented in the indexed knowledge).

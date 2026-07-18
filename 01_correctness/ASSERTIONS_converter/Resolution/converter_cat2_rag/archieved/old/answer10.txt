@@ -1,0 +1,66 @@
+Thanks — useful detail. I’ve mapped each of your reported symptoms to the tickets and findings we have in the records and noted what was done in past incidents with very similar behaviour. Below I summarize what the data shows, what is likely (but not certain), and the immediate next steps I recommend. Where I make a point that is supported by the records I cite those records.
+
+Summary mapping (your numbered list)
+1) D365 (F&O) — Financial Reports / Report Designer extremely slow, errors, authors shown as “unknown”, “report cannot be found”, happening in UAT and PROD:
+- This exact scenario is present in the Management Report / Report Designer incident (TI-722511). The team observed the error reproducibly in all environments, saw report creators displayed as “unknown” and “report cannot be found”, and performed FRDB/ Data Mart Reset and then opened a Microsoft ticket when needed [Data: Sources (1, 0)].
+
+2) Desktop mail app — messages stuck in Outbox and fail later, webmail/mobile ok:
+- There is no record in the provided data that documents the same mailbox behaviour. I cannot confirm causes or a fix from these records. No ticket in the dataset documents a mail client Outbox failure [Data: Sources (no matching records)].
+
+3) External partners shown as Offline / late chats / calls not ringing:
+- The Teams/Direct Routing incident where external signalling and media were impacted after a firewall/security change shows comparable symptoms (media/presence/chat delays can be observed when firewall or media flow is altered). The Teams case notes a a firewall change over a weekend and then media/presence-like impacts [Data: Sources (5)].
+
+4) Zurich — one-way audio (we speak, external party hears, we hear nothing):
+- This is the same symptom documented in the Teams ticket where a firewall adjustment blocked media ports (one‑way audio). The root cause there was a restrictive firewall rule at the Zurich location; restoring media port access immediately restored audio in tests [Data: Sources (5)].
+
+5) Basel — external calls disconnect after ~30 seconds:
+- This matches a separate Teams incident: calls dropped after ~30 seconds due to NAT/session timer / UDP session timeout mismatch on a new Voice VLAN. Adjusting session timeout/NAT settings resolved it [Data: Sources (16)].
+
+6) New hotline numbers — old main number works, new range fails instantly (provider says delivered to our edge):
+- There is no direct record of the exact “new number range fails” symptom in the provided dataset. However, we have multiple Direct Routing / SBC / firewall examples where outbound/inbound media or signalling was impacted by firewall/NAT/SBC configuration changes, so a similar edge/SBC/firewall issue is plausible but not proven from these records [Data: Sources (5, 16)].
+
+7) Printing — mixed issues: new employee sees no printers; another gets “Access denied”; many jobs queue and never process:
+- Multiple printing incidents in the dataset map to each of these behaviours:
+  - Printers invisible / unreachable after VLAN/network changes and missing routing/firewall rules: documented and resolved by adjusting routing/firewall so the print server can reach printers [Data: Sources (22)].
+  - “Access denied” / wrong default printer caused by AD/GPO/group membership issues after reorganization: resolved by correcting group membership and GPO per the Print & Scanning standard [Data: Sources (2)].
+  - Jobs appearing in queue and not printing (network-share/print-server share issue / spooler and share toggle helped): resolved previously by disabling/re‑enabling the network share / restoring servers after Windows update / VM restore [Data: Sources (28, 29)].
+
+8) Basel main office printer: jobs appear briefly then vanish while other printers work:
+- That exact symptom appears in the Basel printer incident: jobs briefly show then disappear when the print server could not reach the printer because of segmentation between server and printer VLANs; this was fixed by adjusting routing/firewall [Data: Sources (22)].
+
+Are these issues connected or just bad timing?
+- The records show multiple examples where weekend/maintenance changes or security hardening correlated with broad faults:
+  - D365 issues began after PROD was modified over the weekend; teams performed a Data Mart Reset and opened a Microsoft ticket [Data: Sources (1, 0)].
+  - The Teams one‑way audio incident explicitly links a firewall “security hardening” change over the weekend to media problems at Zurich [Data: Sources (5)].
+  - The SAP printing outage was caused by a Windows update and subsequent VM restore after a maintenance window, which broke the print server network share until it was fixed [Data: Sources (28, 29)].
+Given these records, a single coordinated change (or a small set of simultaneous changes) is a plausible explanation — e.g., firewall/security hardening + network/VLAN changes + Windows updates/VM restores — but I cannot prove a single root cause from the available records alone. The evidence supports correlation, not 100% causation for every symptom [Data: Sources (1, 5, 28, 29, 22)].
+
+What support level and who should own the incident?
+- These are cross‑domain problems affecting ERP, UC/telephony, networking, and printing. The dataset shows comparable incidents were escalated beyond first‑level helpdesk to specialist/System Engineer / Core Engineering teams and sometimes to vendors (Microsoft) or the Network/Unified Communications teams [Data: Sources (1, 5, 16, 28)].
+- Recommendation: classify this as a 2nd‑level (or higher) incident and open a coordinated high‑priority incident (single incident record that triggers multi‑team involvement: Network/Security, UC/VoIP (SBC/Direct Routing), ERP (D365 F&O), Print/Infrastructure, and Microsoft vendor support for Dynamics if needed).
+  - Example: the printing PRIO HIGH ticket was escalated and handled by Core Engineering because deliveries were blocked [Data: Sources (28, 29)].
+  - Example: Teams Direct Routing/one‑way audio and 30s drop were handled by UC/Network specialists and required firewall/SBC and nat/session timer configuration changes [Data: Sources (5, 16)].
+
+Immediate actions to take (prioritized, based on prior fixes in the records)
+1. Convene a short war‑room with Network/Security, UC (Direct Routing/SBC), ERP (D365), Print services and a service manager. Time is critical since issues are widespread — past incidents were handled via multi‑team coordination [Data: Sources (28, 5, 16, 1)].
+2. For Teams one‑way audio (Zurich): temporarily revert or relax the weekend firewall/media port rule to restore media flow and test. In the referenced case a temporary adjustment allowed audio to return immediately [Data: Sources (5)].
+3. For Teams disconnects (~30s, Basel): check UDP/NAT session timeouts and SBC session timers; temporarily increase NAT/UDP session timeout or Session-Expires to match other locations (e.g., 180s) and test. That change fixed the 30s disconnects in the referenced incident [Data: Sources (16)].
+4. For the hotline number failures: verify SBC/edge logs for the incoming call, check if mapping from provider to trunk/number range exists and whether any recent dial-plan changes or edge firewall rules affect that specific range. (No direct record for an identical hotline failure in the dataset — need provider/SBC logs) [Data: Sources (5, 16) for SBC/edge context].
+5. For D365 Financial Reports: confirm whether PROD changes (cipher suites / IIS crypto changes / AOS restarts / Data Mart resets) were applied over the weekend. Prior incidents used FRDB recreation / Data Mart Reset and ultimately applied IIS crypto changes and an AOS restart as part of closure — have Dynamics & DB teams check those exact steps and open a Microsoft ticket if reproducible after local recovery attempts [Data: Sources (1, 0)].
+6. For printing: check whether recent Windows updates / VM restores / maintenance were performed on print servers and whether printers were moved to new VLANs:
+   - If printers are in a separate VLAN, confirm routing/firewall between print servers and printer VLANs and adjust as needed (this fixed the Basel disappearing jobs incident) [Data: Sources (22)].
+   - For Access Denied / default printer issues, review AD group memberships and GPO provisioning for printers and fix group membership per Print & Scanning standard (this resolved the “wrong default printer / access” case) [Data: Sources (2)].
+   - If print jobs hang in queue, attempt the network share disable/reenable and spooler checks or restore servers to pre‑maintenance state as done previously [Data: Sources (28, 29)].
+7. Log collection: gather SBC/edge logs, firewall change log entries (exact rule changes, timestamps), NAT/router config, D365 AOS/IIS logs, print server event logs, AD/GPO changes, and a list of weekend maintenance activities. Past incidents were resolved only after this targeted information was available [Data: Sources (1, 5, 16, 22, 28)].
+
+Information to include when you open/escalate the incident (helps 2nd-level teams act faster)
+- Exact timestamp of when the weekend changes were applied (and change ticket IDs if available).
+- List of all systems changed during that maintenance window (firewall rules, cipher suite/IIS changes, Windows updates/VM restores, VLAN changes).
+- Representative logs: SBC/Direct Routing call logs for failed calls (Zurich/Basel and hotline), firewall ACL/change logs, print server event logs & spooler traces, D365 AOS / Data Mart / FRDB logs, and AD/GPO change timestamps.
+- One or two affected user examples for each problem with time, user, location, and exact behavior to reproduce.
+
+Final recommendation (short)
+- Treat this as a single high‑priority, multi‑service incident and escalate to 2nd‑level / specialist teams now (Network/Security, UC, ERP, Print). The dataset shows the same class of cross‑area outages in the past required those teams and configuration changes (firewall/media ports, session timers, print VLAN routing, Data Mart resets / AOS restarts) to resolve [Data: Sources (5, 16, 22, 28, 1, 0)].
+- If you want, provide me the weekend change log entries or the exact timestamps/IDs of the maintenance items and I will map them to the above recommended actions and suggest which change to revert/test first.
+
+If you want I can draft the high‑priority incident summary (one page) to send to Network/Security / UC / ERP / Print that includes the specific tests and log requests; tell me which contact addresses (or teams) to include.

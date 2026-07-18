@@ -1,0 +1,1727 @@
+dataset,question,answer,context,is_recommendation,is_rec_reason,groundedness,groundedness_reason
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,After updating OU filters they ran delta/full syncs and the customer validated group memberships and SharePoint permissions,"=== CITED SOURCES ===
+SOURCE 53:
+Ticket summary:
+Ticket name: KF70: Group memberships not updating for migrated users
+Ticket number: TI-1700002
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 16.01.25 11:08
+
+Closure
+Closure date: 28.01.25 14:27
+Closure text: Azure AD Connect group filtering scope updated to include OU containing the new migration group structure; full sync run; group memberships now propagate correctly.
+
+Activities
+Emails:
+
+16.01.25 11:08 KF70: Migrated users not in correct security groups Contact Person 30 Helpdesk
+Hello,
+We noticed that some users who were migrated last week still appear with their OLD group memberships in some systems while other systems show their NEW group memberships. This is creating problems because the access permissions are based on these groups.
+For example: User A was supposed to be moved from ""KF70-Sales-Old"" to ""KF70-Sales-Hybrid"" group as part of the restructuring. In the on-prem environment the move happened correctly. In Microsoft 365 the user still shows as a member of ""KF70-Sales-Old"" group, which has different SharePoint permissions.
+This affects roughly 18 users from the second migration wave. We need this resolved because group-based licensing and security are tied to these groups.
+Best regards
+Contact Person 30
+
+16.01.25 11:13 Ticket created: TI-1700002
+Ticket confirmation as usual.
+
+16.01.25 11:30 Ticket assigned | TI-1700002
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+17.01.25 09:55 Re: KF70: Migrated users not in correct security groups Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you. Could you provide the names of 2 affected users and the source/target groups so we can trace the sync? We will investigate from the AAD Connect side.
+
+20.01.25 13:30 Re: KF70: Migrated users not in correct security groups Contact Person 30 Employee 30
+Hi,
+Affected users include UserA@KF70.com and UserB@KF70.com. They should be in groups KF70-Sales-Hybrid (new) but in M365 still show membership in KF70-Sales-Old. Group changes in on-prem AD were applied 06.01.25.
+Thanks!
+
+28.01.25 14:27 Ticket closed | TI-1700002
+Closure description:
+Root cause was that the new group structure created for the second migration wave was placed in an OU outside the Azure AD Connect organizational unit filter scope. The old groups remained synced because they were in the original sync scope. As a result, the cloud directory
+
+SOURCE 54:
+ 06.01.25.
+Thanks!
+
+28.01.25 14:27 Ticket closed | TI-1700002
+Closure description:
+Root cause was that the new group structure created for the second migration wave was placed in an OU outside the Azure AD Connect organizational unit filter scope. The old groups remained synced because they were in the original sync scope. As a result, the cloud directory continued to evaluate users' membership against the (synchronized) old groups, while on-prem evaluated against the (renamed/recreated) new groups.
+Resolution: Updated the Azure AD Connect OU filter to include the new ""Migration_Phase2"" OU containing the new group objects. Performed a full synchronization. Validated that affected users now have correct group memberships in both M365 and on-prem systems.
+
+Notes:
+16.01.25 11:13 Admin, CRM
+Ticket opened.
+17.01.25 09:55 Employee 30
+Initial assessment: customer is the same KF70 hybrid migration as TI-1700001. Different symptom, possibly related root cause area (AAD Connect configuration during migration).
+20.01.25 14:00 Employee 30
+Confirmed: affected users have correct on-prem AD group membership but the cloud-side membership shows the old groups. This indicates the new groups are not being synced to Entra ID.
+21.01.25 10:45 Employee 30
+Reviewed AAD Connect configuration. The group filter (organizational unit-based) was set up for the original directory layout. The new groups for the second migration wave were placed in a new OU ""Migration_Phase2"" which was not included in the AAD Connect sync scope.
+24.01.25 11:20 Employee 30
+Updated OU filter to include Migration_Phase2. Ran initial delta sync to confirm new group objects appear in Entra ID, then ran full sync to ensure all member relationships propagate correctly.
+27.01.25 09:30 Employee 30
+Customer validated that affected users now show correct group memberships in M365 and SharePoint permissions are evaluating correctly.
+28.01.25 14:27 Microsoft CRM Portals
+Ticket closed.
+",no,"The sentence reports completed actions (they ran syncs and the customer validated settings) and does not propose, suggest, or recommend any action.",supported,"Closure notes state the Azure AD Connect OU filter was updated to include 'Migration_Phase2', an initial delta and then a full sync were run, and the customer validated correct group memberships and SharePoint permissions."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,2–3 sample affected user UPNs and the exact error messages returned by the on‑prem applications (Employee 30 requested sample UPNs in TI‑1700001),"=== CITED SOURCES ===
+SOURCE 22:
+Ticket summary:
+Ticket name: KF70: Some users can sign in to Microsoft 365 but not to internal applications
+Ticket number: TI-1700001
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 13.01.25 09:14
+
+Closure
+Closure date: 24.01.25 17:02
+Closure text: UPN suffix mismatch resolved on Azure AD Connect; full sync performed; affected users re-validated.
+
+Activities
+Emails:
+
+13.01.25 09:14 KF70: Users can access M365 but not internal apps Contact Person 30 Helpdesk
+Hi,
+since the migration phase started two weeks ago, some users are reporting strange behavior. They can sign in to Outlook on the web, Teams, and SharePoint without issues, but the same accounts cannot sign in to our internal procurement system or our document management system on the on-premises servers. The error on the on-prem side says ""user not found in domain"" or similar.
+The IT team confirmed the password is correct and the accounts are not locked. About 25 users are affected so far. We need help because the procurement workflow is starting to back up.
+Best regards
+Contact Person 30
+KF70 IT Manager
+
+13.01.25 09:18 Ticket created: TI-1700001 KF70: Users can access M365 but not internal apps
+Ticket confirmation
+Dear Contact Person 30,
+Your request has been received and recorded under ticket number TI-1700001.
+We will assign it to the responsible engineer shortly.
+
+13.01.25 09:25 Ticket assigned | TI-1700001
+The ticket TI-1700001 has been assigned to Employee 30 (BU Infrastructure - Identity).
+
+13.01.25 11:42 Re: KF70: Users can access M365 but not internal apps Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you for the report. Could you please share:
+- 2-3 sample affected user UPNs (we will redact internally)
+- The exact error message from the on-prem application(s)
+- Whether the affected users were among those whose accounts were recently re-provisioned during the migration prep
+We will start the analysis on the Azure AD Connect side.
+Best regards
+Employee 30
+
+15.01.25 14:33 Re: KF70: Users can access M365 but not internal apps Contact Person 30 Employee 30
+Hi Employee 30,
+Sample UPNs attached. The error is ""The user name or password is incorrect"" but we have ruled out password issues. All affected users were on the second migration wave (week of 06.01.25). Users from the first wave (week of 16.12.24)",yes,"This is a directive/request asking for specific actions (provide 2–3 sample UPNs and exact error messages), which is forward-looking advice to collect/provide information.",supported,"Employee 30's 13.01.25 message in ticket TI-1700001 explicitly requests '2-3 sample affected user UPNs' and 'The exact error message from the on-prem application(s)', so the statement is directly supported by the CONTEXT."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,Validate by confirming scheduled tasks run successfully overnight (the customer confirmed success in the ticket),"=== CITED SOURCES ===
+SOURCE 49:
+Ticket summary:
+Ticket name: KF70: Scheduled tasks failing with authentication errors after migration
+Ticket number: TI-1700004
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 21.01.25 07:55
+
+Closure
+Closure date: 31.01.25 16:34
+Closure text: Service-account synchronization scope corrected; service accounts excluded from interactive-MFA conditional access; scheduled tasks now executing successfully.
+
+Activities
+Emails:
+
+21.01.25 07:55 KF70: Backup and reporting scheduled tasks not running Contact Person 30 Helpdesk
+Hi,
+Our overnight reporting jobs and a couple of scheduled backup verification tasks failed last night. The Windows Task Scheduler logs show ""Logon failure: the user has not been granted the requested logon type at this computer"" for several service accounts. These same service accounts have been working fine for over a year.
+The accounts in question are: svc-kf70-rpt, svc-kf70-bkp01, svc-kf70-monitor. These accounts are used in scheduled tasks on multiple internal servers.
+This is becoming urgent because management reports cannot be generated and the morning operations meeting depends on them.
+Best regards
+Contact Person 30
+
+21.01.25 08:02 Ticket created: TI-1700004
+Confirmation.
+
+21.01.25 08:15 Ticket priority elevated to High due to operational impact.
+
+21.01.25 08:20 Ticket assigned | TI-1700004
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+22.01.25 11:30 Re: KF70: Scheduled tasks failing Employee 30 Contact Person 30
+Hi Contact Person 30,
+Thank you. Quick check: were these service accounts part of the migration scope last week? In particular, did their group memberships change, were their UPNs updated, or were they enrolled in any Conditional Access policy recently?
+
+24.01.25 09:42 Re: KF70: Scheduled tasks failing Contact Person 30 Employee 30
+Hi,
+Yes - the migration prep included a step where IT moved all service accounts into a new ""KF70-ServiceAccounts"" OU and added them to a ""KF70-AllUsers-Hybrid"" group for license assignment in M365. We did not think this would cause issues for on-prem scheduled tasks since these are local service accounts used only on internal servers.
+Since you mention Conditional Access: as part of the migration baseline a CA policy was enabled requiring MFA for the ""KF70-AllUsers-Hybrid"" group. Could that be the issue?
+
+31.01.25 16:34 Ticket closed | TI-1700004
+Closure description:
+Root cause was twofold. First, the service accounts were placed in the ""KF70-All
+
+SOURCE 50:
+ you mention Conditional Access: as part of the migration baseline a CA policy was enabled requiring MFA for the ""KF70-AllUsers-Hybrid"" group. Could that be the issue?
+
+31.01.25 16:34 Ticket closed | TI-1700004
+Closure description:
+Root cause was twofold. First, the service accounts were placed in the ""KF70-AllUsers-Hybrid"" group, which is the group targeted by the new tenant-baseline Conditional Access policy ""KF70-Require-MFA"". The Conditional Access evaluation was therefore being applied to non-interactive logons for service accounts, breaking scheduled-task authentication where MFA cannot be satisfied. Second, the service accounts had been moved to the new OU which is filtered IN by Azure AD Connect, leading to the accounts being synchronized to Entra ID and then having a license assigned (small but non-zero impact on the on-prem authentication path because of mfaPreferred attribute conflicts).
+Resolution: Created a sub-group ""KF70-ServiceAccounts-NoMFA"" containing the service accounts and added it to the Conditional Access policy as an explicit exclusion. Re-evaluated AAD Connect filter to keep the on-prem service-account authentication path clean. Validated that scheduled tasks are now running successfully overnight.
+Documentation note: For future migrations, service accounts must be explicitly excluded from baseline CA policies via a dedicated exclusion group, and their AAD Connect sync status should be reviewed to avoid unintended cloud-side license assignment. We have added this to the migration runbook.
+
+Notes:
+21.01.25 08:02 Admin, CRM
+Ticket opened.
+21.01.25 08:20 Admin, CRM
+Priority elevated due to operational impact.
+24.01.25 10:00 Employee 30
+Initial diagnosis: scheduled tasks fail with logon-type denied. Customer confirms recent migration changed service-account group membership. Strong suspicion the new tenant-baseline Conditional Access policy is being evaluated against non-interactive service-account logons.
+27.01.25 14:30 Employee 30
+Confirmed via Azure AD sign-in logs: failed sign-in attempts for the service accounts are tagged ""Failed - Conditional Access requires MFA"". The CA policy targets the All-Users-Hybrid group which includes the service accounts.
+28.01.25 11:00 Employee 30
+Created KF70-ServiceAccounts-NoMFA exclusion group. Added service accounts. Updated CA policy to exclude this group. Sign-in logs now show successful authentication.
+30.01.25 09:30 Employee 30
+Customer confirms scheduled tasks ran successfully overnight without errors. Asked them to monitor for one more cycle before closure.
+31.01.25 16:34 Microsoft CRM Portals
+Ticket closed. Migration runbook updated with service-account handling guidance.
+",yes,"Uses a directive verb 'Validate by confirming' that instructs performing an action, so it is a recommendation.",supported,"Supported — the ticket activity on 30.01.25 records that the customer confirmed scheduled tasks ran successfully overnight, and the closure notes state the scheduled tasks were validated as running successfully."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,Confirm whether the new group objects for the second wave were created in an OU outside the Azure AD Connect sync scope (the documented OU name was Migration_Phase2),"=== CITED SOURCES ===
+SOURCE 53:
+Ticket summary:
+Ticket name: KF70: Group memberships not updating for migrated users
+Ticket number: TI-1700002
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 16.01.25 11:08
+
+Closure
+Closure date: 28.01.25 14:27
+Closure text: Azure AD Connect group filtering scope updated to include OU containing the new migration group structure; full sync run; group memberships now propagate correctly.
+
+Activities
+Emails:
+
+16.01.25 11:08 KF70: Migrated users not in correct security groups Contact Person 30 Helpdesk
+Hello,
+We noticed that some users who were migrated last week still appear with their OLD group memberships in some systems while other systems show their NEW group memberships. This is creating problems because the access permissions are based on these groups.
+For example: User A was supposed to be moved from ""KF70-Sales-Old"" to ""KF70-Sales-Hybrid"" group as part of the restructuring. In the on-prem environment the move happened correctly. In Microsoft 365 the user still shows as a member of ""KF70-Sales-Old"" group, which has different SharePoint permissions.
+This affects roughly 18 users from the second migration wave. We need this resolved because group-based licensing and security are tied to these groups.
+Best regards
+Contact Person 30
+
+16.01.25 11:13 Ticket created: TI-1700002
+Ticket confirmation as usual.
+
+16.01.25 11:30 Ticket assigned | TI-1700002
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+17.01.25 09:55 Re: KF70: Migrated users not in correct security groups Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you. Could you provide the names of 2 affected users and the source/target groups so we can trace the sync? We will investigate from the AAD Connect side.
+
+20.01.25 13:30 Re: KF70: Migrated users not in correct security groups Contact Person 30 Employee 30
+Hi,
+Affected users include UserA@KF70.com and UserB@KF70.com. They should be in groups KF70-Sales-Hybrid (new) but in M365 still show membership in KF70-Sales-Old. Group changes in on-prem AD were applied 06.01.25.
+Thanks!
+
+28.01.25 14:27 Ticket closed | TI-1700002
+Closure description:
+Root cause was that the new group structure created for the second migration wave was placed in an OU outside the Azure AD Connect organizational unit filter scope. The old groups remained synced because they were in the original sync scope. As a result, the cloud directory
+
+SOURCE 54:
+ 06.01.25.
+Thanks!
+
+28.01.25 14:27 Ticket closed | TI-1700002
+Closure description:
+Root cause was that the new group structure created for the second migration wave was placed in an OU outside the Azure AD Connect organizational unit filter scope. The old groups remained synced because they were in the original sync scope. As a result, the cloud directory continued to evaluate users' membership against the (synchronized) old groups, while on-prem evaluated against the (renamed/recreated) new groups.
+Resolution: Updated the Azure AD Connect OU filter to include the new ""Migration_Phase2"" OU containing the new group objects. Performed a full synchronization. Validated that affected users now have correct group memberships in both M365 and on-prem systems.
+
+Notes:
+16.01.25 11:13 Admin, CRM
+Ticket opened.
+17.01.25 09:55 Employee 30
+Initial assessment: customer is the same KF70 hybrid migration as TI-1700001. Different symptom, possibly related root cause area (AAD Connect configuration during migration).
+20.01.25 14:00 Employee 30
+Confirmed: affected users have correct on-prem AD group membership but the cloud-side membership shows the old groups. This indicates the new groups are not being synced to Entra ID.
+21.01.25 10:45 Employee 30
+Reviewed AAD Connect configuration. The group filter (organizational unit-based) was set up for the original directory layout. The new groups for the second migration wave were placed in a new OU ""Migration_Phase2"" which was not included in the AAD Connect sync scope.
+24.01.25 11:20 Employee 30
+Updated OU filter to include Migration_Phase2. Ran initial delta sync to confirm new group objects appear in Entra ID, then ran full sync to ensure all member relationships propagate correctly.
+27.01.25 09:30 Employee 30
+Customer validated that affected users now show correct group memberships in M365 and SharePoint permissions are evaluating correctly.
+28.01.25 14:27 Microsoft CRM Portals
+Ticket closed.
+",yes,"The statement uses the directive 'Confirm' asking the reader to verify whether group objects were created outside the sync scope, which is a request to take action.",supported,"The ticket closure and notes state the new group structure for the second migration wave was placed in an OU outside the AAD Connect OU filter and identify the OU as ""Migration_Phase2"", and the OU filter was updated to include Migration_Phase2 before a full sync."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,Run an initial delta then a full sync to bring group objects and memberships into Entra ID and propagate member relationships,"=== CITED SOURCES ===
+SOURCE 53:
+Ticket summary:
+Ticket name: KF70: Group memberships not updating for migrated users
+Ticket number: TI-1700002
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 16.01.25 11:08
+
+Closure
+Closure date: 28.01.25 14:27
+Closure text: Azure AD Connect group filtering scope updated to include OU containing the new migration group structure; full sync run; group memberships now propagate correctly.
+
+Activities
+Emails:
+
+16.01.25 11:08 KF70: Migrated users not in correct security groups Contact Person 30 Helpdesk
+Hello,
+We noticed that some users who were migrated last week still appear with their OLD group memberships in some systems while other systems show their NEW group memberships. This is creating problems because the access permissions are based on these groups.
+For example: User A was supposed to be moved from ""KF70-Sales-Old"" to ""KF70-Sales-Hybrid"" group as part of the restructuring. In the on-prem environment the move happened correctly. In Microsoft 365 the user still shows as a member of ""KF70-Sales-Old"" group, which has different SharePoint permissions.
+This affects roughly 18 users from the second migration wave. We need this resolved because group-based licensing and security are tied to these groups.
+Best regards
+Contact Person 30
+
+16.01.25 11:13 Ticket created: TI-1700002
+Ticket confirmation as usual.
+
+16.01.25 11:30 Ticket assigned | TI-1700002
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+17.01.25 09:55 Re: KF70: Migrated users not in correct security groups Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you. Could you provide the names of 2 affected users and the source/target groups so we can trace the sync? We will investigate from the AAD Connect side.
+
+20.01.25 13:30 Re: KF70: Migrated users not in correct security groups Contact Person 30 Employee 30
+Hi,
+Affected users include UserA@KF70.com and UserB@KF70.com. They should be in groups KF70-Sales-Hybrid (new) but in M365 still show membership in KF70-Sales-Old. Group changes in on-prem AD were applied 06.01.25.
+Thanks!
+
+28.01.25 14:27 Ticket closed | TI-1700002
+Closure description:
+Root cause was that the new group structure created for the second migration wave was placed in an OU outside the Azure AD Connect organizational unit filter scope. The old groups remained synced because they were in the original sync scope. As a result, the cloud directory
+
+SOURCE 54:
+ 06.01.25.
+Thanks!
+
+28.01.25 14:27 Ticket closed | TI-1700002
+Closure description:
+Root cause was that the new group structure created for the second migration wave was placed in an OU outside the Azure AD Connect organizational unit filter scope. The old groups remained synced because they were in the original sync scope. As a result, the cloud directory continued to evaluate users' membership against the (synchronized) old groups, while on-prem evaluated against the (renamed/recreated) new groups.
+Resolution: Updated the Azure AD Connect OU filter to include the new ""Migration_Phase2"" OU containing the new group objects. Performed a full synchronization. Validated that affected users now have correct group memberships in both M365 and on-prem systems.
+
+Notes:
+16.01.25 11:13 Admin, CRM
+Ticket opened.
+17.01.25 09:55 Employee 30
+Initial assessment: customer is the same KF70 hybrid migration as TI-1700001. Different symptom, possibly related root cause area (AAD Connect configuration during migration).
+20.01.25 14:00 Employee 30
+Confirmed: affected users have correct on-prem AD group membership but the cloud-side membership shows the old groups. This indicates the new groups are not being synced to Entra ID.
+21.01.25 10:45 Employee 30
+Reviewed AAD Connect configuration. The group filter (organizational unit-based) was set up for the original directory layout. The new groups for the second migration wave were placed in a new OU ""Migration_Phase2"" which was not included in the AAD Connect sync scope.
+24.01.25 11:20 Employee 30
+Updated OU filter to include Migration_Phase2. Ran initial delta sync to confirm new group objects appear in Entra ID, then ran full sync to ensure all member relationships propagate correctly.
+27.01.25 09:30 Employee 30
+Customer validated that affected users now show correct group memberships in M365 and SharePoint permissions are evaluating correctly.
+28.01.25 14:27 Microsoft CRM Portals
+Ticket closed.
+",yes,This is an imperative instruction proposing specific actions ('Run an initial delta then a full sync') and thus constitutes a recommendation/suggested procedure.,supported,"Ticket notes (24.01.25) explicitly state the OU filter was updated and they 'ran initial delta sync to confirm new group objects appear in Entra ID, then ran full sync to ensure all member relationships propagate correctly,' which directly supports the recommendation."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,Update the Azure AD Connect OU filter to include the OU containing the new group structure (the engineers added Migration_Phase2 to the sync scope in the record),"=== CITED SOURCES ===
+SOURCE 53:
+Ticket summary:
+Ticket name: KF70: Group memberships not updating for migrated users
+Ticket number: TI-1700002
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 16.01.25 11:08
+
+Closure
+Closure date: 28.01.25 14:27
+Closure text: Azure AD Connect group filtering scope updated to include OU containing the new migration group structure; full sync run; group memberships now propagate correctly.
+
+Activities
+Emails:
+
+16.01.25 11:08 KF70: Migrated users not in correct security groups Contact Person 30 Helpdesk
+Hello,
+We noticed that some users who were migrated last week still appear with their OLD group memberships in some systems while other systems show their NEW group memberships. This is creating problems because the access permissions are based on these groups.
+For example: User A was supposed to be moved from ""KF70-Sales-Old"" to ""KF70-Sales-Hybrid"" group as part of the restructuring. In the on-prem environment the move happened correctly. In Microsoft 365 the user still shows as a member of ""KF70-Sales-Old"" group, which has different SharePoint permissions.
+This affects roughly 18 users from the second migration wave. We need this resolved because group-based licensing and security are tied to these groups.
+Best regards
+Contact Person 30
+
+16.01.25 11:13 Ticket created: TI-1700002
+Ticket confirmation as usual.
+
+16.01.25 11:30 Ticket assigned | TI-1700002
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+17.01.25 09:55 Re: KF70: Migrated users not in correct security groups Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you. Could you provide the names of 2 affected users and the source/target groups so we can trace the sync? We will investigate from the AAD Connect side.
+
+20.01.25 13:30 Re: KF70: Migrated users not in correct security groups Contact Person 30 Employee 30
+Hi,
+Affected users include UserA@KF70.com and UserB@KF70.com. They should be in groups KF70-Sales-Hybrid (new) but in M365 still show membership in KF70-Sales-Old. Group changes in on-prem AD were applied 06.01.25.
+Thanks!
+
+28.01.25 14:27 Ticket closed | TI-1700002
+Closure description:
+Root cause was that the new group structure created for the second migration wave was placed in an OU outside the Azure AD Connect organizational unit filter scope. The old groups remained synced because they were in the original sync scope. As a result, the cloud directory
+
+SOURCE 54:
+ 06.01.25.
+Thanks!
+
+28.01.25 14:27 Ticket closed | TI-1700002
+Closure description:
+Root cause was that the new group structure created for the second migration wave was placed in an OU outside the Azure AD Connect organizational unit filter scope. The old groups remained synced because they were in the original sync scope. As a result, the cloud directory continued to evaluate users' membership against the (synchronized) old groups, while on-prem evaluated against the (renamed/recreated) new groups.
+Resolution: Updated the Azure AD Connect OU filter to include the new ""Migration_Phase2"" OU containing the new group objects. Performed a full synchronization. Validated that affected users now have correct group memberships in both M365 and on-prem systems.
+
+Notes:
+16.01.25 11:13 Admin, CRM
+Ticket opened.
+17.01.25 09:55 Employee 30
+Initial assessment: customer is the same KF70 hybrid migration as TI-1700001. Different symptom, possibly related root cause area (AAD Connect configuration during migration).
+20.01.25 14:00 Employee 30
+Confirmed: affected users have correct on-prem AD group membership but the cloud-side membership shows the old groups. This indicates the new groups are not being synced to Entra ID.
+21.01.25 10:45 Employee 30
+Reviewed AAD Connect configuration. The group filter (organizational unit-based) was set up for the original directory layout. The new groups for the second migration wave were placed in a new OU ""Migration_Phase2"" which was not included in the AAD Connect sync scope.
+24.01.25 11:20 Employee 30
+Updated OU filter to include Migration_Phase2. Ran initial delta sync to confirm new group objects appear in Entra ID, then ran full sync to ensure all member relationships propagate correctly.
+27.01.25 09:30 Employee 30
+Customer validated that affected users now show correct group memberships in M365 and SharePoint permissions are evaluating correctly.
+28.01.25 14:27 Microsoft CRM Portals
+Ticket closed.
+",yes,"The statement is an explicit directive to 'Update the Azure AD Connect OU filter...' instructing a specific action to include the new OU, so it is a recommendation.",supported,"The ticket closure and activity notes state the Azure AD Connect OU filter was updated to include the new 'Migration_Phase2' OU and a full sync was run, confirming the engineers added Migration_Phase2 to the sync scope."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,Verify whether affected users’ on‑prem userPrincipalName was changed to the new cloud suffix (kf70group.local) while on‑prem apps still expect kf70.local — this mismatch was the documented root cause,"=== CITED SOURCES ===
+SOURCE 22:
+Ticket summary:
+Ticket name: KF70: Some users can sign in to Microsoft 365 but not to internal applications
+Ticket number: TI-1700001
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 13.01.25 09:14
+
+Closure
+Closure date: 24.01.25 17:02
+Closure text: UPN suffix mismatch resolved on Azure AD Connect; full sync performed; affected users re-validated.
+
+Activities
+Emails:
+
+13.01.25 09:14 KF70: Users can access M365 but not internal apps Contact Person 30 Helpdesk
+Hi,
+since the migration phase started two weeks ago, some users are reporting strange behavior. They can sign in to Outlook on the web, Teams, and SharePoint without issues, but the same accounts cannot sign in to our internal procurement system or our document management system on the on-premises servers. The error on the on-prem side says ""user not found in domain"" or similar.
+The IT team confirmed the password is correct and the accounts are not locked. About 25 users are affected so far. We need help because the procurement workflow is starting to back up.
+Best regards
+Contact Person 30
+KF70 IT Manager
+
+13.01.25 09:18 Ticket created: TI-1700001 KF70: Users can access M365 but not internal apps
+Ticket confirmation
+Dear Contact Person 30,
+Your request has been received and recorded under ticket number TI-1700001.
+We will assign it to the responsible engineer shortly.
+
+13.01.25 09:25 Ticket assigned | TI-1700001
+The ticket TI-1700001 has been assigned to Employee 30 (BU Infrastructure - Identity).
+
+13.01.25 11:42 Re: KF70: Users can access M365 but not internal apps Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you for the report. Could you please share:
+- 2-3 sample affected user UPNs (we will redact internally)
+- The exact error message from the on-prem application(s)
+- Whether the affected users were among those whose accounts were recently re-provisioned during the migration prep
+We will start the analysis on the Azure AD Connect side.
+Best regards
+Employee 30
+
+15.01.25 14:33 Re: KF70: Users can access M365 but not internal apps Contact Person 30 Employee 30
+Hi Employee 30,
+Sample UPNs attached. The error is ""The user name or password is incorrect"" but we have ruled out password issues. All affected users were on the second migration wave (week of 06.01.25). Users from the first wave (week of 16.12.24)",yes,"Uses the directive 'Verify whether...' instructing the reader to check a configuration mismatch, which is a recommendation to take action.",partially_supported,"The ticket closure states a 'UPN suffix mismatch' was resolved via Azure AD Connect, supporting that a suffix mismatch was the root cause, but the CONTEXT does not mention the specific suffix names (kf70group.local or kf70.local) nor explicitly say on‑prem apps expected the old suffix."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,"Confirm that Modern Authentication is enforced tenant‑wide (this was enabled as part of the migration baseline) and that affected clients (iOS built‑in Mail, Android Gmail using EAS) are attempting Basic Auth","=== CITED SOURCES ===
+SOURCE 4:
+Ticket summary:
+Ticket name: KF70: Mobile devices cannot connect to Exchange after migration
+Ticket number: TI-1700003
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 31
+Source: Email
+Type: Support Request
+Created on: 17.01.25 08:42
+
+Closure
+Closure date: 27.01.25 10:18
+Closure text: ActiveSync legacy authentication issue resolved by updating mobile clients to use modern auth and re-enrolling affected devices in Intune.
+
+Activities
+Emails:
+
+17.01.25 08:42 KF70: Mobile email setup keeps failing Contact Person 30 Helpdesk
+Hello,
+Several users from the recently migrated group are reporting that their mobile email apps no longer connect. Specifically iPhone Mail and the built-in Android mail apps. They get prompted for password repeatedly and never authenticate.
+Strange thing: the same users can use Outlook mobile app without issues. Only the built-in mail clients on iOS/Android fail.
+Affected users so far: about 15, all from the second migration wave.
+Could you please check?
+Contact Person 30
+
+17.01.25 08:50 Ticket created: TI-1700003
+Confirmation.
+
+17.01.25 09:10 Ticket assigned | TI-1700003
+Assigned to Employee 31 (BU Infrastructure - Mobile/Endpoint).
+
+20.01.25 11:20 Re: KF70: Mobile email setup keeps failing Employee 31 Contact Person 30
+Hi,
+Thanks. Could you confirm:
+- Which Exchange Online setup are these users on (E3/E5)?
+- Is Modern Authentication enabled at tenant level?
+- Are the affected users also reporting issues with Outlook desktop/mobile or only with the built-in iOS/Android mail clients?
+
+22.01.25 14:08 Re: KF70: Mobile email setup keeps failing Contact Person 30 Employee 31
+Hi,
+- E3 licenses
+- Modern Auth is enabled tenant-wide (was switched on as part of migration prep)
+- Outlook mobile app works for affected users; only built-in iOS Mail and Android Gmail (using EAS) are failing.
+Thanks
+
+27.01.25 10:18 Ticket closed | TI-1700003
+Closure description:
+Root cause: The tenant Modern Authentication enforcement (enabled as part of the migration baseline) requires OAuth-based authentication. Built-in iOS Mail and Android Gmail clients on older device versions still attempted Basic Auth via the EAS protocol, which is now blocked. This was a known consequence of the modern-auth tenant configuration but had not been communicated to end users.
+Compounding factor: For users from the second migration wave, the built-in mail clients had cached credentials from the on-prem-only configuration before migration. After migration, the credentials needed to be removed and the account re-added using a method that supports modern authentication.
+Resolution: Provided customer with",yes,Uses a directive verb 'Confirm that' asking the reader to perform checks (actionable instruction to verify settings and client behavior).,supported,The ticket notes Modern Authentication is enabled tenant‑wide (switched on as part of migration prep/baseline) and the closure states the tenant enforcement requires OAuth while built‑in iOS Mail and Android Gmail (using EAS) were still attempting Basic Auth and were blocked.
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,"Validate that affected users now show the intended group memberships in Microsoft 365 and that downstream access (SharePoint, apps) evaluates correctly","=== CITED SOURCES ===
+SOURCE 53:
+Ticket summary:
+Ticket name: KF70: Group memberships not updating for migrated users
+Ticket number: TI-1700002
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 16.01.25 11:08
+
+Closure
+Closure date: 28.01.25 14:27
+Closure text: Azure AD Connect group filtering scope updated to include OU containing the new migration group structure; full sync run; group memberships now propagate correctly.
+
+Activities
+Emails:
+
+16.01.25 11:08 KF70: Migrated users not in correct security groups Contact Person 30 Helpdesk
+Hello,
+We noticed that some users who were migrated last week still appear with their OLD group memberships in some systems while other systems show their NEW group memberships. This is creating problems because the access permissions are based on these groups.
+For example: User A was supposed to be moved from ""KF70-Sales-Old"" to ""KF70-Sales-Hybrid"" group as part of the restructuring. In the on-prem environment the move happened correctly. In Microsoft 365 the user still shows as a member of ""KF70-Sales-Old"" group, which has different SharePoint permissions.
+This affects roughly 18 users from the second migration wave. We need this resolved because group-based licensing and security are tied to these groups.
+Best regards
+Contact Person 30
+
+16.01.25 11:13 Ticket created: TI-1700002
+Ticket confirmation as usual.
+
+16.01.25 11:30 Ticket assigned | TI-1700002
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+17.01.25 09:55 Re: KF70: Migrated users not in correct security groups Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you. Could you provide the names of 2 affected users and the source/target groups so we can trace the sync? We will investigate from the AAD Connect side.
+
+20.01.25 13:30 Re: KF70: Migrated users not in correct security groups Contact Person 30 Employee 30
+Hi,
+Affected users include UserA@KF70.com and UserB@KF70.com. They should be in groups KF70-Sales-Hybrid (new) but in M365 still show membership in KF70-Sales-Old. Group changes in on-prem AD were applied 06.01.25.
+Thanks!
+
+28.01.25 14:27 Ticket closed | TI-1700002
+Closure description:
+Root cause was that the new group structure created for the second migration wave was placed in an OU outside the Azure AD Connect organizational unit filter scope. The old groups remained synced because they were in the original sync scope. As a result, the cloud directory
+
+SOURCE 54:
+ 06.01.25.
+Thanks!
+
+28.01.25 14:27 Ticket closed | TI-1700002
+Closure description:
+Root cause was that the new group structure created for the second migration wave was placed in an OU outside the Azure AD Connect organizational unit filter scope. The old groups remained synced because they were in the original sync scope. As a result, the cloud directory continued to evaluate users' membership against the (synchronized) old groups, while on-prem evaluated against the (renamed/recreated) new groups.
+Resolution: Updated the Azure AD Connect OU filter to include the new ""Migration_Phase2"" OU containing the new group objects. Performed a full synchronization. Validated that affected users now have correct group memberships in both M365 and on-prem systems.
+
+Notes:
+16.01.25 11:13 Admin, CRM
+Ticket opened.
+17.01.25 09:55 Employee 30
+Initial assessment: customer is the same KF70 hybrid migration as TI-1700001. Different symptom, possibly related root cause area (AAD Connect configuration during migration).
+20.01.25 14:00 Employee 30
+Confirmed: affected users have correct on-prem AD group membership but the cloud-side membership shows the old groups. This indicates the new groups are not being synced to Entra ID.
+21.01.25 10:45 Employee 30
+Reviewed AAD Connect configuration. The group filter (organizational unit-based) was set up for the original directory layout. The new groups for the second migration wave were placed in a new OU ""Migration_Phase2"" which was not included in the AAD Connect sync scope.
+24.01.25 11:20 Employee 30
+Updated OU filter to include Migration_Phase2. Ran initial delta sync to confirm new group objects appear in Entra ID, then ran full sync to ensure all member relationships propagate correctly.
+27.01.25 09:30 Employee 30
+Customer validated that affected users now show correct group memberships in M365 and SharePoint permissions are evaluating correctly.
+28.01.25 14:27 Microsoft CRM Portals
+Ticket closed.
+",yes,"The statement is an explicit directive using the imperative verb 'Validate' that instructs checking group memberships and downstream access, i.e., a recommended action.",partially_supported,"The ticket closure explicitly states affected users were validated to have correct group memberships in M365 and that SharePoint permissions evaluate correctly, but the CONTEXT does not show validation for other downstream apps generally, so the broader “apps” claim is unsupported by the provided context."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,Check whether service accounts were moved into the tenant target group (KF70-AllUsers-Hybrid) that the baseline Conditional Access policy KF70-Require-MFA targets; sign‑in logs were used to confirm “Failed - Conditional Access requires MFA” in the documented case,"=== CITED SOURCES ===
+SOURCE 49:
+Ticket summary:
+Ticket name: KF70: Scheduled tasks failing with authentication errors after migration
+Ticket number: TI-1700004
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 21.01.25 07:55
+
+Closure
+Closure date: 31.01.25 16:34
+Closure text: Service-account synchronization scope corrected; service accounts excluded from interactive-MFA conditional access; scheduled tasks now executing successfully.
+
+Activities
+Emails:
+
+21.01.25 07:55 KF70: Backup and reporting scheduled tasks not running Contact Person 30 Helpdesk
+Hi,
+Our overnight reporting jobs and a couple of scheduled backup verification tasks failed last night. The Windows Task Scheduler logs show ""Logon failure: the user has not been granted the requested logon type at this computer"" for several service accounts. These same service accounts have been working fine for over a year.
+The accounts in question are: svc-kf70-rpt, svc-kf70-bkp01, svc-kf70-monitor. These accounts are used in scheduled tasks on multiple internal servers.
+This is becoming urgent because management reports cannot be generated and the morning operations meeting depends on them.
+Best regards
+Contact Person 30
+
+21.01.25 08:02 Ticket created: TI-1700004
+Confirmation.
+
+21.01.25 08:15 Ticket priority elevated to High due to operational impact.
+
+21.01.25 08:20 Ticket assigned | TI-1700004
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+22.01.25 11:30 Re: KF70: Scheduled tasks failing Employee 30 Contact Person 30
+Hi Contact Person 30,
+Thank you. Quick check: were these service accounts part of the migration scope last week? In particular, did their group memberships change, were their UPNs updated, or were they enrolled in any Conditional Access policy recently?
+
+24.01.25 09:42 Re: KF70: Scheduled tasks failing Contact Person 30 Employee 30
+Hi,
+Yes - the migration prep included a step where IT moved all service accounts into a new ""KF70-ServiceAccounts"" OU and added them to a ""KF70-AllUsers-Hybrid"" group for license assignment in M365. We did not think this would cause issues for on-prem scheduled tasks since these are local service accounts used only on internal servers.
+Since you mention Conditional Access: as part of the migration baseline a CA policy was enabled requiring MFA for the ""KF70-AllUsers-Hybrid"" group. Could that be the issue?
+
+31.01.25 16:34 Ticket closed | TI-1700004
+Closure description:
+Root cause was twofold. First, the service accounts were placed in the ""KF70-All
+
+SOURCE 50:
+ you mention Conditional Access: as part of the migration baseline a CA policy was enabled requiring MFA for the ""KF70-AllUsers-Hybrid"" group. Could that be the issue?
+
+31.01.25 16:34 Ticket closed | TI-1700004
+Closure description:
+Root cause was twofold. First, the service accounts were placed in the ""KF70-AllUsers-Hybrid"" group, which is the group targeted by the new tenant-baseline Conditional Access policy ""KF70-Require-MFA"". The Conditional Access evaluation was therefore being applied to non-interactive logons for service accounts, breaking scheduled-task authentication where MFA cannot be satisfied. Second, the service accounts had been moved to the new OU which is filtered IN by Azure AD Connect, leading to the accounts being synchronized to Entra ID and then having a license assigned (small but non-zero impact on the on-prem authentication path because of mfaPreferred attribute conflicts).
+Resolution: Created a sub-group ""KF70-ServiceAccounts-NoMFA"" containing the service accounts and added it to the Conditional Access policy as an explicit exclusion. Re-evaluated AAD Connect filter to keep the on-prem service-account authentication path clean. Validated that scheduled tasks are now running successfully overnight.
+Documentation note: For future migrations, service accounts must be explicitly excluded from baseline CA policies via a dedicated exclusion group, and their AAD Connect sync status should be reviewed to avoid unintended cloud-side license assignment. We have added this to the migration runbook.
+
+Notes:
+21.01.25 08:02 Admin, CRM
+Ticket opened.
+21.01.25 08:20 Admin, CRM
+Priority elevated due to operational impact.
+24.01.25 10:00 Employee 30
+Initial diagnosis: scheduled tasks fail with logon-type denied. Customer confirms recent migration changed service-account group membership. Strong suspicion the new tenant-baseline Conditional Access policy is being evaluated against non-interactive service-account logons.
+27.01.25 14:30 Employee 30
+Confirmed via Azure AD sign-in logs: failed sign-in attempts for the service accounts are tagged ""Failed - Conditional Access requires MFA"". The CA policy targets the All-Users-Hybrid group which includes the service accounts.
+28.01.25 11:00 Employee 30
+Created KF70-ServiceAccounts-NoMFA exclusion group. Added service accounts. Updated CA policy to exclude this group. Sign-in logs now show successful authentication.
+30.01.25 09:30 Employee 30
+Customer confirms scheduled tasks ran successfully overnight without errors. Asked them to monitor for one more cycle before closure.
+31.01.25 16:34 Microsoft CRM Portals
+Ticket closed. Migration runbook updated with service-account handling guidance.
+",yes,"Uses a directive verb 'Check whether' instructing verification of service account placement and sign-in logs, which is a recommendation to perform an action.",supported,"Supported — the ticket closure and activity notes state the service accounts were placed in the KF70-AllUsers-Hybrid group targeted by the tenant-baseline CA policy (KF70-Require-MFA), and Azure AD sign-in logs showed failures labelled ""Failed - Conditional Access requires MFA."""
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,Names of the affected groups and the OU where the new group objects were created (TI‑1700002 used UserA/UserB and Migration_Phase2 as examples),"=== CITED SOURCES ===
+SOURCE 53:
+Ticket summary:
+Ticket name: KF70: Group memberships not updating for migrated users
+Ticket number: TI-1700002
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 16.01.25 11:08
+
+Closure
+Closure date: 28.01.25 14:27
+Closure text: Azure AD Connect group filtering scope updated to include OU containing the new migration group structure; full sync run; group memberships now propagate correctly.
+
+Activities
+Emails:
+
+16.01.25 11:08 KF70: Migrated users not in correct security groups Contact Person 30 Helpdesk
+Hello,
+We noticed that some users who were migrated last week still appear with their OLD group memberships in some systems while other systems show their NEW group memberships. This is creating problems because the access permissions are based on these groups.
+For example: User A was supposed to be moved from ""KF70-Sales-Old"" to ""KF70-Sales-Hybrid"" group as part of the restructuring. In the on-prem environment the move happened correctly. In Microsoft 365 the user still shows as a member of ""KF70-Sales-Old"" group, which has different SharePoint permissions.
+This affects roughly 18 users from the second migration wave. We need this resolved because group-based licensing and security are tied to these groups.
+Best regards
+Contact Person 30
+
+16.01.25 11:13 Ticket created: TI-1700002
+Ticket confirmation as usual.
+
+16.01.25 11:30 Ticket assigned | TI-1700002
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+17.01.25 09:55 Re: KF70: Migrated users not in correct security groups Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you. Could you provide the names of 2 affected users and the source/target groups so we can trace the sync? We will investigate from the AAD Connect side.
+
+20.01.25 13:30 Re: KF70: Migrated users not in correct security groups Contact Person 30 Employee 30
+Hi,
+Affected users include UserA@KF70.com and UserB@KF70.com. They should be in groups KF70-Sales-Hybrid (new) but in M365 still show membership in KF70-Sales-Old. Group changes in on-prem AD were applied 06.01.25.
+Thanks!
+
+28.01.25 14:27 Ticket closed | TI-1700002
+Closure description:
+Root cause was that the new group structure created for the second migration wave was placed in an OU outside the Azure AD Connect organizational unit filter scope. The old groups remained synced because they were in the original sync scope. As a result, the cloud directory
+
+SOURCE 54:
+ 06.01.25.
+Thanks!
+
+28.01.25 14:27 Ticket closed | TI-1700002
+Closure description:
+Root cause was that the new group structure created for the second migration wave was placed in an OU outside the Azure AD Connect organizational unit filter scope. The old groups remained synced because they were in the original sync scope. As a result, the cloud directory continued to evaluate users' membership against the (synchronized) old groups, while on-prem evaluated against the (renamed/recreated) new groups.
+Resolution: Updated the Azure AD Connect OU filter to include the new ""Migration_Phase2"" OU containing the new group objects. Performed a full synchronization. Validated that affected users now have correct group memberships in both M365 and on-prem systems.
+
+Notes:
+16.01.25 11:13 Admin, CRM
+Ticket opened.
+17.01.25 09:55 Employee 30
+Initial assessment: customer is the same KF70 hybrid migration as TI-1700001. Different symptom, possibly related root cause area (AAD Connect configuration during migration).
+20.01.25 14:00 Employee 30
+Confirmed: affected users have correct on-prem AD group membership but the cloud-side membership shows the old groups. This indicates the new groups are not being synced to Entra ID.
+21.01.25 10:45 Employee 30
+Reviewed AAD Connect configuration. The group filter (organizational unit-based) was set up for the original directory layout. The new groups for the second migration wave were placed in a new OU ""Migration_Phase2"" which was not included in the AAD Connect sync scope.
+24.01.25 11:20 Employee 30
+Updated OU filter to include Migration_Phase2. Ran initial delta sync to confirm new group objects appear in Entra ID, then ran full sync to ensure all member relationships propagate correctly.
+27.01.25 09:30 Employee 30
+Customer validated that affected users now show correct group memberships in M365 and SharePoint permissions are evaluating correctly.
+28.01.25 14:27 Microsoft CRM Portals
+Ticket closed.
+",no,"This statement merely reports example names and locations used (UserA/UserB, Migration_Phase2) and does not offer a recommendation or proposed action.",supported,TI-1700002 explicitly names affected users UserA and UserB in the ticket activity and states the new group objects were placed in the 'Migration_Phase2' OU in the closure/notes.
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,"After changing CA exclusions and AAD Connect scope, scheduled tasks ran successfully and the migration runbook was updated to require explicit service‑account handling","=== CITED SOURCES ===
+SOURCE 49:
+Ticket summary:
+Ticket name: KF70: Scheduled tasks failing with authentication errors after migration
+Ticket number: TI-1700004
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 21.01.25 07:55
+
+Closure
+Closure date: 31.01.25 16:34
+Closure text: Service-account synchronization scope corrected; service accounts excluded from interactive-MFA conditional access; scheduled tasks now executing successfully.
+
+Activities
+Emails:
+
+21.01.25 07:55 KF70: Backup and reporting scheduled tasks not running Contact Person 30 Helpdesk
+Hi,
+Our overnight reporting jobs and a couple of scheduled backup verification tasks failed last night. The Windows Task Scheduler logs show ""Logon failure: the user has not been granted the requested logon type at this computer"" for several service accounts. These same service accounts have been working fine for over a year.
+The accounts in question are: svc-kf70-rpt, svc-kf70-bkp01, svc-kf70-monitor. These accounts are used in scheduled tasks on multiple internal servers.
+This is becoming urgent because management reports cannot be generated and the morning operations meeting depends on them.
+Best regards
+Contact Person 30
+
+21.01.25 08:02 Ticket created: TI-1700004
+Confirmation.
+
+21.01.25 08:15 Ticket priority elevated to High due to operational impact.
+
+21.01.25 08:20 Ticket assigned | TI-1700004
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+22.01.25 11:30 Re: KF70: Scheduled tasks failing Employee 30 Contact Person 30
+Hi Contact Person 30,
+Thank you. Quick check: were these service accounts part of the migration scope last week? In particular, did their group memberships change, were their UPNs updated, or were they enrolled in any Conditional Access policy recently?
+
+24.01.25 09:42 Re: KF70: Scheduled tasks failing Contact Person 30 Employee 30
+Hi,
+Yes - the migration prep included a step where IT moved all service accounts into a new ""KF70-ServiceAccounts"" OU and added them to a ""KF70-AllUsers-Hybrid"" group for license assignment in M365. We did not think this would cause issues for on-prem scheduled tasks since these are local service accounts used only on internal servers.
+Since you mention Conditional Access: as part of the migration baseline a CA policy was enabled requiring MFA for the ""KF70-AllUsers-Hybrid"" group. Could that be the issue?
+
+31.01.25 16:34 Ticket closed | TI-1700004
+Closure description:
+Root cause was twofold. First, the service accounts were placed in the ""KF70-All
+
+SOURCE 50:
+ you mention Conditional Access: as part of the migration baseline a CA policy was enabled requiring MFA for the ""KF70-AllUsers-Hybrid"" group. Could that be the issue?
+
+31.01.25 16:34 Ticket closed | TI-1700004
+Closure description:
+Root cause was twofold. First, the service accounts were placed in the ""KF70-AllUsers-Hybrid"" group, which is the group targeted by the new tenant-baseline Conditional Access policy ""KF70-Require-MFA"". The Conditional Access evaluation was therefore being applied to non-interactive logons for service accounts, breaking scheduled-task authentication where MFA cannot be satisfied. Second, the service accounts had been moved to the new OU which is filtered IN by Azure AD Connect, leading to the accounts being synchronized to Entra ID and then having a license assigned (small but non-zero impact on the on-prem authentication path because of mfaPreferred attribute conflicts).
+Resolution: Created a sub-group ""KF70-ServiceAccounts-NoMFA"" containing the service accounts and added it to the Conditional Access policy as an explicit exclusion. Re-evaluated AAD Connect filter to keep the on-prem service-account authentication path clean. Validated that scheduled tasks are now running successfully overnight.
+Documentation note: For future migrations, service accounts must be explicitly excluded from baseline CA policies via a dedicated exclusion group, and their AAD Connect sync status should be reviewed to avoid unintended cloud-side license assignment. We have added this to the migration runbook.
+
+Notes:
+21.01.25 08:02 Admin, CRM
+Ticket opened.
+21.01.25 08:20 Admin, CRM
+Priority elevated due to operational impact.
+24.01.25 10:00 Employee 30
+Initial diagnosis: scheduled tasks fail with logon-type denied. Customer confirms recent migration changed service-account group membership. Strong suspicion the new tenant-baseline Conditional Access policy is being evaluated against non-interactive service-account logons.
+27.01.25 14:30 Employee 30
+Confirmed via Azure AD sign-in logs: failed sign-in attempts for the service accounts are tagged ""Failed - Conditional Access requires MFA"". The CA policy targets the All-Users-Hybrid group which includes the service accounts.
+28.01.25 11:00 Employee 30
+Created KF70-ServiceAccounts-NoMFA exclusion group. Added service accounts. Updated CA policy to exclude this group. Sign-in logs now show successful authentication.
+30.01.25 09:30 Employee 30
+Customer confirms scheduled tasks ran successfully overnight without errors. Asked them to monitor for one more cycle before closure.
+31.01.25 16:34 Microsoft CRM Portals
+Ticket closed. Migration runbook updated with service-account handling guidance.
+",no,This reports completed changes and a runbook update requiring service-account handling rather than offering a recommendation or instructing the reader to take action.,supported,"The ticket closure and notes state they created a KF70-ServiceAccounts-NoMFA exclusion and updated the CA policy and AAD Connect filter, which restored scheduled tasks overnight, and the documentation note says this was added to the migration runbook."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,Re‑evaluate the Azure AD Connect filter to avoid unintentionally syncing service accounts (which led to license assignment and subtle auth path changes in the documented case),"=== CITED SOURCES ===
+SOURCE 49:
+Ticket summary:
+Ticket name: KF70: Scheduled tasks failing with authentication errors after migration
+Ticket number: TI-1700004
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 21.01.25 07:55
+
+Closure
+Closure date: 31.01.25 16:34
+Closure text: Service-account synchronization scope corrected; service accounts excluded from interactive-MFA conditional access; scheduled tasks now executing successfully.
+
+Activities
+Emails:
+
+21.01.25 07:55 KF70: Backup and reporting scheduled tasks not running Contact Person 30 Helpdesk
+Hi,
+Our overnight reporting jobs and a couple of scheduled backup verification tasks failed last night. The Windows Task Scheduler logs show ""Logon failure: the user has not been granted the requested logon type at this computer"" for several service accounts. These same service accounts have been working fine for over a year.
+The accounts in question are: svc-kf70-rpt, svc-kf70-bkp01, svc-kf70-monitor. These accounts are used in scheduled tasks on multiple internal servers.
+This is becoming urgent because management reports cannot be generated and the morning operations meeting depends on them.
+Best regards
+Contact Person 30
+
+21.01.25 08:02 Ticket created: TI-1700004
+Confirmation.
+
+21.01.25 08:15 Ticket priority elevated to High due to operational impact.
+
+21.01.25 08:20 Ticket assigned | TI-1700004
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+22.01.25 11:30 Re: KF70: Scheduled tasks failing Employee 30 Contact Person 30
+Hi Contact Person 30,
+Thank you. Quick check: were these service accounts part of the migration scope last week? In particular, did their group memberships change, were their UPNs updated, or were they enrolled in any Conditional Access policy recently?
+
+24.01.25 09:42 Re: KF70: Scheduled tasks failing Contact Person 30 Employee 30
+Hi,
+Yes - the migration prep included a step where IT moved all service accounts into a new ""KF70-ServiceAccounts"" OU and added them to a ""KF70-AllUsers-Hybrid"" group for license assignment in M365. We did not think this would cause issues for on-prem scheduled tasks since these are local service accounts used only on internal servers.
+Since you mention Conditional Access: as part of the migration baseline a CA policy was enabled requiring MFA for the ""KF70-AllUsers-Hybrid"" group. Could that be the issue?
+
+31.01.25 16:34 Ticket closed | TI-1700004
+Closure description:
+Root cause was twofold. First, the service accounts were placed in the ""KF70-All
+
+SOURCE 50:
+ you mention Conditional Access: as part of the migration baseline a CA policy was enabled requiring MFA for the ""KF70-AllUsers-Hybrid"" group. Could that be the issue?
+
+31.01.25 16:34 Ticket closed | TI-1700004
+Closure description:
+Root cause was twofold. First, the service accounts were placed in the ""KF70-AllUsers-Hybrid"" group, which is the group targeted by the new tenant-baseline Conditional Access policy ""KF70-Require-MFA"". The Conditional Access evaluation was therefore being applied to non-interactive logons for service accounts, breaking scheduled-task authentication where MFA cannot be satisfied. Second, the service accounts had been moved to the new OU which is filtered IN by Azure AD Connect, leading to the accounts being synchronized to Entra ID and then having a license assigned (small but non-zero impact on the on-prem authentication path because of mfaPreferred attribute conflicts).
+Resolution: Created a sub-group ""KF70-ServiceAccounts-NoMFA"" containing the service accounts and added it to the Conditional Access policy as an explicit exclusion. Re-evaluated AAD Connect filter to keep the on-prem service-account authentication path clean. Validated that scheduled tasks are now running successfully overnight.
+Documentation note: For future migrations, service accounts must be explicitly excluded from baseline CA policies via a dedicated exclusion group, and their AAD Connect sync status should be reviewed to avoid unintended cloud-side license assignment. We have added this to the migration runbook.
+
+Notes:
+21.01.25 08:02 Admin, CRM
+Ticket opened.
+21.01.25 08:20 Admin, CRM
+Priority elevated due to operational impact.
+24.01.25 10:00 Employee 30
+Initial diagnosis: scheduled tasks fail with logon-type denied. Customer confirms recent migration changed service-account group membership. Strong suspicion the new tenant-baseline Conditional Access policy is being evaluated against non-interactive service-account logons.
+27.01.25 14:30 Employee 30
+Confirmed via Azure AD sign-in logs: failed sign-in attempts for the service accounts are tagged ""Failed - Conditional Access requires MFA"". The CA policy targets the All-Users-Hybrid group which includes the service accounts.
+28.01.25 11:00 Employee 30
+Created KF70-ServiceAccounts-NoMFA exclusion group. Added service accounts. Updated CA policy to exclude this group. Sign-in logs now show successful authentication.
+30.01.25 09:30 Employee 30
+Customer confirms scheduled tasks ran successfully overnight without errors. Asked them to monitor for one more cycle before closure.
+31.01.25 16:34 Microsoft CRM Portals
+Ticket closed. Migration runbook updated with service-account handling guidance.
+",yes,Uses the directive 'Re-evaluate' to propose an action to prevent future unintended syncing and related issues.,supported,"The ticket closure states the service accounts were filtered IN by Azure AD Connect, were synchronized to Entra ID and received licenses which caused a small impact on the on‑prem authentication path (mfaPreferred conflicts), and the resolution included re‑evaluating the AAD Connect filter to keep the on‑prem service‑account authentication path clean."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,Trigger a full Azure AD Connect synchronization after the reversion to ensure on‑prem and cloud attributes align,"=== CITED SOURCES ===
+SOURCE 22:
+Ticket summary:
+Ticket name: KF70: Some users can sign in to Microsoft 365 but not to internal applications
+Ticket number: TI-1700001
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 13.01.25 09:14
+
+Closure
+Closure date: 24.01.25 17:02
+Closure text: UPN suffix mismatch resolved on Azure AD Connect; full sync performed; affected users re-validated.
+
+Activities
+Emails:
+
+13.01.25 09:14 KF70: Users can access M365 but not internal apps Contact Person 30 Helpdesk
+Hi,
+since the migration phase started two weeks ago, some users are reporting strange behavior. They can sign in to Outlook on the web, Teams, and SharePoint without issues, but the same accounts cannot sign in to our internal procurement system or our document management system on the on-premises servers. The error on the on-prem side says ""user not found in domain"" or similar.
+The IT team confirmed the password is correct and the accounts are not locked. About 25 users are affected so far. We need help because the procurement workflow is starting to back up.
+Best regards
+Contact Person 30
+KF70 IT Manager
+
+13.01.25 09:18 Ticket created: TI-1700001 KF70: Users can access M365 but not internal apps
+Ticket confirmation
+Dear Contact Person 30,
+Your request has been received and recorded under ticket number TI-1700001.
+We will assign it to the responsible engineer shortly.
+
+13.01.25 09:25 Ticket assigned | TI-1700001
+The ticket TI-1700001 has been assigned to Employee 30 (BU Infrastructure - Identity).
+
+13.01.25 11:42 Re: KF70: Users can access M365 but not internal apps Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you for the report. Could you please share:
+- 2-3 sample affected user UPNs (we will redact internally)
+- The exact error message from the on-prem application(s)
+- Whether the affected users were among those whose accounts were recently re-provisioned during the migration prep
+We will start the analysis on the Azure AD Connect side.
+Best regards
+Employee 30
+
+15.01.25 14:33 Re: KF70: Users can access M365 but not internal apps Contact Person 30 Employee 30
+Hi Employee 30,
+Sample UPNs attached. The error is ""The user name or password is incorrect"" but we have ruled out password issues. All affected users were on the second migration wave (week of 06.01.25). Users from the first wave (week of 16.12.24)",yes,"Uses a directive verb ('Trigger') instructing to perform a full Azure AD Connect sync after reversion to ensure attribute alignment, which is a recommendation.",supported,"The ticket closure states a UPN suffix mismatch was resolved via Azure AD Connect and a full sync was performed with affected users re-validated, which supports triggering a full AD Connect sync to align on-prem and cloud attributes."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,"Mobile client fix required user device action (remove/re‑add account, re‑enrol) and confirmation that Outlook mobile continued to work","=== CITED SOURCES ===
+SOURCE 4:
+Ticket summary:
+Ticket name: KF70: Mobile devices cannot connect to Exchange after migration
+Ticket number: TI-1700003
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 31
+Source: Email
+Type: Support Request
+Created on: 17.01.25 08:42
+
+Closure
+Closure date: 27.01.25 10:18
+Closure text: ActiveSync legacy authentication issue resolved by updating mobile clients to use modern auth and re-enrolling affected devices in Intune.
+
+Activities
+Emails:
+
+17.01.25 08:42 KF70: Mobile email setup keeps failing Contact Person 30 Helpdesk
+Hello,
+Several users from the recently migrated group are reporting that their mobile email apps no longer connect. Specifically iPhone Mail and the built-in Android mail apps. They get prompted for password repeatedly and never authenticate.
+Strange thing: the same users can use Outlook mobile app without issues. Only the built-in mail clients on iOS/Android fail.
+Affected users so far: about 15, all from the second migration wave.
+Could you please check?
+Contact Person 30
+
+17.01.25 08:50 Ticket created: TI-1700003
+Confirmation.
+
+17.01.25 09:10 Ticket assigned | TI-1700003
+Assigned to Employee 31 (BU Infrastructure - Mobile/Endpoint).
+
+20.01.25 11:20 Re: KF70: Mobile email setup keeps failing Employee 31 Contact Person 30
+Hi,
+Thanks. Could you confirm:
+- Which Exchange Online setup are these users on (E3/E5)?
+- Is Modern Authentication enabled at tenant level?
+- Are the affected users also reporting issues with Outlook desktop/mobile or only with the built-in iOS/Android mail clients?
+
+22.01.25 14:08 Re: KF70: Mobile email setup keeps failing Contact Person 30 Employee 31
+Hi,
+- E3 licenses
+- Modern Auth is enabled tenant-wide (was switched on as part of migration prep)
+- Outlook mobile app works for affected users; only built-in iOS Mail and Android Gmail (using EAS) are failing.
+Thanks
+
+27.01.25 10:18 Ticket closed | TI-1700003
+Closure description:
+Root cause: The tenant Modern Authentication enforcement (enabled as part of the migration baseline) requires OAuth-based authentication. Built-in iOS Mail and Android Gmail clients on older device versions still attempted Basic Auth via the EAS protocol, which is now blocked. This was a known consequence of the modern-auth tenant configuration but had not been communicated to end users.
+Compounding factor: For users from the second migration wave, the built-in mail clients had cached credentials from the on-prem-only configuration before migration. After migration, the credentials needed to be removed and the account re-added using a method that supports modern authentication.
+Resolution: Provided customer with",no,"This is a factual report that the fix required user device actions and confirmed Outlook mobile continued to work, describing past actions rather than recommending or advising future action.",supported,"The ticket closure and activities state the issue was resolved by updating mobile clients to use modern auth and re-enrolling affected devices, and the closure notes cached credentials required removing and re-adding the account; earlier messages also confirmed Outlook mobile continued to work while built-in clients failed."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,"Mobile device details (OS versions, whether the built‑in client or Outlook mobile is in use) so we can determine whether a client update or re‑enrolment is required (TI‑1700003 recorded that affected clients were built‑in iOS/Android and that Outlook mobile worked)","=== CITED SOURCES ===
+SOURCE 4:
+Ticket summary:
+Ticket name: KF70: Mobile devices cannot connect to Exchange after migration
+Ticket number: TI-1700003
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 31
+Source: Email
+Type: Support Request
+Created on: 17.01.25 08:42
+
+Closure
+Closure date: 27.01.25 10:18
+Closure text: ActiveSync legacy authentication issue resolved by updating mobile clients to use modern auth and re-enrolling affected devices in Intune.
+
+Activities
+Emails:
+
+17.01.25 08:42 KF70: Mobile email setup keeps failing Contact Person 30 Helpdesk
+Hello,
+Several users from the recently migrated group are reporting that their mobile email apps no longer connect. Specifically iPhone Mail and the built-in Android mail apps. They get prompted for password repeatedly and never authenticate.
+Strange thing: the same users can use Outlook mobile app without issues. Only the built-in mail clients on iOS/Android fail.
+Affected users so far: about 15, all from the second migration wave.
+Could you please check?
+Contact Person 30
+
+17.01.25 08:50 Ticket created: TI-1700003
+Confirmation.
+
+17.01.25 09:10 Ticket assigned | TI-1700003
+Assigned to Employee 31 (BU Infrastructure - Mobile/Endpoint).
+
+20.01.25 11:20 Re: KF70: Mobile email setup keeps failing Employee 31 Contact Person 30
+Hi,
+Thanks. Could you confirm:
+- Which Exchange Online setup are these users on (E3/E5)?
+- Is Modern Authentication enabled at tenant level?
+- Are the affected users also reporting issues with Outlook desktop/mobile or only with the built-in iOS/Android mail clients?
+
+22.01.25 14:08 Re: KF70: Mobile email setup keeps failing Contact Person 30 Employee 31
+Hi,
+- E3 licenses
+- Modern Auth is enabled tenant-wide (was switched on as part of migration prep)
+- Outlook mobile app works for affected users; only built-in iOS Mail and Android Gmail (using EAS) are failing.
+Thanks
+
+27.01.25 10:18 Ticket closed | TI-1700003
+Closure description:
+Root cause: The tenant Modern Authentication enforcement (enabled as part of the migration baseline) requires OAuth-based authentication. Built-in iOS Mail and Android Gmail clients on older device versions still attempted Basic Auth via the EAS protocol, which is now blocked. This was a known consequence of the modern-auth tenant configuration but had not been communicated to end users.
+Compounding factor: For users from the second migration wave, the built-in mail clients had cached credentials from the on-prem-only configuration before migration. After migration, the credentials needed to be removed and the account re-added using a method that supports modern authentication.
+Resolution: Provided customer with",yes,"The statement requests collecting mobile device details to determine whether a client update or re-enrolment is required, which is an actionable recommendation.",supported,"TI-1700003 explicitly notes that built-in iOS/Android mail clients failed while Outlook mobile worked, that older device versions attempted Basic Auth, and that resolution involved updating mobile clients and re-enrolling affected devices—supporting the need to collect OS and client details to determine updates or re-enrolment."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,Validate by confirming those devices can connect and that Outlook mobile continues to work for any users who use it,"=== CITED SOURCES ===
+SOURCE 4:
+Ticket summary:
+Ticket name: KF70: Mobile devices cannot connect to Exchange after migration
+Ticket number: TI-1700003
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 31
+Source: Email
+Type: Support Request
+Created on: 17.01.25 08:42
+
+Closure
+Closure date: 27.01.25 10:18
+Closure text: ActiveSync legacy authentication issue resolved by updating mobile clients to use modern auth and re-enrolling affected devices in Intune.
+
+Activities
+Emails:
+
+17.01.25 08:42 KF70: Mobile email setup keeps failing Contact Person 30 Helpdesk
+Hello,
+Several users from the recently migrated group are reporting that their mobile email apps no longer connect. Specifically iPhone Mail and the built-in Android mail apps. They get prompted for password repeatedly and never authenticate.
+Strange thing: the same users can use Outlook mobile app without issues. Only the built-in mail clients on iOS/Android fail.
+Affected users so far: about 15, all from the second migration wave.
+Could you please check?
+Contact Person 30
+
+17.01.25 08:50 Ticket created: TI-1700003
+Confirmation.
+
+17.01.25 09:10 Ticket assigned | TI-1700003
+Assigned to Employee 31 (BU Infrastructure - Mobile/Endpoint).
+
+20.01.25 11:20 Re: KF70: Mobile email setup keeps failing Employee 31 Contact Person 30
+Hi,
+Thanks. Could you confirm:
+- Which Exchange Online setup are these users on (E3/E5)?
+- Is Modern Authentication enabled at tenant level?
+- Are the affected users also reporting issues with Outlook desktop/mobile or only with the built-in iOS/Android mail clients?
+
+22.01.25 14:08 Re: KF70: Mobile email setup keeps failing Contact Person 30 Employee 31
+Hi,
+- E3 licenses
+- Modern Auth is enabled tenant-wide (was switched on as part of migration prep)
+- Outlook mobile app works for affected users; only built-in iOS Mail and Android Gmail (using EAS) are failing.
+Thanks
+
+27.01.25 10:18 Ticket closed | TI-1700003
+Closure description:
+Root cause: The tenant Modern Authentication enforcement (enabled as part of the migration baseline) requires OAuth-based authentication. Built-in iOS Mail and Android Gmail clients on older device versions still attempted Basic Auth via the EAS protocol, which is now blocked. This was a known consequence of the modern-auth tenant configuration but had not been communicated to end users.
+Compounding factor: For users from the second migration wave, the built-in mail clients had cached credentials from the on-prem-only configuration before migration. After migration, the credentials needed to be removed and the account re-added using a method that supports modern authentication.
+Resolution: Provided customer with",yes,"The sentence issues a directive to 'Validate by confirming' specific actions (confirm device connectivity and Outlook mobile functionality), which is a clear recommendation/instruction.",supported,"The ticket shows built-in iOS/Android mail clients failed while Outlook Mobile continued to work, and the investigation included confirming which clients connected and resolving by updating clients to modern auth and re-enrolling devices, so validating device connectivity and Outlook Mobile behavior is grounded in the CONTEXT."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,Validate by testing 2–3 affected users against the on‑prem applications (the ticket validation step used 3 users before wider validation),"=== CITED SOURCES ===
+SOURCE 22:
+Ticket summary:
+Ticket name: KF70: Some users can sign in to Microsoft 365 but not to internal applications
+Ticket number: TI-1700001
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 13.01.25 09:14
+
+Closure
+Closure date: 24.01.25 17:02
+Closure text: UPN suffix mismatch resolved on Azure AD Connect; full sync performed; affected users re-validated.
+
+Activities
+Emails:
+
+13.01.25 09:14 KF70: Users can access M365 but not internal apps Contact Person 30 Helpdesk
+Hi,
+since the migration phase started two weeks ago, some users are reporting strange behavior. They can sign in to Outlook on the web, Teams, and SharePoint without issues, but the same accounts cannot sign in to our internal procurement system or our document management system on the on-premises servers. The error on the on-prem side says ""user not found in domain"" or similar.
+The IT team confirmed the password is correct and the accounts are not locked. About 25 users are affected so far. We need help because the procurement workflow is starting to back up.
+Best regards
+Contact Person 30
+KF70 IT Manager
+
+13.01.25 09:18 Ticket created: TI-1700001 KF70: Users can access M365 but not internal apps
+Ticket confirmation
+Dear Contact Person 30,
+Your request has been received and recorded under ticket number TI-1700001.
+We will assign it to the responsible engineer shortly.
+
+13.01.25 09:25 Ticket assigned | TI-1700001
+The ticket TI-1700001 has been assigned to Employee 30 (BU Infrastructure - Identity).
+
+13.01.25 11:42 Re: KF70: Users can access M365 but not internal apps Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you for the report. Could you please share:
+- 2-3 sample affected user UPNs (we will redact internally)
+- The exact error message from the on-prem application(s)
+- Whether the affected users were among those whose accounts were recently re-provisioned during the migration prep
+We will start the analysis on the Azure AD Connect side.
+Best regards
+Employee 30
+
+15.01.25 14:33 Re: KF70: Users can access M365 but not internal apps Contact Person 30 Employee 30
+Hi Employee 30,
+Sample UPNs attached. The error is ""The user name or password is incorrect"" but we have ruled out password issues. All affected users were on the second migration wave (week of 06.01.25). Users from the first wave (week of 16.12.24)",yes,"Imperative instruction proposing a concrete action to validate by testing 2–3 users (with a parenthetical noting prior practice), which is forward-looking advice.",partially_supported,"The ticket requests 2–3 sample affected UPNs for initial analysis (supporting testing 2–3 users), but the CONTEXT does not explicitly state that the validation step actually used exactly 3 users before wider validation (closure only says affected users were re-validated without a number)."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,"Create a dedicated exclusion group for service accounts (the record shows KF70-ServiceAccounts-NoMFA was created), add the service accounts to it, and add that group as an explicit exclusion to the Conditional Access policy so MFA is not applied to non‑interactive logons","=== CITED SOURCES ===
+SOURCE 49:
+Ticket summary:
+Ticket name: KF70: Scheduled tasks failing with authentication errors after migration
+Ticket number: TI-1700004
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 21.01.25 07:55
+
+Closure
+Closure date: 31.01.25 16:34
+Closure text: Service-account synchronization scope corrected; service accounts excluded from interactive-MFA conditional access; scheduled tasks now executing successfully.
+
+Activities
+Emails:
+
+21.01.25 07:55 KF70: Backup and reporting scheduled tasks not running Contact Person 30 Helpdesk
+Hi,
+Our overnight reporting jobs and a couple of scheduled backup verification tasks failed last night. The Windows Task Scheduler logs show ""Logon failure: the user has not been granted the requested logon type at this computer"" for several service accounts. These same service accounts have been working fine for over a year.
+The accounts in question are: svc-kf70-rpt, svc-kf70-bkp01, svc-kf70-monitor. These accounts are used in scheduled tasks on multiple internal servers.
+This is becoming urgent because management reports cannot be generated and the morning operations meeting depends on them.
+Best regards
+Contact Person 30
+
+21.01.25 08:02 Ticket created: TI-1700004
+Confirmation.
+
+21.01.25 08:15 Ticket priority elevated to High due to operational impact.
+
+21.01.25 08:20 Ticket assigned | TI-1700004
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+22.01.25 11:30 Re: KF70: Scheduled tasks failing Employee 30 Contact Person 30
+Hi Contact Person 30,
+Thank you. Quick check: were these service accounts part of the migration scope last week? In particular, did their group memberships change, were their UPNs updated, or were they enrolled in any Conditional Access policy recently?
+
+24.01.25 09:42 Re: KF70: Scheduled tasks failing Contact Person 30 Employee 30
+Hi,
+Yes - the migration prep included a step where IT moved all service accounts into a new ""KF70-ServiceAccounts"" OU and added them to a ""KF70-AllUsers-Hybrid"" group for license assignment in M365. We did not think this would cause issues for on-prem scheduled tasks since these are local service accounts used only on internal servers.
+Since you mention Conditional Access: as part of the migration baseline a CA policy was enabled requiring MFA for the ""KF70-AllUsers-Hybrid"" group. Could that be the issue?
+
+31.01.25 16:34 Ticket closed | TI-1700004
+Closure description:
+Root cause was twofold. First, the service accounts were placed in the ""KF70-All
+
+SOURCE 50:
+ you mention Conditional Access: as part of the migration baseline a CA policy was enabled requiring MFA for the ""KF70-AllUsers-Hybrid"" group. Could that be the issue?
+
+31.01.25 16:34 Ticket closed | TI-1700004
+Closure description:
+Root cause was twofold. First, the service accounts were placed in the ""KF70-AllUsers-Hybrid"" group, which is the group targeted by the new tenant-baseline Conditional Access policy ""KF70-Require-MFA"". The Conditional Access evaluation was therefore being applied to non-interactive logons for service accounts, breaking scheduled-task authentication where MFA cannot be satisfied. Second, the service accounts had been moved to the new OU which is filtered IN by Azure AD Connect, leading to the accounts being synchronized to Entra ID and then having a license assigned (small but non-zero impact on the on-prem authentication path because of mfaPreferred attribute conflicts).
+Resolution: Created a sub-group ""KF70-ServiceAccounts-NoMFA"" containing the service accounts and added it to the Conditional Access policy as an explicit exclusion. Re-evaluated AAD Connect filter to keep the on-prem service-account authentication path clean. Validated that scheduled tasks are now running successfully overnight.
+Documentation note: For future migrations, service accounts must be explicitly excluded from baseline CA policies via a dedicated exclusion group, and their AAD Connect sync status should be reviewed to avoid unintended cloud-side license assignment. We have added this to the migration runbook.
+
+Notes:
+21.01.25 08:02 Admin, CRM
+Ticket opened.
+21.01.25 08:20 Admin, CRM
+Priority elevated due to operational impact.
+24.01.25 10:00 Employee 30
+Initial diagnosis: scheduled tasks fail with logon-type denied. Customer confirms recent migration changed service-account group membership. Strong suspicion the new tenant-baseline Conditional Access policy is being evaluated against non-interactive service-account logons.
+27.01.25 14:30 Employee 30
+Confirmed via Azure AD sign-in logs: failed sign-in attempts for the service accounts are tagged ""Failed - Conditional Access requires MFA"". The CA policy targets the All-Users-Hybrid group which includes the service accounts.
+28.01.25 11:00 Employee 30
+Created KF70-ServiceAccounts-NoMFA exclusion group. Added service accounts. Updated CA policy to exclude this group. Sign-in logs now show successful authentication.
+30.01.25 09:30 Employee 30
+Customer confirms scheduled tasks ran successfully overnight without errors. Asked them to monitor for one more cycle before closure.
+31.01.25 16:34 Microsoft CRM Portals
+Ticket closed. Migration runbook updated with service-account handling guidance.
+",yes,"The statement uses imperative directives proposing specific actions (create a group, add accounts, add an exclusion) to achieve a desired outcome, i.e., not applying MFA to non-interactive logons.",supported,"Supported — the ticket notes that a sub-group 'KF70-ServiceAccounts-NoMFA' was created, the service accounts were added to it, and the Conditional Access policy was updated to explicitly exclude that group so MFA was no longer applied to non-interactive logons."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,"If UPNs were overwritten, revert the on‑prem userPrincipalName values to the original kf70.local form for affected accounts (the record shows this was done for 25 users)","=== CITED SOURCES ===
+SOURCE 22:
+Ticket summary:
+Ticket name: KF70: Some users can sign in to Microsoft 365 but not to internal applications
+Ticket number: TI-1700001
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 13.01.25 09:14
+
+Closure
+Closure date: 24.01.25 17:02
+Closure text: UPN suffix mismatch resolved on Azure AD Connect; full sync performed; affected users re-validated.
+
+Activities
+Emails:
+
+13.01.25 09:14 KF70: Users can access M365 but not internal apps Contact Person 30 Helpdesk
+Hi,
+since the migration phase started two weeks ago, some users are reporting strange behavior. They can sign in to Outlook on the web, Teams, and SharePoint without issues, but the same accounts cannot sign in to our internal procurement system or our document management system on the on-premises servers. The error on the on-prem side says ""user not found in domain"" or similar.
+The IT team confirmed the password is correct and the accounts are not locked. About 25 users are affected so far. We need help because the procurement workflow is starting to back up.
+Best regards
+Contact Person 30
+KF70 IT Manager
+
+13.01.25 09:18 Ticket created: TI-1700001 KF70: Users can access M365 but not internal apps
+Ticket confirmation
+Dear Contact Person 30,
+Your request has been received and recorded under ticket number TI-1700001.
+We will assign it to the responsible engineer shortly.
+
+13.01.25 09:25 Ticket assigned | TI-1700001
+The ticket TI-1700001 has been assigned to Employee 30 (BU Infrastructure - Identity).
+
+13.01.25 11:42 Re: KF70: Users can access M365 but not internal apps Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you for the report. Could you please share:
+- 2-3 sample affected user UPNs (we will redact internally)
+- The exact error message from the on-prem application(s)
+- Whether the affected users were among those whose accounts were recently re-provisioned during the migration prep
+We will start the analysis on the Azure AD Connect side.
+Best regards
+Employee 30
+
+15.01.25 14:33 Re: KF70: Users can access M365 but not internal apps Contact Person 30 Employee 30
+Hi Employee 30,
+Sample UPNs attached. The error is ""The user name or password is incorrect"" but we have ruled out password issues. All affected users were on the second migration wave (week of 06.01.25). Users from the first wave (week of 16.12.24)",yes,"Contains a conditional directive ('If UPNs were overwritten, revert...') instructing an action to revert on‑prem UPNs.",partially_supported,"The ticket notes a UPN suffix mismatch was resolved and about 25 users were affected, which supports the idea of reverting UPNs as a plausible fix; however the context does not explicitly state that on-prem userPrincipalName values were reverted to the kf70.local form or that this specific action was performed for 25 users."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,"After reverting UPNs the engineers triggered a full sync and validated a sample of users (3 users) before wider validation, then confirmed all 25 users could sign in to both cloud and on‑prem apps","=== CITED SOURCES ===
+SOURCE 22:
+Ticket summary:
+Ticket name: KF70: Some users can sign in to Microsoft 365 but not to internal applications
+Ticket number: TI-1700001
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 13.01.25 09:14
+
+Closure
+Closure date: 24.01.25 17:02
+Closure text: UPN suffix mismatch resolved on Azure AD Connect; full sync performed; affected users re-validated.
+
+Activities
+Emails:
+
+13.01.25 09:14 KF70: Users can access M365 but not internal apps Contact Person 30 Helpdesk
+Hi,
+since the migration phase started two weeks ago, some users are reporting strange behavior. They can sign in to Outlook on the web, Teams, and SharePoint without issues, but the same accounts cannot sign in to our internal procurement system or our document management system on the on-premises servers. The error on the on-prem side says ""user not found in domain"" or similar.
+The IT team confirmed the password is correct and the accounts are not locked. About 25 users are affected so far. We need help because the procurement workflow is starting to back up.
+Best regards
+Contact Person 30
+KF70 IT Manager
+
+13.01.25 09:18 Ticket created: TI-1700001 KF70: Users can access M365 but not internal apps
+Ticket confirmation
+Dear Contact Person 30,
+Your request has been received and recorded under ticket number TI-1700001.
+We will assign it to the responsible engineer shortly.
+
+13.01.25 09:25 Ticket assigned | TI-1700001
+The ticket TI-1700001 has been assigned to Employee 30 (BU Infrastructure - Identity).
+
+13.01.25 11:42 Re: KF70: Users can access M365 but not internal apps Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you for the report. Could you please share:
+- 2-3 sample affected user UPNs (we will redact internally)
+- The exact error message from the on-prem application(s)
+- Whether the affected users were among those whose accounts were recently re-provisioned during the migration prep
+We will start the analysis on the Azure AD Connect side.
+Best regards
+Employee 30
+
+15.01.25 14:33 Re: KF70: Users can access M365 but not internal apps Contact Person 30 Employee 30
+Hi Employee 30,
+Sample UPNs attached. The error is ""The user name or password is incorrect"" but we have ruled out password issues. All affected users were on the second migration wave (week of 06.01.25). Users from the first wave (week of 16.12.24)",no,"The sentence describes past actions taken and confirmation of results (a record of what happened), not a recommendation or directive.",partially_supported,"The closure states a 'UPN suffix mismatch resolved' and a 'full sync performed' and the ticket requested 2-3 sample UPNs and notes affected users were 're-validated', supporting the full sync and sample-validation claims; however the CONTEXT does not explicitly say UPNs were 'reverted' nor does it explicitly confirm that all 25 users could sign in to both cloud and on-prem apps."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,"For affected users, remove the old cached credentials on the device and re‑add the account using a client/method that supports OAuth (Outlook mobile or updated built‑in client with modern auth). In the record they instructed customers to update the mobile clients to use modern auth and to re‑enroll affected devices in Intune where appropriate","=== CITED SOURCES ===
+SOURCE 4:
+Ticket summary:
+Ticket name: KF70: Mobile devices cannot connect to Exchange after migration
+Ticket number: TI-1700003
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 31
+Source: Email
+Type: Support Request
+Created on: 17.01.25 08:42
+
+Closure
+Closure date: 27.01.25 10:18
+Closure text: ActiveSync legacy authentication issue resolved by updating mobile clients to use modern auth and re-enrolling affected devices in Intune.
+
+Activities
+Emails:
+
+17.01.25 08:42 KF70: Mobile email setup keeps failing Contact Person 30 Helpdesk
+Hello,
+Several users from the recently migrated group are reporting that their mobile email apps no longer connect. Specifically iPhone Mail and the built-in Android mail apps. They get prompted for password repeatedly and never authenticate.
+Strange thing: the same users can use Outlook mobile app without issues. Only the built-in mail clients on iOS/Android fail.
+Affected users so far: about 15, all from the second migration wave.
+Could you please check?
+Contact Person 30
+
+17.01.25 08:50 Ticket created: TI-1700003
+Confirmation.
+
+17.01.25 09:10 Ticket assigned | TI-1700003
+Assigned to Employee 31 (BU Infrastructure - Mobile/Endpoint).
+
+20.01.25 11:20 Re: KF70: Mobile email setup keeps failing Employee 31 Contact Person 30
+Hi,
+Thanks. Could you confirm:
+- Which Exchange Online setup are these users on (E3/E5)?
+- Is Modern Authentication enabled at tenant level?
+- Are the affected users also reporting issues with Outlook desktop/mobile or only with the built-in iOS/Android mail clients?
+
+22.01.25 14:08 Re: KF70: Mobile email setup keeps failing Contact Person 30 Employee 31
+Hi,
+- E3 licenses
+- Modern Auth is enabled tenant-wide (was switched on as part of migration prep)
+- Outlook mobile app works for affected users; only built-in iOS Mail and Android Gmail (using EAS) are failing.
+Thanks
+
+27.01.25 10:18 Ticket closed | TI-1700003
+Closure description:
+Root cause: The tenant Modern Authentication enforcement (enabled as part of the migration baseline) requires OAuth-based authentication. Built-in iOS Mail and Android Gmail clients on older device versions still attempted Basic Auth via the EAS protocol, which is now blocked. This was a known consequence of the modern-auth tenant configuration but had not been communicated to end users.
+Compounding factor: For users from the second migration wave, the built-in mail clients had cached credentials from the on-prem-only configuration before migration. After migration, the credentials needed to be removed and the account re-added using a method that supports modern authentication.
+Resolution: Provided customer with",yes,"The statement contains direct instructions and directive verbs (remove, re-add, update, re-enroll) telling users and customers to take specific remediation actions.",supported,"The ticket closure explicitly says cached credentials needed to be removed and the account re-added using a method that supports modern authentication, notes Outlook mobile worked while built-in clients failed, and the closure/resolution states updating mobile clients to modern auth and re-enrolling devices in Intune."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,"If you can, provide Azure AD Connect configuration export (current OU filter), a sample of affected user on‑prem attributes (userPrincipalName), and the applicable Conditional Access policy details — these were used in the documented investigations and are required to make the same changes safely","=== CITED SOURCES ===
+SOURCE 22:
+Ticket summary:
+Ticket name: KF70: Some users can sign in to Microsoft 365 but not to internal applications
+Ticket number: TI-1700001
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 13.01.25 09:14
+
+Closure
+Closure date: 24.01.25 17:02
+Closure text: UPN suffix mismatch resolved on Azure AD Connect; full sync performed; affected users re-validated.
+
+Activities
+Emails:
+
+13.01.25 09:14 KF70: Users can access M365 but not internal apps Contact Person 30 Helpdesk
+Hi,
+since the migration phase started two weeks ago, some users are reporting strange behavior. They can sign in to Outlook on the web, Teams, and SharePoint without issues, but the same accounts cannot sign in to our internal procurement system or our document management system on the on-premises servers. The error on the on-prem side says ""user not found in domain"" or similar.
+The IT team confirmed the password is correct and the accounts are not locked. About 25 users are affected so far. We need help because the procurement workflow is starting to back up.
+Best regards
+Contact Person 30
+KF70 IT Manager
+
+13.01.25 09:18 Ticket created: TI-1700001 KF70: Users can access M365 but not internal apps
+Ticket confirmation
+Dear Contact Person 30,
+Your request has been received and recorded under ticket number TI-1700001.
+We will assign it to the responsible engineer shortly.
+
+13.01.25 09:25 Ticket assigned | TI-1700001
+The ticket TI-1700001 has been assigned to Employee 30 (BU Infrastructure - Identity).
+
+13.01.25 11:42 Re: KF70: Users can access M365 but not internal apps Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you for the report. Could you please share:
+- 2-3 sample affected user UPNs (we will redact internally)
+- The exact error message from the on-prem application(s)
+- Whether the affected users were among those whose accounts were recently re-provisioned during the migration prep
+We will start the analysis on the Azure AD Connect side.
+Best regards
+Employee 30
+
+15.01.25 14:33 Re: KF70: Users can access M365 but not internal apps Contact Person 30 Employee 30
+Hi Employee 30,
+Sample UPNs attached. The error is ""The user name or password is incorrect"" but we have ruled out password issues. All affected users were on the second migration wave (week of 06.01.25). Users from the first wave (week of 16.12.24)
+
+SOURCE 53:
+Ticket summary:
+Ticket name: KF70: Group memberships not updating for migrated users
+Ticket number: TI-1700002
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 16.01.25 11:08
+
+Closure
+Closure date: 28.01.25 14:27
+Closure text: Azure AD Connect group filtering scope updated to include OU containing the new migration group structure; full sync run; group memberships now propagate correctly.
+
+Activities
+Emails:
+
+16.01.25 11:08 KF70: Migrated users not in correct security groups Contact Person 30 Helpdesk
+Hello,
+We noticed that some users who were migrated last week still appear with their OLD group memberships in some systems while other systems show their NEW group memberships. This is creating problems because the access permissions are based on these groups.
+For example: User A was supposed to be moved from ""KF70-Sales-Old"" to ""KF70-Sales-Hybrid"" group as part of the restructuring. In the on-prem environment the move happened correctly. In Microsoft 365 the user still shows as a member of ""KF70-Sales-Old"" group, which has different SharePoint permissions.
+This affects roughly 18 users from the second migration wave. We need this resolved because group-based licensing and security are tied to these groups.
+Best regards
+Contact Person 30
+
+16.01.25 11:13 Ticket created: TI-1700002
+Ticket confirmation as usual.
+
+16.01.25 11:30 Ticket assigned | TI-1700002
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+17.01.25 09:55 Re: KF70: Migrated users not in correct security groups Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you. Could you provide the names of 2 affected users and the source/target groups so we can trace the sync? We will investigate from the AAD Connect side.
+
+20.01.25 13:30 Re: KF70: Migrated users not in correct security groups Contact Person 30 Employee 30
+Hi,
+Affected users include UserA@KF70.com and UserB@KF70.com. They should be in groups KF70-Sales-Hybrid (new) but in M365 still show membership in KF70-Sales-Old. Group changes in on-prem AD were applied 06.01.25.
+Thanks!
+
+28.01.25 14:27 Ticket closed | TI-1700002
+Closure description:
+Root cause was that the new group structure created for the second migration wave was placed in an OU outside the Azure AD Connect organizational unit filter scope. The old groups remained synced because they were in the original sync scope. As a result, the cloud directory
+
+SOURCE 49:
+Ticket summary:
+Ticket name: KF70: Scheduled tasks failing with authentication errors after migration
+Ticket number: TI-1700004
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 21.01.25 07:55
+
+Closure
+Closure date: 31.01.25 16:34
+Closure text: Service-account synchronization scope corrected; service accounts excluded from interactive-MFA conditional access; scheduled tasks now executing successfully.
+
+Activities
+Emails:
+
+21.01.25 07:55 KF70: Backup and reporting scheduled tasks not running Contact Person 30 Helpdesk
+Hi,
+Our overnight reporting jobs and a couple of scheduled backup verification tasks failed last night. The Windows Task Scheduler logs show ""Logon failure: the user has not been granted the requested logon type at this computer"" for several service accounts. These same service accounts have been working fine for over a year.
+The accounts in question are: svc-kf70-rpt, svc-kf70-bkp01, svc-kf70-monitor. These accounts are used in scheduled tasks on multiple internal servers.
+This is becoming urgent because management reports cannot be generated and the morning operations meeting depends on them.
+Best regards
+Contact Person 30
+
+21.01.25 08:02 Ticket created: TI-1700004
+Confirmation.
+
+21.01.25 08:15 Ticket priority elevated to High due to operational impact.
+
+21.01.25 08:20 Ticket assigned | TI-1700004
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+22.01.25 11:30 Re: KF70: Scheduled tasks failing Employee 30 Contact Person 30
+Hi Contact Person 30,
+Thank you. Quick check: were these service accounts part of the migration scope last week? In particular, did their group memberships change, were their UPNs updated, or were they enrolled in any Conditional Access policy recently?
+
+24.01.25 09:42 Re: KF70: Scheduled tasks failing Contact Person 30 Employee 30
+Hi,
+Yes - the migration prep included a step where IT moved all service accounts into a new ""KF70-ServiceAccounts"" OU and added them to a ""KF70-AllUsers-Hybrid"" group for license assignment in M365. We did not think this would cause issues for on-prem scheduled tasks since these are local service accounts used only on internal servers.
+Since you mention Conditional Access: as part of the migration baseline a CA policy was enabled requiring MFA for the ""KF70-AllUsers-Hybrid"" group. Could that be the issue?
+
+31.01.25 16:34 Ticket closed | TI-1700004
+Closure description:
+Root cause was twofold. First, the service accounts were placed in the ""KF70-All",yes,"The statement is a directive requesting specific actions ('If you can, provide...') and uses conditional phrasing and 'are required' to indicate those items must be supplied to proceed safely.",supported,"The tickets show Azure AD Connect analysis and OU filter changes (TI-1700002), requests for sample affected UPNs (TI-1700001), and Conditional Access policy interaction/exclusion for service accounts (TI-1700004), indicating those artifacts were used in investigations and needed to apply the same fixes safely."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,"A list of the service accounts used by scheduled tasks (for example svc‑kf70‑rpt, svc‑kf70‑bkp01, svc‑kf70‑monitor were provided in TI‑1700004) so we can check their group membership, CA evaluation, and sync status","=== CITED SOURCES ===
+SOURCE 49:
+Ticket summary:
+Ticket name: KF70: Scheduled tasks failing with authentication errors after migration
+Ticket number: TI-1700004
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 21.01.25 07:55
+
+Closure
+Closure date: 31.01.25 16:34
+Closure text: Service-account synchronization scope corrected; service accounts excluded from interactive-MFA conditional access; scheduled tasks now executing successfully.
+
+Activities
+Emails:
+
+21.01.25 07:55 KF70: Backup and reporting scheduled tasks not running Contact Person 30 Helpdesk
+Hi,
+Our overnight reporting jobs and a couple of scheduled backup verification tasks failed last night. The Windows Task Scheduler logs show ""Logon failure: the user has not been granted the requested logon type at this computer"" for several service accounts. These same service accounts have been working fine for over a year.
+The accounts in question are: svc-kf70-rpt, svc-kf70-bkp01, svc-kf70-monitor. These accounts are used in scheduled tasks on multiple internal servers.
+This is becoming urgent because management reports cannot be generated and the morning operations meeting depends on them.
+Best regards
+Contact Person 30
+
+21.01.25 08:02 Ticket created: TI-1700004
+Confirmation.
+
+21.01.25 08:15 Ticket priority elevated to High due to operational impact.
+
+21.01.25 08:20 Ticket assigned | TI-1700004
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+22.01.25 11:30 Re: KF70: Scheduled tasks failing Employee 30 Contact Person 30
+Hi Contact Person 30,
+Thank you. Quick check: were these service accounts part of the migration scope last week? In particular, did their group memberships change, were their UPNs updated, or were they enrolled in any Conditional Access policy recently?
+
+24.01.25 09:42 Re: KF70: Scheduled tasks failing Contact Person 30 Employee 30
+Hi,
+Yes - the migration prep included a step where IT moved all service accounts into a new ""KF70-ServiceAccounts"" OU and added them to a ""KF70-AllUsers-Hybrid"" group for license assignment in M365. We did not think this would cause issues for on-prem scheduled tasks since these are local service accounts used only on internal servers.
+Since you mention Conditional Access: as part of the migration baseline a CA policy was enabled requiring MFA for the ""KF70-AllUsers-Hybrid"" group. Could that be the issue?
+
+31.01.25 16:34 Ticket closed | TI-1700004
+Closure description:
+Root cause was twofold. First, the service accounts were placed in the ""KF70-All",yes,"It requests producing a list of service accounts so actions can be taken to check group membership, CA evaluation, and sync status, which is forward-looking advice/suggestion.",supported,"TI-1700004 explicitly lists svc-kf70-rpt, svc-kf70-bkp01, and svc-kf70-monitor, and the ticket discussion/closure references group membership changes, a Conditional Access (MFA) policy, and correction of service-account synchronization, which supports checking group membership, CA evaluation, and sync status."
+traceability_ragas_resolution_answer6,Is the statement supported by the evidence?,"The four symptoms you describe match a known set of incidents during KF70’s second migration wave: (a) cloud sign-in works but on‑prem apps fail because on‑prem UPNs were overwritten to a new suffix; (b) cloud group membership remained the old groups because the new groups were placed outside the AAD Connect OU filter; (c) built‑in mobile mail clients failed because tenant Modern Authentication was enforced and those clients tried Basic Auth; (d) scheduled tasks using service accounts failed because those accounts were included in the tenant Conditional Access (MFA) target group and were synced/licensed unexpectedly. These root causes and their fixes are documented in tickets TI-1700001, TI-1700002, TI-1700003 and TI-1700004","=== CITED SOURCES ===
+SOURCE 22:
+Ticket summary:
+Ticket name: KF70: Some users can sign in to Microsoft 365 but not to internal applications
+Ticket number: TI-1700001
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 13.01.25 09:14
+
+Closure
+Closure date: 24.01.25 17:02
+Closure text: UPN suffix mismatch resolved on Azure AD Connect; full sync performed; affected users re-validated.
+
+Activities
+Emails:
+
+13.01.25 09:14 KF70: Users can access M365 but not internal apps Contact Person 30 Helpdesk
+Hi,
+since the migration phase started two weeks ago, some users are reporting strange behavior. They can sign in to Outlook on the web, Teams, and SharePoint without issues, but the same accounts cannot sign in to our internal procurement system or our document management system on the on-premises servers. The error on the on-prem side says ""user not found in domain"" or similar.
+The IT team confirmed the password is correct and the accounts are not locked. About 25 users are affected so far. We need help because the procurement workflow is starting to back up.
+Best regards
+Contact Person 30
+KF70 IT Manager
+
+13.01.25 09:18 Ticket created: TI-1700001 KF70: Users can access M365 but not internal apps
+Ticket confirmation
+Dear Contact Person 30,
+Your request has been received and recorded under ticket number TI-1700001.
+We will assign it to the responsible engineer shortly.
+
+13.01.25 09:25 Ticket assigned | TI-1700001
+The ticket TI-1700001 has been assigned to Employee 30 (BU Infrastructure - Identity).
+
+13.01.25 11:42 Re: KF70: Users can access M365 but not internal apps Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you for the report. Could you please share:
+- 2-3 sample affected user UPNs (we will redact internally)
+- The exact error message from the on-prem application(s)
+- Whether the affected users were among those whose accounts were recently re-provisioned during the migration prep
+We will start the analysis on the Azure AD Connect side.
+Best regards
+Employee 30
+
+15.01.25 14:33 Re: KF70: Users can access M365 but not internal apps Contact Person 30 Employee 30
+Hi Employee 30,
+Sample UPNs attached. The error is ""The user name or password is incorrect"" but we have ruled out password issues. All affected users were on the second migration wave (week of 06.01.25). Users from the first wave (week of 16.12.24)
+
+SOURCE 53:
+Ticket summary:
+Ticket name: KF70: Group memberships not updating for migrated users
+Ticket number: TI-1700002
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 16.01.25 11:08
+
+Closure
+Closure date: 28.01.25 14:27
+Closure text: Azure AD Connect group filtering scope updated to include OU containing the new migration group structure; full sync run; group memberships now propagate correctly.
+
+Activities
+Emails:
+
+16.01.25 11:08 KF70: Migrated users not in correct security groups Contact Person 30 Helpdesk
+Hello,
+We noticed that some users who were migrated last week still appear with their OLD group memberships in some systems while other systems show their NEW group memberships. This is creating problems because the access permissions are based on these groups.
+For example: User A was supposed to be moved from ""KF70-Sales-Old"" to ""KF70-Sales-Hybrid"" group as part of the restructuring. In the on-prem environment the move happened correctly. In Microsoft 365 the user still shows as a member of ""KF70-Sales-Old"" group, which has different SharePoint permissions.
+This affects roughly 18 users from the second migration wave. We need this resolved because group-based licensing and security are tied to these groups.
+Best regards
+Contact Person 30
+
+16.01.25 11:13 Ticket created: TI-1700002
+Ticket confirmation as usual.
+
+16.01.25 11:30 Ticket assigned | TI-1700002
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+17.01.25 09:55 Re: KF70: Migrated users not in correct security groups Employee 30 Contact Person 30
+Hello Contact Person 30,
+Thank you. Could you provide the names of 2 affected users and the source/target groups so we can trace the sync? We will investigate from the AAD Connect side.
+
+20.01.25 13:30 Re: KF70: Migrated users not in correct security groups Contact Person 30 Employee 30
+Hi,
+Affected users include UserA@KF70.com and UserB@KF70.com. They should be in groups KF70-Sales-Hybrid (new) but in M365 still show membership in KF70-Sales-Old. Group changes in on-prem AD were applied 06.01.25.
+Thanks!
+
+28.01.25 14:27 Ticket closed | TI-1700002
+Closure description:
+Root cause was that the new group structure created for the second migration wave was placed in an OU outside the Azure AD Connect organizational unit filter scope. The old groups remained synced because they were in the original sync scope. As a result, the cloud directory
+
+SOURCE 4:
+Ticket summary:
+Ticket name: KF70: Mobile devices cannot connect to Exchange after migration
+Ticket number: TI-1700003
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 31
+Source: Email
+Type: Support Request
+Created on: 17.01.25 08:42
+
+Closure
+Closure date: 27.01.25 10:18
+Closure text: ActiveSync legacy authentication issue resolved by updating mobile clients to use modern auth and re-enrolling affected devices in Intune.
+
+Activities
+Emails:
+
+17.01.25 08:42 KF70: Mobile email setup keeps failing Contact Person 30 Helpdesk
+Hello,
+Several users from the recently migrated group are reporting that their mobile email apps no longer connect. Specifically iPhone Mail and the built-in Android mail apps. They get prompted for password repeatedly and never authenticate.
+Strange thing: the same users can use Outlook mobile app without issues. Only the built-in mail clients on iOS/Android fail.
+Affected users so far: about 15, all from the second migration wave.
+Could you please check?
+Contact Person 30
+
+17.01.25 08:50 Ticket created: TI-1700003
+Confirmation.
+
+17.01.25 09:10 Ticket assigned | TI-1700003
+Assigned to Employee 31 (BU Infrastructure - Mobile/Endpoint).
+
+20.01.25 11:20 Re: KF70: Mobile email setup keeps failing Employee 31 Contact Person 30
+Hi,
+Thanks. Could you confirm:
+- Which Exchange Online setup are these users on (E3/E5)?
+- Is Modern Authentication enabled at tenant level?
+- Are the affected users also reporting issues with Outlook desktop/mobile or only with the built-in iOS/Android mail clients?
+
+22.01.25 14:08 Re: KF70: Mobile email setup keeps failing Contact Person 30 Employee 31
+Hi,
+- E3 licenses
+- Modern Auth is enabled tenant-wide (was switched on as part of migration prep)
+- Outlook mobile app works for affected users; only built-in iOS Mail and Android Gmail (using EAS) are failing.
+Thanks
+
+27.01.25 10:18 Ticket closed | TI-1700003
+Closure description:
+Root cause: The tenant Modern Authentication enforcement (enabled as part of the migration baseline) requires OAuth-based authentication. Built-in iOS Mail and Android Gmail clients on older device versions still attempted Basic Auth via the EAS protocol, which is now blocked. This was a known consequence of the modern-auth tenant configuration but had not been communicated to end users.
+Compounding factor: For users from the second migration wave, the built-in mail clients had cached credentials from the on-prem-only configuration before migration. After migration, the credentials needed to be removed and the account re-added using a method that supports modern authentication.
+Resolution: Provided customer with
+
+SOURCE 49:
+Ticket summary:
+Ticket name: KF70: Scheduled tasks failing with authentication errors after migration
+Ticket number: TI-1700004
+Company: Customer Company 70 AG
+Contact person: Contact Person 30
+Owner: Employee 30
+Source: Email
+Type: Support Request
+Created on: 21.01.25 07:55
+
+Closure
+Closure date: 31.01.25 16:34
+Closure text: Service-account synchronization scope corrected; service accounts excluded from interactive-MFA conditional access; scheduled tasks now executing successfully.
+
+Activities
+Emails:
+
+21.01.25 07:55 KF70: Backup and reporting scheduled tasks not running Contact Person 30 Helpdesk
+Hi,
+Our overnight reporting jobs and a couple of scheduled backup verification tasks failed last night. The Windows Task Scheduler logs show ""Logon failure: the user has not been granted the requested logon type at this computer"" for several service accounts. These same service accounts have been working fine for over a year.
+The accounts in question are: svc-kf70-rpt, svc-kf70-bkp01, svc-kf70-monitor. These accounts are used in scheduled tasks on multiple internal servers.
+This is becoming urgent because management reports cannot be generated and the morning operations meeting depends on them.
+Best regards
+Contact Person 30
+
+21.01.25 08:02 Ticket created: TI-1700004
+Confirmation.
+
+21.01.25 08:15 Ticket priority elevated to High due to operational impact.
+
+21.01.25 08:20 Ticket assigned | TI-1700004
+Assigned to Employee 30 (BU Infrastructure - Identity).
+
+22.01.25 11:30 Re: KF70: Scheduled tasks failing Employee 30 Contact Person 30
+Hi Contact Person 30,
+Thank you. Quick check: were these service accounts part of the migration scope last week? In particular, did their group memberships change, were their UPNs updated, or were they enrolled in any Conditional Access policy recently?
+
+24.01.25 09:42 Re: KF70: Scheduled tasks failing Contact Person 30 Employee 30
+Hi,
+Yes - the migration prep included a step where IT moved all service accounts into a new ""KF70-ServiceAccounts"" OU and added them to a ""KF70-AllUsers-Hybrid"" group for license assignment in M365. We did not think this would cause issues for on-prem scheduled tasks since these are local service accounts used only on internal servers.
+Since you mention Conditional Access: as part of the migration baseline a CA policy was enabled requiring MFA for the ""KF70-AllUsers-Hybrid"" group. Could that be the issue?
+
+31.01.25 16:34 Ticket closed | TI-1700004
+Closure description:
+Root cause was twofold. First, the service accounts were placed in the ""KF70-All",no,The statement reports observed root causes and references documentation of fixes for past incidents without proposing any action or offering recommendations.,supported,Each claim maps directly to the cited tickets: TI-1700001 documents a UPN suffix mismatch causing on‑prem sign-in failures; TI-1700002 shows the new groups were outside the AAD Connect OU filter; TI-1700003 documents Modern Authentication blocking EAS/basic auth for built‑in mail clients; and TI-1700004 shows service accounts were added to the MFA/tenant group and were excluded to restore scheduled tasks.

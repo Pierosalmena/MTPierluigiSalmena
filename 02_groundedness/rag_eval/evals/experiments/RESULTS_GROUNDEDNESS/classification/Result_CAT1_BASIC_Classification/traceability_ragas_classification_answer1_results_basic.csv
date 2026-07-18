@@ -1,0 +1,641 @@
+dataset,question,answer,context,is_recommendation,is_rec_reason,groundedness,groundedness_reason
+traceability_ragas_classification_answer1,Is the statement supported by the evidence?,The desktop mail symptom (messages stuck in Outlook Outbox; web/OWA sending OK) matches a documented Exchange/SMTP-auth problem that was escalated and fixed by engineering: in KF22 the root cause was SMTP AUTH being disabled by a tenant Security Default policy; engineers selectively re-enabled SMTP AUTH and adjusted Conditional Access to restore sending,"=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+",no,"This is a factual report of a past incident and the engineering fixes taken, not a recommendation or suggested action.",supported,"The KF22 ticket (SOURCE 32) documents Outlook-only messages stuck in Outbox while OWA/mobile work, logs showing SMTP AUTH was disabled by Security Defaults, and engineers selectively re-enabled SMTP AUTH and adjusted Conditional Access with tests confirming sending was restored."
+traceability_ragas_classification_answer1,Is the statement supported by the evidence?,The Basel printer symptom (print jobs disappearing from the queue; printer unreachable from the print server) matches a KF60 case where a new printer VLAN had been created without allowing routing from the print server; the fix required a firewall/routing rule change coordinated with the Network Team and updates to meet the Print & Scanning Infrastructure Standard,"=== CITED SOURCES ===
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+",no,"The statement reports a past matching case and the fix that was applied (firewall/routing change and updates), rather than explicitly recommending or instructing future actions.",supported,"All claims are directly supported by Ticket KF60 (TI-1622483): the ticket describes print jobs disappearing and the print server being unable to reach the printer, the customer reported printers moved into a new VLAN, the Network Team confirmed the firewall/routing rule blocked server access and adjusted it, and the configuration was changed according to the Print & Scanning Infrastructure Standard."
+traceability_ragas_classification_answer1,Is the statement supported by the evidence?,"Multiple, simultaneous failures across messaging, presence/chat, and print infrastructure mirror other multi‑system incidents that were escalated beyond first‑line handling (for example, a global Financial Reports outage required system‑engineer level actions and a DataMart reset/escalation to Microsoft)","=== CITED SOURCES ===
+SOURCE 0:
+﻿
+Ticket summary:
+Ticket name: KF11: Management Report not working, neither in UAT nor in PROD
+Ticket number: TI-722511
+Company: Customer Company 11
+Contact person: Contact Person 7
+Owner: Employee 13
+Origin: Internet
+Type: Incident
+Created on: 27.03.24 14:42
+Closure
+Closure date: 11.04.24 08:18
+Closure text: Best-practice cipher suites activated with IISCRYPTO and AOS servers restarted
+Activities
+Emails:
+27.03.24 15:14 | New portal note for ticket: KF11: Management Report not working, neither in UAT nor in PROD #027038962 | NO-REPLY | employee14@consultingcompany.ch
+A new note was submitted via the portal.
+Note: WEB
+When navigating in F&O to General Ledger → Financial Reports → Edit, an error message appears intermittently (screenshot attached).
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+28.03.24 09:02 | Ticket set to status ""In Progress"" #027039232 | NO-REPLY | employee14@consultingcompany.ch
+Hello Employee 14,
+Ticket TI-722511 has been set to “In Progress.”
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+03.04.24 10:58 | New portal note #027043096 | NO-REPLY | employee13@consultingcompany.ch
+A note was added via the portal.
+Note: WEB
+Is there already an update? Ms. X is absent until 16.04.2024, therefore testing will only be possible afterwards.
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+05.04.24 09:18 | New portal note #027044044 | NO-REPLY | employee13@consultingcompany.ch
+A new portal note was recorded.
+Note: WEB
+I was just contacted by Regina Jagsch from Austria. None of the EMEA finance employees can open a report. In addition, the creators of old reports are no longer displayed for her – instead it says “unknown” everywhere.
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+05.04.24 09:19 | New portal note #027044045 | NO-REPLY | employee13@consultingcompany.ch
+Note: WEB
+When attempting to create a new report, the message appears that the report cannot be found.
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+05.04.24 09:22 | New portal note #027044046 | NO-REPLY | employee13@consultingcompany.ch
+Note: WEB
+Regina states that the report was still working 2–3 days ago (i.e., after Easter). However, her screenshot shows a date more than a week old – one day before this ticket was created.
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+05.04.24 09:30 | New portal note #027044047 | NO-REPLY | employee13@consultingcompany.ch
+Note: WEB
+Actually, the problem should be resolved today.
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+05.04.24 11:32 | New portal note #027044055 | NO-REPLY | employee13@consultingcompany.ch
+Note: WEB
+Another internal ticket from Mexico has been opened with the same error, confirming that the problem is global.
+https://jira.KF11ohm.com/browse/ICO261-183
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+05.04.24 15:25 | New portal note #027044073 | NO-REPLY | employee13@consultingcompany.ch
+Note: WEB
+Short update from Zeno.
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+Notes:
+27.03.24 14:42 | Microsoft CRM Portals, # | MicrosoftTeams-image (6).png | WEB
+27.03.24 14:42 | Admin, CRM | WEB
+Ticket was created on 27.03.24 14:42 by Microsoft CRM Portals,#.
+27.03.24 14:42 | Admin, CRM | WEB
+Ticket was assigned to BU Customer Services Run.
+27.03.24 14:58 | Employee 14 | WEB
+Hello Artur,
+I am forwarding this case directly to the responsible System Engineer.
+Regards, Simon
+27.03.24 15:08 | Admin, CRM | WEB
+Ticket was assigned to Employee 14.
+27.03.24 15:13 | Microsoft CRM Portals, # | Screenshot 2024-03-27 151241.png | WEB
+When accessing F&O → General Ledger → Financial Reports → Edit, an error message appears intermittently.
+27.03.24 17:00 | Employee 14 | WEB
+Call conducted with Artur, Ms. X and Avanade. The error occurs reproducibly in all environments and with different users as well as machines.
+No irregularities were found in the network; ADFS can be excluded since only PROD was modified over the weekend.
+Next step: Data Mart Reset. If no improvement: open a Microsoft ticket.
+27.03.24 17:02 | ApplicationUser, CRM Development | WEB
+Waiting",no,"The statement reports similarity to past incidents and what those prior incidents required, but does not explicitly recommend or instruct any action now.",partially_supported,"The ticket shows a global Financial Reports outage that was escalated to a System Engineer with a Data Mart reset and potential Microsoft escalation, supporting the example; however the CONTEXT contains no mention of simultaneous failures in messaging, presence/chat, or print infrastructure, so that claim is unsupported."
+traceability_ragas_classification_answer1,Is the statement supported by the evidence?,"Because at least three of the four symptoms map directly to prior incidents that required system‑engineer or network/infrastructure team involvement (Exchange SMTP/Auth, SMTP relay/DNS for scan‑to‑mail, and network/firewall routing for print VLANs), this ticket should be classified as second_level_support. The prior cases show these problems were not resolved by routine first‑line actions alone and required configuration changes and coordination with specialist teams","=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+
+
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 22:
+﻿
+Ticket summary:
+Ticket name: KF60: Location printer Basel not responding to print jobs
+Ticket number: TI-1622483
+Company: Customer Company 60 AG
+Contact person: Contact Person 15
+Owner: Employee 21
+Origin: Email
+Type: Incident
+Created on: 06.11.25 08:37
+Closure
+Closure date: 12.11.25 14:52
+Closure text: Network and queue configuration adjusted according to Print & Scanning Infrastructure Standard. Function restored.
+Activities
+06.11.25 08:25 – Email from Contact Person 15
+Good morning
+Since yesterday, the printer “MFP-Basel-01” is no longer responding to print jobs. The documents remain in the queue, and in some cases disappear without being printed.
+Other printers in the building are functioning normally.
+Could you please check this?
+Kind regards
+06.11.25 08:37
+Ticket created and assigned to Employee 21.
+06.11.25 09:10 – Initial analysis
+Remote access to an affected user.
+Print job briefly appears in the print server queue, then disappears without printing.
+Queue itself is not paused.
+Print Spooler service is running.
+Test print directly from the print server to the printer also fails.
+06.11.25 10:05 – Inquiry to customer
+Good day
+Were there any recent changes to the network or infrastructure at the Basel location?
+Thank you for your brief feedback.
+06.11.25 11:20 – Customer response
+Last week, a new network segment for devices was introduced. The printers were moved into a separate VLAN.
+No other changes are known to us.
+07.11.25 09:00 – Further analysis
+Ping from print server to printer unsuccessful.
+Ping from a client within the same location network successful.
+This indicates segmentation between the server network and the printer VLAN.
+Comparison with document “Print & Scanning Infrastructure Standard – Version 1.0”.
+In the section Location Concept, it is defined that printers operate in a separate VLAN but must be reachable from the print server. Routing and firewall rules must be configured accordingly.
+07.11.25 11:30 – Internal coordination with Network Team
+Confirmation that the new firewall rule did not allow the server network access to the printer VLAN.
+Rule adjusted according to standard.
+10.11.25 – Test phase
+Printing from print server successful.
+Multiple test prints from user workstations performed.
+No abnormalities observed.
+12.11.25 14:40 – Customer feedback
+Printer is functioning normally again.
+Larger print jobs are also processed correctly.
+12.11.25 14:52 – Ticket closure
+Dear Contact Person 15
+The root cause was a missing network allowance between the print server and the newly configured printer VLAN at the Basel location.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”. The printer is fully reachable again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 0:
+﻿
+Ticket summary:
+Ticket name: KF11: Management Report not working, neither in UAT nor in PROD
+Ticket number: TI-722511
+Company: Customer Company 11
+Contact person: Contact Person 7
+Owner: Employee 13
+Origin: Internet
+Type: Incident
+Created on: 27.03.24 14:42
+Closure
+Closure date: 11.04.24 08:18
+Closure text: Best-practice cipher suites activated with IISCRYPTO and AOS servers restarted
+Activities
+Emails:
+27.03.24 15:14 | New portal note for ticket: KF11: Management Report not working, neither in UAT nor in PROD #027038962 | NO-REPLY | employee14@consultingcompany.ch
+A new note was submitted via the portal.
+Note: WEB
+When navigating in F&O to General Ledger → Financial Reports → Edit, an error message appears intermittently (screenshot attached).
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+28.03.24 09:02 | Ticket set to status ""In Progress"" #027039232 | NO-REPLY | employee14@consultingcompany.ch
+Hello Employee 14,
+Ticket TI-722511 has been set to “In Progress.”
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+03.04.24 10:58 | New portal note #027043096 | NO-REPLY | employee13@consultingcompany.ch
+A note was added via the portal.
+Note: WEB
+Is there already an update? Ms. X is absent until 16.04.2024, therefore testing will only be possible afterwards.
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+05.04.24 09:18 | New portal note #027044044 | NO-REPLY | employee13@consultingcompany.ch
+A new portal note was recorded.
+Note: WEB
+I was just contacted by Regina Jagsch from Austria. None of the EMEA finance employees can open a report. In addition, the creators of old reports are no longer displayed for her – instead it says “unknown” everywhere.
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+05.04.24 09:19 | New portal note #027044045 | NO-REPLY | employee13@consultingcompany.ch
+Note: WEB
+When attempting to create a new report, the message appears that the report cannot be found.
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+05.04.24 09:22 | New portal note #027044046 | NO-REPLY | employee13@consultingcompany.ch
+Note: WEB
+Regina states that the report was still working 2–3 days ago (i.e., after Easter). However, her screenshot shows a date more than a week old – one day before this ticket was created.
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+05.04.24 09:30 | New portal note #027044047 | NO-REPLY | employee13@consultingcompany.ch
+Note: WEB
+Actually, the problem should be resolved today.
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+05.04.24 11:32 | New portal note #027044055 | NO-REPLY | employee13@consultingcompany.ch
+Note: WEB
+Another internal ticket from Mexico has been opened with the same error, confirming that the problem is global.
+https://jira.KF11ohm.com/browse/ICO261-183
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+05.04.24 15:25 | New portal note #027044073 | NO-REPLY | employee13@consultingcompany.ch
+Note: WEB
+Short update from Zeno.
+Link: KF11: Management Report not working, neither in UAT nor in PROD
+Notes:
+27.03.24 14:42 | Microsoft CRM Portals, # | MicrosoftTeams-image (6).png | WEB
+27.03.24 14:42 | Admin, CRM | WEB
+Ticket was created on 27.03.24 14:42 by Microsoft CRM Portals,#.
+27.03.24 14:42 | Admin, CRM | WEB
+Ticket was assigned to BU Customer Services Run.
+27.03.24 14:58 | Employee 14 | WEB
+Hello Artur,
+I am forwarding this case directly to the responsible System Engineer.
+Regards, Simon
+27.03.24 15:08 | Admin, CRM | WEB
+Ticket was assigned to Employee 14.
+27.03.24 15:13 | Microsoft CRM Portals, # | Screenshot 2024-03-27 151241.png | WEB
+When accessing F&O → General Ledger → Financial Reports → Edit, an error message appears intermittently.
+27.03.24 17:00 | Employee 14 | WEB
+Call conducted with Artur, Ms. X and Avanade. The error occurs reproducibly in all environments and with different users as well as machines.
+No irregularities were found in the network; ADFS can be excluded since only PROD was modified over the weekend.
+Next step: Data Mart Reset. If no improvement: open a Microsoft ticket.
+27.03.24 17:02 | ApplicationUser, CRM Development | WEB
+Waiting",yes,"It explicitly advises an action using directive language ('this ticket should be classified as second_level_support'), so it contains a recommendation.",supported,"Supported — SOURCE 32 documents an Exchange SMTP/Auth issue escalated to a System Engineer with configuration changes; SOURCE 6 documents SMTP relay/DNS adjustments and coordination with Mail/Network teams for scan‑to‑mail; SOURCE 22 documents network/firewall routing changes for printer VLANs. These precedents show first‑line actions did not suffice and specialist coordination/config changes were required, supporting classification as second_level_support."
+traceability_ragas_classification_answer1,Is the statement supported by the evidence?,The Scan-to‑Mail symptom (large scans reported “sent” but not delivered) matches a prior KF60 incident where external delivery failed because the printer VLAN/IP range was not allowed by the SMTP relay; resolution required SMTP relay and DNS configuration changes performed by infrastructure teams,"=== CITED SOURCES ===
+SOURCE 6:
+﻿
+Ticket summary:
+Ticket name: KF60: Scan-to-Mail works only for internal recipients
+Ticket number: TI-1624175
+Company: Customer Company 60 AG
+Contact person: Contact Person 25
+Owner: Employee 30
+Origin: Email
+Type: Incident
+Created on: 10.12.25 08:41
+Closure
+Closure date: 18.12.25 16:04
+Closure text: SMTP relay and DNS configuration adjusted according to Print & Scanning Infrastructure Standard. Scan-to-Mail fully restored.
+Activities
+10.12.25 08:30 – Email from Contact Person 25
+Good morning
+At the Zurich location, we can scan from the multifunction device, but external recipients (e.g., Gmail or partner companies) do not receive the emails.
+Internal recipients within our company receive the scans normally.
+Printing continues to function without issue.
+Could you please check this?
+Kind regards
+10.12.25 08:41
+Ticket created and assigned to Employee 30.
+10.12.25 09:15 – Initial analysis
+Test scan to internal mailbox → successful.
+Test scan to external address → no delivery.
+No error message visible on the printer itself.
+10.12.25 10:05 – Inquiry to customer
+Have there been any recent changes to the mail environment or network?
+10.12.25 10:40 – Customer response
+Last week, the external mail security solution was adjusted.
+Additionally, new DNS forwarding was configured at the location.
+11.12.25 09:10 – Mail log analysis
+Internal delivery occurs directly.
+External delivery is not forwarded by the SMTP relay.
+SMTP log shows: “Relay denied”.
+11.12.25 11:30 – Comparison with blueprint
+“Print & Scanning Infrastructure Standard – Version 1.0”
+Section Scan-to-Mail:
+• Printers must not send directly to the internet
+• Sending occurs exclusively via dedicated SMTP relay
+• Relay allows only defined IP ranges
+• DNS resolution must occur internally
+• Authentication must not be bypassed
+12.12.25 – Further analysis
+Check of printer IP address.
+Printer is located in newly defined printer VLAN.
+This VLAN is not configured as an allowed range in the SMTP relay.
+Internal routing works, but external relay is blocked.
+15.12.25 – Coordination with Network and Mail Team
+Confirmation that the new printer VLAN was not included in the relay allow list.
+16.12.25 – Adjustment
+SMTP relay configuration updated according to blueprint.
+IP range of printer VLAN released.
+17.12.25 – Test phase
+Scan to internal mailbox → successful
+Scan to external Gmail address → successful
+Scan to partner company → successful
+18.12.25 16:04 – Ticket closure
+Dear Contact Person 25
+The root cause was an SMTP relay configuration that had not been updated after the introduction of a new printer VLAN.
+The configuration was adjusted according to the “Print & Scanning Infrastructure Standard”.
+Scan-to-Mail now works for both internal and external recipients.
+Kind regards
+Consulting Sample Company
+
+",no,"The statement describes a past incident and the configuration changes that resolved it, rather than proposing or recommending any future action.",partially_supported,"SOURCE 6 documents KF60 where external delivery failed because the printer VLAN/IP range was not allowed by the SMTP relay and that SMTP relay and DNS configurations were adjusted by network/mail teams, but the CONTEXT does not mention “large scans” or that scans were specifically reported as “sent” yet not delivered."

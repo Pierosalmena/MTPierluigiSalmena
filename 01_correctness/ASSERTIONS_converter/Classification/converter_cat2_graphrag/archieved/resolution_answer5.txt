@@ -1,0 +1,85 @@
+Answer (facts from the indexed records first; then recommended next steps).  
+I separate (A) what the organisation’s prior incident records explicitly document as the root causes, diagnostics and fixes that match the four symptoms you report and (B) what is recommended next (evidence‑based but not literally recorded as already done for your environment). Where I cite a step as documented, I give the ticket/record references; where I recommend an action I label it as RECOMMENDED.
+
+A — What the indexed records explicitly document that maps to your four symptoms
+- Background (non‑browser) sign‑ins failing while browser SSO works  
+  - Prior incidents where a PROD‑only ADFS/client registration change caused exactly this behaviour: a new ADFS client had EnableJWT / RequestMFAFromClaimsProviders set in PROD (but not TEST), which made ADFS issue JWTs and/or delegate MFA and broke non‑browser integrations until the client registration parameters were aligned to TEST and federation metadata/certificates were handled [Documented] [Data: Sources (11); Reports (2)].
+
+- Intermittent external guest access to a SharePoint folder (works then “access denied”; re‑adding helps only temporarily)  
+  - Prior cases show the common root cause is a cloud vs on‑prem group/object collision (Azure AD Connect / provisioning): a cloud‑native group containing guest accounts was replaced by/superseded by a synchronized on‑prem group object with the same displayName but different objectId, so guests were no longer treated as members by services that evaluate the on‑prem object. Engineers used Microsoft Graph / Entra exports, compared objectIds and performed group consolidation + a full Azure AD Connect sync to fix it [Documented] [Data: Sources (13); Reports (64)].
+
+- Desktop mail clients stuck in Outbox while OWA works (SMTP submission problem)  
+  - Prior incidents attribute that exact pattern to tenant policy changes disabling legacy SMTP AUTH (Security Defaults / Conditional Access). Engineers validated Exchange event log entries (535 auth failures) and Message Trace, then applied targeted Conditional Access / SMTP AUTH adjustments to restore client sending [Documented] [Data: Sources (32)].
+
+- Device‑management (NDES / connector) or “certificate bridge” unhealthy, blocking new scanners  
+  - Indexed incidents show NDES/Intune connector health often fails because of firewall/proxy changes, connector misconfiguration and certificate/NDES issues; remediation in those tickets was: adjust firewall rules, reinstall the connector (sometimes “without proxy”), temporarily exempt the service account from MFA/assign an elevated role for the reinstall, then remove the exception, and validate connector shows healthy in Azure [Documented] [Data: Sources (35); Reports (24)].
+
+Common operational pattern across the records: multiple, simultaneous, cross‑domain faults appearing after an out‑of‑hours change or maintenance window strongly point to an infrastructure/configuration regression (ADFS/client registration, WAF/firewall template change, NSG/firewall rule, or a provisioning/script change) and in prior cases required escalation to 2nd‑level (network/identity/platform) teams [Documented pattern & escalation rationale] [Data: Reports (15); Reports (0)].
+
+B — Immediate diagnostic / resolution steps (what the indexed records show helped previously)  
+Below are the steps you should execute now. I mark which steps are documented as having been performed in prior incidents (DOCUMENTED) and which are recommended next actions to run for your environment (RECOMMENDED).
+
+1) Preserve evidence immediately — collect change artifacts for the suspected maintenance window (DOCUMENTED as required in prior RCAs)  
+   - Request the change/CAB tickets and device config‑audit exports that cover the period starting before the first observed failures. Prior incidents restored service only after correlating device config/template reloads and firewall changes to the outage [DOCUMENTED].  
+     - Evidence to request: WAF/Reverse‑proxy template activation events, perimeter firewall rule change IDs, firewall/management syslog for the weekend window, and any VM snapshot/restore job IDs (if VMs were restored) [Data: Sources (15); Sources (23); Sources (29)].  
+     - RECOMMENDED: Ask Change Management for CR IDs and the exact runbook used during the weekend maintenance.
+
+2) Collect identity/auth telemetry (DOCUMENTED: used in prior cases)  
+   - Export ADFS/AD FS client registration objects from PROD and TEST (client_id, flags EnableJWT & RequestMFAFromClaimsProviders, redirect_uris, allowed grant types). Prior TRAIN/ADFS incidents resolved by comparing PROD vs TEST registrations and aligning them [Data: Sources (11); Reports (2)]. (RECOMMENDED)  
+   - Export Azure AD sign‑in logs (Entra sign‑in) for representative service accounts and affected users covering the incident window; include CA evaluation results and token claim sets. Prior SharePoint and ADFS investigations used sign‑in logs to confirm missing group claims or delegated MFA behaviour [Data: Sources (31); Reports (30)]. (DOCUMENTED as diagnostic in prior incidents; RECOMMENDED for your case)
+
+3) Compare group membership and sync state (DOCUMENTED)  
+   - Export Microsoft Graph group member lists (objectId, displayName, member objectIds, member source: AzureAD vs onPrem) for groups used by the SharePoint folder (COMPLIANCE_TEAM, Compliance_Core or the folder ACL). Earlier incidents used Graph membership exports and objectId comparisons to detect cloud vs on‑prem collisions [Data: Sources (13); Reports (64)]. (RECOMMENDED)
+
+4) Collect Exchange / SMTP evidence (DOCUMENTED)  
+   - Export Exchange on‑prem event log entries (535 authentication failure records) and Message Trace for affected mailboxes for time window around the desktop Outbox failures. Prior remediation used those logs to confirm SMTP AUTH/Conditional Access causes [Data: Sources (32)]. (RECOMMENDED)
+
+5) Collect endpoint / connector / sensor logs (DOCUMENTED)  
+   - Export the Intune NDES connector logs and the connector health snapshot from Azure for the certificate‑bridge issue; prior fix was reinstall + firewall change + temporary service‑account MFA exception [Data: Sources (35)]. (RECOMMENDED)  
+   - Export Defender sensor event logs + local Windows System/Application event logs for the DC hosts showing “unhealthy” and the timestamps of agent remove/reinstall (if the hosts are the same as reported). Prior DC sensor tickets relied on those event logs [Data: Sources (14); Reports (4)]. (RECOMMENDED)
+
+6) Collect perimeter logs (WAF / load‑balancer / firewall) (DOCUMENTED)  
+   - Export WAF access logs and load‑balancer access/error logs for the portal FQDN (portal.kf40.ch) in the outage window; include fields timestamp, client_ip, request_uri, host header, http_status, X‑Forwarded‑Proto presence, and WAF template/profile id — in the portal 502 incident this exact evidence proved the header was absent when TLS inspection/profile drift occurred [Data: Sources (15); Reports (13)]. (RECOMMENDED)  
+   - Export firewall change‑audit and syslog for the Zurich outbound rule window that coincides with the Teams media outage (TI‑1602241). Prior Teams media RCA used firewall logs to correlate the RTP port restriction [Data: Sources (23)]. (RECOMMENDED)
+
+7) Correlate timestamps and decide initial next action (DOCUMENTED pattern)  
+   - Correlate the collected Azure AD sign‑in timestamps, Graph membership snapshots, WAF/firewall change timestamps and connector/sensor logs to determine whether a single change (ADFS/client registration promotion, firewall template reload, or a provisioning script run) coincides with all four symptom classes. Prior incidents used this multi‑artifact correlation to prove the change causation and then either revert or apply targeted fixes [Data: Reports (15); Reports (13); Reports (2)]. (RECOMMENDED)
+
+8) If correlation points to ADFS/client registration delta (DOCUMENTED fix)  
+   - DOCUMENTED remediation used previously: align PROD client registration flags to TEST, update federation metadata and rotate/replace stale certificates as needed, then validate non‑browser token issuance and run smoke-tests for DevOps integration (TRAIN). The TI‑1385257/Train CE incident documents these exact steps and recorded that they resolved non‑browser login failures [Data: Sources (11); Reports (2)]. (RECOMMENDED only after you confirm correlation)
+
+9) If correlation points to group/object collision and Azure AD Connect (DOCUMENTED fix)  
+   - DOCUMENTED remediation used previously: consolidate the intended group (ensure the group objectId that SharePoint uses is the one containing external guests), run a full Azure AD Connect sync, and invalidate tokens / ask users to re‑auth so they receive updated claims. Those steps are recorded in the COMPLIANCE_TEAM incident in the corpus [Data: Sources (13); Reports (64)]. (RECOMMENDED after you confirm correlation)
+
+10) If correlation points to firewall/WAF template reload (DOCUMENTED fix)  
+   - DOCUMENTED remediation used previously: restore the application template (Portal‑App‑Template), reapply header‑rewrite for X‑Forwarded‑Proto, and, if TLS inspection was enabled by the patch, toggle and validate TLS inspection behavior while monitoring for the 24–48h window — the portal 502 incident documents this fix sequence [Data: Sources (15); Reports (13)]. (RECOMMENDED after you confirm correlation)
+
+11) If connector/NDES or Defender sensor root cause confirmed (DOCUMENTED fix)  
+   - DOCUMENTED remediation used previously: adjust firewall rules to allow the connector, reinstall connector without proxy if required, temporary MF A exclusion for the service account + elevate role if required, validate connector shows “green” in Azure, then revert the temporary exception and monitor. The Intune/NDES and Defender incidents show these steps were performed and documented [Data: Sources (35); Reports (14)]. (RECOMMENDED after you confirm correlation)
+
+C — What the records do NOT contain / why this cannot be fully resolved from the archive alone
+- The indexed incidents show the exact diagnostic/artifact types you must collect (ADFS client registration exports, Azure AD sign‑in logs, Microsoft Graph group exports, NSG/firewall config‑audits, WAF/load‑balancer access logs, SMTP relay logs, connector logs, DC event logs). The archive does not contain the live tenant logs, the firewall audit exports, the WAF runtime config snapshots, or the Azure AD Connect run logs for your current incident window — you must collect these from your environment to establish causation and then apply the documented remediations above [DOCUMENTED requirement; the corpus does not include current logs] [Data: Sources (15); Sources (13); Sources (35); Sources (14); Sources (32)].
+
+D — Classification recommendation (explicit, with record evidence)
+- Based on the pattern of simultaneous, cross‑domain failures (non‑browser auth, SharePoint guest access, SMTP desktop send, NDES/connector + sensor health), the indexed records show such incidents previously required escalation to specialist engineering teams (Identity/ADFS, BU Network & Security, Exchange/Hybrid, Endpoint/Intune). Prior cases of the same pattern (e.g., TI‑1594408, TI‑1385257, TI‑1179834, TI‑722423) were handled as second_level_support and required cross‑team coordination [DOCUMENTED pattern]. Therefore this ticket should be classified as second_level_support and escalated immediately to Identity + Network + Mail + Endpoint engineering with the evidence bundle described above [Data: Sources (15); Sources (11); Sources (14); Sources (35)].
+
+E — Minimal evidence bundle to attach to the escalation (recommended; these are the exact items that prior incidents used)
+(Please produce these from your tenant / devices and attach to the escalation ticket.)
+1. ADFS client registration export (PROD & TEST) for the DevOps integration client — include EnableJWT and RequestMFAFromClaimsProviders flag values [Supported by prior fix] [Data: Sources (11)].  
+2. Azure AD sign‑in log slices (UTC) for representative service accounts and affected users (time window: first alert −30m → remediation +2h) with CA evaluation results and token claim payloads [Used in prior investigations] [Data: Sources (31); Reports (30)].  
+3. Microsoft Graph group membership export for the SharePoint folder groups (objectId, displayName, member objectIds, member source) and Azure AD Connect sync logs for the same window [Used to find cloud vs on‑prem collisions] [Data: Sources (13)].  
+4. Exchange Message Trace and on‑prem Exchange event log exports (EventID 535 excerpts) for affected mailboxes and the Outbox send attempts [Used in prior SMTP AUTH cases] [Data: Sources (32)].  
+5. Intune NDES connector logs and connector health snapshot plus Defender sensor event logs / DC System event logs for the device management / certificate‑bridge hosts [Used in NDES/Defender incidents] [Data: Sources (35); Sources (14)].  
+6. WAF/load‑balancer access logs for portal FQDN and firewall audit/change logs for the maintenance weekend (templates, profile reload events, firewall rule changes) if you suspect perimeter changes — prior portal 502 and Zurich media incidents used these to prove causation [Data: Sources (15); Sources (23)].
+
+F — If you want my immediate help
+- I cannot run these tenant queries or fetch your logs from the archive — the indexed records do not include your live logs. If you upload the artifacts above (or give the exact timestamps + the exported JSON/CSV for sign‑in logs, Graph membership, firewall audit, WAF logs, and connector logs) I will correlate timestamps, highlight exact offending change(s), and map them to the documented remediation steps above. (This is a recommended analysis step and is the same approach used in the cited incidents.) [Data: Sources (13); Sources (15); Sources (35); Sources (14); Sources (32)].
+
+Bottom line / immediate classification
+- This is NOT a 1st‑level ticket. Classify and escalate now as second_level_support (Identity, Network, Mail, Endpoint teams). The indexed cases that match these simultaneous failures were resolved only after engineer‑level actions (ADFS/client registration alignment, WAF/template restore, full Azure AD Connect sync and group consolidation, SMTP AUTH/CA adjustment, NDES connector reinstall) [Documented precedence] [Data: Sources (11); Sources (15); Sources (13); Sources (35); Sources (32)].
+
+If you want I will now:
+- Draft the exact text to paste into the escalation bridge request (which artifacts to attach and the short summary mapped to the records), or
+- Produce the Graph/Log query templates you should send to your Identity / Network / Mail owners to pull the items above (I will label those templates as recommended actions, not as previously executed commands in the indexed records).
+
+Which do you want (escalation note or query templates)?

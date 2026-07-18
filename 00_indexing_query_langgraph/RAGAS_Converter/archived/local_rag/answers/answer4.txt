@@ -1,0 +1,29 @@
+Thanks — this matches a known incident (KF11) and I can summarise what to treat this as and the first checks to run.
+
+Summary of what’s happening (matches your description)
+- Report Designer either errors intermittently or hangs when opening Edit in General Ledger → Financial Reports; older reports show the author as “unknown” and new/opened reports can return “Report cannot be found.” This is reported across EMEA and in both UAT and PROD, i.e. a global/multi‑environment problem [Data: Sources (1, 0)].  
+- Tests show the Report Designer can be extremely slow except when accessed directly on one AOS server (001-srv-aos72); other AOS nodes (e.g. 001-srv-aos73) were sluggish [Data: Sources (1)].  
+- A Data Mart reset was attempted and a Microsoft support ticket was opened during the incident investigation [Data: Sources (1)]. The incident was later closed after applying best‑practice cipher suites with IISCrypto and restarting AOS servers [Data: Sources (0)].
+
+What category this fits (high level)
+- This is an infrastructure / security-layer issue affecting the Financial Reporting stack (AOS, Financial Reporting Service, Data Mart, IIS/TLS layer). The symptoms (slow Report Designer start, “unknown” authors, “report not found”) are specifically listed consequences of TLS / cipher or IIS/security misconfiguration in the reporting architecture guidance [Data: Sources (25)].  
+- Because it affects multiple environments and many users simultaneously, the decision tree in the architecture guidance points to an infrastructure or security configuration root cause rather than a single-user or single‑environment problem [Data: Sources (25)].
+
+Immediate checks to run (ordered)
+1. Confirm whether any Cipher Suite or TLS policy changes were applied recently (servers, IIS, group policies). Misconfigured/unsynchronized cipher suites are a prime suspect and can cause exactly these symptoms [Data: Sources (25, 0)].  
+2. Test Report Designer directly from each AOS server (RDP to AOS nodes) to see whether the issue is node-specific (the ticket showed working behavior on 001-srv-aos72 but sluggish on others) — this helps isolate AOS node vs network/TLS termination issues [Data: Sources (1)].  
+3. Check IIS/TLS layer on the AOS / Financial Reporting web endpoints: certificate validity, TLS versions accepted, and applied cipher suites (IISCrypto or similar was used in the incident closure) [Data: Sources (25, 0)].  
+4. Restart AOS servers after any TLS/cipher changes (the standard requires AOS restart after adjustments) and confirm service accounts/authentication handshakes are healthy (authors shown as “unknown” often indicate authentication/service‑account/TLS handshake problems) [Data: Sources (25, 0)].  
+5. Verify Data Mart consistency and connectivity (Data Mart reset was tried as part of troubleshooting — relevant if metadata/data consistency is suspected) [Data: Sources (1, 25)].  
+6. Review recent Windows/security updates and ADFS/client parameter changes (the decision tree calls these out as possible triggers) and check whether Conditional Access / ADFS parameters were altered for the reporting service accounts [Data: Sources (25)].
+
+What to do next and who should handle it
+- Classification: escalate to 2nd‑level (Infrastructure / Systems Engineer) with Security involvement. This issue requires access to AOS servers, IIS/TLS configuration, and likely coordination with the security team (cipher suites, group policy) — it is beyond typical 1st‑level support scope. The original ticket was handled by system engineers and escalated to Microsoft as needed [Data: Sources (1)].  
+- Short-term actions for the 2nd level team: check TLS/cipher changes, test direct on each AOS server, restart AOS after confirmed changes, confirm service-account authentication and Data Mart connectivity. If no improvement, open/advance vendor (Microsoft) support as already done previously [Data: Sources (25, 1)].  
+- Note: applying best‑practice cipher suites with IISCrypto and restarting AOS servers resolved the referenced incident, so mirroring that approach (after change control approvals) is a valid remediation path to test in your case as well [Data: Sources (0)].
+
+If you want, I can:
+- Draft the exact checklist/commands to collect the TLS and AOS diagnostics (IIS bindings, cipher list, event logs, AOS service logs, Report Designer logs) for handing to 2nd level; or  
+- Create the brief escalation note you can send to your Infrastructure/System Engineer and Security teams summarising the above and requesting immediate checks.
+
+Which would you prefer?

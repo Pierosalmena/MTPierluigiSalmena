@@ -1,0 +1,39 @@
+Short answer / classification
+- This matches the pattern from ticket TI-931293: after Windows updates and a VM restore, SAP printing stopped while normal follow‑me printing continued. The most likely cause is broken/changed network‑share or queue publishing settings on the SAP print servers (queue-level sharing/publishing), not the spooler itself. In TI-931293 the issue was resolved by re‑disabling and re‑enabling the network share for all affected printer queues rather than rolling back Windows [Data: Sources (28, 29)].
+- Classify this as PRIO HIGH and escalate to 2nd‑level / infrastructure (printserver / core engineering) — SAP output is business‑critical (blocks deliveries) and in the real incident infrastructure on‑call / senior system engineers handled and closed the ticket [Data: Sources (29, 28)].
+
+Why this pattern points to queue/share issues (not spooler)
+- Symptoms you describe (SAP jobs failing while normal Office/follow‑me printing works; spooler restart and server reboot did not help; recent Windows update + VM restore) are textbook for a corrupted or changed queue publishing / network‑share state that breaks SAP’s print paths. The SAP printserver standard explicitly calls out queue properties (publishing/sharing) and post‑change validation after updates/restores as first checkpoints [Data: Sources (7, 29)].
+- In the referenced incident, a spooler restart and server reboot were not sufficient; restoring VM + reconfiguring the network share on the print server queues fixed the stuck SAP jobs and allowed pending documents to print [Data: Sources (29, 28)].
+
+Immediate checklist — what to check first (in order)
+1. Confirm scope (SAP only vs. all printing)
+   - If only SAP printing is affected, focus on the SAP print servers and queue publishing (recommended) [Data: Sources (7)].
+2. On each SAP print server (VRINFRGERPRNT03/04 in the incident), perform these checks:
+   - Verify the printer queues are visible and not paused. If paused — unpause and restart jobs [Data: Sources (7, 27)].
+   - Verify the Print Spooler service is running (you said you restarted it already) but do it after other checks to reconfirm [Data: Sources (7, 27)].
+   - Check queue properties: confirm that network sharing / publishing is enabled and that the share name and permissions are correct for SAP targets [Data: Sources (7, 28, 29)].
+   - Test a direct print from the print server to the physical printer to confirm reachability (ping/test print) [Data: Sources (41, 22)].
+3. If queues look correct but SAP jobs still don’t print:
+   - Disable and then re‑enable the network share/publishing for the affected queues (this was the effective remediation in TI‑931293) and restart pending jobs [Data: Sources (28, 29)].
+4. Validate from the SAP side:
+   - Ensure SAP spool/outbound target points to the correct logical printers/printserver and that jobs are being sent to the expected queues. If all SAP servers are affected, expand the SAP‑side checks [Data: Sources (7)].
+5. If issue follows Windows update / VM restore:
+   - Check driver compatibility and Point‑and‑Print / security policies if the update could have altered driver behavior or printing restrictions (as advised by the Print & Scanning Infrastructure Standard) [Data: Sources (41, 7)].
+
+Recommended immediate remediation steps (safe, minimal impact)
+- Do NOT roll back Windows as first step. Instead:
+  1. Validate queue sharing/publishing and permissions on the affected SAP print servers.
+  2. Disable → re‑enable the network share for affected printer queues and restart pending jobs (low impact and was successful in the comparable incident) [Data: Sources (28, 29)].
+  3. If required, involve network team to confirm no VLAN/firewall issues between print server and printers (useful if direct test prints fail) [Data: Sources (22, 41)].
+  4. If those steps do not restore SAP printing, escalate to core engineering/printserver team (2nd level) for a deeper investigation or controlled rollback decision [Data: Sources (29, 28)].
+
+Tests to run and evidence to collect before making major changes
+- From a workstation and from the print server: send an SAP test print and capture whether the job appears on the server queue, disappears, or remains stuck.
+- Record queue properties screenshots (sharing name, permissions), spooler status, and any Windows Update/VM restore logs for the time window.
+- If you re‑enable sharing on queues, keep logs and timestamps of when you did that and whether pending jobs printed — this is the exact evidence that proved the root cause in the incident [Data: Sources (28, 29)].
+
+Suggested assignment / escalation
+- Assign as PRIO HIGH and escalate immediately to 2nd‑level (infrastructure / core engineering / printserver on‑call). The prior incident that matches your description was handled by the Senior System Engineer / Core Engineering team and Infrastructure on‑call [Data: Sources (29, 28)].
+
+If you’d like, I can produce a short runbook you can hand to the on‑call engineer with the exact sequence of checks and the commands/screenshots to collect (based on the standard and the incident resolution).

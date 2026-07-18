@@ -1,0 +1,78 @@
+Summary and mapping to prior incidents
+- Your four symptoms (browser TLS warnings for internal sites; VPN authentication failures for ~80 remote users; S/MIME signing/decryption for executives broken; LDAP-S (LDAPS) binds from applications failing) match a set of previously documented outages that all started after a weekend PKI/CA renewal. The indexed records show the same pattern: internal TLS chain break after issuing‑CA renewal, VPN server cert issued from a template missing required EKU, S/MIME certs issued without usable private keys, and Domain Controller LDAP‑S cert auto‑enrollment/renewal problems after template changes [Data: Sources (55, 104, 36, 13)].
+
+Documented root causes and exactly what was done (ticket → root cause → remediation)
+1) Internal HTTPS sites (browser certificates warn / NET::ERR_CERT_AUTHORITY_INVALID)
+   - Documented root cause: After the issuing CA (KF80-Issuing-CA-01) was renewed, the issuing CA certificate was not present in the clients’ chain (the chain “breaks at the issuing CA”), causing browsers to treat the site cert as untrusted. This followed the weekend PKI change [Data: Sources (55)].
+   - Remediation performed in the record: The intermediate/issuing CA certificate was published correctly to the AIA/CRL distribution points and affected services were validated; browser trust warnings were resolved after that action [Data: Sources (55)].
+   - Reference: TI-1700005 (KF80: Internal portal showing TLS certificate errors after PKI renewal) [Data: Sources (55)].
+
+2) VPN authentication failures (~80 remote users; server identity validation / client cert chain validation failed)
+   - Documented root cause: The new VPN server certificate was issued from a refreshed template that omitted the needed IPsec/IKE EKU. The VPN (CheckPoint) required that EKU, so mutual authentication failed even though user certs were unchanged [Data: Sources (104)].
+   - Remediation performed in the record: The VPN server certificate(s) were reissued from a corrected template that included the required EKU; new certificates were deployed (via GPO) and affected users validated, restoring VPN connectivity [Data: Sources (104)].
+   - Reference: TI-1700006 (KF80: VPN authentication failing for users after weekend) [Data: Sources (104)].
+
+3) Executive S/MIME signing/decryption broken
+   - Documented root cause: Executive S/MIME certificates were auto‑renewed, but the corresponding private keys were generated/stored on the CA side and not present on the users’ machines (Outlook showed the cert but “you do not have the private key”) [Data: Sources (36)].
+   - Remediation performed in the record: New S/MIME certificates were issued and key‑archive recovery was performed; private keys were re‑imported onto the executives’ devices and signed/decrypted mail validated [Data: Sources (36)].
+   - Reference: TI-1700007 (KF80: Email signing/encryption no longer working for executives) [Data: Sources (36)].
+
+4) LDAP‑S (LDAPS) queries from applications failing (apps can bind over plain LDAP but not LDAP‑S)
+   - Documented root cause: Domain Controllers had been configured for auto‑enrollment for the “Domain Controller” certificate template via Group Policy. After the PKI/template changes, auto‑enrollment/renewal behavior changed and DC certificates needed re‑enrollment. LDAP‑S failed until DC certificates were re‑enrolled from the internal CA [Data: Sources (13)].
+   - Remediation performed in the record: Domain Controller certificates were re‑enrolled from the internal CA after the auto‑enrollment template fix; LDAP‑S queries were restored [Data: Sources (13)].
+   - Reference: TI-1700008 (KF80: LDAP‑S queries to DCs failing for some applications) [Data: Sources (13)].
+
+What the indexed records do NOT contain / outstanding details
+- The records document the root causes and the remediation actions that were performed in each case, but they do not include full technical artifacts you might need for auditing or re‑execution (for example: the exact Group Policy change diffs, the template names and GUIDs for every modified template, the CA audit logs showing key generation locations, or the full list of all servers that received reissued certificates). The tickets show the symptom, root cause summary, and the remediation performed, but not all forensic-level artifacts [Data: Sources (55, 104, 36, 13)].
+- If you need those granular artifacts (GPO diffs, CA issuance logs, exact templates/GUIDs, lists of servers and clients validated), the indexed knowledge does not contain them. I cannot produce them from the records.
+
+Concrete, step‑by‑step resolution based on the documented fixes (use to reproduce or validate)
+Below I list the steps that were actually performed in the documented incidents. Use these steps as the canonical remediation sequence demonstrated in the records.
+
+A — Confirm the incident is the same PKI‑related problem
+  1. Verify that the timeline of your problems matches the weekend PKI/CA renewal (users began seeing issues after that maintenance window). The prior incidents all started immediately after a PKI renewal/refresh [Data: Sources (55, 104, 36, 13)].
+
+B — Restore HTTPS trust for internal web services (as in TI-1700005)
+  1. Publish the issuing/intermediate CA certificate to the AIA and ensure CRL distribution points are correct and reachable by clients.
+  2. Validate the server certificate chain from a client (browser) and confirm the chain no longer “breaks at the issuing CA.”
+  3. Validate the affected services after publishing the intermediate CA certificate.
+  - These actions are the documented remediation in TI-1700005 and resolved the browser trust warnings [Data: Sources (55)].
+
+C — Fix VPN server certificate EKU mismatch (as in TI-1700006)
+  1. Reissue the VPN server certificate from a template that includes the required IPsec/IKE (or vendor‑required) EKU.
+  2. Deploy the corrected server certificate to the VPN concentrator(s) and distribute any necessary updated certs to clients (the record states the new certificates were deployed via GPO).
+  3. Validate VPN connections from client devices and check concentrator logs for successful IKE negotiations.
+  - These actions are the documented remediation in TI-1700006 and restored VPN authentication for affected users [Data: Sources (104)].
+
+D — Recover executive S/MIME private keys / reissue usable S/MIME certs (as in TI-1700007)
+  1. Recover private keys from the CA key archive (key recovery) or reissue S/MIME certificates such that the private key is available to the end user.
+  2. Reimport the private keys onto the executives’ devices and confirm the cert+private key pair is usable in Outlook Trust Center.
+  3. Validate signing of outgoing mail and decryption of previously received encrypted mail.
+  - These actions are the documented remediation in TI-1700007 and restored S/MIME functionality [Data: Sources (36)].
+
+E — Re‑enroll Domain Controller certificates for LDAPS (as in TI-1700008)
+  1. Fix the auto‑enrollment/template configuration (Group Policy) that governs Domain Controller certificate enrollment so templates and auto‑enrollment behave correctly.
+  2. Re‑enroll Domain Controller “Domain Controller Authentication” certificates from the internal CA.
+  3. Validate LDAPS binds from the affected applications and confirm TLS handshake succeeds with the DC certificate.
+  - These actions are the documented remediation in TI-1700008 and restored LDAP‑S functionality [Data: Sources (13)].
+
+Recommended next steps (these are NOT verbatim from the records; they are practical recommendations)
+- (Recommended) Collect CA audit logs, template configuration backups, and GPO diffs for the weekend change so you can confirm what template changes caused the issues (not included in the indexed tickets).
+- (Recommended) Document and test certificate templates (EKUs, key archival, subject names) in a test environment before changing production templates.
+- (Recommended) Add post‑PKI‑change verification tasks into the change plan: check AIA/CRL distribution, verify sample service chains (HTTPS, LDAPS), confirm EKU presence for VPN and other special uses, and verify key archival behavior for S/MIME users.
+Note: these recommendations are not quoted from the incident records; they are suggested actions beyond what the indexed tickets explicitly document.
+
+If you want me to proceed
+- I can: (a) map your current affected hosts and users to the tickets above, (b) prepare a checklist derived from the exact remediation steps used in the prior incidents for your operations team to run (based only on what the records show), and (c) prepare a request list for the PKI team to extract CA logs and template change diffs.
+- Tell me which you want and provide access metadata (e.g., list of affected hostnames/services and timestamps) and I will produce the next artifacts. If you request step (b) or (c), I will mark any added procedural details as recommended where they are not present in the records.
+
+Short closure statement
+- The indexed incidents show a common cause: the weekend PKI renewal/CA/template changes triggered multiple downstream failures (broken certificate chains, missing EKUs, private keys not present on clients, and DC auto‑enrollment/template mismatch). Each was resolved by reversing or correcting the specific PKI/template issue for that service: publishing the issuing CA, reissuing server certs with the correct EKU, recovering/reissuing S/MIME private keys/certs, and re‑enrolling DC certs after fixing auto‑enrollment [Data: Sources (55, 104, 36, 13)].
+
+If you need the exact ticket references for your change/audit, the relevant tickets in the indexed knowledge are:
+- TI-1700005 — Internal portal TLS warnings (issuing CA chain published) [Data: Sources (55)]
+- TI-1700006 — VPN authentication EKU mismatch (server cert reissued) [Data: Sources (104)]
+- TI-1700007 — Executive S/MIME private‑key/key‑archive recovery (reissue/import) [Data: Sources (36)]
+- TI-1700008 — LDAP‑S to Domain Controllers (DC cert re‑enrolled after template fix) [Data: Sources (13)]
+
+If you want me to draft the concise checklist of only the exact remediation actions performed (no added procedures), tell me and I will produce it quoting the ticket lines.

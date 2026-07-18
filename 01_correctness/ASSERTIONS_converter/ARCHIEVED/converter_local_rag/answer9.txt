@@ -1,0 +1,25 @@
+Summary
+- Most likely cause: the printer assignment Group Policy (GPO) for location-based printers was not applied to the new user account (so no printers are mapped). This pattern was resolved by forcing GPO processing in a recent, identical case [Data: Sources (39, 41)].
+- Short answer on support level: this is normally a 1st‑level (helpdesk) issue to resolve in the first instance. In the referenced ticket the helpdesk applied a Group Policy update and the printer was mapped again [Data: Sources (39)].
+
+What to do first (ordered, exact steps)
+1. Confirm AD group membership
+   - Verify the user is in the correct AD group for the office location (location‑based printer assignment is driven by AD groups) [Data: Sources (41, 39)].
+2. Force application of the printer GPO and re-login
+   - Execute a Group Policy update on the laptop (the documented fix was to run gpupdate /force and then have the user sign out/in). After that the printer was automatically mapped in the documented case [Data: Sources (39)].
+3. If printers still do not appear: check GPO application/status
+   - If the GPO is not being applied (or the user is in the wrong/ additional nested groups), further adjust group memberships or correct the GPO scope per the Print & Scanning Infrastructure Standard [Data: Sources (41, 2)].
+4. If GPO is applied but no printers are mapped: check reachability of the print server
+   - Confirm the print server is reachable from the laptop (the standard workflow is: client → print server → printer, so the client needs access to the print server). If the server cannot be contacted, escalate to network/2nd‑level (see escalation section) [Data: Sources (41, 22)].
+5. Quick checks to rule out local interference
+   - The standard discourages manual local printer installs; if you suspect the PDF‑printer tool might interfere, you can temporarily remove it and retry GPO update as a test — but the primary, proven fix is the GPO update (per the referenced case) [Data: Sources (41, 39)].
+
+When to escalate to 2nd level / Network
+- Escalate to 2nd‑level / Infrastructure or the Network team if:
+  - The print server is unreachable from the laptop (possible VLAN/firewall/routing issue) — this exact cause was found in a case where printers were moved to a separate VLAN and firewall rules blocked the print server [Data: Sources (22, 41)].
+  - The GPO is present but there is evidence of print server or server‑side problems (e.g., print server services, driver compatibility or after a Windows update) — such issues required deeper infrastructure work in other incidents [Data: Sources (29, 28, 41)].
+
+Recommendation on ticket classification
+- Open this as a 1st‑level incident ticket and perform steps 1–3 above. If those steps do not restore printers and you identify server reachability, VLAN, or print server problems, escalate to 2nd‑level/Network (include test results and whether gpupdate /force changed anything) [Data: Sources (39, 22, 41)].
+
+If you want, I can provide the exact short checklist / script your helpdesk agent can run in the ticket (what to check and what to paste into the ticket notes).

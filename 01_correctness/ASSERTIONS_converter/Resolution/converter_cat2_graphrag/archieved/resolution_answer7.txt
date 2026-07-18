@@ -1,0 +1,85 @@
+Below I use only what the indexed incident corpus documents, and I separate (A) facts the records explicitly show from (B) recommended / procedural actions that go beyond the indexed text. Where a record supports a statement I cite it inline.
+
+Executive summary (short)
+- The indexed incidents that match your four symptoms were caused by PKI / certificate lifecycle and certificate‑template changes during a weekend maintenance: (a) an issuing CA / intermediate that was renewed but not published to the internal AIA/CRL distribution point (causing browser chain/trust warnings for internal HTTPS sites), (b) a Domain‑Controller certificate‑template change that removed a required EKU, which led to LDAPS/TLS handshake failures for applications, (c) a VPN certificate/template that lacked the IPsec/IKE EKU causing IKEv2 mutual‑auth failures for remote users, and (d) auto‑renewal of S/MIME certificates where private keys were not present on endpoints, requiring CA key‑archive recovery and PFX re‑import for executives. Those specific remediations (publish issuing CA to AIA, revert template and re‑enroll DC certs, fix VPN template and reissue, recover private keys and import PFXs) are recorded as the actions that restored service in prior cases. [Data: Reports (574); Sources (55); Reports (210); Reports (575); Reports (36)]
+
+A. What the indexed records explicitly document (mapping your four symptom classes to recorded root causes and fixes)
+1) Browser trust warnings for internal HR and other sites
+- Recorded cause: an issuing‑CA renewal occurred and the renewed issuing/intermediate certificate was not initially published to the internal AIA/CRL distribution point; clients could not build the chain and showed “issuer’s certificate not found” / NET::ERR_CERT_AUTHORITY_INVALID until the issuing cert was published and clients refreshed. [Data: Reports (574); Sources (55)]
+
+2) Remote VPN clients (≈80 users) cannot establish secure server‑auth because server identity cannot be verified
+- Recorded cause: VPN/CheckPoint IKEv2 failures traced to a certificate template used for the VPN/server cert that omitted the required IPsec/IKE EKU. The appliance logs showed chain/validation / EKU mismatch messages and remediation required re‑issuing a corrected cert/template on the VPN device. [Data: Reports (575); Sources (104)]
+
+3) Leadership S/MIME signing/decryption stopped working
+- Recorded cause: S/MIME certificates were auto‑renewed but private keys were not available on endpoints (the CA had the keys in its key‑archive). The PKI team recovered archived private keys, exported them as password‑protected PFX, delivered them via a secure channel and had executives import the PFX files to restore S/MIME signing and decryption. [Data: Reports (36); Entities (577)]
+
+4) Internal apps (HR, SharePoint, NAC) cannot connect via LDAPS/TLS but can use unprotected LDAP
+- Recorded cause: a Domain‑Controller certificate template change removed the Kerberos / DC EKU or otherwise produced DC certs incompatible with LDAPS consumers; auto‑enrollment caused DCs to pick up incompatible certs, which produced LDAPS/TLS handshake failures until the template was corrected and DCs re‑enrolled (certutil -pulse was used in prior remediations to accelerate re‑enrollment). [Data: Reports (210); Reports (37)]
+
+B. Step‑by‑step resolution based on documented prior cases
+Below are the concrete remediation steps that were actually performed in prior incidents (I mark each step with the supporting record(s)). These are the actions you should follow in the same order, and you should escalate to your PKI/Identity/Network owners immediately.
+
+Step 1 — Triage & hold change window
+- Action (documented pattern): Open an escalated PKI/Identity incident and assign PKI owner + Identity owner (prior incidents used BU PKI + Employee‑level identity owners). Do not make further certificate/template changes until the remediation sequence is complete.  
+  Evidence: the incidents show PKI/Identity teams were engaged and owned the remediations [Data: Reports (574); Reports (36)].
+
+Step 2 — Publish the renewed issuing/intermediate CA to the internal AIA/CRL distribution point (fix browser chain)
+- Action (documented): Ensure the issuing/intermediate certificate(s) from the weekend renewal are published to the internal AIA/CRL locations and that those URLs are reachable from client networks; verify HTTP GET of the AIA URL succeeds and clients can fetch the intermediate.  
+  Evidence (same remediation done in recorded incident): publishing the issuing CA to AIA removed browser chain errors for HR portal/SharePoint [Data: Reports (574); Sources (55)].
+
+Step 3 — Validate and refresh client trust
+- Action (documented): On representative client machines, validate the chain (browser certificate inspector or certutil -verify) and force certificate store refresh / group policy update on sample endpoints (previous incidents noted using gpupdate/certutil -pulse where applicable) until clients stop showing trust warnings.  
+  Evidence: record shows client refresh plus AIA publish removed the browser warning in the prior case [Data: Reports (574); Sources (55)].
+
+Step 4 — Revert incorrect Domain‑Controller template and re‑enroll DC certificates
+- Action (documented): If a DC template was changed producing certificates without required EKUs (e.g., missing Kerberos / DC EKU), revert the template to the correct settings, remove or replace the incompatible DC certs from the DC personal store, and force re‑enrollment on each DC (certutil -pulse). Validate LDAPS binds from affected applications.  
+  Evidence: the prior incident recorded a DC template removal of the Kerberos EKU, forced DC re‑enrollment, and subsequent validation of LDAPS functionality [Data: Reports (210); Reports (37)].
+
+Step 5 — Fix VPN/server certificate template and reissue VPN server cert
+- Action (documented): Update the VPN/server certificate template to include the required IPsec/IKE EKU and reissue the corrected certificate to the VPN concentrator(s). Validate IKEv2 tunnels with a test user and confirm remote users can authenticate.  
+  Evidence: prior CheckPoint IKEv2 outages were resolved by correcting the missing IPsec/IKE EKU on the VPN cert template and reissuing the certificate on the appliance [Data: Reports (575); Sources (104)].
+
+Step 6 — Recover archived S/MIME private keys and restore executive mail signing/decryption
+- Action (documented): For executives affected, use the CA key‑archive recovery procedure to extract the private key for each user, export as password‑protected PFX, deliver via a secure channel, and have the user import the PFX into their Personal store. Validate S/MIME signing and decryption after import. (Do this under PKI owner + InfoSec oversight).  
+  Evidence: prior ticket shows exactly this recovery/export/import procedure restored executive S/MIME functionality [Data: Reports (36); Entities (577)].
+
+Step 7 — Post‑fix validation and monitoring
+- Action (documented): After each change above, validate: (a) browser access to HR/SharePoint with sample users, (b) LDAPS binds from HR app / NAC / SharePoint and confirm they use TLS, (c) VPN connectivity for a cohort of remote users, (d) S/MIME signing/decryption for executives, and (e) capture sign‑in / application logs showing success. Monitor for 24–72 hours. The prior incidents recorded explicit overnight validation and monitoring before ticket closure.  
+  Evidence: prior tickets recorded overnight validation and closure after the steps above showed success [Data: Reports (574); Reports (36); Reports (37)].
+
+C. Artifacts you must provide (the indexed records show teams collected these during triage)
+The indexed corpus shows investigators required specific logs/artifacts to confirm root cause and validate remediation. The records do not contain these artifacts for your environment — you must collect and provide them. (These are recommended evidence‑collection items; the records show the same classes were used in past investigations.)
+
+Collect and attach:
+- CA server event logs and CA audit entries around the weekend maintenance (AIA/CRL publish events and template edits). [Data: Reports (574); Sources (55)]
+- The VPN concentrator / IKE logs that show “client cert chain validation failed” / “EKU mismatch” for the affected user sessions. [Data: Reports (575); Sources (104)]
+- A representative browser certificate chain screenshot from the HR site showing the chain error (“Issuer’s certificate not found”). [Data: Reports (574); Sources (55)]
+- On one or more Domain Controllers: certutil -store MY output and the System/Application event entries showing auto‑enrollment/cert issuance around the weekend (to confirm the DC cert contents and EKUs). [Data: Reports (210); Reports (37)]
+- Samples of application logs (HR app, SharePoint, NAC) showing LDAPS/TLS handshake failure messages and timestamps. [Data: Reports (210)]
+- For S/MIME: CA key‑archive audit rows showing recovered keys and PFX export events (if available), and a validated import confirmation from an executive (screenshot or mail test). [Data: Reports (36)]
+
+D. What the indexed knowledge does not contain (so I cannot complete the fix from here)
+- The indexed corpus documents the *process* and prior successful remediations but does not include your tenant/server logs, the CA event log entries, the actual certificate files, or the VPN/IKE traces needed to declare the incident fully closed in your environment. I cannot perform the publish, template reversion, DC re‑enroll or PFX exports for you from the indexed records — those must be executed by your PKI and Identity operators with the artifacts above. [Data: Reports (574); Reports (37); Reports (36); Reports (575)]
+
+E. Immediate recommended actions to start now (these are operational recommendations, marked recommended)
+- Recommendation: Escalate this ticket to PKI (CA owner), Identity/AD team, and Network/VPN owner immediately and provide the artifact list from Section C. Prior cases were handled by these teams and required cross‑team coordination. [Data: Reports (574); Reports (37); Reports (575)]
+- Recommendation: Do not re‑enable any maintenance automation that may reapply templates or reissue certs until you have a controlled runbook (the incidents recommend adding a preflight AIA/CRL verification gate into the runbook). [Data: Reports (574)]
+- Recommendation: For executives’ PFX delivery, use a secure channel and passworded PFX files per the prior S/MIME remediation. [Data: Reports (36)]
+
+F. Short, actionable handoff you can copy into the ticket now
+- Escalation owners to add: PKI owner (on‑call), Identity/AD (owner), Network/VPN owner, and Application owners (HR, SharePoint, NAC). Cite this ticket as “possible PKI / template / AIA publish regression — symptoms: browser CA errors, VPN IKEv2 EKU failures, S/MIME private‑key missing for executives, LDAPS handshake failures.” [Data: Reports (574); Reports (575); Reports (36); Reports (210)]
+- Ask PKI to: (a) confirm whether a CA/issuing/intermediate renewal occurred on the weekend and whether the issuing cert was published to AIA/CRL; (b) if not published, publish the CA cert to AIA and confirm HTTP reachability. (Refer to the prior incident where publishing fixed browser errors.) [Data: Reports (574); Sources (55)]
+- Ask Identity/AD to: (a) confirm whether DC certificate template edits were applied and whether DCs auto‑enrolled incompatible certs; (b) if a template change caused the issue, revert template and force DC re‑enrollment (certutil -pulse) and validate LDAPS. [Data: Reports (210); Reports (37)]
+- Ask Network/VPN owner to: (a) check concentrator logs for IKE/cert chain/EKU errors; (b) if template lacked IPsec/IKE EKU, reissue VPN server cert from corrected template and re-deploy. [Data: Reports (575); Sources (104)]
+- Ask PKI to perform executive key recovery and secure PFX delivery for any executives who cannot sign/decrypt; validate import and S/MIME end‑to‑end. [Data: Reports (36)]
+
+G. Classification and rationale
+- Based on the indexed cases with the same multi‑symptom pattern, classify this as second_level_support (requires PKI/Identity/Network engineering escalation). The prior incidents with identical symptoms required engineer‑level template and CA operations, full trust‑chain fixes, and coordinated re‑enrollment and were handled by PKI/Identity owners rather than first‑line support. [Data: Reports (574); Reports (37); Reports (575); Reports (36)]
+
+H. If you want, I will prepare next artifacts for the responders
+- I can draft the exact log/export request text to send to your CA operator, DC owners, VPN owner and Exchange/PKI team (e.g., exact event logs, certutil outputs, IKE trace snippets and sample sign‑in timestamps). This is a recommended action (not taken verbatim from prior tickets) but will mirror the artifacts used in the recorded remediations. Tell me which team(s) you want me to prepare the request for and I will produce those short templates.
+
+Closing / one‑line summary
+- The indexed evidence maps your four concurrent symptom classes to the documented PKI / certificate‑template / AIA publication failures that occurred in previous weekend maintenance windows. The recorded fix sequence was: publish issuing CA to AIA, revert erroneous template(s) and force DC re‑enrollment, correct VPN template and reissue VPN cert, and recover S/MIME private keys from CA archive and import PFXs — each step is recorded as having restored services in prior incidents [Data: Reports (574); Reports (37); Reports (575); Reports (36)]. To complete this for your environment we need the artifacts listed in Section C and the PKI/Identity/Network teams to perform the documented remediation steps.
+
+If you want those ready‑to‑send artifact‑request messages (one per team), say which teams to include and I will produce them marked as recommended next steps (not as items directly executed in the records).

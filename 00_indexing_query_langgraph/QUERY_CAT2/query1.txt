@@ -1,0 +1,4 @@
+Hi, I just transferred to the Zurich branch this morning and my setup is completely broken.
+First, when I dial external vendor numbers on the desktop app, the line is dead silent—I can't hear them at all, though they say they hear me.
+Second, I'm locked out of the 'ERP_Upgrade' directory on the intranet; it just says I don't have permission, which makes no sense since I viewed it yesterday.
+Finally, I tried to send a scanned contract from the hallway printer to a vendor's email. The printer screen showed a green checkmark, but the vendor never received the email. Please fix my account!

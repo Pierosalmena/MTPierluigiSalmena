@@ -1,0 +1,699 @@
+dataset,question,answer,context,is_recommendation,is_rec_reason,groundedness,groundedness_reason
+traceability_ragas_classification_answer2,Is the statement supported by the evidence?,"Cases where connector/automation failures (NDES/other connectors) and immediate network/configuration mitigations required multi‑team (identity, network, security) remediation and on‑call engineering activity, not simple first‑line fixes","=== CITED SOURCES ===
+SOURCE 35:
+﻿
+Ticket summary:
+Ticket name: KF11: Intune NDES Connector lost communication
+Ticket number: TI-722423
+Company: Customer Company 11
+Contact person: Contact Person 8
+Owner: Employee 11
+Origin: Phone
+Type: Incident
+Created on: 27.03.24 12:04
+Closure
+Closure date: 14.06.24 16:10
+Closure text: Incident successfully resolved
+Activities
+Emails:
+27.03.24 13:10 | TI-722423 | KF11: Intune NDES Connector lost communication | Employee 11 | Contact Person 8
+Hello Contact Person 8, hello Contact Person 2,
+Together with the network team, I adjusted the firewall rules and then reinstalled the connector – this time without proxy configuration. After the reinstallation, the connector was displayed as “green” again in Azure (this step is required so that it can properly communicate with the Intune service).
+Since we had identified login issues, we temporarily excluded the service account from the MFA requirement.
+After completing the installation, I removed the “Intune Admin” role from the service account again. If we need to reinstall the connector, this role must be temporarily reassigned.
+During the installation, I followed the Microsoft guide
+“Configure infrastructure to support SCEP certificate profiles with Microsoft Intune.”
+Attached you will find logs to quickly verify whether the connector is operating correctly. See blueprint_1.
+Please do not make any changes to the settings without prior coordination.
+If issues occur during the Intune deployment, you may contact the Helpdesk or the WPS team at any time.
+
+
+",no,"This is a factual description of past incidents requiring multi‑team remediation, not a suggestion or directive proposing future action.",partially_supported,"The ticket shows multi‑team remediation beyond first‑line (network team adjusted firewall rules, connector reinstalled, service account MFA/role changes indicating identity work), but the CONTEXT does not explicitly document involvement of a security team or that this was handled as on‑call engineering activity."
+traceability_ragas_classification_answer2,Is the statement supported by the evidence?,A tenant case where OWA (browser) continued to work but non‑browser SMTP/legacy clients failed because Conditional Access / SMTP AUTH policy interactions required scoped exceptions to restore service — this was handled by identity/mail teams and required policy adjustments rather than only helpdesk steps,"=== CITED SOURCES ===
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+",no,"This is a factual description of a past incident and the remediation that was applied, not a recommendation or directive advising future action.",supported,"The ticket notes show Webmail (OWA) and mobile worked while locally installed Outlook failed, root cause was Security Default disabling SMTP AUTH, and remediation involved selectively enabling SMTP AUTH and adjusting Conditional Access after escalation to Exchange/System engineering rather than only helpdesk steps."
+traceability_ragas_classification_answer2,Is the statement supported by the evidence?,A case where an integration stopped authenticating in background while the same account still worked interactively in a browser: investigators found ADFS / client‑registration parameters were misconfigured (EnableJWT / RequestMFAFromClaimsProviders) and that change broke non‑browser/native automation while leaving interactive browser logins functional,"=== CITED SOURCES ===
+SOURCE 11:
+Understood. Below is the **plain English translation**, with **only personal and company names replaced by “Employee <number>”**, **employee numbers kept**, and **no formatting, no headings, no extra structure** beyond what is already implicit in the text.
+
+---
+
+Ticket summary:
+Ticket name: KF11: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket number: TI-1385257
+Company: Customer company 11AG
+Contact person: Employee 14
+Owner: Employee 24
+Source: Email
+Type: Support Request
+Created on: 26.11.24 10:07
+
+Closure
+Closure date: 18.12.24 00:33
+Closure text: Parameters adjusted on ADFS as in the TEST environment
+
+Activities
+Emails:
+
+26.11.24 09:58 Customer company 11CE TRAIN: Connection error from DevOps and FO Employee 14 Helpdesk
+Hi,
+we are experiencing connectivity issues with the TRAIN CE server. A restart of the application server has already been performed, but it did not help.
+The user account works in the browser frontend, so the password is correct.
+Thank you very much and kind regards
+Employee 14
+
+26.11.24 10:12 Ticket created: TI-1385257 | Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket confirmation
+Dear Employee 14,
+Your request has been successfully received and recorded in our system under the ticket number TI-1385257.
+Ticket details:
+Ticket number: TI-1385257
+Subject: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Priority: Normal
+Contact person: Employee 16
+We will contact you as soon as possible.
+
+26.11.24 10:18 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 16,
+The ticket TI-1385257 is no longer in your area of responsibility.
+It was transferred from Employee to Employee 14.
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:18 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:21 Re: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Dear Employee 14,
+Thank you for your inquiry.
+The ticket has been forwarded to the responsible system engineer.
+Kind regards
+Employee 16
+
+26.11.24 10:48 Portal note added
+Employee mentioned it could be the user KF11\001-svc-axavaobt-tra as this is the account currently configured.
+Is it possible to get an overview of all interfaces and their corresponding users and passwords?
+
+26.11.24 13:36 Portal note added
+Employee mentioned again KF11\001-svc-axavaobt-tra. Was the password changed?
+
+27.11.24 13:29 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+
+27.11.24 13:29 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 14,
+The ticket TI-1385257 is no longer in your responsibility.
+It was transferred from Admin to Employee 24.
+
+28.11.24 09:01 Ticket status changed to In Progress
+The ticket TI-1385257 was set to status In Progress.
+
+09.12.24 15:58 Re: Ticket created: TI-1385257
+Hi,
+we cannot connect to the CE TRAIN server again. Could you please reopen this ticket?
+Thank you and best regards
+Employee 14
+
+18.12.24 00:33 Ticket closed | TI-1385257
+Dear Employee 14,
+Your ticket from 26.11.24 10:07 has been closed.
+Closure description:
+Parameters adjusted on ADFS as in the TEST environment.
+
+18.12.24 00:34 Re: TRAIN-CE/FO integration / MFA
+Dear Employee 7,
+During the joint analysis of the issue, we identified that two parameters were not correctly set during the ADFS client registration. In the new client application used specifically for the MFA request of the Toolbox on the Train system, the following parameters were set to true:
+EnableJWT
+RequestMFAFromClaimsProviders
+
+EnableJWT activates the issuance of JSON Web Tokens in the authentication process. If enabled, ADFS issues JWTs instead of other token formats such as SAML. These tokens are evaluated by the target application. If the target system does not support JWTs or cannot validate their signature, authentication fails.
+
+RequestMFAFromClaimsProviders forwards MFA requirements to configured claims providers. This delegates MFA execution to external providers and increases complexity in authentication flow, logging, and auditing.
+
+The combination of these parameters can lead to login failures if the target system is not designed to handle JWTs or external MFA claims.
+
+We have documented the configuration to avoid future issues. From our perspective, no further problems are expected after adjusting the parameters. If MFA works stably and the Train environment is reachable again, the login topic can be considered resolved.
+
+Kind regards
+Employee 21
+
+Notes:
+26.11.24 Ticket opened by Employee 16.
+26.11.24 Ticket assigned",no,This is a factual report of an incident and root cause (misconfigured ADFS parameters) without any directive language or suggested actions.,supported,"The ticket notes the account worked via the browser while connections failed, and the closure explains two ADFS client-registration parameters (EnableJWT and RequestMFAFromClaimsProviders) were set incorrectly and caused login failures for the client application; adjusting them resolved the issue."
+traceability_ragas_classification_answer2,Is the statement supported by the evidence?,"A confirmed phishing/credential‑harvest incident where investigators found convincing fake Microsoft login pages and recommended emergency containment (geo/firewall controls) and account exceptions. The ticket records the phishing artifacts, the emergency mitigation proposal, and the need to carve out exceptions for critical accounts [This exact workflow is recorded in the phishing incident ticket]","=== CITED SOURCES ===
+SOURCE 4:
+﻿
+Ticket summary:
+Ticket name: KF12: Hacker Attack Store
+Ticket number: TI-858473
+Company: Customer Company 12
+Contact person: Contact Person 10
+Owner: Employee 15
+Origin: Internet
+Type: Incident
+Created on: 26.06.24 15:41
+Closure
+Closure date: 22.07.24 07:19
+Closure text: Incident has been closed.
+
+Activities
+Emails:
+26.06.24 15:41 | Portal: New ticket: TI-858473 | KF12: Hacker Attack Store, Priority HIGH | Service Account, CRM → HELPDESK, Consulting Sample Company, Helpdesk
+A new ticket was submitted via the Consulting Sample Company portal.
+Details:
+Company: d92b23d8-6fb5-ec11-9840-000d3abf7976
+Title: KF12: Hacker Attack Store
+Number: TI-858473
+
+26.06.24 15:50 | TI-858473 | KF12: Hacker Attack Store #035402627 | Employee 16 → Contact Person 10
+Dear Ms. Contact Person 10,
+Thank you for your report. I will immediately forward the ticket to the responsible System Engineer, who will review the case and get back to you.
+Kind regards
+
+26.06.24 17:59 | New portal note #027060952 | NO-REPLY → Mitarbeiter15@ConsultingSampleCompany.ch
+Note: WEB
+The second file.
+Link: KF12: Hacker Attack Store
+
+26.06.24 17:59 | New portal note #027060953 | NO-REPLY → Mitarbeiter15@ConsultingSampleCompany.ch
+Note: WEB
+I have found the automatically downloaded files.
+Link: KF12: Hacker Attack Store
+
+05.07.24 09:01 | Ticket set to status ""In Progress"" #027062150 | NO-REPLY → Mitarbeiter15@ConsultingSampleCompany.ch
+Hello Employee 15,
+Ticket TI-858473 has been set to status “In Progress”.
+Link: KF12: Hacker Attack Store
+
+Notes:
+26.06.24 15:41 | Admin, CRM | WEB
+Ticket was opened on 26.06.24 15:41 via Microsoft CRM Portals,#.
+26.06.24 15:41 | Admin, CRM | WEB
+Ticket assigned to BU Customer Services Run.
+26.06.24 15:52 | Admin, CRM | WEB
+Ticket assigned to Employee 15.
+
+26.06.24 15:56 | Employee 15 | WEB
+CustomerCompany12.ch currently has an incident and cannot assess the damage due to missing software & services.
+They would like to check whether a firewall rule can be defined that routes all users without MFA through a geolocation control first.
+Requested IP block:
+20.26.116.69
+Exceptions:
+s_keepit@CustomerCompany12.ch
+su-pos-app-KF12card@CustomerCompany12.ch
+su-mdeapp@CustomerCompany12.ch
+If possible:
+Only block “Sign-in Activities” performed by individuals – not those executed by Microsoft services.
+Geolocation check for non-MFA logins should apply to:
+Switzerland
+Germany
+Austria
+Italy
+
+26.06.24 17:20 | Employee 15 | WEB
+Extension: Additionally, the user D365IntPROD@CustomerCompany12.ch should also be excluded from the restriction.
+
+26.06.24 17:58 | Microsoft CRM Portals,# | DOWNLO_732783232.pdf | WEB
+I have found the automatically downloaded file.
+26.06.24 17:59 | Microsoft CRM Portals,# | DOWNLO_732783232 (1).pdf | WEB
+The second file.
+
+27.06.24 15:00 | Employee 15 | WEB
+Understood, that sounds plausible. Unfortunately, we can no longer open the file because the link has since been blocked.
+The two attached PDF files each contain a link leading to a fake Microsoft login page.
+After entering credentials, they are transmitted to algina[.]co and then redirected to Microsoft in order to make the fraud appear less suspicious.
+The likely purpose is to harvest credentials in order to carry out further attacks – as has apparently already occurred.
+
+27.06.24 16:44 | ApplicationUser, CRM Development | WEB
+A “Lessons Learned” meeting is required to define sustainable security measures.
+Proposed topics:
+• MusterFirmaguard
+• ModernSecOps
+• SOC
+
+",yes,"The text explicitly states investigators 'recommended emergency containment (geo/firewall controls) and account exceptions' and describes an emergency mitigation proposal and need to carve out exceptions, which are recommendations.",supported,"The ticket notes two PDFs linking to fake Microsoft login pages that post credentials to algina[.]co (credential harvesting) and records a request to implement geolocation/firewall controls for non‑MFA logins with specific account exceptions (listed emails and a later exclusion for D365IntPROD), which matches the ANSWER's claims."
+traceability_ragas_classification_answer2,Is the statement supported by the evidence?,"The indexed records show how similar events behaved and were resolved, but they do not contain your tenant’s live logs, firewall change timestamps, Conditional Access application timestamp, or confirmation that credentials were actually exfiltrated in your environment. The exact root cause in your case cannot be confirmed from the indexed corpus alone","=== CITED SOURCES ===
+SOURCE 4:
+﻿
+Ticket summary:
+Ticket name: KF12: Hacker Attack Store
+Ticket number: TI-858473
+Company: Customer Company 12
+Contact person: Contact Person 10
+Owner: Employee 15
+Origin: Internet
+Type: Incident
+Created on: 26.06.24 15:41
+Closure
+Closure date: 22.07.24 07:19
+Closure text: Incident has been closed.
+
+Activities
+Emails:
+26.06.24 15:41 | Portal: New ticket: TI-858473 | KF12: Hacker Attack Store, Priority HIGH | Service Account, CRM → HELPDESK, Consulting Sample Company, Helpdesk
+A new ticket was submitted via the Consulting Sample Company portal.
+Details:
+Company: d92b23d8-6fb5-ec11-9840-000d3abf7976
+Title: KF12: Hacker Attack Store
+Number: TI-858473
+
+26.06.24 15:50 | TI-858473 | KF12: Hacker Attack Store #035402627 | Employee 16 → Contact Person 10
+Dear Ms. Contact Person 10,
+Thank you for your report. I will immediately forward the ticket to the responsible System Engineer, who will review the case and get back to you.
+Kind regards
+
+26.06.24 17:59 | New portal note #027060952 | NO-REPLY → Mitarbeiter15@ConsultingSampleCompany.ch
+Note: WEB
+The second file.
+Link: KF12: Hacker Attack Store
+
+26.06.24 17:59 | New portal note #027060953 | NO-REPLY → Mitarbeiter15@ConsultingSampleCompany.ch
+Note: WEB
+I have found the automatically downloaded files.
+Link: KF12: Hacker Attack Store
+
+05.07.24 09:01 | Ticket set to status ""In Progress"" #027062150 | NO-REPLY → Mitarbeiter15@ConsultingSampleCompany.ch
+Hello Employee 15,
+Ticket TI-858473 has been set to status “In Progress”.
+Link: KF12: Hacker Attack Store
+
+Notes:
+26.06.24 15:41 | Admin, CRM | WEB
+Ticket was opened on 26.06.24 15:41 via Microsoft CRM Portals,#.
+26.06.24 15:41 | Admin, CRM | WEB
+Ticket assigned to BU Customer Services Run.
+26.06.24 15:52 | Admin, CRM | WEB
+Ticket assigned to Employee 15.
+
+26.06.24 15:56 | Employee 15 | WEB
+CustomerCompany12.ch currently has an incident and cannot assess the damage due to missing software & services.
+They would like to check whether a firewall rule can be defined that routes all users without MFA through a geolocation control first.
+Requested IP block:
+20.26.116.69
+Exceptions:
+s_keepit@CustomerCompany12.ch
+su-pos-app-KF12card@CustomerCompany12.ch
+su-mdeapp@CustomerCompany12.ch
+If possible:
+Only block “Sign-in Activities” performed by individuals – not those executed by Microsoft services.
+Geolocation check for non-MFA logins should apply to:
+Switzerland
+Germany
+Austria
+Italy
+
+26.06.24 17:20 | Employee 15 | WEB
+Extension: Additionally, the user D365IntPROD@CustomerCompany12.ch should also be excluded from the restriction.
+
+26.06.24 17:58 | Microsoft CRM Portals,# | DOWNLO_732783232.pdf | WEB
+I have found the automatically downloaded file.
+26.06.24 17:59 | Microsoft CRM Portals,# | DOWNLO_732783232 (1).pdf | WEB
+The second file.
+
+27.06.24 15:00 | Employee 15 | WEB
+Understood, that sounds plausible. Unfortunately, we can no longer open the file because the link has since been blocked.
+The two attached PDF files each contain a link leading to a fake Microsoft login page.
+After entering credentials, they are transmitted to algina[.]co and then redirected to Microsoft in order to make the fraud appear less suspicious.
+The likely purpose is to harvest credentials in order to carry out further attacks – as has apparently already occurred.
+
+27.06.24 16:44 | ApplicationUser, CRM Development | WEB
+A “Lessons Learned” meeting is required to define sustainable security measures.
+Proposed topics:
+• MusterFirmaguard
+• ModernSecOps
+• SOC
+
+",no,"This statement is descriptive, reporting limitations of the records and that the root cause cannot be confirmed, without offering any recommendations or suggested actions.",supported,"The CONTEXT includes an incident ticket describing the phishing behavior and its handling (showing how the event behaved and was closed) but contains no live tenant logs, firewall change timestamps, Conditional Access application timestamps, or an explicit confirmation that credentials were exfiltrated—so the indexed corpus alone cannot confirm the exact root cause."
+traceability_ragas_classification_answer2,Is the statement supported by the evidence?,"Prior tickets with the same set of symptoms were not resolved by routine first‑line steps: they required identity‑plane diagnostics (Azure AD/ADFS token/claim checks, provisioning/Client registration review), policy edits with careful exception scoping, and network/config changes that needed system engineers — i.e., second‑level work","=== CITED SOURCES ===
+SOURCE 11:
+Understood. Below is the **plain English translation**, with **only personal and company names replaced by “Employee <number>”**, **employee numbers kept**, and **no formatting, no headings, no extra structure** beyond what is already implicit in the text.
+
+---
+
+Ticket summary:
+Ticket name: KF11: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket number: TI-1385257
+Company: Customer company 11AG
+Contact person: Employee 14
+Owner: Employee 24
+Source: Email
+Type: Support Request
+Created on: 26.11.24 10:07
+
+Closure
+Closure date: 18.12.24 00:33
+Closure text: Parameters adjusted on ADFS as in the TEST environment
+
+Activities
+Emails:
+
+26.11.24 09:58 Customer company 11CE TRAIN: Connection error from DevOps and FO Employee 14 Helpdesk
+Hi,
+we are experiencing connectivity issues with the TRAIN CE server. A restart of the application server has already been performed, but it did not help.
+The user account works in the browser frontend, so the password is correct.
+Thank you very much and kind regards
+Employee 14
+
+26.11.24 10:12 Ticket created: TI-1385257 | Customer company 11CE TRAIN: Connection error from DevOps and FO
+Ticket confirmation
+Dear Employee 14,
+Your request has been successfully received and recorded in our system under the ticket number TI-1385257.
+Ticket details:
+Ticket number: TI-1385257
+Subject: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Priority: Normal
+Contact person: Employee 16
+We will contact you as soon as possible.
+
+26.11.24 10:18 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 16,
+The ticket TI-1385257 is no longer in your area of responsibility.
+It was transferred from Employee to Employee 14.
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:18 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+Description:
+We are facing connectivity issues with the TRAIN CE server. Restarting the application server did not help. The user account works via the browser UI, so it is not a wrong password.
+
+26.11.24 10:21 Re: Customer company 11CE TRAIN: Connection error from DevOps and FO
+Dear Employee 14,
+Thank you for your inquiry.
+The ticket has been forwarded to the responsible system engineer.
+Kind regards
+Employee 16
+
+26.11.24 10:48 Portal note added
+Employee mentioned it could be the user KF11\001-svc-axavaobt-tra as this is the account currently configured.
+Is it possible to get an overview of all interfaces and their corresponding users and passwords?
+
+26.11.24 13:36 Portal note added
+Employee mentioned again KF11\001-svc-axavaobt-tra. Was the password changed?
+
+27.11.24 13:29 Ticket assigned | TI-1385257
+The ticket TI-1385257 has been assigned to you.
+Company: Customer company 11AG
+Contact: Employee 14
+
+27.11.24 13:29 Ticket no longer in your responsibility | TI-1385257
+Hello Employee 14,
+The ticket TI-1385257 is no longer in your responsibility.
+It was transferred from Admin to Employee 24.
+
+28.11.24 09:01 Ticket status changed to In Progress
+The ticket TI-1385257 was set to status In Progress.
+
+09.12.24 15:58 Re: Ticket created: TI-1385257
+Hi,
+we cannot connect to the CE TRAIN server again. Could you please reopen this ticket?
+Thank you and best regards
+Employee 14
+
+18.12.24 00:33 Ticket closed | TI-1385257
+Dear Employee 14,
+Your ticket from 26.11.24 10:07 has been closed.
+Closure description:
+Parameters adjusted on ADFS as in the TEST environment.
+
+18.12.24 00:34 Re: TRAIN-CE/FO integration / MFA
+Dear Employee 7,
+During the joint analysis of the issue, we identified that two parameters were not correctly set during the ADFS client registration. In the new client application used specifically for the MFA request of the Toolbox on the Train system, the following parameters were set to true:
+EnableJWT
+RequestMFAFromClaimsProviders
+
+EnableJWT activates the issuance of JSON Web Tokens in the authentication process. If enabled, ADFS issues JWTs instead of other token formats such as SAML. These tokens are evaluated by the target application. If the target system does not support JWTs or cannot validate their signature, authentication fails.
+
+RequestMFAFromClaimsProviders forwards MFA requirements to configured claims providers. This delegates MFA execution to external providers and increases complexity in authentication flow, logging, and auditing.
+
+The combination of these parameters can lead to login failures if the target system is not designed to handle JWTs or external MFA claims.
+
+We have documented the configuration to avoid future issues. From our perspective, no further problems are expected after adjusting the parameters. If MFA works stably and the Train environment is reachable again, the login topic can be considered resolved.
+
+Kind regards
+Employee 21
+
+Notes:
+26.11.24 Ticket opened by Employee 16.
+26.11.24 Ticket assigned
+
+SOURCE 32:
+﻿
+Ticket summary:
+Ticket name: KF22: Exchange Online – Emails remain in Outbox / sporadic SMTP error
+Ticket number: TI-1548823
+Company: Customer Company 22 AG
+Contact person: Contact Person 08
+Owner: Employee 34
+Origin: Email
+Type: Incident
+Created on: 14.01.25 08:17
+Closure
+Closure date: 22.01.25 16:42
+Closure text: Root cause identified (Hybrid Connector configuration). SMTP Auth adjusted, test successful. Ticket can be closed.
+Activities
+Emails:
+Created on: 14.01.25 08:17
+Subject: Urgent: Emails remain in Outbox – KF22
+From: Contact Person 08
+To: HELPDESK, Consulting Sample Company
+Hello everyone
+Since this morning, emails are stuck in the Outbox for several users. In some cases, we receive the following error message:
+0x800CCC0E – Connection to the server failed
+SMTP server not responding
+Approximately 12 employees from the Sales team are affected.
+Internet connectivity is generally working.
+Could you please check this urgently?
+Kind regards
+Contact Person 08
+14.01.25 08:21
+Ticket creation: TI-1548823 | KF22: Exchange Online – Emails remain in Outbox
+Ticket notification sent to Contact Person 08
+Priority: High
+14.01.25 08:29
+Ticket assigned: Employee 34
+Status changes
+14.01.25 08:35
+Status: In Progress
+Notes:
+14.01.25 08:42 – Employee 34
+Contact established with Contact Person 08.
+Additional information:
+• Issue affects only users with locally installed Outlook (Windows 11)
+• Webmail (OWA) works
+• Mobile devices (iOS) work
+• Error occurs only when sending
+• Receiving works
+Initial assessment:
+→ Likely SMTP authentication or Hybrid Connector issue
+14.01.25 09:15 – Client-side troubleshooting
+Actions performed:
+• Recreated Outlook profile
+• Removed and re-added account
+• Checked SMTP port (587 with STARTTLS)
+• Disabled antivirus SMTP scanning
+• Checked client firewall
+Result: No improvement
+14.01.25 10:30 – Exchange Admin Center analysis
+• Checked Mailflow → Queue Monitoring
+• No global Microsoft 365 outage reported
+• Performed Message Trace → no blocking visible
+• SMTP AUTH globally disabled? → No
+Suspicion: Hybrid environment with local Exchange relay
+14.01.25 11:12 – Escalation
+Ticket forwarded to System Engineer (Exchange Specialist).
+Reason:
+Possible misconfiguration in Hybrid Connector or SMTP Auth policy
+14.01.25 11:15
+Ticket no longer in your responsibility | TI-1548823
+Forwarded to: BU Infrastructure Engineering
+14.01.25 11:16
+Ticket assigned: System Engineer 07
+Further analysis (System Engineer)
+15.01.25 08:55 – System Engineer 07
+Hybrid setup analysis:
+• Environment: Exchange Hybrid (OnPrem + M365)
+• Send Connector checked
+• TLS certificate checked
+• SPF / DKIM unchanged
+Log analysis on Exchange Server:
+Event Log shows:
+535 5.7.3 Authentication unsuccessful
+SMTP AUTH was disabled for the affected users.
+15.01.25 10:20 – Root cause identified
+Tenant security policy was adjusted last week:
+Security Default → enabled
+Result: SMTP AUTH disabled for legacy clients
+Sales team still uses older Outlook version (Build 2019 MSI).
+15.01.25 11:05 – Actions
+• SMTP AUTH selectively enabled for affected users
+• Conditional Access Policy adjusted
+• Test sending successful
+16.01.25 09:00 – Monitoring
+Mailflow monitored for 24 hours
+No further errors in logs
+21.01.25 14:12 – Customer feedback
+All users can send normally again.
+No further issues observed.
+Ticket closure
+22.01.25 16:42 – HELPDESK
+Dear Contact Person 08
+Your ticket dated 14.01.25 has been successfully closed.
+Root cause:
+SMTP AUTH was disabled due to new Security Default Policy.
+Action taken:
+Selective activation and adjustment of the Conditional Access Policy.
+If you have any further questions, please do not hesitate to contact us.
+Kind regards
+Consulting Sample Company – Helpdesk
+
+
+
+
+SOURCE 35:
+﻿
+Ticket summary:
+Ticket name: KF11: Intune NDES Connector lost communication
+Ticket number: TI-722423
+Company: Customer Company 11
+Contact person: Contact Person 8
+Owner: Employee 11
+Origin: Phone
+Type: Incident
+Created on: 27.03.24 12:04
+Closure
+Closure date: 14.06.24 16:10
+Closure text: Incident successfully resolved
+Activities
+Emails:
+27.03.24 13:10 | TI-722423 | KF11: Intune NDES Connector lost communication | Employee 11 | Contact Person 8
+Hello Contact Person 8, hello Contact Person 2,
+Together with the network team, I adjusted the firewall rules and then reinstalled the connector – this time without proxy configuration. After the reinstallation, the connector was displayed as “green” again in Azure (this step is required so that it can properly communicate with the Intune service).
+Since we had identified login issues, we temporarily excluded the service account from the MFA requirement.
+After completing the installation, I removed the “Intune Admin” role from the service account again. If we need to reinstall the connector, this role must be temporarily reassigned.
+During the installation, I followed the Microsoft guide
+“Configure infrastructure to support SCEP certificate profiles with Microsoft Intune.”
+Attached you will find logs to quickly verify whether the connector is operating correctly. See blueprint_1.
+Please do not make any changes to the settings without prior coordination.
+If issues occur during the Intune deployment, you may contact the Helpdesk or the WPS team at any time.
+
+
+",no,The statement reports past cases and what actions were required historically rather than recommending or instructing future actions.,supported,"All parts of the claim are evidenced by the tickets: TI-1385257 was escalated and resolved by adjusting ADFS client registration (identity-plane token/claim settings), TI-1548823 was escalated to a system engineer and required Conditional Access/SMTP AUTH policy edits, and TI-722423 involved firewall/config changes plus temporary MFA exemption — showing work beyond first-line support."

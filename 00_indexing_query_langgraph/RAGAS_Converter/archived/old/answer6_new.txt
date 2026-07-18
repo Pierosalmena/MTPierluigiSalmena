@@ -1,0 +1,76 @@
+
+# Urgent summary (TL;DR)                                                        
+Most evidence points to two concurrent causes acting together: (A) a perimeter/WAF/template or TLS‑inspection change after a weekend patch that removed required header rewrites (notably X‑Forwarded‑Proto) and broke authentication/session semantics for externally routed traffic, and (B) an emergency country/geofencing control (requested after the phishing) that either was applied or attempted and is blocking non‑MFA/geo flows. Those two together explain: external login redirects and 502s, travelling legitimate users blocked, non‑browser automated accounts failing, and one integration that still works in a browser but fails in background. Treat this as a security incident and escalate to 2nd‑level (Identity + Network/WAF + Security Incident Response). [Data: Sources (15); Sources (17); Sources (4); Sources (11)].
+
+---
+
+## What likely happened (chain of events)
+- Phishing delivery: two PDF files contained links to a convincing fake Microsoft login that posted credentials to algina[.]co — credential harvesting is documented and should be treated as suspected compromise for any accounts that entered credentials [Data: Sources (4)].
+- Perimeter/WAF change: a security patch/firewall update over the weekend reloaded a default profile and removed the Portal‑App‑Template / custom header‑rewrite (X‑Forwarded‑Proto), causing external FQDN requests to arrive to the backend without expected headers and produce 502 Bad Gateway; disabling TLS inspection temporarily restored logins, and restoring the Portal‑App‑Template/header rewrites fixed the outage in the known incident [Data: Sources (15); Sources (17)].
+- Emergency geo/CA action: an emergency request was made to route “all users without MFA” through a geolocation control (countries listed and a single IP requested) with a small exception list; the record shows the request but does not prove whether a tenant CA policy or firewall rule was fully applied — however this is the operational action reported and explains travelling users being blocked if it was enforced [Data: Sources (4)].
+- Non‑browser automation failures: background/service accounts often fail under tightened inspection/CA because they use legacy auth or token formats; one documented ADFS/client misconfiguration (EnableJWT + RequestMFAFromClaimsProviders) caused non‑browser integrations to fail while browser logins still succeeded — this maps closely to your integration that works in the UI but fails headless [Data: Sources (11); Sources (10)].
+
+This combined sequence (phish → emergency geofence/CA + perimeter/WAF/template drift → missing header / token & CA mismatches → non‑interactive failures) matches the simultaneous symptoms you see. [Data: Sources (15); Sources (17); Sources (4); Sources (11)]
+
+---
+
+## Evidence from the records (key points)
+- Phishing (PDFs → algina[.]co credential harvesting): documented in the KF12 incident ticket (two PDFs and redirect to algina[.]co) [Data: Sources (4)].
+- WAF/template issue and missing X‑Forwarded‑Proto causing 502, verified by TLS‑inspection toggle tests and resolved by restoring Portal‑App‑Template: recorded in the portal outage ticket TI‑1594408 and the Secure Web Publishing blueprint [Data: Sources (15); Sources (17)].
+- AD FS / client parameter issue (EnableJWT, RequestMFAFromClaimsProviders) causing background auth failures while browser works: documented in TRAIN CE ticket TI‑1385257 and related AD FS/identity guidance [Data: Sources (11); Sources (10)].
+- Examples where CA/security default changes and selective exceptions caused breakage and required escalation to identity teams: documented in multiple incidents (e.g., SMTP/Security Defaults, SharePoint CA adjustments) and show similar operational patterns and escalation paths [Data: Sources (32); Sources (38)].
+
+---
+
+## Immediate actions you should take (order‑of‑priority, supported by the incident records)
+1. Assume compromise of any accounts that entered credentials; treat harvested creds as suspect. Force password resets and revoke refresh tokens/sessions for impacted/high‑risk accounts now. Enforce MFA where not already present. (This is the recommended containment used in the records.) [Data: Sources (4); Sources (15)]
+2. Stop broad, tenant‑wide loosening of controls. Instead, identify and apply narrowly scoped, time‑limited exceptions for specific business‑critical automation and known traveling users while you investigate. The records show ad‑hoc exceptions were requested in incidents — but blanket relaxations cause further exposure. [Data: Sources (4); Sources (32)]
+3. Collect and preserve forensic logs immediately (don’t wipe):  
+   - WAF / reverse‑proxy access & inspection logs (including header lists and rewrite/audit events) for the incident window.  
+   - Azure AD sign‑in logs (with conditionalAccessDetails) and audit logs (policy changes).  
+   - AD FS / federation server logs and ADFS client registration snapshots.  
+   - Firewall change/audit logs and appliance config snapshots around the patch window.  
+   The incident records explicitly recommend preserving WAF, auth and gateway logs for forensics. [Data: Sources (15); Sources (17); Sources (11)]
+4. Snapshot current WAF/reverse‑proxy configuration (active template/profile) and preserve a copy before further changes. Restore the Portal‑App‑Template and its X‑Forwarded‑Proto rewrite if a rollback is safe and approved — the portal outage was resolved by restoring that template in the documented case. [Data: Sources (15); Sources (17)]
+5. For each failing automated account: identify authentication method (legacy/basic vs app‑only client credentials vs certificate). If they use legacy/basic auth, migrate to managed identities / service principals or create a narrowly scoped exception while you rotate creds. The records show SMTP AUTH and legacy protocols were blocked by Security Defaults and required selective remediation in other incidents. [Data: Sources (32)]
+6. Check AD FS / Entra client registration flags for impacted clients (EnableJWT, RequestMFAFromClaimsProviders). If these were changed recently, revert to the known good TEST settings and test non‑interactive flows — this was the fix in the TRAIN CE incident. [Data: Sources (11); Sources (10)]
+7. Revoke or rotate any service credentials that may be exposed; rotate secrets/certs used by critical integrations as necessary and schedule controlled re‑enrollment. (Recommended containment consistent with guidance in the records.) [Data: Sources (4); Sources (11)]
+
+---
+
+## Forensic items to collect (minimum required)
+- WAF access logs (portal.kf40.ch) with header fields and any header‑rewrite/audit details for the incident window. [Data: Sources (15)]
+- WAF configuration snapshots pre/post patch (if available) and the appliance change/audit trail showing the profile reload. [Data: Sources (15)]
+- Azure AD sign‑in logs and conditionalAccessDetails for impacted UPNs/service principals. [Data: Sources (38); Sources (30)]
+- AD FS client registration export and ADFS event logs showing parameter changes. [Data: Sources (11)]
+- Proxy/web gateway logs (requests to algina[.]co) and endpoint EDR hits for PDF downloads. [Data: Sources (4)]
+
+If you want, I can draft the exact queries/fields to request from each team. The records recommend these exports but do not contain the raw artifacts themselves. [Data: Sources (15); Sources (17)]
+
+---
+
+## Should this be classified 1st‑level or 2nd‑level?
+Classify as 2nd‑level (identity/security incident) and escalate to a cross‑functional incident response team that includes: Network/WAF engineers, Identity/Entra/AD FS engineers, and Security/SOC/IR. Rationale from the records: incidents involving Conditional Access, token/claim format mismatches, ADFS client parameter changes or WAF/template drifts have historically been escalated beyond first‑line helpdesk and required identity + network coordination to remediate. [Data: Sources (11); Sources (38); Sources (32)]
+
+---
+
+## Short checklist you can hand to the on‑call team now
+- Revoke sessions/refresh tokens and force password reset for suspected accounts (start with accounts that entered credentials). Enforce MFA where possible. [Data: Sources (4)]
+- Pull WAF access & change logs for 2025‑06‑03 → 2025‑06‑18 (or your incident window) including header lists. Snapshot current template. [Data: Sources (15); Sources (17)]
+- Export Azure AD sign‑in logs + conditionalAccessDetails for impacted UPNs and service principals. [Data: Sources (38)]
+- Check AD FS client settings and revert any recent EnableJWT / RequestMFAFromClaimsProviders changes for affected clients. [Data: Sources (11)]
+- If emergency geofence/CA was applied, identify the exact policy/change record and time, and produce the list of exclusions (who was excluded) to reconcile who was blocked. The phishing ticket recorded a requested geo check and explicit exception accounts — you must confirm whether it was implemented and when. [Data: Sources (4)]
+
+---
+
+## What I cannot confirm from the records you gave me
+- Whether the geo/CA rule you describe was actually enforced (the ticket records the request but not an execution/audit confirming activation) — you need firewall/CA audit logs to confirm enforcement timestamps. [Data: Sources (4)]
+- The raw WAF→backend header captures/pcap files — the incident tickets document missing headers and template restoration but do not include raw pcap/header dumps. Ask the WAF team for those extracts if you need header‑level proof. [Data: Sources (15); Sources (17)]
+
+---
+
+If you want, I will:
+- Draft the exact log export requests (WAF fields, Azure AD fields, AD FS fields) to hand to Network and Identity teams; and
+- Produce a prioritized, step‑by‑step incident playbook (contain → collect → remediate → restore) tailored to your environment and the artifacts you can produce.
+
+(References quoted above come from the incident and blueprint records: WAF/template and header findings [Data: Sources (15); Sources (17)]; phishing PDFs and requested geo control [Data: Sources (4)]; AD FS client‑parameter failure case [Data: Sources (11)]; CA/identity escalation precedent [Data: Sources (38); Sources (32)].)

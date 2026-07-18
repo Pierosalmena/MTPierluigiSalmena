@@ -1,0 +1,41 @@
+
+FINAL ANSWER:
+ Summary
+- Short answer: This matches a known Direct‑Routing failure where a newly provisioned carrier number block was not present in the SBC translation/normalization rules. The carrier confirmed delivery to your SIP trunk/SBC but the SBC answered INVITEs for the new range with 404 (so Teams sees nothing). A temporary SBC translation rule restored calls in tests. Based on this, classify the issue as 2nd‑level (Unified Communications / SBC) work, not a pure 1st‑level helpdesk ticket.  
+  This conclusion is based on the incident record and remediation pattern in your tickets [Data: Sources (8); Reports (74, 76)].
+
+What the records say (evidence)
+- The ticket records the carrier’s statement that calls for the affected numbers were delivered to your SIP trunk / SBC — i.e., delivery to your edge was confirmed by the provider [Data: Sources (8)].  
+- SBC logs in the incident show INVITEs for the affected (new) range being answered with “404 Not Found” while calls from other numbers were forwarded to Teams. Applying a temporary normalization/translation rule for the new range restored delivery in tests and a permanent change was later applied [Data: Sources (8); Reports (74, 154)].  
+- Teams Admin Center showed no incoming call entries for the failing calls (absence of a Teams event is consistent with the SBC answering locally and not forwarding the call) [Data: Sources (8); Reports (76)].  
+- Related incidents in the dataset also show different root causes (media/RTP or NAT session timeouts) that produce short connects or ~30s drops, so if you see a brief connect rather than immediate busy/404 you should also investigate NAT/session timers and firewall RTP port rules [Data: Sources (16); Reports (23)].
+
+Likely root cause(s)
+- Primary: Missing/incorrect SBC translation/normalization entry for the newly provisioned number block → SBC answers INVITE with 404 and does not forward to Teams. Temporary translation rule validated this in the recorded incident [Data: Sources (8); Reports (74)].  
+- Secondary (if symptom differs): carrier routing/porting propagation issues or site network (NAT/firewall) issues (e.g., short UDP/NAT timeout causing BYE at ~29–31s or firewall blocking dynamic RTP ports causing one‑way audio). These are separate failure modes in the records and should be checked in parallel if media symptoms appear [Data: Sources (16); Reports (23)].
+
+Immediate 1st‑level triage steps you can run now
+(collect these before escalating)
+1. Gather the affected sample numbers (e.g., the ticket used +41 44 785 23 10 and +41 44 785 23 11) and approximate timestamps of failed calls — capture any user screenshots of busy tones [Data: Reports (74); Sources (8)].  
+2. Check Teams Admin Center for the incoming-call telemetry for those sample times and numbers (confirm absence of an incoming call event) [Data: Sources (8); Reports (76)].  
+3. Ask the carrier to confirm delivery and (if possible) to provide a SIP trace or CDR for the sample calls (INVITE timestamps, Call‑ID, and the carrier trunk IP/port they used). The carrier confirmation narrows the fault domain to your SBC if they show delivery to your trunk [Data: Sources (8)].  
+4. If you have SBC access, search SBC logs for INVITEs for the sample numbers and note the SIP response (404 vs 200). If you see immediate 404 answers, capture those log snippets for escalation [Data: Sources (8)].
+
+Why this should be escalated to 2nd‑level (recommended classification)
+- The likely fix requires editing SBC translation/normalization (dial‑plan) rules and coordinating with the carrier for test calls and traces — tasks that require SBC/Direct Routing privileges and UC expertise, not just front‑line steps. The incident record shows this exact work was performed by UC/SBC specialists and resolved the outage after adding the new range mappings [Data: Sources (8); Reports (74, 76)].  
+- If media problems or ~30s drops are observed after calls succeed, network/NAT/firewall adjustments are also required (Network + UC teams) [Data: Sources (16); Reports (23)].
+
+Recommended 2nd‑level actions (what the UC/SBC team should do)
+1. Export SBC translation/normalization table and confirm the new carrier block is present and normalized to E.164 as expected. If missing, add a targeted entry for the block (apply as a temporary rule first to validate). The prior incident used a temporary translation rule to validate the fix before making it permanent [Data: Sources (8); Reports (74)].  
+2. Coordinate a short, time‑boxed test window with the carrier: ask them to place test calls from sample numbers while you capture SBC SIP traces and packet captures on the SBC external interface. Request carrier SIP traces/pcaps for the same calls to correlate delivery (Call‑ID and timestamps) [Data: Sources (8); Reports (74)].  
+3. Correlate carrier trace → SBC trace → Teams Admin Center events (produce a simple correlation table: Call‑ID, SBC timestamp UTC, SBC event (INVITE/404/200/BYE), Teams timestamp/event). If SBC saw INVITE→404 while carrier shows delivery to trunk, you have a translation/routing failure to fix [Data: Sources (8); Reports (76)].  
+4. If calls succeed but drop or have media issues, check SBC Session‑Expires and site Voice‑VLAN NAT/UDP session timeout (a 30s timeout has produced BYE at ~29–31s in the records) and verify firewall allows the dynamic RTP ranges in use (don’t only allow 3478–3481) [Data: Sources (16); Reports (23)].  
+5. After changes, run carrier‑originated tests, capture SBC logs/pcaps, and confirm Teams Admin Center shows incoming calls and successful media.
+
+Suggested wording to request from the carrier (copy/paste)
+- Request full SIP traces (INVITE→final response) and per‑message timestamps (epoch_ms or ISO‑8601 with timezone), CDR lines for the sample calls, and the carrier source IP/port used for trunk delivery. This is exactly what was requested in the incident workflow to correlate delivery [Data: Sources (8); Reports (74)]. I can draft that email for you if you want.
+
+Offer / next steps I can take for you
+- I recommend treating this as a 2nd‑level (UC/SBC + Network) ticket. If you want, I can: (a) draft the carrier request email and the SBC log extraction checklist, (b) produce the correlation table template (CSV headers) to map carrier → SBC → Teams events, and (c) prepare the short maintenance/test script to apply a temporary translation rule and validate. The incident record includes these same steps and templates used successfully [Data: Sources (8); Reports (74, 76)].  
+
+If you’d like me to draft the carrier email and the exact SBC‑log/pcap commands (or a short test script), tell me the sample numbers you want tested and whether you have SBC access or the SBC vendor/model — I’ll produce copy‑pasteable artifacts for the UC/SBC and carrier teams.

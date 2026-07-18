@@ -1,0 +1,20 @@
+Recommendation: second_level_support
+
+What the records explicitly document that supports this classification
+- The D365 Financial Reports / Report Designer failure you describe (reports loading forever, “unknown” authors, “report cannot be found”, affecting TEST and PROD) closely matches the KF11 incident where Financial Reports were broken across environments; that case required a Data Mart reset and a Microsoft support ticket was opened — i.e. it was not solved by simple first‑line steps [Data: Sources (0, 1)].
+- The symptom “external Teams calls drop after ~30 seconds” maps directly to a past incident where calls at one site disconnected after ~30s due to session timers and NAT/UDP timeouts on the voice VLAN; resolution required SBC/session parameter changes and coordination with the network team to adjust NAT timeouts per the Direct Routing architecture [Data: Sources (16)].
+- The printing problems you describe (users seeing no printers, “Access denied”, jobs stuck/disappearing, site‑specific behavior) match multiple prior cases that were resolved only after engineer actions: e.g. a print server network‑share problem after a Windows update/VM restore that required re‑enabling network shares on the print server and engineer intervention [Data: Sources (28)], and a site where printers were put into a new VLAN but routing/firewall rules were missing so the print server couldn’t reach printers — the network/firewall rules had to be corrected by the network team [Data: Sources (22)].
+- Authentication/ADFS style issues that needed parameter changes (EnableJWT / RequestMFAFromClaimsProviders) were treated as second‑level work and required specific ADFS client parameter adjustments in a prior case [Data: Sources (11)].
+
+Why this points to second_level_support
+- Your ticket describes simultaneous failures across multiple platforms (D365/F&O, SMTP/Outlook client vs webmail, Teams presence/voice, telephony provider handoffs, and printing across VLANs). The indexed incidents show that each of these types of failures was previously resolved only after engineer/architect involvement (Data Mart reset + Microsoft support for D365; SBC/NAT/session timer and firewall/NAT adjustments for Teams/Direct Routing; print‑server share and VLAN routing fixes for printing). Because the current problems span multiple services and require coordination between application, network, telephony and print engineers, it aligns with previously escalated, second‑level incidents [Data: Sources (0, 1, 16, 28, 22)].
+
+Notes about items not directly matched in the records
+- The Outlook/desktop mail client behavior (send stuck in Outbox but webmail works) is not directly documented in the indexed tickets I can cite. I cannot state from the records what the root cause of that specific symptom was in other cases because an exact match is not present in the indexed data.
+- The provider claim that calls are delivered to your edge and the failing new hotline number are telephony/edge configuration issues; the records show similar provider/edge interplay required network/SBC adjustments for Teams/Direct Routing, but there is no single record that documents an identical “new number range fails while old works” scenario.
+
+Recommended next actions (these are my recommendations, not steps documented in the cited records)
+- Escalate to second‑level/network/telephony engineers immediately and open one consolidated incident for cross‑team coordination (Apps/D365, Exchange/Email, Network/SBC, Telephony Provider, Print Services). The breadth and cross‑service nature argue for a coordinated second‑level response.
+- Provide logs/traces for D365 Report Designer, Exchange/Outlook SMTP/MAPI logs for failed sends, SBC/Direct Routing logs for the Teams calls, and recent network/VLAN/firewall change records for Basel/Zurich (to help correlate a single change across services).
+
+If you want, I can map each of your numbered symptoms to the most relevant prior ticket(s) in the index and produce a short summary per symptom citing the exact source ids.

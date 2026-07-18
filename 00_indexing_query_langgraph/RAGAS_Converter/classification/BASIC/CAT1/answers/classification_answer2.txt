@@ -1,0 +1,22 @@
+Recommendation: second_level_support
+
+Summary reasoning (records-based)
+- The symptom "non-browser/background sign-ins fail while web UI works" maps closely to the TRAIN/DevOps case where non-interactive clients failed due to ADFS client parameters and required system-engineer changes (parameters EnableJWT and RequestMFAFromClaimsProviders were adjusted) — that case was escalated and closed only after engineer intervention [Data: Sources (11)].
+- The intermittent SharePoint “access denied” / temporary fixes behaviour matches a SharePoint/AIP case where sensitivity label encryption, unique folder permissions and group membership inconsistencies required in-depth analysis and escalation to the M365/Identity engineering team (System Engineer 11) — the issue could not be resolved by simple Helpdesk steps alone [Data: Sources (30)].
+- The desktop mail app sending stuck in Outbox corresponds to a case where SMTP AUTH had been disabled by a tenant security policy (Security Defaults) and a System Engineer identified the root cause (Hybrid Connector / SMTP AUTH) and performed selective re-enabling and Conditional Access adjustments to restore sending [Data: Sources (32)].
+- The device-management portal / certificate-bridge showing “unhealthy again” resembles the Domain Controller / Defender sensor tickets where reinstalling/repairing the agent on servers was performed by engineering staff to restore healthy status — again an engineering action rather than a simple first-level fix [Data: Sources (14)].
+- Taken together, multiple simultaneous background-signin failures across different subsystems (identity/ADFS, SharePoint/AIP, SMTP/Hybrid, endpoint/agent health) are analogous to prior incidents that required cross-team engineer involvement (including Network/Security or System Engineers) to identify configuration or policy causes and apply targeted fixes [Data: Sources (15), (11), (30), (32), (14)].
+
+What the records explicitly document
+- DevOps non-browser authentication failures required changing ADFS client parameters and system-engineer activity to resolve (TI-1385257) [Data: Sources (11)].
+- Intermittent SharePoint access due to label/permission conflicts required escalation to M365/Identity engineering for in-depth analysis (TI-1578891) [Data: Sources (30)].
+- Desktop Outlook unable to send because SMTP AUTH was disabled by Security Defaults; System Engineer adjusted SMTP AUTH/Conditional Access and validated sending (TI-1548823) [Data: Sources (32)].
+- Unhealthy sensors / certificate-bridge required agent reinstall / engineer action to restore health (TI-1179834) [Data: Sources (14)].
+These items above are factual parallels drawn from the indexed tickets.
+
+Recommended next steps (these are my recommendations, not directly documented in the cited records)
+- Escalate this ticket to second-level (Systems / Identity / Network & Security) and open parallel investigations for each failing subsystem so engineers can correlate logs/policy changes (e.g., tenant security defaults / Conditional Access, ADFS client settings, AIP label encryption behavior, endpoint agent health).
+- Include timeline of when the problems started and any tenant-wide security or infrastructure changes (patches, policy changes, certificate installs) to help engineers find a common root cause.
+(Recommendation only — not pulled verbatim from the records.)
+
+If you want, I can prepare a concise escalation summary referencing the specific similar tickets (TI-1385257, TI-1578891, TI-1548823, TI-1179834, TI-1594408/TI-1594408-style WAF cases) to attach to the second-level handover.

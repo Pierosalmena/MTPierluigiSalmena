@@ -1,0 +1,1666 @@
+﻿question,answer,context
+Is the statement supported by the evidence?,One‑way / silent external audio that affects users at a site has in the KB been caused by site edge / firewall / Direct‑Routing media restrictions and required UC/Network engineering to fix (Zurich outbound firewall change blocked RTP; engineers applied blueprint‑aligned firewall/SBC changes),"=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,"A single‑user audio symptom that was resolved by first‑line helpdesk is documented (microphone cable reseat after a Teams Test Call), so purely local hardware faults have precedent for L1 resolution — but that was an isolated single‑user hardware case (TI‑1616128)","=== CITED SOURCES ===
+SOURCE 37:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Call participants cannot hear the user
+Ticket number: TI-1616128
+Company: Customer Company 52 AG
+Contact person: Contact Person 07
+Owner: Employee 33
+Origin: Telephone
+Type: Incident
+Created on: 14.10.25 09:18
+Closure
+Closure date: 14.10.25 09:52
+Closure text: Microphone not properly connected. Device configured correctly. Function restored.
+Activities
+14.10.25 09:10 – Telephone report
+Mr. Contact Person 07 reports that an employee can hear everything during Teams calls but cannot be heard by the other participant.
+Both internal and external calls are affected.
+Chat works.
+Camera works.
+14.10.25 09:18
+Ticket created and assigned to Employee 33.
+14.10.25 09:25 – Helpdesk inquiry
+Good morning
+Could you please briefly confirm:
+– Is a headset or the integrated microphone being used?
+– Does the issue also occur during a Teams test call?
+Thank you.
+14.10.25 09:32 – Customer response
+A USB headset is being used.
+No sound is recorded during the test call either.
+14.10.25 09:40 – Remote session
+Connected with the user.
+In Teams, “USB Audio Device” is selected as the microphone.
+However, the input level indicator remains empty.
+In the Windows Sound menu, no input signal is displayed either.
+After a brief check, it was determined that although the USB headset was plugged in, the microphone cable on the headset itself was not fully inserted.
+After correctly plugging it in, the input level indicator immediately showed activity.
+Test call performed → Microphone functioning.
+14.10.25 09:50 – User feedback
+Call tested. Working properly again.
+14.10.25 09:52 – Ticket closure
+Dear Contact Person 07
+The microphone was not properly connected, which prevented any input signal from being detected.
+After correctly reconnecting the device, voice transmission is functioning normally again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,Intranet/folder access denials after a transfer or change have in the KB been caused by token/Conditional‑Access timing or by AD/Azure AD group/object synchronization/nesting issues; those investigations used Entra/Azure AD membership and sign‑in logs and in several cases required identity/BU‑Infrastructure intervention,"=== CITED SOURCES ===
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+
+=== CITED REPORTS ===
+REPORT 13:
+# KF40 Portal Publication (portal.kf40.ch) — WAF/Reverse-Proxy and Firewall Operational Community
+
+This community centers on the perimeter publishing stack (WAF / Reverse Proxy) that publishes the Customer Company 40 portal (portal.kf40.ch) and the network/firewall estate that supports user connectivity (including Teams media). A high‑priority support ticket (TI-1594408) documented an external 502 Bad Gateway outage for portal.kf40.ch while internal access remained functional. Troubleshooting showed the backend application servers and load balancer were healthy, TLS certificates were validated and not the root cause, and the outage correlated to a weekend security patch/change that reloaded a Default-Strict inspection/profile and removed a custom header rewrite rule needed to present X-Forwarded-Proto: https to the backend. Restoring the Portal-App-Template / custom header rewrite configuration per the Secure Web Publishing blueprint resolved external access. Separately, a Zurich site firewall hardening change restricted outbound UDP to ports 3478–3481 only, blocking the dynamic RTP port range and causing one‑way/no audio in Teams; a temporary port opening restored media flows and confirmed the root cause. The incident and artifacts highlight technical, process, and governance gaps around post‑patch template/profile validation, change control for perimeter devices, and runbooks for header/HTTP profile preservation during TLS inspection/termination.
+
+## Root cause of portal 502: WAF TLS inspection plus missing/custom header rewrite rule (X-Forwarded-Proto) prevented the backend from seeing HTTPS.
+
+External requests to portal.kf40.ch returned 502 Bad Gateway while internal access remained functional; investigation showed the reverse proxy/WAF performs TLS termination/inspection and is expected to forward X-Forwarded-Proto: https to the backend, but that header was not present when inspection was active, causing the backend to misinterpret the request and return errors. This causal chain is documented in the incident artifacts linking the REVERSE PROXY / WAF to the APPLICATION SERVER and noting the missing CUSTOM HEADER REWRITE RULE and absent X-FORWARDED-PROTO header as drivers for the 502s [Data: Entities (302,312,319); Relationships (492,499,496)].
+
+Restoring the header rewrite behavior per the Portal-App-Template/blueprint returned external functionality, confirming the header rewrite absence (not the backend or certificate validity) was the functional trigger for failures [Data: Entities (311,300); Relationships (568,499)].
+
+## Security patch/template reload replaced Portal-App-Template with Default-Strict, causing template/profile drift and header removal.
+
+A weekend security patch caused the reverse proxy/WAF to reload a default inspection/profile (Default-Strict) which replaced the custom PORTAL-APP-TEMPLATE and its documented HTTP/profile/header‑rewrite rules; the activated Default-Strict profile altered header-handling and removed or failed to preserve X-Forwarded headers, reproducing the 502 when TLS inspection was enabled [Data: Entities (310,311); Relationships (497,568,548)].
+
+This shows configuration/template drift introduced by patching—where a device reset to a default profile overwrote application‑specific templates—rather than an application or certificate error, creating a clear process risk for perimeter devices that host per-application templates [Data: Relationships (497,562)].
+
+## Backend and load‑balancing layer were healthy—issue isolated to publishing/inspection layer.
+
+Load balancer health checks and internal tests marked the backend application server as healthy and reachable, indicating the backend process was not the primary failure point; monitoring and health checks were used to validate stability after the fix before ticket closure [Data: Entities (305,318,308); Relationships (504,505,513)].
+
+These diagnostics materially constrained the fault domain to the perimeter (WAF/reverse proxy) and saved time by directing remediation to template/profile/header handling rather than application restarts alone [Data: Relationships (492,563)].
+
+## TLS certificate change was investigated and ruled out as the root cause.
+
+The customer reported a recently installed TLS certificate and helpdesk validated the certificate CN, SAN and chain; while the certificate change was temporally proximate to the outage, diagnostics showed certificate validity/chain issues were not the cause of the 502s—the publishing layer header behavior was [Data: Entities (306); Relationships (486)].
+
+The certificate service and blueprint decision tree were consulted as part of the normal checklist, which helped rule TLS problems out and focus on WAF behavior [Data: Relationships (552,508)].
+
+## Teams media outage at Zurich caused by outbound firewall restriction blocking dynamic RTP ports.
+
+A separate but contemporaneous operational change at the Zurich site implemented a security-hardening outbound rule that permitted only UDP 3478–3481, blocking the dynamic RTP port range required for Teams media when Media Bypass is used. This change produced no audio for external calls; temporarily opening the wider UDP/RTP range restored audio immediately, confirming the firewall rule as the root cause [Data: Entities (303,442,443); Relationships (739,741,742,733)].
+
+Firewall logs and change records tied the timing of the outbound restriction to the onset of audio issues, showing this was a local change management failure with direct impact to voice/media availability [Data: Relationships (738,739)].
+
+## Blueprint and operational docs exist but were not enforced by the post‑patch validation process.
+
+An authoritative Secure Web Publishing blueprint and versioned guidance (BLUEPRINT: SECURE WEB PUBLISHING – KF40 – VERSION 3.2 / WEB PUBLISHING BLUEPRINT) defines required behaviors: TLS termination at the WAF, required Portal-App-Template, and documented header rewrite rules and validation after patches. The team retrieved the blueprint from DMS to align remediation, indicating awareness of the standard; however, the blueprint's requirement to validate WAF profiles and preserve custom rewrite rules was not enforced automatically during the patch that reset profiles, producing configuration drift [Data: Entities (307,339,356); Relationships (508,512,562)].
+
+This gap between blueprint and operational enforcement—where a profile reload caused a prohibited Default-Strict to be applied despite the blueprint forbidding it—exposes the environment to repeat regressions unless validation and change controls are hardened [Data: Relationships (548,497)].
+
+## Operational ownership, escalation path, and remediation were used correctly but could be formalized into runbooks and automated checks.
+
+The high-priority ticket TI-1594408 was owned initially by Employee 29 (helpdesk) who performed initial checks and escalated to BU Network & Security; BU Network & Security then took ownership and applied WAF/reverse proxy configuration changes to restore service, with monitoring confirming 24 hours stability before closure—showing correct functional escalation and remediation occurred [Data: Entities (295,298,299); Relationships (479,487,476)].
+
+The artifacts show manual steps and handoffs (tests, template restores, monitoring) that resolved the incident, but the manual nature of these actions recommends formalizing a post‑patch WAF validation runbook, automated configuration drift detection, and explicit pre/post patch checklists to reduce mean‑time‑to‑repair and recurrence risk [Data: Relationships (479,513)]."
+Is the statement supported by the evidence?,"Scan‑to‑Mail cases where the MFP showed a local “success” while the external recipient received nothing were repeatedly diagnosed to the SMTP relay (either “MESSAGE SIZE EXCEEDS FIXED LIMIT” for oversized scans, or “Relay denied” where a new printer VLAN IP range was not whitelisted). Remediations in the KB involved Mail/Relay and Network changes (whitelisting VLANs, adjusting relay limits) and then validating delivery","=== CITED REPORTS ===
+REPORT 36:
+# CustomerCompany14: FileZilla Server Access & Contact Person 16
+
+The dataset centers on a single, named customer reporter (Contact Person 16) from Customer Company 14 who opened a support ticket about FTP access and asked who installed FileZilla Server on a virtual server. Troubleshooting activity was performed from a customer workstation using WinSCP and SFTP login tests, and communications flowed into Consulting Sample Company's helpdesk email and portal where the reporter's email is recorded as the ticket contact. The reporter also noted a separate Teams call stability issue affecting multiple employees in Basel; that appears as an additional, distinct problem reported in the same ticket metadata. Evidence shows clear diagnostic steps and ticket-channel metadata but indicates ambiguity about service ownership for the FileZilla Server and the need to consolidate incident context and escalation ownership.
+
+## Single named primary reporter driving the incident
+
+Contact Person 16 is recorded as the named, primary customer contact who submitted the initial request about FileZilla Server installation and FTP access problems and who participated in troubleshooting and follow-up with support [Data: Entities (321)].
+
+This contact is the pivot for both the FTP troubleshooting and related communications — their email is present in ticket metadata and was the inbound channel used to contact helpdesk, making them the appropriate escalation/liaison point for follow-up actions that require customer verification or additional diagnostics [Data: Relationships (1052), Relationships (1064)].
+
+## FileZilla Server issue reported but ownership of the server is unclear
+
+The report explicitly asks who installed FileZilla Server on the virtual server and requests assistance with FTP access, indicating uncertainty about server ownership and administration responsibility [Data: Relationships (1051)].
+
+Because the ticket content includes this ownership question, there is an operational gap: resolving access and configuration issues requires identifying the server owner/administrator, access credentials, and whether the server is under customer or third-party control — items implied by the ownership question but not documented in the provided metadata [Data: Relationships (1051)].
+
+## Diagnostics performed from the customer workstation using WinSCP and SFTP
+
+Support performed login tests and client-level checks from a customer-side workstation; WinSCP was used to exercise FTP/SFTP logins and SFTP login attempts were recorded as part of the diagnostic checklist [Data: Entities (633), Relationships (1091), Relationships (1090)].
+
+These diagnostic actions show that initial troubleshooting focused on validating client-to-server connectivity and credential behavior from the user's environment, which helps narrow the fault domain to either client configuration, network path, or server-side authentication/configuration if tests from the workstation consistently fail [Data: Relationships (1091), Relationships (1090)].
+
+## Support intake and ticket metadata link the reporter email to the consulting portal and helpdesk mailbox
+
+The consulting portal records and links the customer's email address as the contact for the ticket, and the reporter used the Consulting Sample Company helpdesk email address to open the ticket, establishing two formal channels for notifications and escalation: the helpdesk mailbox and the portal record containing the reporter's email [Data: Entities (616, 619), Relationships (1064), Relationships (1052)].
+
+This establishes an auditable communication trail (portal + mailbox) that can be used to coordinate ownership handoffs and record changes, provided ticket updates and assignments are applied consistently within those channels [Data: Entities (616), Relationships (1064)].
+
+## A second, separate incident (Teams calls dropping) is reported in the same ticket context
+
+Contact Person 16 additionally reported that multiple employees in Basel experienced external Microsoft Teams calls dropping after roughly 30 seconds (both incoming and outgoing), which is recorded as a separate issue within the reporter's ticket metadata [Data: Entities (321)].
+
+Because this is a different service domain (Microsoft Teams call stability vs. FTP server access), it should be treated as a distinct incident stream or correlated only after initial triage; conflating them risks confusion of owners and remediation steps unless a deliberate cross-investigation is initiated [Data: Entities (321)].
+
+## Operational risk due to ambiguous ownership and mixed issues within one ticket
+
+The ticket contains both an ownership question about FileZilla Server and an unrelated Teams call stability report; the presence of multiple distinct service problems in the same ticket and the explicit ask 'who installed FileZilla Server' indicate a lack of clearly documented ownership for at least the FTP service component [Data: Relationships (1051), Entities (321)].
+
+Ambiguity in ownership + multiple problems in one ticket increases the chance of delayed remediation, duplicated effort, or missed escalations unless the consulting helpdesk assigns clear owners and separates incident records for each affected service using the portal and mailbox channels already present [Data: Relationships (1052), Relationships (1064)].
+
+## Available evidence supports an effective client-side test path but lacks server-side artifacts in the record
+
+Records show concrete client-side testing (WinSCP, SFTP from the customer workstation) which is useful for reproducing the symptom from the user environment [Data: Relationships (1091), Relationships (1090), Entities (633)].
+
+What is not present in the provided dataset are referenced server-side logs, configuration records, or an identified server owner/administrator account in the ticket metadata — the record asks who installed the FileZilla Server but does not include server-side artefacts or ownership entries, leaving a diagnostic gap that will slow root-cause confirmation [Data: Relationships (1051)].
+
+## Immediate recommended actions and escalation paths (prioritized)
+
+1) Confirm FileZilla Server ownership and administrative access — the ticket explicitly requests who installed the server, so locating the server owner or hosting boundary is the first step to enable server-side log collection and configuration checks [Data: Relationships (1051)].
+
+2) Use the existing helpdesk mailbox and portal metadata to formalize ownership and ticket separation — the reporter's email is linked in the consulting portal and the helpdesk mailbox is the inbound channel; assign or split the ticket(s) in the portal so FTP/FileZilla and Teams/VoIP stability are tracked separately and assigned to the appropriate teams (server/ops vs UC/voice) [Data: Relationships (1064), Relationships (1052), Entities (616, 621)].
+
+3) Collect server-side logs and session traces once ownership is confirmed, and correlate those with the WinSCP/SFTP client test timestamps captured from the customer workstation to determine whether failures are client-side, network-path related, or server-auth/configuration related [Data: Relationships (1091), Relationships (1090)].
+
+These steps are prioritized to remove the ownership ambiguity first, then make the existing client-side test evidence actionable by linking it to server-side artifacts and by keeping the unrelated Teams issue in a separate, trackable incident stream [Data: Relationships (1051), Relationships (1091), Entities (321)].
+
+REPORT 6:
+# Customer Company 52 AG — Mail SMTP AUTH outage (Legacy Outlook) & Direct Routing voice-policy misassignment (Enterprise-Sales)
+
+Two related operational issues affected a small Sales sub-population after an organizational rework: (1) legacy Outlook MSI (Build 2019) clients could not send mail because tenant Security Defaults disabled SMTP AUTH for legacy authentication flows; and (2) Direct Routing-enabled users were assigned the tenant ""Global"" voice routing policy via an automated provisioning script, and that policy lacked PSTN Usage, preventing outbound PSTN calling. Troubleshooting spanned client-side checks (firewall/AV/profile recreation), hybrid mailflow validation (Send/Hybrid connector and TLS checks), Exchange Event Log analysis showing 535 SMTP AUTH failures, and coordination between support, BU Infrastructure Engineering and the Identity team to selectively re-enable SMTP AUTH via Conditional Access and to correct provisioning logic to assign an appropriate Direct Routing policy per the documented Teams voice-routing blueprint. The incidents were localized (roughly six affected users within a ~12-person Sales team) but exposed weak points in provisioning governance, group->policy mapping, and the operational interplay of tenant-level security defaults and legacy client compatibility. [Data: Entities (588,585,193,200,586); Relationships (1015,1018,301,313,1019)]
+
+## Two distinct but co-occurring failure modes: SMTP AUTH/legacy Outlook send failures and Direct Routing voice-policy misassignment
+
+The troubleshooting record shows two separate technical failure classes occurring in the same operational window: legacy SMTP submission/authentication failures for locally installed Outlook MSI Build 2019 clients, and Teams Direct Routing external-call failures for users assigned an incorrect voice routing policy. The Outlook issue traces to legacy clients relying on SMTP AUTH which was disabled by tenant Security Defaults; Event Log entries and client errors corroborated the authentication failures. [Data: Entities (588,585,586,604,597); Relationships (1015,1018,1037,1019)]
+
+The voice issue originated from provisioning logic that assigned the tenant ""Global"" voice routing policy to new Enterprise-Sales group members; the Global policy did not reference a PSTN Usage route, so Direct Routing-enabled users had no external PSTN path until policy assignment was corrected. The provisioning change and the blueprint mismatch were explicitly recorded in the investigation. [Data: Entities (200,193,201,198,203); Relationships (301,303,313,309,307)]
+
+## Root cause for mail send failures: Security Defaults disabled SMTP AUTH used by legacy Outlook clients
+
+Server-side evidence in the Exchange Event Log showed ""535 5.7.3 Authentication unsuccessful"" tied to SMTP AUTH attempts, directly implicating authentication rejection rather than transport-level network issues. These events were used to correlate client symptoms (Outlook error 0x800CCC0E and stuck Outbox) with disabled legacy authentication. [Data: Entities (604,588,585,597); Relationships (1018,1015,1037,1004)]
+
+The tenant-level Security Default setting was recently enabled and is recorded as the action that disabled legacy authentication flows including SMTP AUTH; this tenant change therefore produced the observed outage for legacy clients until selective exceptions were applied. This link between Security Defaults and legacy authentication is documented in the relationship mapping. [Data: Entities (586,608); Relationships (1019)]
+
+## Remediation path for SMTP issue: targeted re-enablement of SMTP AUTH via Conditional Access and engineering coordination
+
+Support and escalation engineers validated client configuration (SMTP port 587/STARTTLS, local firewall, antivirus SMTP scanning, and Outlook profile recreation) to rule out local causes before concluding the tenant-level setting was at fault. That validation path is documented and reflects standard troubleshooting discipline for auth/submission failures. [Data: Entities (609,601,602,605,588); Relationships (1024,1025,1026,1028)]
+
+The practical remediation was to selectively allow legacy SMTP AUTH for the affected users by implementing Conditional Access adjustments while preserving tenant security posture for other users. System Engineer 07 and BU Infrastructure Engineering performed the hybrid and Event Log analysis and applied changes to enable SMTP AUTH for the impacted accounts (selective CA exceptions). This action and the coordinating actors are recorded in the incident notes. [Data: Entities (592,587); Relationships (1020,1033,1032)]
+
+## Root cause for voice outage: automated provisioning script assigned Global policy that lacked PSTN usage contrary to the Teams voice-routing blueprint
+
+The provisioning script was configured to assign voice routing policies based on Azure AD group membership; after the reorganization new Enterprise-Sales members were being assigned the Global policy by default. The provisioning-script -> Global policy relationship and the script change history are documented as the direct mechanism that produced the misassignment. [Data: Entities (200,198,193); Relationships (301,309,311,307)]
+
+The Global policy was observed to have no PSTN Usage entries (no External-Route), whereas the approved blueprint requires Direct Routing users be assigned a dedicated routing policy (e.g., DR-Standard) that references an External-Route PSTN Usage. The blueprint mismatch is explicitly noted and was the justification for updating the provisioning logic. Temporary reassignment to DR-Standard restored external calling in tests. [Data: Entities (201,194,196); Relationships (305,304,303)]
+
+## Scope and operational impact: limited user count but high operational friction and cross-team involvement
+
+The incident affected roughly six Sales users (subset of a ~12-person Sales team) who were recently reassigned into Enterprise Sales; the user-count is small, but the issue impacted both telephony availability (external calling) and mail sending for affected legacy clients. The affected-users construct and its relation to the Sales team and Enterprise-Sales group are recorded. [Data: Entities (203,197,198); Relationships (307,300)]
+
+Despite the limited headcount, the troubleshooting required cross-discipline escalations (support -> System Engineer -> BU Infrastructure Engineering -> Identity Team) and hybrid environment checks (on-prem Exchange connectors, Event Log, Exchange Online checks), demonstrating that even small-scale failures can impose significant operational and coordination overhead. [Data: Entities (592,582,581,593); Relationships (1012,1009,1008,1033)]
+
+## Governance and provisioning process gaps: blueprint not enforced in provisioning logic and Azure AD group lifecycle controls
+
+The provisioning logic did not reflect the Teams voice routing blueprint; this divergence was recorded and triggered a change to the provisioning script after the incident. The ticket explicitly links the provisioning script to the blueprint and documents that the script required correction to align with the blueprint's requirement for dedicated routing policies. [Data: Entities (200,201); Relationships (313,301)]
+
+Separately, Azure AD groups are used both for voice policy assignment and SharePoint permissions, and the environment has documented governance rules requiring dedicated groups for SharePoint permissioning and lifecycle constraints. The dual-use of groups increases risk if group naming/creation/lifecycle controls are not strictly enforced, because a miscreated group can affect multiple downstream systems. These governance constructs are present in the records. [Data: Entities (206,470); Relationships (312,762)]
+
+## Security exposure from tenant Security Defaults and Conditional Access exceptions
+
+Enabling Security Defaults disabled legacy authentication methods (including SMTP AUTH) — the security change was the proximate cause of the SMTP outage for legacy clients. While enabling Security Defaults strengthens tenant security, the incident demonstrates how global security toggles can break legacy workflows. The data captures this relationship. [Data: Entities (586,608); Relationships (1019)]
+
+The mitigation chosen—selective Conditional Access exceptions to permit legacy SMTP AUTH for specific users—reintroduces a measured exception to the baseline. While operationally necessary to restore service, such exceptions should be minimized, audited, and time-boxed because they widen the attack surface by allowing legacy authentication flows. The CA adjustment and its role in remediation are recorded in the incident documentation. [Data: Entities (587,608); Relationships (1020)]
+
+## Prioritized recommendations: short-term fixes, medium-term controls, and longer-term remediation
+
+Short-term (<=72 hours): 1) Maintain the Conditional Access exceptions that restore SMTP AUTH only for the minimal set of impacted users and mark them for automatic review/removal; 2) Reassign affected Direct Routing users to DR-Standard (or dedicated Sales routing policy) where tests have proven it restores outbound calling. These actions map directly to the remediation steps recorded in the ticket and the successful test reassignment. [Data: Entities (587,194,203); Relationships (1020,304,301)]
+
+Medium-term (2–8 weeks): 1) Update and gate the provisioning script so that it enforces the Teams voice-routing blueprint (policy-to-group mapping must be codified and tested); 2) Implement a provisioning-change review process with Identity Team approval for any script that alters voice routing or group->policy mappings; 3) Add automated checks that detect when a voice routing policy lacks PSTN Usage for Direct Routing-enabled users and alert owners. The need for these actions is evidenced by the provisioning-script/blueprint divergence and the identity-team coordination records. [Data: Entities (200,201,202); Relationships (313,314,305)]
+
+Longer-term (quarterly): 1) Inventory and remediate legacy Outlook MSI clients: migrate impacted users to modern auth-capable clients or modern protocols so SMTP AUTH dependency is removed; 2) Harden tenant-level change controls so actions like enabling Security Defaults require pre-checks for legacy auth impacts or an automated impact report. The presence of legacy clients and the tenant-level Security Defaults action motivate these plans. [Data: Entities (588,586,608); Relationships (1015,1019)]
+
+## Stakeholders, escalation pathways, and runbook recommendations
+
+Primary stakeholders identified in the records include the Sales Team (business owner), Identity Team (provisioning/group lifecycle), BU Infrastructure Engineering (mail/Teams infrastructure), and System Engineer 07 (technical remediation/triage). These assignments and collaborations are explicitly recorded and used in the ticket escalation chain. [Data: Entities (197,202,593,592); Relationships (307,314,1033,1032)]
+
+Recommended runbook: 1) Triage owner (first-line support) validates symptom (Outlook 0x800CCC0E / Teams call failure) and performs client checks (port, firewall, AV, profile recreation); 2) If auth errors or Event Log 535 observed, escalate to mail/infra (System Engineer) for Event Log and hybrid connector review; 3) If due to tenant-level security defaults, coordinate Identity Team to implement time-boxed Conditional Access exception and record justification; 4) If provisioning/policy mapping implicated, escalate to Identity Team and BU Infrastructure for immediate policy reassignment and follow-up change to provisioning script. These steps mirror actions and relationships documented in the incident. [Data: Entities (601,602,605,592,200); Relationships (1025,1026,1028,1032,301)]"
+Is the statement supported by the evidence?,Multi‑domain incidents (voice + directory + printing/mail) in the corpus were routinely escalated for coordinated engineer action rather than closed by first‑line alone (examples and post‑mortems reference escalation to infrastructure/engineering for cross‑system faults),"=== CITED SOURCES ===
+SOURCE 28:
+﻿
+Ticket summary:
+Ticket name: KF13: PRIO HIGH - Printing from SAP not possible
+Ticket number: TI-931293
+Company: Customer Company 13
+Contact person: Contact Person 11
+Owner: Employee 17
+Origin: Phone
+Type: Support Request
+Created on: 18.07.24 17:16
+
+Closure
+Closure date: 19.07.24 16:48
+Closure text: After a Windows update and the subsequent VM restore, the printer network share caused issues. These were corrected and operations were restored.
+
+Activities
+Emails:
+19.07.24 09:01 | Ticket: KF13: PRIO HIGH - Printing from SAP not possible set to status ""In Progress"" #027064349 | NO-REPLY | BU_CustomerServices_RUN@ConsultingSampleCompany.ch
+Hello BU Customer Services Run,
+The ticket KF13: PRIO HIGH - Printing from SAP not possible, number TI-931293, has been set to status ""In Progress"".
+Link: KF13: PRIO HIGH - Printing from SAP not possible
+
+19.07.24 12:52 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+I would like to briefly check whether the issue with printing from SAP has been resolved in the meantime.
+Kind regards
+Employee 18
+
+19.07.24 13:01 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Contact Person 12 | Employee 18
+Hi everyone,
+Unfortunately, it is still not working.
+Kind regards
+Contact Person 12
+Head of Customer Services, Customer Company 13 AG
+Phone: +41 00 000 00 00
+
+19.07.24 13:24 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+Thank you for your feedback. I will inform the responsible department that the issue still persists.
+I will keep you updated on further progress.
+Kind regards
+Employee 18
+
+19.07.24 16:38 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17 | Contact Person 11
+Dear all,
+I would like to inform you that we have identified the root cause and resolved the incident. Printing via both print servers through SAP is now functioning properly again. Mr. Contact Person 12 has confirmed that SAP print jobs are being executed correctly.
+After the Windows update and the restore of the two VMs, all printers had issues with the network share on print server VRINFRGERPRNT03. After disabling and re-enabling the network share for all printer queues, all pending documents on the affected printers were successfully printed.
+No further actions are currently required, and we will now close the ticket.
+Should you require further assistance or have any questions, please do not hesitate to contact us.
+Kind regards and have a nice weekend,
+Employee 17
+Senior System Engineer Core Engineering
+Consulting Sample Company AG
+
+19.07.24 16:44 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17
+FYI
+
+19.07.24 16:55 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello everyone,
+THANK YOU VERY MUCH!!! TOP SERVICE!!!
+We are very satisfied 😊
+Wishing you both a very nice weekend as well!
+Best regards
+Tom
+Head of IT Switzerland Informatics, Customer Company 13
+
+19.07.24 17:16 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello Giusi,
+You were not included in the distribution list, I only just noticed that.
+Best regards
+Tom
+
+22.07.24 07:56 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 19
+Hello @Employee 17 and @Employee 20,
+Thank you very much for your great support last Friday on this ticket. This was highly appreciated by KF13, including Contact Person 11, and they were truly grateful for your efforts.
+Especially for Giusi and Employee 20, here again Tom’s praise.
+Kind regards
+Employee 19
+Service Manager
+
+22.07.24 09:19 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 26
+Nice one 😊 That’s a great way to start the week.
+Employee 26
+Head of Core Engineering
+
+Notes:
+18.07.24 17:17 | Admin, CRM | WEB
+Ticket opened on 18.07.24 17:16 by Employee 23.
+18.07.24 17:22 | ApplicationUser, CRM Development | WEB
+Classified as PRIO HIGH because no orders could be printed from SAP, preventing deliveries.
+18.07.24 17:24 | Employee 23 | WEB
+Printing from SAP via VRINFRGERPRNT03 and VRINFRGERPRNT04 not possible. Normal printing works via other print servers with follow-me solution. Contact Person 11 requests rollback of the Windows version on the print servers.
+18.
+
+=== CITED REPORTS ===
+REPORT 16:
+# SAP Printing Outage — VRINFRGERPRNT03/04 (TI-931293)
+
+The community centers on the SAP printing path where SAP Spool/Output Management delivers jobs to SAP Print Targets that map to dedicated Windows Printserver VMs (notably VRINFRGERPRNT03 and VRINFRGERPRNT04). A high‑priority production incident (TI-931293) occurred 17–19.07.24 when SAP-generated orders could not be printed, blocking deliveries; the immediate remediation sequence included spooler restarts, a VM restore to a pre-maintenance snapshot, and disabling/re-enabling printer network shares which ultimately cleared queued jobs. The incident produced blue screens (BSOD) on the restored VMs and a customer request to rollback Windows versioning, and it exposed gaps in post-update/restore validation for queue properties, publishing/sharing parameters and end‑to‑end test prints. Multiple support engineers and the infrastructure on‑call team coordinated the recovery; the organisation has an SAP printing standard that prescribes post-change validation but the event still recurred across both SAP printserver VMs, indicating a likely server-image or Windows-update related root cause that requires deeper OS/driver/VM-host investigation and tighter runbook controls. [Data: Entities (534, 153, 154, 155, 147); Relationships (896, 913, 908, 232)]
+
+## Production-impacting outage: SAP print jobs blocked, business deliveries affected
+
+The incident was recorded as a high‑priority printing outage affecting SAP-originated orders and deliveries, indicating direct business impact and the need for fast remediation and coordinated operations response. The ticket TI-931293 documents the inability to print from SAP and the classification and remediation timeline across 17–19.07.24. [Data: Entities (534); Relationships (896)].
+
+Support actions were escalated to infrastructure on‑call and multiple engineers were assigned to the case, showing cross-shift coordination and handover requirements for production restores and follow-up testing (information sent to early shift for next‑day validation). This highlights both the operational severity and that the incident required multi-role participation to resolve. [Data: Relationships (905, 908)].
+
+## Probable root‑cause chain: Windows update -> VM restore -> network share/queue publishing corruption
+
+Documents and timelines link a Windows update and subsequent VM restore to the onset of queue-sharing and printing failures: a Windows update was applied, the print-server VMs were restored to a prior snapshot, and after the restore the printer network shares and queue publishing were malfunctioning, causing jobs to remain stuck until shares were toggled. This sequence is central to the incident's root-cause hypothesis and was specifically recorded in the log entries. [Data: Entities (537, 523); Relationships (890, 232, 883, 891)].
+
+Contact Person 11 explicitly requested a rollback of the Windows version on the print servers, reinforcing the operational suspicion that the Windows update/version was implicated; the infrastructure on‑call also documented this suspicion. The appearance of BSODs after the restore further suggests OS/driver/host-level instability that must be investigated beyond application-level spooler troubleshooting. [Data: Relationships (923, 911); Entities (542)].
+
+## Failure manifested in both SAP printserver VMs but not in follow‑me print infrastructure
+
+Both VRINFRGERPRNT03 and VRINFRGERPRNT04 exhibited identical failure patterns (inability to process SAP jobs, failed spooler restarts, and BSODs after restore), while other print servers supporting the follow‑me solution continued to print normally. This scoped the incident to the SAP-designated printserver VMs rather than a tenant-wide network or SAP-side-only problem. [Data: Entities (154, 155, 535); Relationships (913, 901, 887)].
+
+Because two independent VMs in the same role failed similarly after the same maintenance/change sequence, a systemic image, driver set, or host-level change (or a common post-restore validation omission) is a likely common-mode cause that requires coordinated forensic analysis across both VM instances and their hypervisor/backup/restore processes. [Data: Relationships (890, 232)].
+
+## Operational runbook/validation gaps: post-update/restore checks were insufficient or incomplete
+
+An approved 'Print Services for SAP Output' standard exists and mandates post-update/restore validation steps (queue status, spooler health, publishing/sharing parameters and test prints). The incident narrative cites VM restore and Windows update as triggers requiring these checks, but the persistent failure and need to manually toggle network shares indicate either incomplete adherence to the standard or that the current validation checklist does not detect the specific failure mode observed. [Data: Entities (147, 161); Relationships (243, 246, 251)].
+
+This demonstrates both the presence of governance (a standard) and a procedural gap: either the runbook was not fully executed during the restoration window or the runbook lacks items (e.g., explicit verification of network-share registration and directory publishing state after restore) that would have detected this issue before business impact. The standard should be revised to explicitly include steps that caught this failure in TI-931293. [Data: Relationships (251, 891)].
+
+## Troubleshooting sequence and stakeholder actions were appropriate but reveal handover and evidence-capture weaknesses
+
+Employee 23 performed early remediation actions (gpupdate /force on an affected workstation, spooler restart attempts, and remote troubleshooting) and then activated infrastructure on‑call; the infrastructure on‑call performed the VM restore with support from a technician (Mister X) and restoration contexts (Inter12203/Inter12204). Multiple engineers later investigated BSODs and log evidence. These documented steps show correct escalation and involvement of required roles. [Data: Entities (49, 538, 541, 539, 540); Relationships (74, 921, 908, 924, 925)].
+
+However, the fact that BSODs and the network-share corruption occurred after the restore suggests that pre‑ and post-restore evidence capture (detailed event/log snapshots, hypervisor logs, driver versions) and controlled validation were either not available or not sufficient to prevent or immediately diagnose the failure — an evidence-capture checklist and mandatory pre-remediation snapshot of key logs should be formalised. [Data: Relationships (911, 890)].
+
+## Security and availability exposures from share toggling and manual fixes
+
+Administrators cleared stuck jobs and restored printing by disabling and then re-enabling the printer network shares on the affected servers. While effective in this incident, this manual share manipulation is an operationally risky fix if done without change control because it temporarily alters SMB/print sharing state and could impact visibility or cause job loss if not coordinated and audited. The logs show that the printer network share was the primary locus of the problem and the point of manual remediation. [Data: Relationships (883, 891); Entities (524)].
+
+Recommendation: treat share toggles as controlled mitigation steps in runbooks with explicit rollback/validation and audit logging to prevent accidental exposure or data loss. Consider automating share/publishing verification as part of post-update validation to avoid manual toggles except under controlled emergency procedures. [Data: Relationships (251, 246)].
+
+## Recommended immediate and medium-term actions (prioritised)
+
+Immediate (P0/P1) actions: 1) Isolate a restored printserver VM to collect memory dumps, Windows event logs, spooler logs and hypervisor host logs for the restore window to determine BSOD causes; 2) if not already done, roll back to the previously known-good Windows image/version on a non-production test copy to reproduce the failure before applying tenant-wide rollbacks; 3) add mandatory post-restore checklist enforcement (validate queue properties, publishing/sharing flags, directory publishing and run an SAP-originated test print) before returning servers to production. These map to items recorded in the standard and the ticket actions. [Data: Entities (147, 523, 537); Relationships (243, 246, 923)].
+
+Medium-term actions: 1) Augment the 'Print Services for SAP Output' standard with explicit post-restore checks for network-share registration and add automated probes that verify queue visibility from SAP and a test workstation; 2) implement a pre/post-restore automated verification job that runs spooler/queue/publishing checks and preserves logs for forensics; 3) perform a controlled update/rollback plan for Windows versions across SAP printserver VMs (staged on a test VM, with clear rollback criteria). These changes will reduce recurrence and shorten mean time to resolution for similar future incidents. [Data: Entities (147, 161, 523); Relationships (890, 891)].
+
+## Communication, ownership and escalation matrix to formalise
+
+The incident involved CRM/web ticket logging, a primary early responder (Employee 23), escalation to infrastructure on‑call, handover to early shift for validation, and involvement of additional engineers (Employees 19 and 20) for BSOD and SAP-side checks. This shows a functioning ad-hoc escalation chain but also highlights the need for a formal matrix documenting responsibilities for: immediate remediation (spooler/queue checks), VM restore/host interactions, OS-level diagnostics, SAP-side validation, and customer communication/approvals. [Data: Entities (49, 516, 517, 538, 543); Relationships (74, 921, 905, 879, 906)].
+
+Create an escalation runbook that lists required evidence to collect at each handover (logs, timestamps, snapshots), decision criteria for rollback vs. rebuild, and a named on-call roster to reduce ambiguity in future incidents. Ensure the runbook maps to the approved standard and is practiced in tabletop exercises. [Data: Entities (147); Relationships (905)]."
+Is the statement supported by the evidence?,"Your ticket reports three concurrent faults spanning distinct systems: telephony/media (Teams/desktop app), identity/permissions (ERP_Upgrade folder), and mail/printing (MFP → external vendor). The indexed KB shows that: (a) site‑wide/edge telephony media faults were handled by UC/Network engineers (not L1)","=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,; (b) folder access regressions sometimes needed Identity team/AD/Azure AD sync analysis (not always a simple gpupdate),"=== CITED SOURCES ===
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,; and (c) scan‑to‑mail failures where the device UI lied required Mail/Relay and Network coordination to whitelist VLANs or change relay policy,"=== CITED REPORTS ===
+REPORT 36:
+# CustomerCompany14: FileZilla Server Access & Contact Person 16
+
+The dataset centers on a single, named customer reporter (Contact Person 16) from Customer Company 14 who opened a support ticket about FTP access and asked who installed FileZilla Server on a virtual server. Troubleshooting activity was performed from a customer workstation using WinSCP and SFTP login tests, and communications flowed into Consulting Sample Company's helpdesk email and portal where the reporter's email is recorded as the ticket contact. The reporter also noted a separate Teams call stability issue affecting multiple employees in Basel; that appears as an additional, distinct problem reported in the same ticket metadata. Evidence shows clear diagnostic steps and ticket-channel metadata but indicates ambiguity about service ownership for the FileZilla Server and the need to consolidate incident context and escalation ownership.
+
+## Single named primary reporter driving the incident
+
+Contact Person 16 is recorded as the named, primary customer contact who submitted the initial request about FileZilla Server installation and FTP access problems and who participated in troubleshooting and follow-up with support [Data: Entities (321)].
+
+This contact is the pivot for both the FTP troubleshooting and related communications — their email is present in ticket metadata and was the inbound channel used to contact helpdesk, making them the appropriate escalation/liaison point for follow-up actions that require customer verification or additional diagnostics [Data: Relationships (1052), Relationships (1064)].
+
+## FileZilla Server issue reported but ownership of the server is unclear
+
+The report explicitly asks who installed FileZilla Server on the virtual server and requests assistance with FTP access, indicating uncertainty about server ownership and administration responsibility [Data: Relationships (1051)].
+
+Because the ticket content includes this ownership question, there is an operational gap: resolving access and configuration issues requires identifying the server owner/administrator, access credentials, and whether the server is under customer or third-party control — items implied by the ownership question but not documented in the provided metadata [Data: Relationships (1051)].
+
+## Diagnostics performed from the customer workstation using WinSCP and SFTP
+
+Support performed login tests and client-level checks from a customer-side workstation; WinSCP was used to exercise FTP/SFTP logins and SFTP login attempts were recorded as part of the diagnostic checklist [Data: Entities (633), Relationships (1091), Relationships (1090)].
+
+These diagnostic actions show that initial troubleshooting focused on validating client-to-server connectivity and credential behavior from the user's environment, which helps narrow the fault domain to either client configuration, network path, or server-side authentication/configuration if tests from the workstation consistently fail [Data: Relationships (1091), Relationships (1090)].
+
+## Support intake and ticket metadata link the reporter email to the consulting portal and helpdesk mailbox
+
+The consulting portal records and links the customer's email address as the contact for the ticket, and the reporter used the Consulting Sample Company helpdesk email address to open the ticket, establishing two formal channels for notifications and escalation: the helpdesk mailbox and the portal record containing the reporter's email [Data: Entities (616, 619), Relationships (1064), Relationships (1052)].
+
+This establishes an auditable communication trail (portal + mailbox) that can be used to coordinate ownership handoffs and record changes, provided ticket updates and assignments are applied consistently within those channels [Data: Entities (616), Relationships (1064)].
+
+## A second, separate incident (Teams calls dropping) is reported in the same ticket context
+
+Contact Person 16 additionally reported that multiple employees in Basel experienced external Microsoft Teams calls dropping after roughly 30 seconds (both incoming and outgoing), which is recorded as a separate issue within the reporter's ticket metadata [Data: Entities (321)].
+
+Because this is a different service domain (Microsoft Teams call stability vs. FTP server access), it should be treated as a distinct incident stream or correlated only after initial triage; conflating them risks confusion of owners and remediation steps unless a deliberate cross-investigation is initiated [Data: Entities (321)].
+
+## Operational risk due to ambiguous ownership and mixed issues within one ticket
+
+The ticket contains both an ownership question about FileZilla Server and an unrelated Teams call stability report; the presence of multiple distinct service problems in the same ticket and the explicit ask 'who installed FileZilla Server' indicate a lack of clearly documented ownership for at least the FTP service component [Data: Relationships (1051), Entities (321)].
+
+Ambiguity in ownership + multiple problems in one ticket increases the chance of delayed remediation, duplicated effort, or missed escalations unless the consulting helpdesk assigns clear owners and separates incident records for each affected service using the portal and mailbox channels already present [Data: Relationships (1052), Relationships (1064)].
+
+## Available evidence supports an effective client-side test path but lacks server-side artifacts in the record
+
+Records show concrete client-side testing (WinSCP, SFTP from the customer workstation) which is useful for reproducing the symptom from the user environment [Data: Relationships (1091), Relationships (1090), Entities (633)].
+
+What is not present in the provided dataset are referenced server-side logs, configuration records, or an identified server owner/administrator account in the ticket metadata — the record asks who installed the FileZilla Server but does not include server-side artefacts or ownership entries, leaving a diagnostic gap that will slow root-cause confirmation [Data: Relationships (1051)].
+
+## Immediate recommended actions and escalation paths (prioritized)
+
+1) Confirm FileZilla Server ownership and administrative access — the ticket explicitly requests who installed the server, so locating the server owner or hosting boundary is the first step to enable server-side log collection and configuration checks [Data: Relationships (1051)].
+
+2) Use the existing helpdesk mailbox and portal metadata to formalize ownership and ticket separation — the reporter's email is linked in the consulting portal and the helpdesk mailbox is the inbound channel; assign or split the ticket(s) in the portal so FTP/FileZilla and Teams/VoIP stability are tracked separately and assigned to the appropriate teams (server/ops vs UC/voice) [Data: Relationships (1064), Relationships (1052), Entities (616, 621)].
+
+3) Collect server-side logs and session traces once ownership is confirmed, and correlate those with the WinSCP/SFTP client test timestamps captured from the customer workstation to determine whether failures are client-side, network-path related, or server-auth/configuration related [Data: Relationships (1091), Relationships (1090)].
+
+These steps are prioritized to remove the ownership ambiguity first, then make the existing client-side test evidence actionable by linking it to server-side artifacts and by keeping the unrelated Teams issue in a separate, trackable incident stream [Data: Relationships (1051), Relationships (1091), Entities (321)].
+
+REPORT 6:
+# Customer Company 52 AG — Mail SMTP AUTH outage (Legacy Outlook) & Direct Routing voice-policy misassignment (Enterprise-Sales)
+
+Two related operational issues affected a small Sales sub-population after an organizational rework: (1) legacy Outlook MSI (Build 2019) clients could not send mail because tenant Security Defaults disabled SMTP AUTH for legacy authentication flows; and (2) Direct Routing-enabled users were assigned the tenant ""Global"" voice routing policy via an automated provisioning script, and that policy lacked PSTN Usage, preventing outbound PSTN calling. Troubleshooting spanned client-side checks (firewall/AV/profile recreation), hybrid mailflow validation (Send/Hybrid connector and TLS checks), Exchange Event Log analysis showing 535 SMTP AUTH failures, and coordination between support, BU Infrastructure Engineering and the Identity team to selectively re-enable SMTP AUTH via Conditional Access and to correct provisioning logic to assign an appropriate Direct Routing policy per the documented Teams voice-routing blueprint. The incidents were localized (roughly six affected users within a ~12-person Sales team) but exposed weak points in provisioning governance, group->policy mapping, and the operational interplay of tenant-level security defaults and legacy client compatibility. [Data: Entities (588,585,193,200,586); Relationships (1015,1018,301,313,1019)]
+
+## Two distinct but co-occurring failure modes: SMTP AUTH/legacy Outlook send failures and Direct Routing voice-policy misassignment
+
+The troubleshooting record shows two separate technical failure classes occurring in the same operational window: legacy SMTP submission/authentication failures for locally installed Outlook MSI Build 2019 clients, and Teams Direct Routing external-call failures for users assigned an incorrect voice routing policy. The Outlook issue traces to legacy clients relying on SMTP AUTH which was disabled by tenant Security Defaults; Event Log entries and client errors corroborated the authentication failures. [Data: Entities (588,585,586,604,597); Relationships (1015,1018,1037,1019)]
+
+The voice issue originated from provisioning logic that assigned the tenant ""Global"" voice routing policy to new Enterprise-Sales group members; the Global policy did not reference a PSTN Usage route, so Direct Routing-enabled users had no external PSTN path until policy assignment was corrected. The provisioning change and the blueprint mismatch were explicitly recorded in the investigation. [Data: Entities (200,193,201,198,203); Relationships (301,303,313,309,307)]
+
+## Root cause for mail send failures: Security Defaults disabled SMTP AUTH used by legacy Outlook clients
+
+Server-side evidence in the Exchange Event Log showed ""535 5.7.3 Authentication unsuccessful"" tied to SMTP AUTH attempts, directly implicating authentication rejection rather than transport-level network issues. These events were used to correlate client symptoms (Outlook error 0x800CCC0E and stuck Outbox) with disabled legacy authentication. [Data: Entities (604,588,585,597); Relationships (1018,1015,1037,1004)]
+
+The tenant-level Security Default setting was recently enabled and is recorded as the action that disabled legacy authentication flows including SMTP AUTH; this tenant change therefore produced the observed outage for legacy clients until selective exceptions were applied. This link between Security Defaults and legacy authentication is documented in the relationship mapping. [Data: Entities (586,608); Relationships (1019)]
+
+## Remediation path for SMTP issue: targeted re-enablement of SMTP AUTH via Conditional Access and engineering coordination
+
+Support and escalation engineers validated client configuration (SMTP port 587/STARTTLS, local firewall, antivirus SMTP scanning, and Outlook profile recreation) to rule out local causes before concluding the tenant-level setting was at fault. That validation path is documented and reflects standard troubleshooting discipline for auth/submission failures. [Data: Entities (609,601,602,605,588); Relationships (1024,1025,1026,1028)]
+
+The practical remediation was to selectively allow legacy SMTP AUTH for the affected users by implementing Conditional Access adjustments while preserving tenant security posture for other users. System Engineer 07 and BU Infrastructure Engineering performed the hybrid and Event Log analysis and applied changes to enable SMTP AUTH for the impacted accounts (selective CA exceptions). This action and the coordinating actors are recorded in the incident notes. [Data: Entities (592,587); Relationships (1020,1033,1032)]
+
+## Root cause for voice outage: automated provisioning script assigned Global policy that lacked PSTN usage contrary to the Teams voice-routing blueprint
+
+The provisioning script was configured to assign voice routing policies based on Azure AD group membership; after the reorganization new Enterprise-Sales members were being assigned the Global policy by default. The provisioning-script -> Global policy relationship and the script change history are documented as the direct mechanism that produced the misassignment. [Data: Entities (200,198,193); Relationships (301,309,311,307)]
+
+The Global policy was observed to have no PSTN Usage entries (no External-Route), whereas the approved blueprint requires Direct Routing users be assigned a dedicated routing policy (e.g., DR-Standard) that references an External-Route PSTN Usage. The blueprint mismatch is explicitly noted and was the justification for updating the provisioning logic. Temporary reassignment to DR-Standard restored external calling in tests. [Data: Entities (201,194,196); Relationships (305,304,303)]
+
+## Scope and operational impact: limited user count but high operational friction and cross-team involvement
+
+The incident affected roughly six Sales users (subset of a ~12-person Sales team) who were recently reassigned into Enterprise Sales; the user-count is small, but the issue impacted both telephony availability (external calling) and mail sending for affected legacy clients. The affected-users construct and its relation to the Sales team and Enterprise-Sales group are recorded. [Data: Entities (203,197,198); Relationships (307,300)]
+
+Despite the limited headcount, the troubleshooting required cross-discipline escalations (support -> System Engineer -> BU Infrastructure Engineering -> Identity Team) and hybrid environment checks (on-prem Exchange connectors, Event Log, Exchange Online checks), demonstrating that even small-scale failures can impose significant operational and coordination overhead. [Data: Entities (592,582,581,593); Relationships (1012,1009,1008,1033)]
+
+## Governance and provisioning process gaps: blueprint not enforced in provisioning logic and Azure AD group lifecycle controls
+
+The provisioning logic did not reflect the Teams voice routing blueprint; this divergence was recorded and triggered a change to the provisioning script after the incident. The ticket explicitly links the provisioning script to the blueprint and documents that the script required correction to align with the blueprint's requirement for dedicated routing policies. [Data: Entities (200,201); Relationships (313,301)]
+
+Separately, Azure AD groups are used both for voice policy assignment and SharePoint permissions, and the environment has documented governance rules requiring dedicated groups for SharePoint permissioning and lifecycle constraints. The dual-use of groups increases risk if group naming/creation/lifecycle controls are not strictly enforced, because a miscreated group can affect multiple downstream systems. These governance constructs are present in the records. [Data: Entities (206,470); Relationships (312,762)]
+
+## Security exposure from tenant Security Defaults and Conditional Access exceptions
+
+Enabling Security Defaults disabled legacy authentication methods (including SMTP AUTH) — the security change was the proximate cause of the SMTP outage for legacy clients. While enabling Security Defaults strengthens tenant security, the incident demonstrates how global security toggles can break legacy workflows. The data captures this relationship. [Data: Entities (586,608); Relationships (1019)]
+
+The mitigation chosen—selective Conditional Access exceptions to permit legacy SMTP AUTH for specific users—reintroduces a measured exception to the baseline. While operationally necessary to restore service, such exceptions should be minimized, audited, and time-boxed because they widen the attack surface by allowing legacy authentication flows. The CA adjustment and its role in remediation are recorded in the incident documentation. [Data: Entities (587,608); Relationships (1020)]
+
+## Prioritized recommendations: short-term fixes, medium-term controls, and longer-term remediation
+
+Short-term (<=72 hours): 1) Maintain the Conditional Access exceptions that restore SMTP AUTH only for the minimal set of impacted users and mark them for automatic review/removal; 2) Reassign affected Direct Routing users to DR-Standard (or dedicated Sales routing policy) where tests have proven it restores outbound calling. These actions map directly to the remediation steps recorded in the ticket and the successful test reassignment. [Data: Entities (587,194,203); Relationships (1020,304,301)]
+
+Medium-term (2–8 weeks): 1) Update and gate the provisioning script so that it enforces the Teams voice-routing blueprint (policy-to-group mapping must be codified and tested); 2) Implement a provisioning-change review process with Identity Team approval for any script that alters voice routing or group->policy mappings; 3) Add automated checks that detect when a voice routing policy lacks PSTN Usage for Direct Routing-enabled users and alert owners. The need for these actions is evidenced by the provisioning-script/blueprint divergence and the identity-team coordination records. [Data: Entities (200,201,202); Relationships (313,314,305)]
+
+Longer-term (quarterly): 1) Inventory and remediate legacy Outlook MSI clients: migrate impacted users to modern auth-capable clients or modern protocols so SMTP AUTH dependency is removed; 2) Harden tenant-level change controls so actions like enabling Security Defaults require pre-checks for legacy auth impacts or an automated impact report. The presence of legacy clients and the tenant-level Security Defaults action motivate these plans. [Data: Entities (588,586,608); Relationships (1015,1019)]
+
+## Stakeholders, escalation pathways, and runbook recommendations
+
+Primary stakeholders identified in the records include the Sales Team (business owner), Identity Team (provisioning/group lifecycle), BU Infrastructure Engineering (mail/Teams infrastructure), and System Engineer 07 (technical remediation/triage). These assignments and collaborations are explicitly recorded and used in the ticket escalation chain. [Data: Entities (197,202,593,592); Relationships (307,314,1033,1032)]
+
+Recommended runbook: 1) Triage owner (first-line support) validates symptom (Outlook 0x800CCC0E / Teams call failure) and performs client checks (port, firewall, AV, profile recreation); 2) If auth errors or Event Log 535 observed, escalate to mail/infra (System Engineer) for Event Log and hybrid connector review; 3) If due to tenant-level security defaults, coordinate Identity Team to implement time-boxed Conditional Access exception and record justification; 4) If provisioning/policy mapping implicated, escalate to Identity Team and BU Infrastructure for immediate policy reassignment and follow-up change to provisioning script. These steps mirror actions and relationships documented in the incident. [Data: Entities (601,602,605,592,200); Relationships (1025,1026,1028,1032,301)]"
+Is the statement supported by the evidence?,"Note: if investigation shows the telephony symptom is a single‑endpoint hardware problem (like TI‑1616128) and the other two problems are independent first‑line fixes, L1 could close—but the simultaneous, multi‑domain nature of your report matches prior cases that were escalated","=== CITED SOURCES ===
+SOURCE 37:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Call participants cannot hear the user
+Ticket number: TI-1616128
+Company: Customer Company 52 AG
+Contact person: Contact Person 07
+Owner: Employee 33
+Origin: Telephone
+Type: Incident
+Created on: 14.10.25 09:18
+Closure
+Closure date: 14.10.25 09:52
+Closure text: Microphone not properly connected. Device configured correctly. Function restored.
+Activities
+14.10.25 09:10 – Telephone report
+Mr. Contact Person 07 reports that an employee can hear everything during Teams calls but cannot be heard by the other participant.
+Both internal and external calls are affected.
+Chat works.
+Camera works.
+14.10.25 09:18
+Ticket created and assigned to Employee 33.
+14.10.25 09:25 – Helpdesk inquiry
+Good morning
+Could you please briefly confirm:
+– Is a headset or the integrated microphone being used?
+– Does the issue also occur during a Teams test call?
+Thank you.
+14.10.25 09:32 – Customer response
+A USB headset is being used.
+No sound is recorded during the test call either.
+14.10.25 09:40 – Remote session
+Connected with the user.
+In Teams, “USB Audio Device” is selected as the microphone.
+However, the input level indicator remains empty.
+In the Windows Sound menu, no input signal is displayed either.
+After a brief check, it was determined that although the USB headset was plugged in, the microphone cable on the headset itself was not fully inserted.
+After correctly plugging it in, the input level indicator immediately showed activity.
+Test call performed → Microphone functioning.
+14.10.25 09:50 – User feedback
+Call tested. Working properly again.
+14.10.25 09:52 – Ticket closure
+Dear Contact Person 07
+The microphone was not properly connected, which prevented any input signal from being detected.
+After correctly reconnecting the device, voice transmission is functioning normally again.
+Kind regards
+Consulting Sample Company
+
+
+
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+
+
+=== CITED REPORTS ===
+REPORT 36:
+# CustomerCompany14: FileZilla Server Access & Contact Person 16
+
+The dataset centers on a single, named customer reporter (Contact Person 16) from Customer Company 14 who opened a support ticket about FTP access and asked who installed FileZilla Server on a virtual server. Troubleshooting activity was performed from a customer workstation using WinSCP and SFTP login tests, and communications flowed into Consulting Sample Company's helpdesk email and portal where the reporter's email is recorded as the ticket contact. The reporter also noted a separate Teams call stability issue affecting multiple employees in Basel; that appears as an additional, distinct problem reported in the same ticket metadata. Evidence shows clear diagnostic steps and ticket-channel metadata but indicates ambiguity about service ownership for the FileZilla Server and the need to consolidate incident context and escalation ownership.
+
+## Single named primary reporter driving the incident
+
+Contact Person 16 is recorded as the named, primary customer contact who submitted the initial request about FileZilla Server installation and FTP access problems and who participated in troubleshooting and follow-up with support [Data: Entities (321)].
+
+This contact is the pivot for both the FTP troubleshooting and related communications — their email is present in ticket metadata and was the inbound channel used to contact helpdesk, making them the appropriate escalation/liaison point for follow-up actions that require customer verification or additional diagnostics [Data: Relationships (1052), Relationships (1064)].
+
+## FileZilla Server issue reported but ownership of the server is unclear
+
+The report explicitly asks who installed FileZilla Server on the virtual server and requests assistance with FTP access, indicating uncertainty about server ownership and administration responsibility [Data: Relationships (1051)].
+
+Because the ticket content includes this ownership question, there is an operational gap: resolving access and configuration issues requires identifying the server owner/administrator, access credentials, and whether the server is under customer or third-party control — items implied by the ownership question but not documented in the provided metadata [Data: Relationships (1051)].
+
+## Diagnostics performed from the customer workstation using WinSCP and SFTP
+
+Support performed login tests and client-level checks from a customer-side workstation; WinSCP was used to exercise FTP/SFTP logins and SFTP login attempts were recorded as part of the diagnostic checklist [Data: Entities (633), Relationships (1091), Relationships (1090)].
+
+These diagnostic actions show that initial troubleshooting focused on validating client-to-server connectivity and credential behavior from the user's environment, which helps narrow the fault domain to either client configuration, network path, or server-side authentication/configuration if tests from the workstation consistently fail [Data: Relationships (1091), Relationships (1090)].
+
+## Support intake and ticket metadata link the reporter email to the consulting portal and helpdesk mailbox
+
+The consulting portal records and links the customer's email address as the contact for the ticket, and the reporter used the Consulting Sample Company helpdesk email address to open the ticket, establishing two formal channels for notifications and escalation: the helpdesk mailbox and the portal record containing the reporter's email [Data: Entities (616, 619), Relationships (1064), Relationships (1052)].
+
+This establishes an auditable communication trail (portal + mailbox) that can be used to coordinate ownership handoffs and record changes, provided ticket updates and assignments are applied consistently within those channels [Data: Entities (616), Relationships (1064)].
+
+## A second, separate incident (Teams calls dropping) is reported in the same ticket context
+
+Contact Person 16 additionally reported that multiple employees in Basel experienced external Microsoft Teams calls dropping after roughly 30 seconds (both incoming and outgoing), which is recorded as a separate issue within the reporter's ticket metadata [Data: Entities (321)].
+
+Because this is a different service domain (Microsoft Teams call stability vs. FTP server access), it should be treated as a distinct incident stream or correlated only after initial triage; conflating them risks confusion of owners and remediation steps unless a deliberate cross-investigation is initiated [Data: Entities (321)].
+
+## Operational risk due to ambiguous ownership and mixed issues within one ticket
+
+The ticket contains both an ownership question about FileZilla Server and an unrelated Teams call stability report; the presence of multiple distinct service problems in the same ticket and the explicit ask 'who installed FileZilla Server' indicate a lack of clearly documented ownership for at least the FTP service component [Data: Relationships (1051), Entities (321)].
+
+Ambiguity in ownership + multiple problems in one ticket increases the chance of delayed remediation, duplicated effort, or missed escalations unless the consulting helpdesk assigns clear owners and separates incident records for each affected service using the portal and mailbox channels already present [Data: Relationships (1052), Relationships (1064)].
+
+## Available evidence supports an effective client-side test path but lacks server-side artifacts in the record
+
+Records show concrete client-side testing (WinSCP, SFTP from the customer workstation) which is useful for reproducing the symptom from the user environment [Data: Relationships (1091), Relationships (1090), Entities (633)].
+
+What is not present in the provided dataset are referenced server-side logs, configuration records, or an identified server owner/administrator account in the ticket metadata — the record asks who installed the FileZilla Server but does not include server-side artefacts or ownership entries, leaving a diagnostic gap that will slow root-cause confirmation [Data: Relationships (1051)].
+
+## Immediate recommended actions and escalation paths (prioritized)
+
+1) Confirm FileZilla Server ownership and administrative access — the ticket explicitly requests who installed the server, so locating the server owner or hosting boundary is the first step to enable server-side log collection and configuration checks [Data: Relationships (1051)].
+
+2) Use the existing helpdesk mailbox and portal metadata to formalize ownership and ticket separation — the reporter's email is linked in the consulting portal and the helpdesk mailbox is the inbound channel; assign or split the ticket(s) in the portal so FTP/FileZilla and Teams/VoIP stability are tracked separately and assigned to the appropriate teams (server/ops vs UC/voice) [Data: Relationships (1064), Relationships (1052), Entities (616, 621)].
+
+3) Collect server-side logs and session traces once ownership is confirmed, and correlate those with the WinSCP/SFTP client test timestamps captured from the customer workstation to determine whether failures are client-side, network-path related, or server-auth/configuration related [Data: Relationships (1091), Relationships (1090)].
+
+These steps are prioritized to remove the ownership ambiguity first, then make the existing client-side test evidence actionable by linking it to server-side artifacts and by keeping the unrelated Teams issue in a separate, trackable incident stream [Data: Relationships (1051), Relationships (1091), Entities (321)]."
+Is the statement supported by the evidence?,Zurich one‑way audio caused by firewall change (escalated to UC/Network),"=== CITED SOURCES ===
+SOURCE 5:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – No audio in external calls
+Ticket number: TI-1602241
+Company: Customer Company 52 AG
+Contact person: Contact Person 14
+Owner: Employee 33
+Origin: Phone
+Type: Incident
+Created on: 08.07.25 08:21
+Closure
+Closure date: 18.07.25 16:05
+Closure text: Configuration adjusted according to Direct Routing architecture. Voice transmission stable again.
+Activities
+08.07.25 08:10
+Call from Mr. Contact Person 14.
+He reports that several employees since this morning cannot hear audio during external phone calls in Microsoft Teams. The call is established, the external participant can hear the employees, but they themselves hear nothing. It is described as “completely silent”.
+Internal Teams calls function normally. Chats and video conferences are also not affected.
+08.07.25 08:21
+Ticket created and assigned to Employee 33.
+08.07.25 09:05 – Email from Employee 33 to Contact Person 14
+Good morning Mr. Contact Person 14
+Thank you for your report.
+Could you please briefly confirm the following points:
+– Does it affect only external calls (mobile/fixed line)?
+– Are both incoming and outgoing calls affected?
+– Does the issue occur for all users or only specific ones?
+– Since when has the issue existed?
+Thank you for your feedback.
+Kind regards
+08.07.25 09:34 – Response from Contact Person 14
+Good morning
+Yes, it affects only external calls.
+Both incoming and outgoing.
+At the moment, about a dozen people are affected, all at the Zurich location.
+Since this morning, everything was normal yesterday.
+Kind regards
+08.07.25 10:12 – Internal note
+Test call performed with user S. Meier.
+Internal Teams call works.
+External call to mobile phone: connection established, conversation partner confirms he can hear Mr. Meier, Mr. Meier hears nothing.
+Teams shows status “Connected”. No error message.
+08.07.25 11:40 – Email to customer
+We have restarted the Teams client and cleared the cache as a test.
+Could you please check with two additional affected users whether the behavior is identical?
+08.07.25 13:05 – Customer response
+We tested with three additional persons.
+Same behavior everywhere.
+Headsets differ (Jabra, Poly).
+LAN connection.
+Home office users do not seem to be affected.
+09.07.25 08:50 – Customer contacts again
+Good morning
+We just remembered that a firewall adjustment (security hardening) was carried out over the weekend.
+Could this have an impact?
+Kind regards
+09.07.25 09:30 – Internal note
+Firewall change timing plausible.
+Escalated to Unified Communications / Network team.
+09.07.25 10:22 – Ticket taken over by System Engineer 18
+09.07.25 11:15 – Email from System Engineer 18 to customer
+Good day
+We are currently analyzing the Direct Routing configuration.
+Signaling (SIP) appears to function correctly, as calls can be established.
+We are currently checking the media flow (audio stream).
+We will get back to you as soon as we have further findings.
+Kind regards
+10.07.25 08:40 – Internal analysis
+SBC shows successful SIP connections.
+No call drops.
+Media negotiation (SDP) is performed.
+Notable:
+RTP traffic appears stable only in one direction.
+10.07.25 10:50 – Firewall rule comparison
+New rule implemented at Zurich location.
+Outbound traffic configured more restrictively.
+Comparison with Microsoft documentation shows deviation in media port ranges.
+10.07.25 14:15 – Internal test phase
+Temporary adjustment of firewall configuration for media ports.
+Test call performed.
+Audio immediately available in both directions.
+Firewall reverted to restrictive rule.
+Issue occurs again.
+11.07.25 09:05 – Email to customer
+Good day
+We have identified a correlation with a recently implemented firewall rule at the Zurich location.
+Call signaling functions correctly; however, media traffic is partially blocked.
+We are currently reviewing the configuration in detail according to our Direct Routing architecture specification.
+We will provide an update shortly.
+Kind regards
+14.07.25 – Internal documentation review
+Comparison with internal document
+“Blueprint – Microsoft Teams Direct Routing & Media Flow – Version 2.1”
+Particularly relevant: section regarding location configuration with Media Bypass enabled.
+Finding:
+Zurich location configured with Media Bypass.
+Firewall rule considers only signaling ports, not full media port range.
+16.07.25 – Configuration adjustment
+Firewall rule corrected according to architectural specification.
+Details not documented in ticket for security reasons.
+17.07.25 – Customer feedback
+Good morning
+We tested several external calls.
+Audio works normally again.
+Longer conversations are also stable.
+Thank you for your support.
+Kind regards
+18.07.25 16:05 – Ticket closure
+Dear Contact Person 14
+The root cause was a restriction of media traffic at the Zurich location following a firewall adjustment.
+The configuration was corrected according to the internal Direct Routing architecture specification.
+Voice transmission is now stable again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,Single‑user microphone reseat resolved at first‑line (example where L1 closed one‑way audio),"=== CITED SOURCES ===
+SOURCE 37:
+﻿
+Ticket summary:
+Ticket name: KF52: Microsoft Teams – Call participants cannot hear the user
+Ticket number: TI-1616128
+Company: Customer Company 52 AG
+Contact person: Contact Person 07
+Owner: Employee 33
+Origin: Telephone
+Type: Incident
+Created on: 14.10.25 09:18
+Closure
+Closure date: 14.10.25 09:52
+Closure text: Microphone not properly connected. Device configured correctly. Function restored.
+Activities
+14.10.25 09:10 – Telephone report
+Mr. Contact Person 07 reports that an employee can hear everything during Teams calls but cannot be heard by the other participant.
+Both internal and external calls are affected.
+Chat works.
+Camera works.
+14.10.25 09:18
+Ticket created and assigned to Employee 33.
+14.10.25 09:25 – Helpdesk inquiry
+Good morning
+Could you please briefly confirm:
+– Is a headset or the integrated microphone being used?
+– Does the issue also occur during a Teams test call?
+Thank you.
+14.10.25 09:32 – Customer response
+A USB headset is being used.
+No sound is recorded during the test call either.
+14.10.25 09:40 – Remote session
+Connected with the user.
+In Teams, “USB Audio Device” is selected as the microphone.
+However, the input level indicator remains empty.
+In the Windows Sound menu, no input signal is displayed either.
+After a brief check, it was determined that although the USB headset was plugged in, the microphone cable on the headset itself was not fully inserted.
+After correctly plugging it in, the input level indicator immediately showed activity.
+Test call performed → Microphone functioning.
+14.10.25 09:50 – User feedback
+Call tested. Working properly again.
+14.10.25 09:52 – Ticket closure
+Dear Contact Person 07
+The microphone was not properly connected, which prevented any input signal from being detected.
+After correctly reconnecting the device, voice transmission is functioning normally again.
+Kind regards
+Consulting Sample Company
+
+"
+Is the statement supported by the evidence?,ERP_Upgrade / token/Conditional Access and identity‑plane diagnostics (use of Azure AD sign‑in logs and membership checks in prior cases),"=== CITED SOURCES ===
+SOURCE 38:
+﻿
+Ticket summary:
+Ticket name: KF25: SharePoint – Access works only partially after permission change
+Ticket number: TI-1571046
+Company: Customer Company 25 AG
+Contact person: Contact Person 05
+Owner: Employee 21
+Origin: Portal
+Type: Incident
+Created on: 04.03.25 13:18
+Closure
+Closure date: 11.03.25 16:02
+Closure text: Root cause identified (Token caching & Conditional Access evaluation delay). Access stable after policy adjustment.
+Activities
+04.03.25 13:18
+Ticket created via customer portal
+Description:
+Several employees report that after being added to the project “ERP-Upgrade”, they generally have access to SharePoint, but the folder
+/Projects/ERP_Upgrade/Finance
+is not displayed.
+In some cases, access works for certain users after logging out and back in, but not for others.
+Error message:
+Access denied or item not found
+04.03.25 13:32
+Ticket assigned to: Employee 21
+Status: In Progress
+Notes:
+04.03.25 14:05 – Initial analysis
+• Affected users are members of Azure AD group “ERP_Finance”
+• This group is a member of “SP_ERP_Project”
+• SharePoint permissions correctly configured
+• Comparison with working user shows identical group structure
+Test:
+Direct access via URL → partially successful
+Notable:
+Users with activated MFA requirement report issues more frequently.
+04.03.25 15:40 – Conditional Access review
+Tenant uses Conditional Access Policy:
+“Require compliant device for Finance Resources”
+Policy was adjusted on 28.02.
+Some users access from private devices.
+Device status in Entra ID partially “unknown”.
+05.03.25 09:10 – Token analysis
+Azure Sign-In Logs reviewed:
+• Multiple entries with “Conditional Access not satisfied”
+• At the same time, successful token issuance for SharePoint Root
+Hypothesis:
+Token was issued before group change → contains outdated claims
+Users who had not fully logged out were working with cached tokens.
+05.03.25 10:25 – Test measure
+• User fully logged out (Office + browser)
+• Browser cache cleared
+• Device compliance status checked
+Result:
+Access possible afterward.
+06.03.25 11:50 – In-depth analysis
+Issue reoccurs for 2 users.
+Difference identified:
+These users access via Hybrid Azure AD Joined Devices.
+Device synchronization was faulty.
+Device compliance status was only updated after 6–8 hours.
+07.03.25 09:30 – Actions
+• Conditional Access Policy adjusted:
+→ SharePoint project folder no longer included in Finance-specific CA rule
+• Users re-authenticated
+• Device sync triggered manually
+10.03.25 – Monitoring
+No further access issues reported.
+Sign-In Logs unremarkable.
+11.03.25 16:02 – Ticket closure
+Dear Contact Person 05
+The root cause was not group nesting, but a delay in Conditional Access policy evaluation combined with cached authentication tokens.
+After policy adjustment and renewed authentication, access is now stable.
+Kind regards
+Consulting Sample Company
+
+
+
+=== CITED REPORTS ===
+REPORT 13:
+# KF40 Portal Publication (portal.kf40.ch) — WAF/Reverse-Proxy and Firewall Operational Community
+
+This community centers on the perimeter publishing stack (WAF / Reverse Proxy) that publishes the Customer Company 40 portal (portal.kf40.ch) and the network/firewall estate that supports user connectivity (including Teams media). A high‑priority support ticket (TI-1594408) documented an external 502 Bad Gateway outage for portal.kf40.ch while internal access remained functional. Troubleshooting showed the backend application servers and load balancer were healthy, TLS certificates were validated and not the root cause, and the outage correlated to a weekend security patch/change that reloaded a Default-Strict inspection/profile and removed a custom header rewrite rule needed to present X-Forwarded-Proto: https to the backend. Restoring the Portal-App-Template / custom header rewrite configuration per the Secure Web Publishing blueprint resolved external access. Separately, a Zurich site firewall hardening change restricted outbound UDP to ports 3478–3481 only, blocking the dynamic RTP port range and causing one‑way/no audio in Teams; a temporary port opening restored media flows and confirmed the root cause. The incident and artifacts highlight technical, process, and governance gaps around post‑patch template/profile validation, change control for perimeter devices, and runbooks for header/HTTP profile preservation during TLS inspection/termination.
+
+## Root cause of portal 502: WAF TLS inspection plus missing/custom header rewrite rule (X-Forwarded-Proto) prevented the backend from seeing HTTPS.
+
+External requests to portal.kf40.ch returned 502 Bad Gateway while internal access remained functional; investigation showed the reverse proxy/WAF performs TLS termination/inspection and is expected to forward X-Forwarded-Proto: https to the backend, but that header was not present when inspection was active, causing the backend to misinterpret the request and return errors. This causal chain is documented in the incident artifacts linking the REVERSE PROXY / WAF to the APPLICATION SERVER and noting the missing CUSTOM HEADER REWRITE RULE and absent X-FORWARDED-PROTO header as drivers for the 502s [Data: Entities (302,312,319); Relationships (492,499,496)].
+
+Restoring the header rewrite behavior per the Portal-App-Template/blueprint returned external functionality, confirming the header rewrite absence (not the backend or certificate validity) was the functional trigger for failures [Data: Entities (311,300); Relationships (568,499)].
+
+## Security patch/template reload replaced Portal-App-Template with Default-Strict, causing template/profile drift and header removal.
+
+A weekend security patch caused the reverse proxy/WAF to reload a default inspection/profile (Default-Strict) which replaced the custom PORTAL-APP-TEMPLATE and its documented HTTP/profile/header‑rewrite rules; the activated Default-Strict profile altered header-handling and removed or failed to preserve X-Forwarded headers, reproducing the 502 when TLS inspection was enabled [Data: Entities (310,311); Relationships (497,568,548)].
+
+This shows configuration/template drift introduced by patching—where a device reset to a default profile overwrote application‑specific templates—rather than an application or certificate error, creating a clear process risk for perimeter devices that host per-application templates [Data: Relationships (497,562)].
+
+## Backend and load‑balancing layer were healthy—issue isolated to publishing/inspection layer.
+
+Load balancer health checks and internal tests marked the backend application server as healthy and reachable, indicating the backend process was not the primary failure point; monitoring and health checks were used to validate stability after the fix before ticket closure [Data: Entities (305,318,308); Relationships (504,505,513)].
+
+These diagnostics materially constrained the fault domain to the perimeter (WAF/reverse proxy) and saved time by directing remediation to template/profile/header handling rather than application restarts alone [Data: Relationships (492,563)].
+
+## TLS certificate change was investigated and ruled out as the root cause.
+
+The customer reported a recently installed TLS certificate and helpdesk validated the certificate CN, SAN and chain; while the certificate change was temporally proximate to the outage, diagnostics showed certificate validity/chain issues were not the cause of the 502s—the publishing layer header behavior was [Data: Entities (306); Relationships (486)].
+
+The certificate service and blueprint decision tree were consulted as part of the normal checklist, which helped rule TLS problems out and focus on WAF behavior [Data: Relationships (552,508)].
+
+## Teams media outage at Zurich caused by outbound firewall restriction blocking dynamic RTP ports.
+
+A separate but contemporaneous operational change at the Zurich site implemented a security-hardening outbound rule that permitted only UDP 3478–3481, blocking the dynamic RTP port range required for Teams media when Media Bypass is used. This change produced no audio for external calls; temporarily opening the wider UDP/RTP range restored audio immediately, confirming the firewall rule as the root cause [Data: Entities (303,442,443); Relationships (739,741,742,733)].
+
+Firewall logs and change records tied the timing of the outbound restriction to the onset of audio issues, showing this was a local change management failure with direct impact to voice/media availability [Data: Relationships (738,739)].
+
+## Blueprint and operational docs exist but were not enforced by the post‑patch validation process.
+
+An authoritative Secure Web Publishing blueprint and versioned guidance (BLUEPRINT: SECURE WEB PUBLISHING – KF40 – VERSION 3.2 / WEB PUBLISHING BLUEPRINT) defines required behaviors: TLS termination at the WAF, required Portal-App-Template, and documented header rewrite rules and validation after patches. The team retrieved the blueprint from DMS to align remediation, indicating awareness of the standard; however, the blueprint's requirement to validate WAF profiles and preserve custom rewrite rules was not enforced automatically during the patch that reset profiles, producing configuration drift [Data: Entities (307,339,356); Relationships (508,512,562)].
+
+This gap between blueprint and operational enforcement—where a profile reload caused a prohibited Default-Strict to be applied despite the blueprint forbidding it—exposes the environment to repeat regressions unless validation and change controls are hardened [Data: Relationships (548,497)].
+
+## Operational ownership, escalation path, and remediation were used correctly but could be formalized into runbooks and automated checks.
+
+The high-priority ticket TI-1594408 was owned initially by Employee 29 (helpdesk) who performed initial checks and escalated to BU Network & Security; BU Network & Security then took ownership and applied WAF/reverse proxy configuration changes to restore service, with monitoring confirming 24 hours stability before closure—showing correct functional escalation and remediation occurred [Data: Entities (295,298,299); Relationships (479,487,476)].
+
+The artifacts show manual steps and handoffs (tests, template restores, monitoring) that resolved the incident, but the manual nature of these actions recommends formalizing a post‑patch WAF validation runbook, automated configuration drift detection, and explicit pre/post patch checklists to reduce mean‑time‑to‑repair and recurrence risk [Data: Relationships (479,513)]."
+Is the statement supported by the evidence?,Scan‑to‑Mail: “MESSAGE SIZE EXCEEDS FIXED LIMIT” and “Relay denied” findings; remediation by Mail/Relay and VLAN whitelisting,"=== CITED REPORTS ===
+REPORT 36:
+# CustomerCompany14: FileZilla Server Access & Contact Person 16
+
+The dataset centers on a single, named customer reporter (Contact Person 16) from Customer Company 14 who opened a support ticket about FTP access and asked who installed FileZilla Server on a virtual server. Troubleshooting activity was performed from a customer workstation using WinSCP and SFTP login tests, and communications flowed into Consulting Sample Company's helpdesk email and portal where the reporter's email is recorded as the ticket contact. The reporter also noted a separate Teams call stability issue affecting multiple employees in Basel; that appears as an additional, distinct problem reported in the same ticket metadata. Evidence shows clear diagnostic steps and ticket-channel metadata but indicates ambiguity about service ownership for the FileZilla Server and the need to consolidate incident context and escalation ownership.
+
+## Single named primary reporter driving the incident
+
+Contact Person 16 is recorded as the named, primary customer contact who submitted the initial request about FileZilla Server installation and FTP access problems and who participated in troubleshooting and follow-up with support [Data: Entities (321)].
+
+This contact is the pivot for both the FTP troubleshooting and related communications — their email is present in ticket metadata and was the inbound channel used to contact helpdesk, making them the appropriate escalation/liaison point for follow-up actions that require customer verification or additional diagnostics [Data: Relationships (1052), Relationships (1064)].
+
+## FileZilla Server issue reported but ownership of the server is unclear
+
+The report explicitly asks who installed FileZilla Server on the virtual server and requests assistance with FTP access, indicating uncertainty about server ownership and administration responsibility [Data: Relationships (1051)].
+
+Because the ticket content includes this ownership question, there is an operational gap: resolving access and configuration issues requires identifying the server owner/administrator, access credentials, and whether the server is under customer or third-party control — items implied by the ownership question but not documented in the provided metadata [Data: Relationships (1051)].
+
+## Diagnostics performed from the customer workstation using WinSCP and SFTP
+
+Support performed login tests and client-level checks from a customer-side workstation; WinSCP was used to exercise FTP/SFTP logins and SFTP login attempts were recorded as part of the diagnostic checklist [Data: Entities (633), Relationships (1091), Relationships (1090)].
+
+These diagnostic actions show that initial troubleshooting focused on validating client-to-server connectivity and credential behavior from the user's environment, which helps narrow the fault domain to either client configuration, network path, or server-side authentication/configuration if tests from the workstation consistently fail [Data: Relationships (1091), Relationships (1090)].
+
+## Support intake and ticket metadata link the reporter email to the consulting portal and helpdesk mailbox
+
+The consulting portal records and links the customer's email address as the contact for the ticket, and the reporter used the Consulting Sample Company helpdesk email address to open the ticket, establishing two formal channels for notifications and escalation: the helpdesk mailbox and the portal record containing the reporter's email [Data: Entities (616, 619), Relationships (1064), Relationships (1052)].
+
+This establishes an auditable communication trail (portal + mailbox) that can be used to coordinate ownership handoffs and record changes, provided ticket updates and assignments are applied consistently within those channels [Data: Entities (616), Relationships (1064)].
+
+## A second, separate incident (Teams calls dropping) is reported in the same ticket context
+
+Contact Person 16 additionally reported that multiple employees in Basel experienced external Microsoft Teams calls dropping after roughly 30 seconds (both incoming and outgoing), which is recorded as a separate issue within the reporter's ticket metadata [Data: Entities (321)].
+
+Because this is a different service domain (Microsoft Teams call stability vs. FTP server access), it should be treated as a distinct incident stream or correlated only after initial triage; conflating them risks confusion of owners and remediation steps unless a deliberate cross-investigation is initiated [Data: Entities (321)].
+
+## Operational risk due to ambiguous ownership and mixed issues within one ticket
+
+The ticket contains both an ownership question about FileZilla Server and an unrelated Teams call stability report; the presence of multiple distinct service problems in the same ticket and the explicit ask 'who installed FileZilla Server' indicate a lack of clearly documented ownership for at least the FTP service component [Data: Relationships (1051), Entities (321)].
+
+Ambiguity in ownership + multiple problems in one ticket increases the chance of delayed remediation, duplicated effort, or missed escalations unless the consulting helpdesk assigns clear owners and separates incident records for each affected service using the portal and mailbox channels already present [Data: Relationships (1052), Relationships (1064)].
+
+## Available evidence supports an effective client-side test path but lacks server-side artifacts in the record
+
+Records show concrete client-side testing (WinSCP, SFTP from the customer workstation) which is useful for reproducing the symptom from the user environment [Data: Relationships (1091), Relationships (1090), Entities (633)].
+
+What is not present in the provided dataset are referenced server-side logs, configuration records, or an identified server owner/administrator account in the ticket metadata — the record asks who installed the FileZilla Server but does not include server-side artefacts or ownership entries, leaving a diagnostic gap that will slow root-cause confirmation [Data: Relationships (1051)].
+
+## Immediate recommended actions and escalation paths (prioritized)
+
+1) Confirm FileZilla Server ownership and administrative access — the ticket explicitly requests who installed the server, so locating the server owner or hosting boundary is the first step to enable server-side log collection and configuration checks [Data: Relationships (1051)].
+
+2) Use the existing helpdesk mailbox and portal metadata to formalize ownership and ticket separation — the reporter's email is linked in the consulting portal and the helpdesk mailbox is the inbound channel; assign or split the ticket(s) in the portal so FTP/FileZilla and Teams/VoIP stability are tracked separately and assigned to the appropriate teams (server/ops vs UC/voice) [Data: Relationships (1064), Relationships (1052), Entities (616, 621)].
+
+3) Collect server-side logs and session traces once ownership is confirmed, and correlate those with the WinSCP/SFTP client test timestamps captured from the customer workstation to determine whether failures are client-side, network-path related, or server-auth/configuration related [Data: Relationships (1091), Relationships (1090)].
+
+These steps are prioritized to remove the ownership ambiguity first, then make the existing client-side test evidence actionable by linking it to server-side artifacts and by keeping the unrelated Teams issue in a separate, trackable incident stream [Data: Relationships (1051), Relationships (1091), Entities (321)].
+
+REPORT 6:
+# Customer Company 52 AG — Mail SMTP AUTH outage (Legacy Outlook) & Direct Routing voice-policy misassignment (Enterprise-Sales)
+
+Two related operational issues affected a small Sales sub-population after an organizational rework: (1) legacy Outlook MSI (Build 2019) clients could not send mail because tenant Security Defaults disabled SMTP AUTH for legacy authentication flows; and (2) Direct Routing-enabled users were assigned the tenant ""Global"" voice routing policy via an automated provisioning script, and that policy lacked PSTN Usage, preventing outbound PSTN calling. Troubleshooting spanned client-side checks (firewall/AV/profile recreation), hybrid mailflow validation (Send/Hybrid connector and TLS checks), Exchange Event Log analysis showing 535 SMTP AUTH failures, and coordination between support, BU Infrastructure Engineering and the Identity team to selectively re-enable SMTP AUTH via Conditional Access and to correct provisioning logic to assign an appropriate Direct Routing policy per the documented Teams voice-routing blueprint. The incidents were localized (roughly six affected users within a ~12-person Sales team) but exposed weak points in provisioning governance, group->policy mapping, and the operational interplay of tenant-level security defaults and legacy client compatibility. [Data: Entities (588,585,193,200,586); Relationships (1015,1018,301,313,1019)]
+
+## Two distinct but co-occurring failure modes: SMTP AUTH/legacy Outlook send failures and Direct Routing voice-policy misassignment
+
+The troubleshooting record shows two separate technical failure classes occurring in the same operational window: legacy SMTP submission/authentication failures for locally installed Outlook MSI Build 2019 clients, and Teams Direct Routing external-call failures for users assigned an incorrect voice routing policy. The Outlook issue traces to legacy clients relying on SMTP AUTH which was disabled by tenant Security Defaults; Event Log entries and client errors corroborated the authentication failures. [Data: Entities (588,585,586,604,597); Relationships (1015,1018,1037,1019)]
+
+The voice issue originated from provisioning logic that assigned the tenant ""Global"" voice routing policy to new Enterprise-Sales group members; the Global policy did not reference a PSTN Usage route, so Direct Routing-enabled users had no external PSTN path until policy assignment was corrected. The provisioning change and the blueprint mismatch were explicitly recorded in the investigation. [Data: Entities (200,193,201,198,203); Relationships (301,303,313,309,307)]
+
+## Root cause for mail send failures: Security Defaults disabled SMTP AUTH used by legacy Outlook clients
+
+Server-side evidence in the Exchange Event Log showed ""535 5.7.3 Authentication unsuccessful"" tied to SMTP AUTH attempts, directly implicating authentication rejection rather than transport-level network issues. These events were used to correlate client symptoms (Outlook error 0x800CCC0E and stuck Outbox) with disabled legacy authentication. [Data: Entities (604,588,585,597); Relationships (1018,1015,1037,1004)]
+
+The tenant-level Security Default setting was recently enabled and is recorded as the action that disabled legacy authentication flows including SMTP AUTH; this tenant change therefore produced the observed outage for legacy clients until selective exceptions were applied. This link between Security Defaults and legacy authentication is documented in the relationship mapping. [Data: Entities (586,608); Relationships (1019)]
+
+## Remediation path for SMTP issue: targeted re-enablement of SMTP AUTH via Conditional Access and engineering coordination
+
+Support and escalation engineers validated client configuration (SMTP port 587/STARTTLS, local firewall, antivirus SMTP scanning, and Outlook profile recreation) to rule out local causes before concluding the tenant-level setting was at fault. That validation path is documented and reflects standard troubleshooting discipline for auth/submission failures. [Data: Entities (609,601,602,605,588); Relationships (1024,1025,1026,1028)]
+
+The practical remediation was to selectively allow legacy SMTP AUTH for the affected users by implementing Conditional Access adjustments while preserving tenant security posture for other users. System Engineer 07 and BU Infrastructure Engineering performed the hybrid and Event Log analysis and applied changes to enable SMTP AUTH for the impacted accounts (selective CA exceptions). This action and the coordinating actors are recorded in the incident notes. [Data: Entities (592,587); Relationships (1020,1033,1032)]
+
+## Root cause for voice outage: automated provisioning script assigned Global policy that lacked PSTN usage contrary to the Teams voice-routing blueprint
+
+The provisioning script was configured to assign voice routing policies based on Azure AD group membership; after the reorganization new Enterprise-Sales members were being assigned the Global policy by default. The provisioning-script -> Global policy relationship and the script change history are documented as the direct mechanism that produced the misassignment. [Data: Entities (200,198,193); Relationships (301,309,311,307)]
+
+The Global policy was observed to have no PSTN Usage entries (no External-Route), whereas the approved blueprint requires Direct Routing users be assigned a dedicated routing policy (e.g., DR-Standard) that references an External-Route PSTN Usage. The blueprint mismatch is explicitly noted and was the justification for updating the provisioning logic. Temporary reassignment to DR-Standard restored external calling in tests. [Data: Entities (201,194,196); Relationships (305,304,303)]
+
+## Scope and operational impact: limited user count but high operational friction and cross-team involvement
+
+The incident affected roughly six Sales users (subset of a ~12-person Sales team) who were recently reassigned into Enterprise Sales; the user-count is small, but the issue impacted both telephony availability (external calling) and mail sending for affected legacy clients. The affected-users construct and its relation to the Sales team and Enterprise-Sales group are recorded. [Data: Entities (203,197,198); Relationships (307,300)]
+
+Despite the limited headcount, the troubleshooting required cross-discipline escalations (support -> System Engineer -> BU Infrastructure Engineering -> Identity Team) and hybrid environment checks (on-prem Exchange connectors, Event Log, Exchange Online checks), demonstrating that even small-scale failures can impose significant operational and coordination overhead. [Data: Entities (592,582,581,593); Relationships (1012,1009,1008,1033)]
+
+## Governance and provisioning process gaps: blueprint not enforced in provisioning logic and Azure AD group lifecycle controls
+
+The provisioning logic did not reflect the Teams voice routing blueprint; this divergence was recorded and triggered a change to the provisioning script after the incident. The ticket explicitly links the provisioning script to the blueprint and documents that the script required correction to align with the blueprint's requirement for dedicated routing policies. [Data: Entities (200,201); Relationships (313,301)]
+
+Separately, Azure AD groups are used both for voice policy assignment and SharePoint permissions, and the environment has documented governance rules requiring dedicated groups for SharePoint permissioning and lifecycle constraints. The dual-use of groups increases risk if group naming/creation/lifecycle controls are not strictly enforced, because a miscreated group can affect multiple downstream systems. These governance constructs are present in the records. [Data: Entities (206,470); Relationships (312,762)]
+
+## Security exposure from tenant Security Defaults and Conditional Access exceptions
+
+Enabling Security Defaults disabled legacy authentication methods (including SMTP AUTH) — the security change was the proximate cause of the SMTP outage for legacy clients. While enabling Security Defaults strengthens tenant security, the incident demonstrates how global security toggles can break legacy workflows. The data captures this relationship. [Data: Entities (586,608); Relationships (1019)]
+
+The mitigation chosen—selective Conditional Access exceptions to permit legacy SMTP AUTH for specific users—reintroduces a measured exception to the baseline. While operationally necessary to restore service, such exceptions should be minimized, audited, and time-boxed because they widen the attack surface by allowing legacy authentication flows. The CA adjustment and its role in remediation are recorded in the incident documentation. [Data: Entities (587,608); Relationships (1020)]
+
+## Prioritized recommendations: short-term fixes, medium-term controls, and longer-term remediation
+
+Short-term (<=72 hours): 1) Maintain the Conditional Access exceptions that restore SMTP AUTH only for the minimal set of impacted users and mark them for automatic review/removal; 2) Reassign affected Direct Routing users to DR-Standard (or dedicated Sales routing policy) where tests have proven it restores outbound calling. These actions map directly to the remediation steps recorded in the ticket and the successful test reassignment. [Data: Entities (587,194,203); Relationships (1020,304,301)]
+
+Medium-term (2–8 weeks): 1) Update and gate the provisioning script so that it enforces the Teams voice-routing blueprint (policy-to-group mapping must be codified and tested); 2) Implement a provisioning-change review process with Identity Team approval for any script that alters voice routing or group->policy mappings; 3) Add automated checks that detect when a voice routing policy lacks PSTN Usage for Direct Routing-enabled users and alert owners. The need for these actions is evidenced by the provisioning-script/blueprint divergence and the identity-team coordination records. [Data: Entities (200,201,202); Relationships (313,314,305)]
+
+Longer-term (quarterly): 1) Inventory and remediate legacy Outlook MSI clients: migrate impacted users to modern auth-capable clients or modern protocols so SMTP AUTH dependency is removed; 2) Harden tenant-level change controls so actions like enabling Security Defaults require pre-checks for legacy auth impacts or an automated impact report. The presence of legacy clients and the tenant-level Security Defaults action motivate these plans. [Data: Entities (588,586,608); Relationships (1015,1019)]
+
+## Stakeholders, escalation pathways, and runbook recommendations
+
+Primary stakeholders identified in the records include the Sales Team (business owner), Identity Team (provisioning/group lifecycle), BU Infrastructure Engineering (mail/Teams infrastructure), and System Engineer 07 (technical remediation/triage). These assignments and collaborations are explicitly recorded and used in the ticket escalation chain. [Data: Entities (197,202,593,592); Relationships (307,314,1033,1032)]
+
+Recommended runbook: 1) Triage owner (first-line support) validates symptom (Outlook 0x800CCC0E / Teams call failure) and performs client checks (port, firewall, AV, profile recreation); 2) If auth errors or Event Log 535 observed, escalate to mail/infra (System Engineer) for Event Log and hybrid connector review; 3) If due to tenant-level security defaults, coordinate Identity Team to implement time-boxed Conditional Access exception and record justification; 4) If provisioning/policy mapping implicated, escalate to Identity Team and BU Infrastructure for immediate policy reassignment and follow-up change to provisioning script. These steps mirror actions and relationships documented in the incident. [Data: Entities (601,602,605,592,200); Relationships (1025,1026,1028,1032,301)]"
+Is the statement supported by the evidence?,Multi‑domain incidents that required infrastructure/engineering coordination (precedent for escalation),"=== CITED SOURCES ===
+SOURCE 28:
+﻿
+Ticket summary:
+Ticket name: KF13: PRIO HIGH - Printing from SAP not possible
+Ticket number: TI-931293
+Company: Customer Company 13
+Contact person: Contact Person 11
+Owner: Employee 17
+Origin: Phone
+Type: Support Request
+Created on: 18.07.24 17:16
+
+Closure
+Closure date: 19.07.24 16:48
+Closure text: After a Windows update and the subsequent VM restore, the printer network share caused issues. These were corrected and operations were restored.
+
+Activities
+Emails:
+19.07.24 09:01 | Ticket: KF13: PRIO HIGH - Printing from SAP not possible set to status ""In Progress"" #027064349 | NO-REPLY | BU_CustomerServices_RUN@ConsultingSampleCompany.ch
+Hello BU Customer Services Run,
+The ticket KF13: PRIO HIGH - Printing from SAP not possible, number TI-931293, has been set to status ""In Progress"".
+Link: KF13: PRIO HIGH - Printing from SAP not possible
+
+19.07.24 12:52 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+I would like to briefly check whether the issue with printing from SAP has been resolved in the meantime.
+Kind regards
+Employee 18
+
+19.07.24 13:01 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Contact Person 12 | Employee 18
+Hi everyone,
+Unfortunately, it is still not working.
+Kind regards
+Contact Person 12
+Head of Customer Services, Customer Company 13 AG
+Phone: +41 00 000 00 00
+
+19.07.24 13:24 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 18 | Contact Person 12
+Dear Mr. Contact Person 12,
+Thank you for your feedback. I will inform the responsible department that the issue still persists.
+I will keep you updated on further progress.
+Kind regards
+Employee 18
+
+19.07.24 16:38 | TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17 | Contact Person 11
+Dear all,
+I would like to inform you that we have identified the root cause and resolved the incident. Printing via both print servers through SAP is now functioning properly again. Mr. Contact Person 12 has confirmed that SAP print jobs are being executed correctly.
+After the Windows update and the restore of the two VMs, all printers had issues with the network share on print server VRINFRGERPRNT03. After disabling and re-enabling the network share for all printer queues, all pending documents on the affected printers were successfully printed.
+No further actions are currently required, and we will now close the ticket.
+Should you require further assistance or have any questions, please do not hesitate to contact us.
+Kind regards and have a nice weekend,
+Employee 17
+Senior System Engineer Core Engineering
+Consulting Sample Company AG
+
+19.07.24 16:44 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 17
+FYI
+
+19.07.24 16:55 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello everyone,
+THANK YOU VERY MUCH!!! TOP SERVICE!!!
+We are very satisfied 😊
+Wishing you both a very nice weekend as well!
+Best regards
+Tom
+Head of IT Switzerland Informatics, Customer Company 13
+
+19.07.24 17:16 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | ContactPerson13@kf13.com
+Hello Giusi,
+You were not included in the distribution list, I only just noticed that.
+Best regards
+Tom
+
+22.07.24 07:56 | FW: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 19
+Hello @Employee 17 and @Employee 20,
+Thank you very much for your great support last Friday on this ticket. This was highly appreciated by KF13, including Contact Person 11, and they were truly grateful for your efforts.
+Especially for Giusi and Employee 20, here again Tom’s praise.
+Kind regards
+Employee 19
+Service Manager
+
+22.07.24 09:19 | RE: TI-931293 | KF13: PRIO HIGH - Printing from SAP not possible #055800188 | Employee 26
+Nice one 😊 That’s a great way to start the week.
+Employee 26
+Head of Core Engineering
+
+Notes:
+18.07.24 17:17 | Admin, CRM | WEB
+Ticket opened on 18.07.24 17:16 by Employee 23.
+18.07.24 17:22 | ApplicationUser, CRM Development | WEB
+Classified as PRIO HIGH because no orders could be printed from SAP, preventing deliveries.
+18.07.24 17:24 | Employee 23 | WEB
+Printing from SAP via VRINFRGERPRNT03 and VRINFRGERPRNT04 not possible. Normal printing works via other print servers with follow-me solution. Contact Person 11 requests rollback of the Windows version on the print servers.
+18.
+
+=== CITED REPORTS ===
+REPORT 16:
+# SAP Printing Outage — VRINFRGERPRNT03/04 (TI-931293)
+
+The community centers on the SAP printing path where SAP Spool/Output Management delivers jobs to SAP Print Targets that map to dedicated Windows Printserver VMs (notably VRINFRGERPRNT03 and VRINFRGERPRNT04). A high‑priority production incident (TI-931293) occurred 17–19.07.24 when SAP-generated orders could not be printed, blocking deliveries; the immediate remediation sequence included spooler restarts, a VM restore to a pre-maintenance snapshot, and disabling/re-enabling printer network shares which ultimately cleared queued jobs. The incident produced blue screens (BSOD) on the restored VMs and a customer request to rollback Windows versioning, and it exposed gaps in post-update/restore validation for queue properties, publishing/sharing parameters and end‑to‑end test prints. Multiple support engineers and the infrastructure on‑call team coordinated the recovery; the organisation has an SAP printing standard that prescribes post-change validation but the event still recurred across both SAP printserver VMs, indicating a likely server-image or Windows-update related root cause that requires deeper OS/driver/VM-host investigation and tighter runbook controls. [Data: Entities (534, 153, 154, 155, 147); Relationships (896, 913, 908, 232)]
+
+## Production-impacting outage: SAP print jobs blocked, business deliveries affected
+
+The incident was recorded as a high‑priority printing outage affecting SAP-originated orders and deliveries, indicating direct business impact and the need for fast remediation and coordinated operations response. The ticket TI-931293 documents the inability to print from SAP and the classification and remediation timeline across 17–19.07.24. [Data: Entities (534); Relationships (896)].
+
+Support actions were escalated to infrastructure on‑call and multiple engineers were assigned to the case, showing cross-shift coordination and handover requirements for production restores and follow-up testing (information sent to early shift for next‑day validation). This highlights both the operational severity and that the incident required multi-role participation to resolve. [Data: Relationships (905, 908)].
+
+## Probable root‑cause chain: Windows update -> VM restore -> network share/queue publishing corruption
+
+Documents and timelines link a Windows update and subsequent VM restore to the onset of queue-sharing and printing failures: a Windows update was applied, the print-server VMs were restored to a prior snapshot, and after the restore the printer network shares and queue publishing were malfunctioning, causing jobs to remain stuck until shares were toggled. This sequence is central to the incident's root-cause hypothesis and was specifically recorded in the log entries. [Data: Entities (537, 523); Relationships (890, 232, 883, 891)].
+
+Contact Person 11 explicitly requested a rollback of the Windows version on the print servers, reinforcing the operational suspicion that the Windows update/version was implicated; the infrastructure on‑call also documented this suspicion. The appearance of BSODs after the restore further suggests OS/driver/host-level instability that must be investigated beyond application-level spooler troubleshooting. [Data: Relationships (923, 911); Entities (542)].
+
+## Failure manifested in both SAP printserver VMs but not in follow‑me print infrastructure
+
+Both VRINFRGERPRNT03 and VRINFRGERPRNT04 exhibited identical failure patterns (inability to process SAP jobs, failed spooler restarts, and BSODs after restore), while other print servers supporting the follow‑me solution continued to print normally. This scoped the incident to the SAP-designated printserver VMs rather than a tenant-wide network or SAP-side-only problem. [Data: Entities (154, 155, 535); Relationships (913, 901, 887)].
+
+Because two independent VMs in the same role failed similarly after the same maintenance/change sequence, a systemic image, driver set, or host-level change (or a common post-restore validation omission) is a likely common-mode cause that requires coordinated forensic analysis across both VM instances and their hypervisor/backup/restore processes. [Data: Relationships (890, 232)].
+
+## Operational runbook/validation gaps: post-update/restore checks were insufficient or incomplete
+
+An approved 'Print Services for SAP Output' standard exists and mandates post-update/restore validation steps (queue status, spooler health, publishing/sharing parameters and test prints). The incident narrative cites VM restore and Windows update as triggers requiring these checks, but the persistent failure and need to manually toggle network shares indicate either incomplete adherence to the standard or that the current validation checklist does not detect the specific failure mode observed. [Data: Entities (147, 161); Relationships (243, 246, 251)].
+
+This demonstrates both the presence of governance (a standard) and a procedural gap: either the runbook was not fully executed during the restoration window or the runbook lacks items (e.g., explicit verification of network-share registration and directory publishing state after restore) that would have detected this issue before business impact. The standard should be revised to explicitly include steps that caught this failure in TI-931293. [Data: Relationships (251, 891)].
+
+## Troubleshooting sequence and stakeholder actions were appropriate but reveal handover and evidence-capture weaknesses
+
+Employee 23 performed early remediation actions (gpupdate /force on an affected workstation, spooler restart attempts, and remote troubleshooting) and then activated infrastructure on‑call; the infrastructure on‑call performed the VM restore with support from a technician (Mister X) and restoration contexts (Inter12203/Inter12204). Multiple engineers later investigated BSODs and log evidence. These documented steps show correct escalation and involvement of required roles. [Data: Entities (49, 538, 541, 539, 540); Relationships (74, 921, 908, 924, 925)].
+
+However, the fact that BSODs and the network-share corruption occurred after the restore suggests that pre‑ and post-restore evidence capture (detailed event/log snapshots, hypervisor logs, driver versions) and controlled validation were either not available or not sufficient to prevent or immediately diagnose the failure — an evidence-capture checklist and mandatory pre-remediation snapshot of key logs should be formalised. [Data: Relationships (911, 890)].
+
+## Security and availability exposures from share toggling and manual fixes
+
+Administrators cleared stuck jobs and restored printing by disabling and then re-enabling the printer network shares on the affected servers. While effective in this incident, this manual share manipulation is an operationally risky fix if done without change control because it temporarily alters SMB/print sharing state and could impact visibility or cause job loss if not coordinated and audited. The logs show that the printer network share was the primary locus of the problem and the point of manual remediation. [Data: Relationships (883, 891); Entities (524)].
+
+Recommendation: treat share toggles as controlled mitigation steps in runbooks with explicit rollback/validation and audit logging to prevent accidental exposure or data loss. Consider automating share/publishing verification as part of post-update validation to avoid manual toggles except under controlled emergency procedures. [Data: Relationships (251, 246)].
+
+## Recommended immediate and medium-term actions (prioritised)
+
+Immediate (P0/P1) actions: 1) Isolate a restored printserver VM to collect memory dumps, Windows event logs, spooler logs and hypervisor host logs for the restore window to determine BSOD causes; 2) if not already done, roll back to the previously known-good Windows image/version on a non-production test copy to reproduce the failure before applying tenant-wide rollbacks; 3) add mandatory post-restore checklist enforcement (validate queue properties, publishing/sharing flags, directory publishing and run an SAP-originated test print) before returning servers to production. These map to items recorded in the standard and the ticket actions. [Data: Entities (147, 523, 537); Relationships (243, 246, 923)].
+
+Medium-term actions: 1) Augment the 'Print Services for SAP Output' standard with explicit post-restore checks for network-share registration and add automated probes that verify queue visibility from SAP and a test workstation; 2) implement a pre/post-restore automated verification job that runs spooler/queue/publishing checks and preserves logs for forensics; 3) perform a controlled update/rollback plan for Windows versions across SAP printserver VMs (staged on a test VM, with clear rollback criteria). These changes will reduce recurrence and shorten mean time to resolution for similar future incidents. [Data: Entities (147, 161, 523); Relationships (890, 891)].
+
+## Communication, ownership and escalation matrix to formalise
+
+The incident involved CRM/web ticket logging, a primary early responder (Employee 23), escalation to infrastructure on‑call, handover to early shift for validation, and involvement of additional engineers (Employees 19 and 20) for BSOD and SAP-side checks. This shows a functioning ad-hoc escalation chain but also highlights the need for a formal matrix documenting responsibilities for: immediate remediation (spooler/queue checks), VM restore/host interactions, OS-level diagnostics, SAP-side validation, and customer communication/approvals. [Data: Entities (49, 516, 517, 538, 543); Relationships (74, 921, 905, 879, 906)].
+
+Create an escalation runbook that lists required evidence to collect at each handover (logs, timestamps, snapshots), decision criteria for rollback vs. rebuild, and a named on-call roster to reduce ambiguity in future incidents. Ensure the runbook maps to the approved standard and is practiced in tabletop exercises. [Data: Entities (147); Relationships (905)]."

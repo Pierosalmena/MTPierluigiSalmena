@@ -1,0 +1,22 @@
+Recommendation (classification)
+- second_level_support
+
+Why (concise reasoning based on prior cases)
+- The SharePoint symptom you describe—one folder suddenly blocked for some users after a rename and application of a sensitivity/confidential label, with inconsistent visibility (works for some users, works in Incognito for others)—matches a prior incident that required escalation to the M365 / Identity team for in-depth analysis. In that case the label+permission interaction was investigated by a System Engineer and required tests against Azure AD groups and Purview/AIP behavior [Data: Sources (30)].
+- A separate but related SharePoint/permission incident (access denied to a single project folder) was resolved only after correcting group nesting in Entra ID (not by simple client-side fixes); the remediation involved changing the Azure AD group structure and synchronizing it, after which access was restored [Data: Sources (20)].
+- Your external-auditor upload issue (hang → fail / WinSCP timeout) resembles past FTP/secure-drop problems that required firewall analysis and coordination with core/network teams and server-side checks rather than purely desktop troubleshooting [Data: Sources (34, 33)].
+- Parts of your ticket (Teams camera and mic disappearance) map to cases that were resolved at first-level using standard “Blueprint” checks (OS privacy permissions, app permissions, Teams restart). For example, a missing camera in Teams was fixed by enabling OS camera permissions and app access per the Blueprint [Data: Sources (42)]. However, because multiple distinct subsystems are affected (SharePoint/AIP/Entra ID, secure upload/FTP, and device/media issues in Teams) and SharePoint + upload issues historically required engineer-level changes, the overall ticket should be handled as second_level_support.
+
+What the records explicitly document (facts from prior cases)
+- A sensitivity label enforced encryption and restricted access to an Azure AD group different from the SharePoint permission group; engineers escalated and investigated potential conflicts between SharePoint permissions and AIP encryption [Data: Sources (30)].
+- An access-denied case for a SharePoint folder was caused by incorrect group nesting in Entra ID; fixing the nesting and synchronizing restored access [Data: Sources (20)].
+- FTP/secure-file delivery problems have previously required firewall and core-team analysis as part of troubleshooting (FileZilla/FTP ticket history) [Data: Sources (34, 33)].
+- Teams camera missing from settings was resolved by first-tier steps (OS privacy settings, enabling Teams in allowed apps, Teams restart) following the documented Blueprint [Data: Sources (42)].
+
+Recommended next steps (these are my recommendations and are not verbatim actions from the records)
+- Escalate the ticket to M365 / Identity (Entra ID) with the SharePoint folder details, the sensitivity label name, and timestamps of when the label was applied. (Recommended; informed by the prior escalation in TI-1578891 [Data: Sources (30)].)
+- Ask the Identity team to check (a) whether the AIP/sensitivity label enforces encryption to a different Azure AD group than the SharePoint permission group, and (b) group nesting/replication status in Entra ID—both were root causes in similar incidents [Data: Sources (30, 20)]. (Recommended.)
+- Escalate/coordinate with the Network/Core team for the auditor upload/WinSCP timeouts so they can run firewall/session traces and server-side FTP checks, as similar FTP tickets involved firewall and core-team work [Data: Sources (34, 33)]. (Recommended.)
+- For the Teams camera/mic issues: have first-level perform the Blueprint checks (OS privacy/app permissions, Teams restart); if the camera/mic do not reappear after those checks, escalate to second-level with remote session logs. The camera case was resolved at first-level via the Blueprint in the record cited [Data: Sources (42)]. (Recommended.)
+
+If you want, I can draft an escalation summary you can paste into the second-level ticket (including which logs/screenshots to collect and the tests already done) — that would be a recommended next step not directly pulled from the records.

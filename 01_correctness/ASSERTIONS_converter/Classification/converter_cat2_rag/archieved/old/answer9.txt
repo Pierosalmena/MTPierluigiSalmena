@@ -1,0 +1,41 @@
+Short answer
+- These look like multiple independent issues (not a single root cause). The Zurich Teams silence matches a known Direct‑Routing / media‑port firewall problem; the Basel printing problems match several different root causes seen in past tickets (network/VLAN reachability, queue state, and explicit permission denies) [Data: Sources (5, 23, 16, 22, 3, 27, 2)].  
+- Classification: open separate tickets and route them differently:
+  - Zurich Teams (external calls with silence) — escalate to 2nd‑level Unified Communications / Network (Direct Routing / firewall/media ports) [Data: Sources (5, 23)].  
+  - Basel printing — split into at least three tickets: 1) print permissions (can be 1st‑level print admin), 2) paused/stuck queue (1st‑level), 3) print server ↔ printer network/VLAN connectivity or GPO/AD provisioning (2nd‑level Network / AD team) [Data: Sources (3, 27, 22, 2)].
+
+What in the data matches each symptom (evidence)
+- Zurich — external calls are “Connected” but you hear nothing: this is the same symptom investigated and resolved by adjusting firewall/media port configuration for Direct Routing / Media Bypass; opening the correct RTP/media port ranges restored audio [Data: Sources (5, 23)].  
+- Basel — “access denied” immediately when printing: matches a case where an explicit Deny entry on the printer queue caused immediate “Access denied”; removing the explicit deny fixed it [Data: Sources (3)].  
+- Basel — print jobs appear in the queue and then never progress (stuck): matches a case where the queue was paused; simply unpausing the queue and restarting jobs resolved it [Data: Sources (27)].  
+- Basel — print jobs disappear or printers not responding: matches a case where a new device VLAN prevented the print server from reaching the printers; adjusting firewall/routing between server network and printer VLAN restored printing [Data: Sources (22)].  
+- Basel — a user sees no printers at all (no exact match in the dataset): there is related evidence that printer provisioning and defaults are controlled via AD groups / GPOs and that incorrect group membership can cause wrong or missing mappings — investigate AD/GPO membership as a likely cause [Data: Sources (2)].
+
+Why these are likely separate problems (brief reasoning)
+- The Teams issue in Zurich in the dataset was repeatedly traced to media traffic being blocked by a firewall rule (Direct Routing / Media Bypass scenario) and required UC/Network changes to fix — not a client/headset problem [Data: Sources (5, 23)].  
+- The Basel printing incidents in the dataset include distinct root causes: permission entries on the queue, paused queues, and network/VLAN routing between print server and printers — each of those produces different symptoms and requires different teams to fix [Data: Sources (3, 27, 22)].  
+Therefore, treat them as multiple parallel incidents rather than one single outage.
+
+Recommended ticket classification and routing (concise)
+- Zurich Teams (no audio on external PSTN calls): 2nd‑level — Unified Communications + Network (Direct Routing / firewall/media port range) [Data: Sources (5, 23)].  
+- Basel printing — create separate tickets:
+  - Permission denied for one user: 1st‑level print admin (check queue ACLs and remove explicit Deny) [Data: Sources (3)].  
+  - Jobs stuck in queue for many users: 1st‑level print admin (check queue state, unpause/restart jobs) [Data: Sources (27)].  
+  - Print server cannot reach printers / disappearing jobs: 2nd‑level Network (routing/firewall between print server and printer VLAN) [Data: Sources (22)].  
+  - Missing printer visibility for new colleague: 1st‑level print provisioning check (verify AD group membership and GPO printer provisioning); escalate to AD team if group/GPO changes are required [Data: Sources (2)].
+
+Immediate triage checklist you or 1st‑level staff can run now
+- For Teams (Zurich):
+  - Confirm the problem is only on external PSTN calls (you indicated it is) and note affected users and exact start time. This was used to correlate to firewall changes in the tickets [Data: Sources (5, 23)].  
+  - Ask Network/UC to check SBC / Direct Routing logs and whether the site uses Media Bypass; check firewall rules for allowed UDP/RTP port ranges and try a temporary widening test (this matched prior troubleshooting) [Data: Sources (5, 23)].  
+- For printing (Basel):
+  - Check the specific affected user who sees zero printers: verify AD group membership and GPO printer provisioning on login (GPO/group mis‑membership caused printer assignment issues in the data) [Data: Sources (2)].  
+  - For the “Access denied” user: inspect the printer queue ACL for explicit Deny ACEs and remove if present (this fixed an identical case) [Data: Sources (3)].  
+  - For stuck jobs: check the printer queue state (paused / resumed) on the print server, unpause and restart jobs if paused (this solved a case) [Data: Sources (27)].  
+  - From the print server, ping the printer and test a direct print from the server; if ping fails, escalate to Network — in one Basel case missing routing between server network and printer VLAN was the root cause [Data: Sources (22)].
+
+Information to include when you open tickets / escalate
+- Exact location (Zurich training room vs Basel office), list of affected users, exemplar usernames, timestamps when the issue started, steps you already tried (restarts, docks, USB ports, headset swaps), any recent network/firewall/VLAN or AD group changes, printer model names and print server names, and screenshots of errors (“Access denied”, queue status). Tickets in the dataset improved time‑to‑resolution when that info was provided up front [Data: Sources (5, 23, 22, 3, 27, 2)].
+
+If you want, I can:
+- Draft the separate ticket summaries for you (one for Zurich UC/Network; one or more for Basel printing) including suggested priority and the exact troubleshooting steps to hand to 1st‑level or 2nd‑level teams. Tell me which users and timestamps to include and I’ll prepare them.

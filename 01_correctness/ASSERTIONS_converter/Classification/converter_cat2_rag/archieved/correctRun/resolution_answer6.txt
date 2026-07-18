@@ -1,0 +1,68 @@
+Summary (what the indexed records show)
+- Your symptom pattern (many Windows laptops suddenly flagged non‑compliant after a tightening of security rules; Wi‑Fi profile not arriving; Outlook on iOS looping at “device must be approved”; managed app updates not applying to many devices) matches a set of prior incidents at the same customer (KF90). In those incidents, a tightened Intune/BitLocker compliance evaluation caused many devices to flip to non‑compliant, and several deliverables (Wi‑Fi profile, app updates, MAM / Outlook assignment) had been targeted to a dynamic group based on the compliance state. When devices dropped out of the “Compliant” dynamic group they became “not applicable” for those assignments, producing exactly the symptoms you describe [Data: Sources (87, 9, 20)].
+
+Documented root cause and impact from the records
+- Root cause described in the records: devices were marked non‑compliant due to a BitLocker-related compliance rule (specifically “BitLocker recovery key not escrowed within 30 days” / equivalent), and deployment targets (Wi‑Fi profile, app updates, app protection) had been assigned to the dynamic group that required the device to be compliant [Data: Sources (87, 9, 20)].
+
+What was done in the prior incidents (documented, step‑by‑step)
+1) Confirm affected devices and compliance reason
+   - In the prior troubleshooting the team requested sample device names and the Intune compliance state to confirm the pattern (devices showed non‑compliant for the BitLocker escrow rule) [Data: Sources (9, 87, 20)].
+
+2) Restore Wi‑Fi profile delivery (documented action)
+   - Action performed: the Wi‑Fi profile assignment scope was adjusted so it no longer depended on the device being in the “Compliant” dynamic group.
+   - Result: devices began receiving the corporate Wi‑Fi profile and could connect [Data: Sources (87)].
+
+3) Restore Outlook (iOS) account setup (documented action)
+   - Action performed: the App Protection (MAM) policy assignment for Outlook on iOS was rescoped so that affected users could complete account setup despite the temporary non‑compliant state.
+   - Result: affected iPhone users completed email setup successfully [Data: Sources (20)].
+
+4) Restore managed app updates (documented action)
+   - Action performed: app update deployments were re‑scoped to target “all enrolled devices” rather than only the compliance‑based dynamic group.
+   - Result: pending updates began rolling out to the previously excluded machines [Data: Sources (9)].
+
+Why those actions fixed the visible problems
+- In all three documented cases the immediate operational failures (Wi‑Fi/profile not applicable; Outlook blocked by MAM; app deployments “not applicable”) were a product of assignment scoping to a compliance‑based dynamic group. Changing the assignment scope removed that dependency and allowed delivery to devices while the underlying compliance issue was addressed [Data: Sources (87, 20, 9)].
+
+What the indexed records do NOT contain (limits)
+- The records explicitly reference an underlying BitLocker escrow/compliance incident tracked as TI‑1700009, but the details and remediation steps for that underlying BitLocker/key‑escrow issue are not included in the indexed documents available here. Because of that I cannot cite a documented, recorded procedure from the index that shows how the BitLocker escrow condition was corrected for devices (for example, how keys were re‑escrowed or device evaluations were forced) — the index does not contain TI‑1700009’s contents for me to quote [Data: Sources (9, 87, 20)].
+- Therefore I cannot claim a documented, indexed fix for the root compliance failure; I can only report the documented mitigations that restored service delivery while the compliance problem was being tracked.
+
+Concrete, step‑by‑step resolution you can use now (mix of documented actions and clearly‑labelled recommendations)
+
+A. Immediate remediation steps that were actually performed in prior incidents (use these first)
+   1. Confirm scope and confirm compliance reason
+      - Check Intune for a sample of affected devices and capture their compliance state and the compliance reason text (expect to see the BitLocker escrow message per the records). This verification step was performed in the prior incidents before remediation [Documented: Data: Sources (9, 87, 20)].
+
+   2. Re‑scope the Wi‑Fi profile assignment (documented)
+      - Adjust the Wi‑Fi profile assignment so it does not require membership in the “Compliant” dynamic group (target all enrolled/managed devices or an appropriate non‑compliance‑dependent group).
+      - Evidence: in the prior case this action restored Wi‑Fi profile delivery to affected laptops [Documented: Data: Sources (87)].
+
+   3. Re‑scope Outlook (iOS) App Protection (documented)
+      - Rescope the MAM/App Protection assignment so new/re‑enrolling iOS devices are allowed to complete account setup even if temporarily non‑compliant (as was done previously).
+      - Evidence: rescoping the outlook assignment allowed affected users to finish setup [Documented: Data: Sources (20)].
+
+   4. Re‑scope app deployment assignments (documented)
+      - Change critical app/update deployments from targeting the compliance‑based dynamic group to targeting all enrolled devices (or another appropriate static group) until the compliance issue is resolved.
+      - Evidence: re‑scoping to “all enrolled devices” resulted in pending updates rolling out [Documented: Data: Sources (9)].
+
+B. Recommended next steps to address the underlying compliance issue (these are recommendations — not recorded in the indexed tickets)
+   - Investigate and remediate the BitLocker/key‑escrow problem so devices legitimately return to “Compliant”:
+     - Verify whether key escrow/MBAM/Intune recovery key upload recently changed, whether the compliance policy evaluation window was shortened, or whether a policy update applied last Friday caused devices to be marked out‑of‑date.
+     - Force a compliance re‑evaluation from Intune on a sample device after re‑escrowing the key (or otherwise remediating the cause) to confirm it becomes compliant again.
+   - After devices are remediated, revert the temporary assignment scope changes back to your desired long‑term security posture (for example re‑target Wi‑Fi and app deployments to only compliant devices) once you are satisfied devices are healthy.
+   - Communicate to users that temporary changes were made to avoid insecure workarounds (hotspot sharing, personal email clients), and require the hosted remediation (for example, key escrow) before reintroducing stricter enforcement.
+
+   Note: the above investigative/remediation recommendations cannot be cited to a specific procedure in the indexed records because the ticket that tracked the BitLocker root cause (TI‑1700009) is referenced but its contents are not present in the index I can access [Not in indexed records; recommendation only].
+
+Final notes and references you can use when you perform these steps
+- The exact, documented fixes for the visible failures (Wi‑Fi assignment change; Outlook MAM rescope; app‑deployment re‑scoping) are recorded in the KF90 incidents:
+  - Wi‑Fi profile reassignment: TI‑1700010 (closure) — “Wi‑Fi profile assignment scope adjusted to remove dependency on compliance state; devices receiving correct profile configuration.” [Data: Sources (87)]
+  - Outlook for iOS: TI‑1700011 (closure) — “App Protection policy assignment for Outlook iOS rescoped; affected users completing email setup successfully.” [Data: Sources (20)]
+  - App updates: TI‑1700012 (closure) — “App-update assignment scoped to all enrolled devices rather than compliant-only; pending updates rolling out as expected.” [Data: Sources (9)]
+- The records show the team correlated these problems to the BitLocker/compliance change and referenced the separate ticket TI‑1700009 for that root cause, but the remediation details for TI‑1700009 are not present in the indexed set I can access [Data: Sources (9, 87, 20)].
+
+If you want, I can:
+- Produce a concise checklist (ordered steps) you can hand to your Intune admin to implement the documented fixes (Wi‑Fi reassign, Outlook MAM rescope, reassign app updates) and list the exact places in the Intune/AAD console they checked in the prior incidents — however, because the indexed records do not include console screenshots or exact menu paths, I would label any such console‑navigation steps as recommended actions rather than documented evidence.
+- Or, if you prefer, confirm which specific devices to test first (give me 2–3 sample device names / user IDs and I will map those to the documented patterns and cite the relevant records).
+
+If you need only the documented actions to reproduce what fixed the prior incidents, apply steps A.2–A.4 above; for the underlying BitLocker/key‑escrow remediation we do not have the indexed procedure here and will need to open/locate TI‑1700009 (or provide additional logs) to proceed.
